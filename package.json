@@ -39,7 +39,6 @@
     "css-loader": "^2.1.0",
     "file-loader": "^3.0.1",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
-    "mini-css-extract-plugin": "^0.5.0",
     "nodemon": "^1.18.9",
     "pdfjs-dist": "^2.0.943",
     "react-hot-loader": "^4.6.3",

@@ -25,3 +25,6 @@ A basic production script is included that builds your app to a `dist` folder
 ```
 yarn build
 ```
+
+# useful articles
+https://medium.com/@martin_hotell/react-refs-with-typescript-a32d56c4d315

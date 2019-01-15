@@ -1,7 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
@@ -44,12 +43,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-          },
-          "css-loader"
-        ]
+        use: ['style-loader','css-loader']
       },
       { test: /\.(jpg|gif|pdf|png)$/, use: 'file-loader' },
 
@@ -58,12 +52,7 @@ module.exports = {
   },
 
   plugins: [
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      filename: "[name].css",
-      chunkFilename: "[id].css"
-    }),
+
     new webpack.HotModuleReplacementPlugin(),
     // enable HMR globally
 
