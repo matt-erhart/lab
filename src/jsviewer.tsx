@@ -12,7 +12,7 @@ import * as pdfjs from "pdfjs-dist";
 import { PDFJSStatic } from "pdfjs-dist";
 const pdfjsLib: PDFJSStatic = pdfjs as any;
 const pdfjsViewer = require("pdfjs-dist/web/pdf_viewer")
-var container = document.getElementById('pageContainer');
+var container = document.getElementById('root');
 console.log(pdfjsViewer)
 // Loading document.
 var loadingTask = pdfjsLib.getDocument({

@@ -171,7 +171,6 @@ loadingTask.then(function(pdf) {
             pageIndex: page.pageIndex,
             viewport: viewport,
             enhanceTextSelection: 2,
-
           });
 
           // Set text-fragments
