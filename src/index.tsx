@@ -14,3 +14,4 @@ const render = (Component: typeof App) =>
   
 render(App);
 if ((module as any).hot) (module as any).hot.accept('./App', () => render(App));
+

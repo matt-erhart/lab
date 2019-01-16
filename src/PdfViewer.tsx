@@ -2,7 +2,9 @@ import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
 import { PDFJSStatic } from "pdfjs-dist";
 const pdfjsLib: PDFJSStatic = pdfjs as any;
-const pdfPath = require("./Wobbrock-2015.pdf");
+// const pdfPath = require("./Wobbrock-2015.pdf");
+// const pdfPath = require("./checklist.pdf");
+const pdfPath = require("./soylent-uist2010.pdf");
 import { TextLayerBuilder } from "pdfjs-dist/lib/web/text_layer_builder";
 require("pdfjs-dist/web/pdf_viewer.css");
 import styled from "styled-components";
@@ -35,7 +37,7 @@ class PageCanvas extends React.Component<typeof defaultProps> {
 }
 
 type TextItem = pdfjs.TextContentItem & 
-{ viewportAlignedTrans: number[]; fallbackFontName, style }
+{ top: number; left: number; fallbackFontName, style }
 interface Page {
   pageNumber: number;
   viewport: pdfjs.PDFPageViewport;
@@ -46,7 +48,7 @@ interface Page {
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[] },
   state: {
-    scale: 2,
+    scale: 3,
     pages: [] as Page[]
   }
 };
@@ -79,17 +81,16 @@ export default class PdfViewer extends React.Component<
       const page = await pdf.getPage(pageNumber);
       const viewport = page.getViewport(this.state.scale);
       const text = await page.getTextContent();
-          
+      const [ xMin, yMin, xMax, yMax] = viewport.viewBox;
+    
       const alignedTextContent = await Promise.all(
         text.items.map(async (tc, i) => {
           const fontData = await page.commonObjs.ensureObj(tc.fontName)
-          // if (tc.str === 'State of the world') debugger //143.75w
+          const [/* fontHeightPx */, /* fontWidthPx */, offsetX, offsetY, x, y] = tc.transform
           return {
             ...tc,
-            viewportAlignedTrans: adjustTransMatForViewport(
-              viewport.transform,
-              tc.transform
-            ),
+            top: yMax - (y + offsetY),
+            left: x - xMin,
             fallbackFontName : fontData.data ? fontData.data.fallbackName : 'sans-serif',
             style: text.styles[tc.fontName]  
           };
@@ -111,7 +112,13 @@ export default class PdfViewer extends React.Component<
   };
 
   async componentDidMount() {
-    const pdf = await pdfjsLib.getDocument(pdfPath);
+    const pdf = await pdfjsLib.getDocument(
+      {
+        url: pdfPath,
+        cMapUrl: '../node_modules/pdfjs-dist/cmaps/',
+        cMapPacked: true,
+      }
+    );
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
   }
 
@@ -134,7 +141,10 @@ export default class PdfViewer extends React.Component<
               scale={this.state.scale}
               text={page.text} 
               width={width} 
-              height={height}/>
+              height={height}
+              />
+              
+              
             </div>)
           }
 
@@ -165,38 +175,47 @@ const PageTextContainer = styled("div")<{ height: number; width: number }>`
 
 
 class AutoScaledText extends React.Component <
-{fontName: string, transformMatrix: number[], width: number, ascent: number}> {
+{fontName: string, 
+  fontSize: number, 
+  transformMatrix: number[], 
+  width: number, 
+  ascent: number,
+top: number,
+left: number}> {
   divRef = React.createRef<HTMLDivElement>()
   state = {
     scaleX: 1,
-    offsetY: 0
+    offsetY: 0,
+    opacity: 1.0
   }
 
   componentDidMount(){
-    
     const domWidth = this.divRef.current.getBoundingClientRect()['width']
-
     const scaleX = this.props.width / domWidth
     
-    this.setState({scaleX})
+    if (scaleX !== Infinity) this.setState({scaleX})
   }
 
   render(){
-    const {fontName, transformMatrix} = this.props
-    console.log(transformMatrix)
+    const {fontName, top, left, fontSize} = this.props
+    // const [t1, ...rest] = transformMatrix
+    // const transMat = [t1 / this.state.scaleX,...rest]
     return (<div ref={this.divRef} 
       style={{
+        height: '1em',
         fontFamily: `${fontName}, sans-serif`,
-        fontSize: '1px',
+        fontSize: `${fontSize}px`,
         position: 'absolute',
-        transform: `matrix(${transformMatrix.join(",")}) scaleX(${this.state.scaleX}) translateY(${(1 - this.props.ascent) * 100}%)`,
+        top: top+3, // hack yet makes chrome+firefox happy
+        left,
+        transform: `scaleX(${this.state.scaleX}) translateY(${Math.round((1 - this.props.ascent)) * 100}%)`,
         transformOrigin: 'left bottom',
-      }}>{this.props.children}</div>)
+        whiteSpace: 'pre',
+        color: 'transparent'
+            }}>{this.props.children}</div>)
   }
-  
-
 }
-
+/**DIV VERSION */
 const PageTextDefaults = {
   props: {
     text: undefined as TextItem[]
@@ -213,16 +232,21 @@ export class PageText extends React.PureComponent<
 > {
   static defaultProps = PageTextDefaults.props;
   state = PageTextDefaults.state;
+ 
+
+  
   render() {
-    console.log(this.props)
     return <PageTextContainer width={this.props.width} height={this.props.height}>
      {this.props.text.map((textItem,i) => {
+
      return (<AutoScaledText
      key={i}
      fontName={textItem.fontName}
+     fontSize={textItem.transform[0] * this.props.scale}
      width={textItem.width * this.props.scale}
-     transformMatrix={textItem.viewportAlignedTrans}
      ascent={textItem.style.ascent}
+     top={textItem.top * this.props.scale}
+     left={textItem.left * this.props.scale}
       >
         {
 textItem.str
@@ -233,3 +257,41 @@ textItem.str
     </PageTextContainer>;
   }
 }
+
+/**SVG VERSION */
+// const PageTextDefaults = {
+//   props: {
+//     text: undefined as TextItem[]
+//     width: 0,
+//     height: 0,
+//     scale: 0
+//   },
+//   state: {}
+// };
+
+// export class PageText extends React.PureComponent<
+//   typeof PageTextDefaults.props,
+//   typeof PageTextDefaults.state
+// > {
+//   static defaultProps = PageTextDefaults.props;
+//   state = PageTextDefaults.state;
+//   render() {
+//     return <svg style={{width: this.props.width, height: this.props.height, zIndex: 2}}>
+//      {this.props.text.map((textItem,i) => {
+//      return (<text
+//      key={i}
+//      style={{fontFamily: `${textItem.fontName}, sans-serif`,
+//      fontSize: '1px',
+//      position: 'absolute',
+//      transform: `matrix(${textItem.viewportAlignedTrans.join(",")})`,
+//    }}
+//       >
+//         {
+// textItem.str
+//         }
+//       </text>)
+    
+//     })}
+//     </svg>;
+//   }
+// }
