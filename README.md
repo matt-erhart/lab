@@ -1,2 +1,2 @@
-1. run react lib
-2. run the js only option.
+get correct mouse coords
+1. put a rect on the page
