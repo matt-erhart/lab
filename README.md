@@ -1,2 +1,10 @@
-get correct mouse coords
-1. put a rect on the page
+# formalism
+x expands to [y,z] (for tooltips)
+a same as A (synonyms)
+x predicts y (possible causes)
+
+# queries
+what's the expected outcome of some scenario (what's y given x)
+what scenario is optimal for creating some outcome (what predicts y)
+what does the author mean by x (use expands to & same as )
+how confident should I be in statement X

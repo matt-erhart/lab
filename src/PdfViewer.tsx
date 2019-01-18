@@ -16,10 +16,14 @@ interface Page {
   page: pdfjs.PDFPageProxy;
 }
 
+/**
+ * @class **PdfViewer**
+ * todo zoom, file name prop, layer props, keyboard shortcuts
+ */
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[] },
   state: {
-    scale: 3,
+    scale: 1, // todo smooth zoom
     pages: [] as Page[]
   }
 };
@@ -87,7 +91,7 @@ export default class PdfViewer extends React.Component<
   async componentDidMount() {
     const pdf = await pdfjsLib.getDocument({
       url: pdfPath,
-      cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
+      cMapUrl: "../node_modules/pdfjs-dist/cmaps/", // todo copy plugin
       cMapPacked: true
     });
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
@@ -114,7 +118,12 @@ export default class PdfViewer extends React.Component<
                   text={page.text}
                   height={height}
                 />
-                <PageSvg key={"svg-" + pageNum} width={width} height={height} />
+                <PageSvg
+                  key={"svg-" + pageNum}
+                  svgWidth={width}
+                  svgHeight={height}
+                  text={page.text}
+                />
               </div>
             );
           })}
