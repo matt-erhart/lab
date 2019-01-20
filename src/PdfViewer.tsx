@@ -2,12 +2,17 @@ import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
 import { PDFJSStatic } from "pdfjs-dist";
 const pdfjsLib: PDFJSStatic = pdfjs as any;
+const pdfPath = require("./Chunking-TICS.pdf");
+// const pdfPath = require("./digitalVsPaper.pdf");
 // const pdfPath = require("./Wobbrock-2015.pdf");
 // const pdfPath = require("./checklist.pdf");
-const pdfPath = require("./soylent-uist2010.pdf");
+// const pdfPath = require("./soylent-uist2010.pdf");
+// const pdfPath = require("./poverty.pdf");
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
+import { flatten } from "./utils";
+import {histogram, extent, mean, median, variance, deviation, rollup} from 'd3-array'
 
 interface Page {
   pageNumber: number;
@@ -24,7 +29,8 @@ const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[] },
   state: {
     scale: 1, // todo smooth zoom
-    pages: [] as Page[]
+    pages: [] as Page[],
+    columnLefts: [] as number[]
   }
 };
 
@@ -95,6 +101,26 @@ export default class PdfViewer extends React.Component<
       cMapPacked: true
     });
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
+    const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+      t => t.left
+    );
+    const makeHistogram = histogram();
+    const leftXHist = makeHistogram(leftXs)
+    const leftXBinCounts = leftXHist.map(x=>x.length)
+    const leftXMean = mean(leftXBinCounts)
+    const leftXStd = deviation(leftXBinCounts)
+    const leftXZscore = leftXBinCounts.map(x => (x-leftXMean)/leftXStd)
+    const zThresh = 1
+    const columnLefts = leftXBinCounts.reduce((all,val, ix) => {
+      if (leftXZscore[ix] > zThresh) {
+        // console.log(rollup(leftXHist[ix]))
+        all.push(Math.round(median(leftXHist[ix])))
+        return all
+      } else {
+        return all
+      }
+    },[])
+    this.setState({columnLefts})
   }
 
   render() {
@@ -123,6 +149,7 @@ export default class PdfViewer extends React.Component<
                   svgWidth={width}
                   svgHeight={height}
                   text={page.text}
+                  columnLefts={this.state.columnLefts}
                 />
               </div>
             );

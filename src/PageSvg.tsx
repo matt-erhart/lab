@@ -6,6 +6,15 @@ import { TextItem } from "./PageText";
 var rbush = require("rbush");
 var knn = require("rbush-knn");
 import Flatbush from "flatbush";
+import {
+  histogram,
+  extent,
+  mean,
+  median,
+  variance,
+  deviation,
+  rollup
+} from "d3-array";
 
 const title = {
   height: 20,
@@ -16,12 +25,19 @@ const title = {
   y1: 53
 };
 
+const lefts = [] as number[];
+
 /**
  * @class **PageSvg**
  *
  */
 const PageSvgDefaults = {
-  props: { svgWidth: 0, svgHeight: 0, text: [] as TextItem[] },
+  props: {
+    svgWidth: 0,
+    svgHeight: 0,
+    text: [] as TextItem[],
+    columnLefts: [] as number[]
+  },
   state: {
     selectionRect: title
   }
@@ -129,34 +145,51 @@ export default class PageSvg extends React.Component<
       const fontHeight = t.transform[0];
       return this.getRectCoords(left, top, width, fontHeight);
     });
-    const rectCoords = this.getRectCoords(x, y, width, height);
+    // const rectCoords = this.getRectCoords(x, y, width, height);
 
-    const ltDists = textCoords.map(t => {
-      const [x2, y2] = t.lt
-      const [x1, y1] = rectCoords.lt
-      return Math.hypot(x2 - x1, y2 - y1);
-    });
-    const ltNN = this.props.text[this.min(ltDists).index]
-     
-    
-    const rtDists = textCoords.map(t => {
-      const [x2, y2] = t.rt
-      const [x1, y1] = [rectCoords.rt[0], ltNN.top]
-      if (y2 > ltNN.top + ltNN.transform[0]) return Infinity 
-      return Math.hypot(x2 - x1, y2 - y1);
-    });
-    const rtNN = this.props.text[this.min(rtDists).index]
-    
-    const lbDists = textCoords.map(t => {
-      const [x2, y2] = t.rt
-      const [x1, y1] = [rectCoords.rt[0], ltNN.top]
-      if (y2 > ltNN.top + ltNN.transform[0]) return Infinity 
-      return Math.hypot(x2 - x1, y2 - y1);
-    });
-    const lbNN = this.props.text[this.min(rtDists).index]
-    
+    // const makeHistogram = histogram();
+    // const leftXHist = makeHistogram(textCoords.map(x=>x.lb[0]))
+    // const leftXBinCounts = leftXHist.map(x=>x.length)
+    // const leftXMean = mean(leftXBinCounts)
+    // const leftXStd = deviation(leftXBinCounts)
+    // const leftXZscore = leftXBinCounts.map(x => (x-leftXMean)/leftXStd)
+    // console.log(leftXZscore)
+    // const zThresh = 1
+    // const coords = leftXBinCounts.reduce((all,val, ix) => {
+    //   if (leftXZscore[ix] > zThresh) {
+    //     // console.log(rollup(leftXHist[ix]))
+    //     all.push(Math.round(median(leftXHist[ix])))
+    //     return all
+    //   } else {
+    //     return all
+    //   }
+    // },[])
 
-    
+    // this.setState({lefts: coords})
+
+    // const ltDists = textCoords.map(t => {
+    //   const [x2, y2] = t.lt
+    //   const [x1, y1] = rectCoords.lt
+    //   return Math.hypot(x2 - x1, y2 - y1);
+    // });
+    // const ltNN = this.props.text[this.min(ltDists).index]
+
+    // const rtDists = textCoords.map(t => {
+    //   const [x2, y2] = t.rt
+    //   const [x1, y1] = [rectCoords.rt[0], ltNN.top]
+    //   if (y2 > ltNN.top + ltNN.transform[0]) return Infinity
+    //   return Math.hypot(x2 - x1, y2 - y1);
+    // });
+    // const rtNN = this.props.text[this.min(rtDists).index]
+
+    // const lbDists = textCoords.map(t => {
+    //   const [x2, y2] = t.rt
+    //   const [x1, y1] = [rectCoords.rt[0], ltNN.top]
+    //   if (y2 > ltNN.top + ltNN.transform[0]) return Infinity
+    //   return Math.hypot(x2 - x1, y2 - y1);
+    // });
+    // const lbNN = this.props.text[this.min(rtDists).index]
+
     // const concatStr = this.props.text
     //   .slice(ids2[0])
     //   .reduce((acc, val) => {
@@ -188,7 +221,6 @@ export default class PageSvg extends React.Component<
 
   render() {
     const { x, y, width, height, show } = this.state.selectionRect;
-    console.log(this.state.selectionRect);
     return (
       <svg
         ref={this.svgRef}
@@ -212,6 +244,22 @@ export default class PageSvg extends React.Component<
             />
           );
         })}
+
+        {this.props.columnLefts && (
+          <>
+            {this.props.columnLefts.map(left => {
+              return (
+                <line
+                  x1={left}
+                  x2={left}
+                  y1={0}
+                  y2={this.props.svgHeight}
+                  style={{ stroke: "lightblue" }}
+                />
+              );
+            })}
+          </>
+        )}
 
         <Spring
           native
