@@ -15,10 +15,11 @@ import {
   deviation,
   rollup
 } from "d3-array";
+import {getRectCoords} from './utils'
 
 const title = {
-  height: 20,
-  width: 324,
+  height: 0,
+  width: 0,
   x: 89,
   x1: 89,
   y: 53,
@@ -105,45 +106,14 @@ export default class PageSvg extends React.Component<
     });
   }
 
-  // geom utils
-  getRectEdges = (x: number, y: number, width: number, height: number) => {
-    return {
-      minX: x,
-      minY: y,
-      maxX: x + width,
-      maxY: y + height
-    };
-  };
 
-  getRectCoords = (x: number, y: number, width: number, height: number) => {
-    //l = left, r = right, t = top, b = bottom
-    return {
-      lt: [x, y],
-      rt: [x + width, y],
-      lb: [x, y + height],
-      rb: [x + width, y + height]
-    };
-  };
-
-  min = (arr: number[]) => {
-    return arr.reduce(
-      (all, val, ix) => {
-        if (all.min < val) {
-          return all;
-        } else {
-          return { min: val, index: ix };
-        }
-      },
-      { min: Infinity, index: -1 }
-    );
-  };
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
     const { x, y, width, height } = this.state.selectionRect;
     const textCoords = this.props.text.map(t => {
       const { left, top, width } = t;
       const fontHeight = t.transform[0];
-      return this.getRectCoords(left, top, width, fontHeight);
+      return getRectCoords(left, top, width, fontHeight);
     });
     // const rectCoords = this.getRectCoords(x, y, width, height);
 
