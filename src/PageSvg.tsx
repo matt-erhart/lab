@@ -15,7 +15,7 @@ import {
   deviation,
   rollup
 } from "d3-array";
-import {getRectCoords} from './utils'
+import { getRectCoords } from "./utils";
 
 const title = {
   height: 0,
@@ -37,7 +37,8 @@ const PageSvgDefaults = {
     svgWidth: 0,
     svgHeight: 0,
     text: [] as TextItem[],
-    columnLefts: [] as number[]
+    columnLefts: [] as number[],
+    linesInColumns: [] as Object[][]
   },
   state: {
     selectionRect: title
@@ -105,8 +106,6 @@ export default class PageSvg extends React.Component<
       }
     });
   }
-
-
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
     const { x, y, width, height } = this.state.selectionRect;
@@ -198,7 +197,7 @@ export default class PageSvg extends React.Component<
         width={this.props.svgWidth}
         height={this.props.svgHeight}
       >
-        {this.props.text.map(t => {
+        {/* {this.props.text.map(t => {
           return (
             <rect
               x={t.left}
@@ -213,7 +212,25 @@ export default class PageSvg extends React.Component<
               }}
             />
           );
-        })}
+        })} */}
+
+        {this.props.linesInColumns.length > 0 &&
+          this.props.linesInColumns[0].map((t, i) => {
+            return (
+              <rect
+                x={t.left}
+                y={t.top}
+                width={t.width}
+                height={t.height}
+                style={{
+                  stroke: i % 2 ? "lightgreen" : "lightblue",
+                  fill: "none",
+                  strokeWidth: 1,
+                  opacity: 0.5
+                }}
+              />
+            );
+          })}
 
         {this.props.columnLefts && (
           <>

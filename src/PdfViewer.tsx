@@ -11,7 +11,7 @@ const pdfPath = require("./soylent-uist2010.pdf");
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-import { flatten, midPoint, getRectCoords, dist, min,sortBy } from "./utils";
+import { flatten, midPoint, getRectCoords, dist, min, sortBy } from "./utils";
 import {
   histogram,
   extent,
@@ -21,7 +21,7 @@ import {
   deviation,
   rollup
 } from "d3-array";
-import { min } from 'rxjs/operators';
+import { min } from "rxjs/operators";
 
 interface Page {
   pageNumber: number;
@@ -39,7 +39,8 @@ const PdfViewerDefaults = {
   state: {
     scale: 1, // todo smooth zoom
     pages: [] as Page[],
-    columnLefts: [] as number[]
+    columnLefts: [] as number[],
+    linesInColumns: [] as Object[][]
   }
 };
 
@@ -73,7 +74,7 @@ export default class PdfViewer extends React.Component<
       const viewport = page.getViewport(this.state.scale);
       const text = await page.getTextContent();
       const [xMin, yMin, xMax, yMax] = viewport.viewBox;
-      
+
       const alignedTextContent = await Promise.all(
         text.items.map(async (tc, i) => {
           const fontData = await page.commonObjs.ensureObj(tc.fontName);
@@ -158,67 +159,92 @@ export default class PdfViewer extends React.Component<
     // lines, min dist right edge to left edge. x1 < x2
     const flatText = flatten<TextItem>(this.state.pages.map(p => p.text));
 
-      // for each y value in some column range
-      // group elements by y top mid bottom
-      // sort by x, and use it as start, last as end
+    // for each y value in some column range
+    // group elements by y top
+    // sort by x, and use it as start, last as end
+    // might break on subscript, but superscript ok
 
-    const nCols = columnLefts.length
+    const nCols = columnLefts.length;
     const textByColumn = columnLefts.map((left, i) => {
-      const rightEdge = i < nCols-1 ? columnLefts[i+1]: Infinity
-      return flatText.filter(t => left <= t.left && t.left < rightEdge)
-    }) 
-  console.log(textByColumn)
-    const medianFontHeight = Math.round(median(flatText.map(t=>{return t.transform[0]})))
-    
-    
-    for (var col of textByColumn){
+      const rightEdge = i < nCols - 1 ? columnLefts[i + 1] : Infinity;
+      return flatText.filter(t => {
+        const textLeft = Math.round(t.left);
+        return left <= textLeft && textLeft < rightEdge && t.str !== " ";
+      }); // removing spaces here, may need these for later formating
+    });
+    console.log(textByColumn);
 
-      const uniqueTops = [...new Set(col.map(t=>Math.round(t.top)))].sort()
-      let firstLine = col.find(x=>Math.round(x.top) === uniqueTops[0])
-      let loopState = {count: 0, lines: [[firstLine]]}
-      
+    const medianFontHeight = Math.round(
+      median(
+        flatText.map(t => {
+          return t.transform[0];
+        })
+      )
+    );
+
+    let columnsLinesTextItems = [];
+    for (var col of textByColumn) {
+      const uniqueTops = [...new Set(col.map(t => Math.round(t.top)))].sort();
+      let firstLine = col.find(x => Math.round(x.top) === uniqueTops[0]);
+      let loopState = { count: 0, lines: [[firstLine]] };
+
       // combine tops within threshold
-      const threshold = medianFontHeight/2
+      const threshold = medianFontHeight / 2;
       for (let i = 1; i < uniqueTops.length; i++) {
-        const prev  = uniqueTops[i-1]
-        const current = uniqueTops[i]
-        const textItems = col.filter(x=>Math.round(x.top) === current)
-        if (Math.abs(prev-current) < threshold) {
-          loopState.lines[loopState.count].push(...textItems)
+        const prev = uniqueTops[i - 1];
+        const current = uniqueTops[i];
+        const textItems = col.filter(x => Math.round(x.top) === current);
+        if (Math.abs(prev - current) < threshold) {
+          loopState.lines[loopState.count].push(...textItems);
         } else {
-          loopState.lines[loopState.count].sort(sortBy('left'))
-          loopState.count++
-          loopState.lines.push([])
-          loopState.lines[loopState.count].push(...textItems)
+          loopState.lines[loopState.count].sort(sortBy("left"));
+          // if need performance, combine textitems here
+          loopState.count++;
+          loopState.lines.push([]);
+          loopState.lines[loopState.count].push(...textItems);
         }
       }
-      
-      
-
-      
-      // for (var text of col){
-      //   const [x1, y1] = text.center.left
-
-      // }
+      columnsLinesTextItems.push(loopState.lines);
     }
+    // combine text items into a line with bounding box
+    const linesInColumns = columnsLinesTextItems.map(col => {
+      return col.map(line => {
+        const nTextItems = line.length;
+        return line.reduce((all, text, i) => {
+          if (i === 0) {
+            // first
+            return {
+              left: text.left,
+              top: text.top,
+              height: text.transform[0],
+              width: text.width,
+              text: text.str
+            };
+          } else if (i === nTextItems - 1 && nTextItems > 1) {
+            // last
+            // if (all.text + text.str ==="interface that  enables  writers  to  call on Mechanical  Turk  ") debugger
+            return {
+              ...all,
+              width: text.left + text.width - all.left,
+              text: all.text + text.str
+            };
+          } else {
+            // middle
+            return {
+              ...all,
+              top: Math.min(text.top, all.top),
+              height: Math.max(text.transform[0], all.height),
+              text: all.text + text.str
+            };
+          }
+        }, {}) as any;
+      });
+    });
 
-    
-    // for (var text of flatText){
-    //   const [x1, y1] = text.center.right
-      
-    //   const maybeNextText = flatText.filter(t => {
-    //     return x1 <= t.left // always to the right
-    //   })
-    //   let distances = []
-    //   for (var innerText of maybeNextText) {
-    //     const [x2,y2] = innerText.center.left
-    //     distances.push(dist(x1, y1, x2, y2))
-    //   }
-    //   const minIx = min(distances).index
-    
-      
-    // }
-    
+    this.setState({ linesInColumns });
+    console.log(
+      linesInColumns[0][13]
+    );
   }
 
   render() {
@@ -248,6 +274,7 @@ export default class PdfViewer extends React.Component<
                   svgHeight={height}
                   text={page.text}
                   columnLefts={this.state.columnLefts}
+                  linesInColumns={this.state.linesInColumns}
                 />
               </div>
             );

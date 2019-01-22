@@ -5,7 +5,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <PdfViewer pageNumbersToLoad={[1,2]} />
+        <PdfViewer pageNumbersToLoad={[1]} />
       </div>
     );
   }
