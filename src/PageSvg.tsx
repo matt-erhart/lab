@@ -3,19 +3,9 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { TextItem } from "./PageText";
-var rbush = require("rbush");
-var knn = require("rbush-knn");
-import Flatbush from "flatbush";
-import {
-  histogram,
-  extent,
-  mean,
-  median,
-  variance,
-  deviation,
-  rollup
-} from "d3-array";
-import { getRectCoords } from "./utils";
+import { getRectCoords, flatten, get } from "./utils";
+import { LineOfText } from "./PdfViewer";
+import produce from "immer";
 
 const title = {
   height: 0,
@@ -38,10 +28,12 @@ const PageSvgDefaults = {
     svgHeight: 0,
     text: [] as TextItem[],
     columnLefts: [] as number[],
-    linesInColumns: [] as Object[][]
+    linesOfText: [] as LineOfText[]
   },
   state: {
-    selectionRect: title
+    selectionRect: title,
+    lineGroups: [] as { id: number; lines: LineOfText[] }[],
+    showTextLineBoxes: true
   }
 };
 export default class PageSvg extends React.Component<
@@ -114,57 +106,6 @@ export default class PageSvg extends React.Component<
       const fontHeight = t.transform[0];
       return getRectCoords(left, top, width, fontHeight);
     });
-    // const rectCoords = this.getRectCoords(x, y, width, height);
-
-    // const makeHistogram = histogram();
-    // const leftXHist = makeHistogram(textCoords.map(x=>x.lb[0]))
-    // const leftXBinCounts = leftXHist.map(x=>x.length)
-    // const leftXMean = mean(leftXBinCounts)
-    // const leftXStd = deviation(leftXBinCounts)
-    // const leftXZscore = leftXBinCounts.map(x => (x-leftXMean)/leftXStd)
-    // console.log(leftXZscore)
-    // const zThresh = 1
-    // const coords = leftXBinCounts.reduce((all,val, ix) => {
-    //   if (leftXZscore[ix] > zThresh) {
-    //     // console.log(rollup(leftXHist[ix]))
-    //     all.push(Math.round(median(leftXHist[ix])))
-    //     return all
-    //   } else {
-    //     return all
-    //   }
-    // },[])
-
-    // this.setState({lefts: coords})
-
-    // const ltDists = textCoords.map(t => {
-    //   const [x2, y2] = t.lt
-    //   const [x1, y1] = rectCoords.lt
-    //   return Math.hypot(x2 - x1, y2 - y1);
-    // });
-    // const ltNN = this.props.text[this.min(ltDists).index]
-
-    // const rtDists = textCoords.map(t => {
-    //   const [x2, y2] = t.rt
-    //   const [x1, y1] = [rectCoords.rt[0], ltNN.top]
-    //   if (y2 > ltNN.top + ltNN.transform[0]) return Infinity
-    //   return Math.hypot(x2 - x1, y2 - y1);
-    // });
-    // const rtNN = this.props.text[this.min(rtDists).index]
-
-    // const lbDists = textCoords.map(t => {
-    //   const [x2, y2] = t.rt
-    //   const [x1, y1] = [rectCoords.rt[0], ltNN.top]
-    //   if (y2 > ltNN.top + ltNN.transform[0]) return Infinity
-    //   return Math.hypot(x2 - x1, y2 - y1);
-    // });
-    // const lbNN = this.props.text[this.min(rtDists).index]
-
-    // const concatStr = this.props.text
-    //   .slice(ids2[0])
-    //   .reduce((acc, val) => {
-    //     return acc + val.str.replace(/\s+/g, " ");
-    //   }, "");
-    //   console.log(this.props.text[ids2[0]])
   };
 
   getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
@@ -180,8 +121,22 @@ export default class PageSvg extends React.Component<
       const xInRange = textX > left && textX < right;
       return yInRange && xInRange;
     });
+  };
 
-    //l 102 top 61
+  clickLine = (line: LineOfText) => e => {
+    this.setState(state =>
+      produce(state, draft => {
+        const nGroups = draft.lineGroups.length;
+        const ix = this.props.linesOfText.findIndex(l => l.id === line.id);
+        const lines = this.props.linesOfText.slice(ix - 1, ix + 2);
+
+        if (nGroups === 0) {
+          draft.lineGroups.push({ id: 0, lines: [...lines] });
+        } else {
+          draft.lineGroups[0].lines.push(...lines);
+        }
+      })
+    );
   };
 
   componentWillUnmount() {
@@ -189,15 +144,16 @@ export default class PageSvg extends React.Component<
   }
 
   render() {
-    const { x, y, width, height, show } = this.state.selectionRect;
+    const { x, y, width, height } = this.state.selectionRect;
     return (
-      <svg
-        ref={this.svgRef}
-        style={{ position: "absolute" }}
-        width={this.props.svgWidth}
-        height={this.props.svgHeight}
-      >
-        {/* {this.props.text.map(t => {
+      <>
+        <svg
+          ref={this.svgRef}
+          style={{ position: "absolute" }}
+          width={this.props.svgWidth}
+          height={this.props.svgHeight}
+        >
+          {/* {this.props.text.map(t => {
           return (
             <rect
               x={t.left}
@@ -214,53 +170,77 @@ export default class PageSvg extends React.Component<
           );
         })} */}
 
-        {this.props.linesInColumns.length > 0 &&
-          this.props.linesInColumns[0].map((t, i) => {
-            return (
-              <rect
-                x={t.left}
-                y={t.top}
-                width={t.width}
-                height={t.height}
-                style={{
-                  stroke: i % 2 ? "lightgreen" : "lightblue",
-                  fill: "none",
-                  strokeWidth: 1,
-                  opacity: 0.5
-                }}
-              />
-            );
-          })}
+          {this.props.columnLefts && (
+            <>
+              {this.props.columnLefts.map((left, i) => {
+                return (
+                  <line
+                    key={i}
+                    x1={left}
+                    x2={left}
+                    y1={0}
+                    y2={this.props.svgHeight}
+                    style={{ stroke: "lightblue" }}
+                  />
+                );
+              })}
+            </>
+          )}
 
-        {this.props.columnLefts && (
-          <>
-            {this.props.columnLefts.map(left => {
+          <Spring
+            native
+            to={{ x, y, width, height }}
+            config={{ tension: 0, friction: 0, precision: 1 }}
+          >
+            {props => (
+              <animated.rect
+                {...props}
+                style={{ stroke: "black", fill: "none", strokeWidth: 1 }}
+              />
+            )}
+          </Spring>
+        </svg>
+        <div
+          style={{
+            position: "absolute",
+            width: this.props.svgWidth,
+            height: this.props.svgHeight
+          }}
+        >
+          {this.props.linesOfText.length > 0 &&
+            this.props.linesOfText.map((line, i) => {
               return (
-                <line
-                  x1={left}
-                  x2={left}
-                  y1={0}
-                  y2={this.props.svgHeight}
-                  style={{ stroke: "lightblue" }}
+                <div
+                  key={line.id}
+                  style={{
+                    position: "absolute",
+                    left: line.left,
+                    top: line.top,
+                    width: line.width,
+                    height: line.height,
+                    outline: this.state.showTextLineBoxes ? "1px solid lightgreen": "none"
+                  }}
+                  onClick={this.clickLine(line)}
                 />
               );
             })}
-          </>
-        )}
-
-        <Spring
-          native
-          to={{ x, y, width, height }}
-          config={{ tension: 0, friction: 0, precision: 1 }}
-        >
-          {props => (
-            <animated.rect
-              {...props}
-              style={{ stroke: "black", fill: "none", strokeWidth: 4 }}
-            />
-          )}
-        </Spring>
-      </svg>
+          {this.state.lineGroups.length > 0 &&
+            this.state.lineGroups[0].lines.map((line, i) => {
+              return (
+                <div
+                  style={{
+                    position: "absolute",
+                    left: line.left,
+                    top: line.top,
+                    width: line.width,
+                    height: line.height,
+                    outline: "1px solid blue"
+                  }}
+                />
+              );
+            })}
+        </div>
+      </>
     );
   }
 }

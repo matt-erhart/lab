@@ -38,21 +38,23 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [{ loader: "ts-loader", options: { happyPackMode: true } }],
+        use: [
+          {
+            loader: "ts-loader",
+            options: { happyPackMode: true }
+          }
+        ],
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
-        use: ['style-loader','css-loader']
+        use: ["style-loader", "css-loader"]
       },
-      { test: /\.(jpg|gif|pdf|png)$/, use: 'file-loader' },
-
-
+      { test: /\.(jpg|gif|pdf|png)$/, use: "file-loader" }
     ]
   },
 
   plugins: [
-
     new webpack.HotModuleReplacementPlugin(),
     // enable HMR globally
 
@@ -63,7 +65,8 @@ module.exports = {
     // do not emit compiled assets that include errors
 
     new ForkTsCheckerWebpackPlugin({
-      tslint: true,
+      silent: false,
+      tslint: false,
       checkSyntacticErrors: true,
       watch: ["./src"] // optional but improves performance (fewer stat calls)
     })

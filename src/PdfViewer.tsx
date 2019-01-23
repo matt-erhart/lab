@@ -11,23 +11,28 @@ const pdfPath = require("./soylent-uist2010.pdf");
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-import { flatten, midPoint, getRectCoords, dist, min, sortBy } from "./utils";
-import {
-  histogram,
-  extent,
-  mean,
-  median,
-  variance,
-  deviation,
-  rollup
-} from "d3-array";
-import { min } from "rxjs/operators";
+import { flatten, midPoint, getRectCoords, sortBy } from "./utils";
+import { histogram, mean, median, deviation } from "d3-array";
+import produce from "immer";
+
+export interface LineOfText {
+  id: string;
+  // pageId: number;
+  lineIndex: number;
+  columnIndex: number;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  text: string;
+}
 
 interface Page {
   pageNumber: number;
   viewport: pdfjs.PDFPageViewport;
   text: TextItem[];
   page: pdfjs.PDFPageProxy;
+  linesOfText: LineOfText[];
 }
 
 /**
@@ -39,8 +44,7 @@ const PdfViewerDefaults = {
   state: {
     scale: 1, // todo smooth zoom
     pages: [] as Page[],
-    columnLefts: [] as number[],
-    linesInColumns: [] as Object[][]
+    columnLefts: [] as number[]
   }
 };
 
@@ -73,17 +77,20 @@ export default class PdfViewer extends React.Component<
       const page = await pdf.getPage(pageNumber);
       const viewport = page.getViewport(this.state.scale);
       const text = await page.getTextContent();
-      const [xMin, yMin, xMax, yMax] = viewport.viewBox;
+      const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
 
       const alignedTextContent = await Promise.all(
         text.items.map(async (tc, i) => {
-          const fontData = await page.commonObjs.ensureObj(tc.fontName);
-          const [_, __, offsetX, offsetY, x, y] = tc.transform;
+          const fontData = await (page as any).commonObjs.ensureObj(
+            tc.fontName
+          );
+          const [, , , offsetY, x, y] = tc.transform;
           const top = yMax - (y + offsetY);
           const left = x - xMin;
           const fontHeight = tc.transform[0];
           const coords = getRectCoords(left, top, tc.width, fontHeight);
           const center = {
+            // todo delete?
             left: midPoint(
               coords.lt[0],
               coords.lt[1],
@@ -118,7 +125,8 @@ export default class PdfViewer extends React.Component<
             pageNumber,
             viewport,
             text: alignedTextContent,
-            page
+            page,
+            linesOfText: []
           })
         };
       });
@@ -128,7 +136,8 @@ export default class PdfViewer extends React.Component<
   async componentDidMount() {
     const pdf = await pdfjsLib.getDocument({
       url: pdfPath,
-      cMapUrl: "../node_modules/pdfjs-dist/cmaps/", // todo copy plugin
+      //@ts-ignore
+      cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
       cMapPacked: true
     });
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
@@ -144,7 +153,7 @@ export default class PdfViewer extends React.Component<
     const leftXStd = deviation(leftXBinCounts);
     const leftXZscore = leftXBinCounts.map(x => (x - leftXMean) / leftXStd);
     const zThresh = 1;
-    const columnLefts = leftXBinCounts.reduce((all, val, ix) => {
+    const columnLefts = leftXBinCounts.reduce((all, _val, ix) => {
       if (leftXZscore[ix] > zThresh) {
         // console.log(rollup(leftXHist[ix]))
         all.push(Math.round(median(leftXHist[ix])));
@@ -154,97 +163,16 @@ export default class PdfViewer extends React.Component<
       }
     }, []);
     this.setState({ columnLefts });
-
-    // LINE LEFT EDGES
-    // lines, min dist right edge to left edge. x1 < x2
-    const flatText = flatten<TextItem>(this.state.pages.map(p => p.text));
-
-    // for each y value in some column range
-    // group elements by y top
-    // sort by x, and use it as start, last as end
-    // might break on subscript, but superscript ok
-
-    const nCols = columnLefts.length;
-    const textByColumn = columnLefts.map((left, i) => {
-      const rightEdge = i < nCols - 1 ? columnLefts[i + 1] : Infinity;
-      return flatText.filter(t => {
-        const textLeft = Math.round(t.left);
-        return left <= textLeft && textLeft < rightEdge && t.str !== " ";
-      }); // removing spaces here, may need these for later formating
-    });
-    console.log(textByColumn);
-
-    const medianFontHeight = Math.round(
-      median(
-        flatText.map(t => {
-          return t.transform[0];
-        })
-      )
-    );
-
-    let columnsLinesTextItems = [];
-    for (var col of textByColumn) {
-      const uniqueTops = [...new Set(col.map(t => Math.round(t.top)))].sort();
-      let firstLine = col.find(x => Math.round(x.top) === uniqueTops[0]);
-      let loopState = { count: 0, lines: [[firstLine]] };
-
-      // combine tops within threshold
-      const threshold = medianFontHeight / 2;
-      for (let i = 1; i < uniqueTops.length; i++) {
-        const prev = uniqueTops[i - 1];
-        const current = uniqueTops[i];
-        const textItems = col.filter(x => Math.round(x.top) === current);
-        if (Math.abs(prev - current) < threshold) {
-          loopState.lines[loopState.count].push(...textItems);
-        } else {
-          loopState.lines[loopState.count].sort(sortBy("left"));
-          // if need performance, combine textitems here
-          loopState.count++;
-          loopState.lines.push([]);
-          loopState.lines[loopState.count].push(...textItems);
-        }
-      }
-      columnsLinesTextItems.push(loopState.lines);
-    }
-    // combine text items into a line with bounding box
-    const linesInColumns = columnsLinesTextItems.map(col => {
-      return col.map(line => {
-        const nTextItems = line.length;
-        return line.reduce((all, text, i) => {
-          if (i === 0) {
-            // first
-            return {
-              left: text.left,
-              top: text.top,
-              height: text.transform[0],
-              width: text.width,
-              text: text.str
-            };
-          } else if (i === nTextItems - 1 && nTextItems > 1) {
-            // last
-            // if (all.text + text.str ==="interface that  enables  writers  to  call on Mechanical  Turk  ") debugger
-            return {
-              ...all,
-              width: text.left + text.width - all.left,
-              text: all.text + text.str
-            };
-          } else {
-            // middle
-            return {
-              ...all,
-              top: Math.min(text.top, all.top),
-              height: Math.max(text.transform[0], all.height),
-              text: all.text + text.str
-            };
-          }
-        }, {}) as any;
+    this.setState(state => {
+      return produce(state, draft => {
+        draft.pages.forEach((page, i) => {
+          const lines = getLines(columnLefts, page.text, i)
+          page.linesOfText = lines;
+        });
       });
-    });
+    }, () => console.log(this.state.pages[0]));
 
-    this.setState({ linesInColumns });
-    console.log(
-      linesInColumns[0][13]
-    );
+
   }
 
   render() {
@@ -256,7 +184,10 @@ export default class PdfViewer extends React.Component<
           pages.map((page, pageNum) => {
             const { width, height } = page.viewport;
             return (
-              <div style={{ position: "relative", width, height }}>
+              <div
+                key={pageNum}
+                style={{ position: "relative", width, height }}
+              >
                 <PageCanvas
                   key={"canvas-" + pageNum}
                   page={page.page}
@@ -274,7 +205,7 @@ export default class PdfViewer extends React.Component<
                   svgHeight={height}
                   text={page.text}
                   columnLefts={this.state.columnLefts}
-                  linesInColumns={this.state.linesInColumns}
+                  linesOfText={page.linesOfText}
                 />
               </div>
             );
@@ -283,3 +214,101 @@ export default class PdfViewer extends React.Component<
     );
   }
 }
+
+const getLines = (
+  columnLefts: number[],
+  textItems: TextItem[],
+  pageNumber: number
+) => {
+  // FIND LINE LEFT EDGES
+  // so we've got the left side of columns
+  // in a column we get all y values of text items
+  // then sort the y vals, and combine y vals within some dist of eachother
+  // then sort by x coord to get text order for items in a line
+
+  const nCols = columnLefts.length;
+  const textByColumn = columnLefts.map((left, i) => {
+    const rightEdge = i < nCols - 1 ? columnLefts[i + 1] : Infinity;
+    return textItems.filter(t => {
+      const textLeft = Math.round(t.left);
+      return left <= textLeft && textLeft < rightEdge && t.str !== " ";
+    }); // removing spaces here, may need these for later formating
+  });
+
+  const medianFontHeight = Math.round(
+    median(
+      textItems.map(t => {
+        return t.transform[0]; //todo rename transform[0] to font height
+      })
+    )
+  );
+
+  let columnsLinesTextItems = [];
+  for (var col of textByColumn) {
+    const uniqueTops = [...new Set(col.map(t => Math.round(t.top)))].sort();
+    let firstLine = col.find(x => Math.round(x.top) === uniqueTops[0]);
+    let loopState = { count: 0, lines: [[firstLine]] };
+
+    // combine tops within threshold
+    const threshold = medianFontHeight / 2;
+    for (let i = 1; i < uniqueTops.length; i++) {
+      const prev = uniqueTops[i - 1];
+      const current = uniqueTops[i];
+      const textItems = col.filter(x => Math.round(x.top) === current);
+      if (Math.abs(prev - current) < threshold) {
+        loopState.lines[loopState.count].push(...textItems);
+      } else {
+        loopState.lines[loopState.count].sort(sortBy("left"));
+        // if need performance, combine textitems here
+        loopState.count++;
+        loopState.lines.push([]);
+        loopState.lines[loopState.count].push(...textItems);
+      }
+    }
+    columnsLinesTextItems.push(loopState.lines);
+  }
+
+  // combine text items into a line with bounding box
+  const linesInColumns: LineOfText[][] = columnsLinesTextItems.map((col, colIx) => {
+    return col.map((line, lineIndex) => {
+      const nTextItems = line.length;
+      return line.reduce((all, text, i) => {
+        if (i === 0) {
+          // first
+          return {
+            id: `line${lineIndex}-col${colIx}`,
+            pageNumber: pageNumber,
+            columnIndex: colIx,
+            lineIndex: lineIndex,
+            left: text.left,
+            top: text.top,
+            height: text.transform[0],
+            width: text.width,
+            text: text.str
+          };
+        } else if (i === nTextItems - 1 && nTextItems > 1) {
+          return {
+            ...all,
+            width: text.left + text.width - all.left,
+            text: all.text + text.str
+          };
+        } else {
+          // middle
+          return {
+            ...all,
+            top: Math.min(text.top, all.top),
+            height: Math.max(text.transform[0], all.height),
+            text: all.text + text.str
+          };
+        }
+      }, {}) as any;
+    });
+  });
+
+  linesInColumns.forEach(col => {
+    col.sort(sortBy('top'))
+  })
+  
+
+  return flatten<LineOfText>(linesInColumns);
+};

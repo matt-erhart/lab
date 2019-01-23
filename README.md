@@ -11,3 +11,5 @@ how confident should I be in statement X
 
 # fast static kdtree: not sorted by distance?
 https://github.com/mourner/kdbush#readme
+
+ngrok http 3000 -host-header="localhost:3000"
