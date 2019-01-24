@@ -21,14 +21,29 @@ module.exports = {
           { loader: 'ts-loader', options: { happyPackMode: true } }
         ],
         exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(pdf|jpg|gif|png)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            name(file) {
+              return "[hash].[ext]";
+            }
+          }
+        }
       }
     ]
   },
 
   plugins: [
     new ForkTsCheckerWebpackPlugin({
-      tslint: true,
-      checkSyntacticErrors: true
+      tslint: false,
+      checkSyntacticErrors: false
     }),
   ],
 

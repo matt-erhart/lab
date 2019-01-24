@@ -5,7 +5,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div style={{userSelect: 'none'}}>
-        <PdfViewer pageNumbersToLoad={[1]} />
+        <PdfViewer pageNumbersToLoad={[]} />
       </div>
     );
   }

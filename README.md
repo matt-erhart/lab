@@ -1,5 +1,5 @@
-crtl-click type
-drag type
+get/put text in selection box
+typing portal
 capture text and format 
 minimize pdf returns but have link back
 

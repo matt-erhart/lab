@@ -2,18 +2,29 @@
 <html>
   <head>
     <title>++++++++++</title>
-     <style>
-    body {
-      background-color: #808080;
-      margin: 0;
-      padding: 0;
-    }
+    <style>
+      body {
+        background-color: #808080;
+        margin: 0;
+        padding: 0;
+      }
     </style>
   </head>
   <body>
-    <div id="root">
-
-    </div>
+    <div id="root"></div>
+    <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCqHLtqZQDONl9GZE1NV3-r9dUDqtldL7Y",
+        authDomain: "megacog-prototypes.firebaseapp.com",
+        databaseURL: "https://megacog-prototypes.firebaseio.com",
+        projectId: "megacog-prototypes",
+        storageBucket: "megacog-prototypes.appspot.com",
+        messagingSenderId: "772356070844"
+      };
+      firebase.initializeApp(config);
+    </script>
     <script src="/static/bundle.js"></script>
   </body>
 </html>

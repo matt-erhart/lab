@@ -6,12 +6,12 @@ const pdfjsLib: PDFJSStatic = pdfjs as any;
 // const pdfPath = require("./digitalVsPaper.pdf");
 // const pdfPath = require("./Wobbrock-2015.pdf");
 // const pdfPath = require("./checklist.pdf");
-const pdfPath = require("./soylent-uist2010.pdf");
+const pdfPath = require("./soylent-uist2010.pdf")
 // const pdfPath = require("./poverty.pdf");
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-import { flatten, midPoint, getRectCoords, sortBy } from "./utils";
+import { flatten, midPoint, getRectCoords, sortBy, unique } from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
 
@@ -25,6 +25,7 @@ export interface LineOfText {
   width: number;
   height: number;
   text: string;
+  textIds: string[];
 }
 
 interface Page {
@@ -141,12 +142,18 @@ export default class PdfViewer extends React.Component<
       cMapPacked: true
     });
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
+    const makeHistogram = histogram();
+
+    const fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+      t => t.transform[0]
+    );
+    // console.log(unique(fontHeights))
+    
 
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
     );
-    const makeHistogram = histogram();
     const leftXHist = makeHistogram(leftXs);
     const leftXBinCounts = leftXHist.map(x => x.length);
     const leftXMean = mean(leftXBinCounts);
@@ -287,13 +294,15 @@ const getLines = (
               top: text.top,
               height: text.transform[0],
               width: text.width,
-              text: text.str
+              text: text.str,
+              textIds: [text.id]
             };
           } else if (i === nTextItems - 1 && nTextItems > 1) {
             return {
               ...all,
               width: text.left + text.width - all.left,
-              text: all.text + text.str
+              text: all.text + text.str,
+              textIds: all.textIds.concat(text.id)
             };
           } else {
             // middle
@@ -301,7 +310,8 @@ const getLines = (
               ...all,
               top: Math.min(text.top, all.top),
               height: Math.max(text.transform[0], all.height),
-              text: all.text + text.str
+              text: all.text + text.str,
+              textIds: all.textIds.concat(text.id)
             };
           }
         }, {}) as any;

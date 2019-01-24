@@ -3,9 +3,10 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { TextItem } from "./PageText";
-import { getRectCoords, flatten, get, getRectEdges } from "./utils";
+import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
+import PopupPortal from "./PopupPortal";
 
 const title = {
   height: 0,
@@ -34,7 +35,8 @@ const PageSvgDefaults = {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
     showTextLineBoxes: false,
-    duration: 0
+    duration: 0,
+    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }
 };
 export default class PageSvg extends React.Component<
@@ -44,6 +46,7 @@ export default class PageSvg extends React.Component<
   static defaultProps = PageSvgDefaults.props;
   state = PageSvgDefaults.state;
   divRef = React.createRef<HTMLDivElement>();
+  selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
   componentDidMount() {
     // this.getText(this.state.selectionRect);
@@ -62,6 +65,7 @@ export default class PageSvg extends React.Component<
         case "mousedown":
           this.setState({
             duration: 0,
+            div: { ...this.state.div, text: "" },
             selectionRect: {
               ...selectionRect,
               ...{ x1: mx, y1: my, x: mx, y: my, width: 0, height: 0 }
@@ -148,14 +152,59 @@ export default class PageSvg extends React.Component<
     );
     const { bottom, ...newSelect } = bbox;
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
-    // return this.props.linesOfText.filter(lt => {
 
-    //   // const textX = lt.left;
-    //   // const textY = lt.top;
-    //   // const yInRange = textY > top && textY < bottom;
-    //   // const xInRange = textX > left && textX < right;
+    const text = selectedLines.map(sl => {
+      return sl.textIds.map(id => {
+        const {
+          transform,
+          style: { fontFamily },
+          str,
+          top,
+          height
+        } = this.props.text[id];
 
+        return { fontHeight: transform[0], fontFamily, str, top, height };
+      });
+    });
+    const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
+    const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
+    const extractedText = flatten(text)
+      .reduce((res, t) => {
+        return res + (t as any).str.replace(/-$/, ""); // end with dash
+      }, "")
+      .replace(/\s+/g, " ");
+
+    //@ts-ignore
+    this.setState({
+      div: { text: extractedText, style: { fontFamily, fontSize } }
+    });
+
+    // // adapt styles here
+    // const elements = flatten(text).reduce<
+    //   { element: string; style: { fontSize: string; fontFamily: string } }[]
+    // >((res, t, ix) => {
+    //   if (ix === 0){
+    //     res.push({element: 'span', style: {fontFamily: t.fontFamily, fontSize: t.fontSize}})
+    //   }
+    //   return res;
+    // }, []);
+
+    // console.log(flatten(text));
+
+    // // todo util?
+    // const extractedText = this.props.text.filter(lt => {
+    //   const yInRange =
+    //     lt.top >= newSelect.y && lt.top <= newSelect.y + newSelect.height;
+    //   const xInRange =
+    //     lt.left >= newSelect.x && lt.left <= newSelect.x + newSelect.width;
+    //   return xInRange && yInRange;
     // });
+
+    // const text = extractedText
+    //   .reduce((res, t) => {
+    //     return res + t.str.replace(/-$/, ""); // end with dash
+    //   }, "")
+    //   .replace(/\s+/g, " ");
   };
 
   clickLine = (line: LineOfText) => e => {
@@ -249,7 +298,7 @@ export default class PageSvg extends React.Component<
                 />
               );
             })}
-          {this.state.lineGroups.length > 0 &&
+          {/* {this.state.lineGroups.length > 0 &&
             this.state.lineGroups[0].lines.map((line, i) => {
               return (
                 <div
@@ -265,7 +314,7 @@ export default class PageSvg extends React.Component<
                   }}
                 />
               );
-            })}
+            })} */}
           <Spring
             native
             to={{ x, y, width, height }}
@@ -273,6 +322,7 @@ export default class PageSvg extends React.Component<
           >
             {props => (
               <animated.div
+                ref={this.selectionRectRef}
                 style={{
                   position: "absolute",
                   top: props.y,
@@ -284,6 +334,46 @@ export default class PageSvg extends React.Component<
               />
             )}
           </Spring>
+          {this.state.div.text.length > 0 && (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  top: y,
+                  left: x,
+                  width: width,
+                  height: height,
+                  border: "1px solid grey",
+                  background: "white",
+                  ...this.state.div.style
+                }}
+              >
+                {this.state.div.text}
+              </div>
+              <PopupPortal
+                referenceElement={this.selectionRectRef.current}
+                boundariesElement={this.divRef.current}
+              >
+                <textarea
+                  ref={input =>
+                    input &&
+                    input.focus({
+                      preventScroll: true
+                    })
+                  }
+                  style={{
+                    width,
+                    height,
+                    minHeight: 50,
+                    minWidth: 200,
+                    fontFamily: this.state.div.style.fontFamily,
+                    fontSize: 10,
+                    boxShadow: "0 2px 12px -6px #777"
+                  }}
+                />
+              </PopupPortal>
+            </>
+          )}
         </div>
       </>
     );

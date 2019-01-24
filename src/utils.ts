@@ -1,5 +1,26 @@
 // see https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 
+export const unique = (arr) => {
+  const uniq = [...new Set(arr)]
+  return uniq.sort();
+}
+
+export const mode = (array: (string | number)[]) => {
+  if (array.length == 0) return null;
+  var modeMap = {};
+  var maxEl = array[0],
+    maxCount = 1;
+  for (var i = 0; i < array.length; i++) {
+    var el = array[i];
+    if (modeMap[el] == null) modeMap[el] = 1;
+    else modeMap[el]++;
+    if (modeMap[el] > maxCount) {
+      maxEl = el;
+      maxCount = modeMap[el];
+    }
+  }
+  return maxEl;
+};
 
 export const flatten = <T>(array: any[]): T[] =>
   array.reduce((a, b) => a.concat(b), []);
