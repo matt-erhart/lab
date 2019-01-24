@@ -5,7 +5,8 @@ import {
   takeUntil,
   startWith,
   map,
-  endWith
+  endWith,
+  tap
 } from "rxjs/operators";
 
 const mouseMap = (e: MouseEvent) => {  
@@ -36,7 +37,8 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
       return mousemove.pipe(
         startWith(down),
         takeUntil(mouseup),
-        endWith({type: 'mouseup', x: 0, y: 0}) // todo end with mouseup event
+        endWith({type: 'mouseup', x: 0, y: 0}), // todo end with mouseup event
+        // tap(x => console.log(x))
       ) as Observable<mouseData>
     })
   ) as Observable<mouseData>;

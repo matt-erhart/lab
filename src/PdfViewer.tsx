@@ -163,16 +163,17 @@ export default class PdfViewer extends React.Component<
       }
     }, []);
     this.setState({ columnLefts });
-    this.setState(state => {
-      return produce(state, draft => {
-        draft.pages.forEach((page, i) => {
-          const lines = getLines(columnLefts, page.text, i)
-          page.linesOfText = lines;
+    this.setState(
+      state => {
+        return produce(state, draft => {
+          draft.pages.forEach((page, i) => {
+            const lines = getLines(columnLefts, page.text, i);
+            page.linesOfText = lines;
+          });
         });
-      });
-    }, () => console.log(this.state.pages[0]));
-
-
+      },
+      () => console.log(this.state.pages[0])
+    );
   }
 
   render() {
@@ -185,6 +186,7 @@ export default class PdfViewer extends React.Component<
             const { width, height } = page.viewport;
             return (
               <div
+                draggable={false}
                 key={pageNum}
                 style={{ position: "relative", width, height }}
               >
@@ -269,46 +271,47 @@ const getLines = (
   }
 
   // combine text items into a line with bounding box
-  const linesInColumns: LineOfText[][] = columnsLinesTextItems.map((col, colIx) => {
-    return col.map((line, lineIndex) => {
-      const nTextItems = line.length;
-      return line.reduce((all, text, i) => {
-        if (i === 0) {
-          // first
-          return {
-            id: `line${lineIndex}-col${colIx}`,
-            pageNumber: pageNumber,
-            columnIndex: colIx,
-            lineIndex: lineIndex,
-            left: text.left,
-            top: text.top,
-            height: text.transform[0],
-            width: text.width,
-            text: text.str
-          };
-        } else if (i === nTextItems - 1 && nTextItems > 1) {
-          return {
-            ...all,
-            width: text.left + text.width - all.left,
-            text: all.text + text.str
-          };
-        } else {
-          // middle
-          return {
-            ...all,
-            top: Math.min(text.top, all.top),
-            height: Math.max(text.transform[0], all.height),
-            text: all.text + text.str
-          };
-        }
-      }, {}) as any;
-    });
-  });
+  const linesInColumns: LineOfText[][] = columnsLinesTextItems.map(
+    (col, colIx) => {
+      return col.map((line, lineIndex) => {
+        const nTextItems = line.length;
+        return line.reduce((all, text, i) => {
+          if (i === 0) {
+            // first
+            return {
+              id: `line${lineIndex}-col${colIx}`,
+              pageNumber: pageNumber,
+              columnIndex: colIx,
+              lineIndex: lineIndex,
+              left: text.left,
+              top: text.top,
+              height: text.transform[0],
+              width: text.width,
+              text: text.str
+            };
+          } else if (i === nTextItems - 1 && nTextItems > 1) {
+            return {
+              ...all,
+              width: text.left + text.width - all.left,
+              text: all.text + text.str
+            };
+          } else {
+            // middle
+            return {
+              ...all,
+              top: Math.min(text.top, all.top),
+              height: Math.max(text.transform[0], all.height),
+              text: all.text + text.str
+            };
+          }
+        }, {}) as any;
+      });
+    }
+  );
 
   linesInColumns.forEach(col => {
-    col.sort(sortBy('top'))
-  })
-  
+    col.sort(sortBy("top"));
+  });
 
   return flatten<LineOfText>(linesInColumns);
 };

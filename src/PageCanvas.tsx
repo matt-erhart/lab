@@ -23,6 +23,12 @@ export default class PageCanvas extends React.Component<
   }
 
   render() {
-    return <canvas style={{ position: "absolute" }} ref={this.canvasLayer} />;
+    return (
+      <canvas
+        draggable={false}
+        style={{ position: "absolute" }}
+        ref={this.canvasLayer}
+      />
+    );
   }
 }

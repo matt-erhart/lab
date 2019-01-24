@@ -3,7 +3,7 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { TextItem } from "./PageText";
-import { getRectCoords, flatten, get } from "./utils";
+import { getRectCoords, flatten, get, getRectEdges } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 
@@ -33,7 +33,8 @@ const PageSvgDefaults = {
   state: {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
-    showTextLineBoxes: true
+    showTextLineBoxes: false,
+    duration: 0
   }
 };
 export default class PageSvg extends React.Component<
@@ -42,24 +43,25 @@ export default class PageSvg extends React.Component<
 > {
   static defaultProps = PageSvgDefaults.props;
   state = PageSvgDefaults.state;
-  svgRef = React.createRef<SVGSVGElement>();
+  divRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
   componentDidMount() {
     // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
-    const dnd = dndContainer(this.svgRef);
+    const dnd = dndContainer(this.divRef);
     this.sub = dnd.subscribe(mouse => {
       const { selectionRect } = this.state;
       const {
         left: bbLeft,
         top: bbTop
-      } = this.svgRef.current.getBoundingClientRect();
+      } = this.divRef.current.getBoundingClientRect();
       const mx = mouse.x - bbLeft;
       const my = mouse.y - bbTop;
 
       switch (mouse.type) {
         case "mousedown":
           this.setState({
+            duration: 0,
             selectionRect: {
               ...selectionRect,
               ...{ x1: mx, y1: my, x: mx, y: my, width: 0, height: 0 }
@@ -93,7 +95,8 @@ export default class PageSvg extends React.Component<
           break;
 
         case "mouseup":
-          this.getText(this.state.selectionRect);
+          const text = this.getText(this.state.selectionRect);
+          this.setState({ duration: 200 });
           break;
       }
     });
@@ -109,18 +112,50 @@ export default class PageSvg extends React.Component<
   };
 
   getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
-    const text = this.props.text.filter(tc => {
-      const top = selectionRect.y;
-      const bottom = selectionRect.y + selectionRect.height;
-      const left = selectionRect.x;
-      const right = selectionRect.x + selectionRect.width;
+    const { x, y, width, height } = selectionRect;
+    const edge = getRectEdges(x, y, width, height);
 
-      const textX = tc.left;
-      const textY = tc.top;
-      const yInRange = textY > top && textY < bottom;
-      const xInRange = textX > left && textX < right;
-      return yInRange && xInRange;
+    const selectedColumnIx = this.props.columnLefts.reduce(
+      // todo util: betweenRanges
+      (res, colLeft, ix) => {
+        return edge.maxX > colLeft ? ix : res;
+      },
+      0
+    );
+
+    // todo util
+    const selectedLines = this.props.linesOfText.filter(lt => {
+      const inCol = lt.columnIndex === selectedColumnIx;
+      const isUnderSelectionTop = lt.top + lt.height > edge.minY;
+      const isAboveSelectionBottom = lt.top < edge.maxY;
+      return inCol && isUnderSelectionTop && isAboveSelectionBottom;
     });
+
+    const bbox = selectedLines.reduce(
+      (res, sl) => {
+        const newY = Math.min(sl.top, res.y);
+        const newBottom = Math.max(sl.top + sl.height, res.bottom);
+        const bbox = {
+          x: Math.min(sl.left, res.x),
+          y: newY,
+          width: Math.max(sl.width, res.width),
+          bottom: newBottom,
+          height: newBottom - newY
+        };
+        return bbox;
+      },
+      { x: Infinity, y: Infinity, width: 0, bottom: 0, height: 0 }
+    );
+    const { bottom, ...newSelect } = bbox;
+    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+    // return this.props.linesOfText.filter(lt => {
+
+    //   // const textX = lt.left;
+    //   // const textY = lt.top;
+    //   // const yInRange = textY > top && textY < bottom;
+    //   // const xInRange = textX > left && textX < right;
+
+    // });
   };
 
   clickLine = (line: LineOfText) => e => {
@@ -148,7 +183,6 @@ export default class PageSvg extends React.Component<
     return (
       <>
         <svg
-          ref={this.svgRef}
           style={{ position: "absolute" }}
           width={this.props.svgWidth}
           height={this.props.svgHeight}
@@ -186,21 +220,9 @@ export default class PageSvg extends React.Component<
               })}
             </>
           )}
-
-          <Spring
-            native
-            to={{ x, y, width, height }}
-            config={{ tension: 0, friction: 0, precision: 1 }}
-          >
-            {props => (
-              <animated.rect
-                {...props}
-                style={{ stroke: "black", fill: "none", strokeWidth: 1 }}
-              />
-            )}
-          </Spring>
         </svg>
         <div
+          ref={this.divRef}
           style={{
             position: "absolute",
             width: this.props.svgWidth,
@@ -211,6 +233,7 @@ export default class PageSvg extends React.Component<
             this.props.linesOfText.map((line, i) => {
               return (
                 <div
+                  draggable={false}
                   key={line.id}
                   style={{
                     position: "absolute",
@@ -218,7 +241,9 @@ export default class PageSvg extends React.Component<
                     top: line.top,
                     width: line.width,
                     height: line.height,
-                    outline: this.state.showTextLineBoxes ? "1px solid lightgreen": "none"
+                    outline: this.state.showTextLineBoxes
+                      ? "1px solid lightgreen"
+                      : "none"
                   }}
                   onClick={this.clickLine(line)}
                 />
@@ -228,6 +253,8 @@ export default class PageSvg extends React.Component<
             this.state.lineGroups[0].lines.map((line, i) => {
               return (
                 <div
+                  draggable={false}
+                  key={i}
                   style={{
                     position: "absolute",
                     left: line.left,
@@ -239,6 +266,24 @@ export default class PageSvg extends React.Component<
                 />
               );
             })}
+          <Spring
+            native
+            to={{ x, y, width, height }}
+            config={{ duration: this.state.duration }}
+          >
+            {props => (
+              <animated.div
+                style={{
+                  position: "absolute",
+                  top: props.y,
+                  left: props.x,
+                  width: props.width,
+                  height: props.height,
+                  border: "1px solid grey"
+                }}
+              />
+            )}
+          </Spring>
         </div>
       </>
     );

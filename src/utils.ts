@@ -1,5 +1,6 @@
 // see https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 
+
 export const flatten = <T>(array: any[]): T[] =>
   array.reduce((a, b) => a.concat(b), []);
 

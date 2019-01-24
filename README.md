@@ -1,3 +1,8 @@
+crtl-click type
+drag type
+capture text and format 
+minimize pdf returns but have link back
+
 # formalism
 x expands to [y,z] (for tooltips)
 a same as A (synonyms)
