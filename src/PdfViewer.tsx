@@ -1,13 +1,7 @@
 import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
-import { PDFJSStatic } from "pdfjs-dist";
+import { PDFJSStatic, PDFJS } from "pdfjs-dist";
 const pdfjsLib: PDFJSStatic = pdfjs as any;
-// const pdfPath = require("./Chunking-TICS.pdf");
-// const pdfPath = require("./digitalVsPaper.pdf");
-// const pdfPath = require("./Wobbrock-2015.pdf");
-// const pdfPath = require("./checklist.pdf");
-const pdfPath = require("./soylent-uist2010.pdf")
-// const pdfPath = require("./poverty.pdf");
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
@@ -41,7 +35,7 @@ interface Page {
  * todo zoom, file name prop, layer props, keyboard shortcuts
  */
 const PdfViewerDefaults = {
-  props: { pageNumbersToLoad: [] as number[] },
+  props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
   state: {
     scale: 1, // todo smooth zoom
     pages: [] as Page[],
@@ -78,6 +72,37 @@ export default class PdfViewer extends React.Component<
       const page = await pdf.getPage(pageNumber);
       const viewport = page.getViewport(this.state.scale);
       const text = await page.getTextContent();
+
+      // get images
+      const opList = await page.getOperatorList();
+      let svgGfx = new pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
+      svgGfx.embedFonts = true;
+      const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
+      document.body.append(svg);
+
+      let objs = [];
+      for (var i = 0; i < opList.fnArray.length; i++) {
+        // paintInlineImageXObject paintImageXObject
+        if (opList.fnArray[i] == pdfjsLib.OPS.paintImageXObject) {
+          objs.push(opList.argsArray[i][0]);
+        }
+      }
+      const img = await page.objs.get(objs[0]);
+      console.log(img)
+      // img object here ^^. render to canvas to view
+      /**
+     * var canvas = document.createElement("canvas"),
+    ctx = canvas.getContext("2d"),
+    img = [27,32,26,28, ... ];
+
+// Get a pointer to the current location in the image.
+var palette = ctx.getImageData(0,0,160,120); //x,y,w,h
+// Wrap your array as a Uint8ClampedArray
+palette.data.set(new Uint8ClampedArray(img)); // assuming values 0..255, RGBA, pre-mult.
+// Repost the data.
+ctx.putImageData(palette,0,0);
+     */
+
       const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
 
       const alignedTextContent = await Promise.all(
@@ -136,7 +161,7 @@ export default class PdfViewer extends React.Component<
 
   async componentDidMount() {
     const pdf = await pdfjsLib.getDocument({
-      url: pdfPath,
+      url: this.props.pdfPath,
       //@ts-ignore
       cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
       cMapPacked: true
@@ -144,11 +169,10 @@ export default class PdfViewer extends React.Component<
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
     const makeHistogram = histogram();
 
-    const fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
-      t => t.transform[0]
-    );
+    const fontHeights = flatten<TextItem>(
+      this.state.pages.map(p => p.text)
+    ).map(t => t.transform[0]);
     // console.log(unique(fontHeights))
-    
 
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
