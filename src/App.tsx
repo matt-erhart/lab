@@ -4,14 +4,14 @@ import PdfViewer from "./PdfViewer";
 // const pdfPath = require("./digitalVsPaper.pdf");
 // const pdfPath = require("./Wobbrock-2015.pdf");
 // const pdfPath = require("./checklist.pdf");
-const pdfPath = require("./soylent-uist2010.pdf")
-// const pdfPath = require("./poverty.pdf");
+// const pdfPath = require("./soylent-uist2010.pdf")
+const pdfPath = require("./poverty.pdf");
 
 export default class App extends React.Component {
   render() {
     return (
       <div style={{userSelect: 'none'}}>
-        <PdfViewer pdfPath={pdfPath} pageNumbersToLoad={[3]} />
+        <PdfViewer pdfPath={pdfPath} pageNumbersToLoad={[1,2,3,4]} />
       </div>
     );
   }

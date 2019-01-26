@@ -22,12 +22,23 @@ export interface LineOfText {
   textIds: string[];
 }
 
+export interface Image {
+  x: string;
+  y: string;
+  width: string;
+  height: string;
+  "xlink:href": string;
+  transform: string;
+  gTransform: string;
+}
+
 interface Page {
   pageNumber: number;
   viewport: pdfjs.PDFPageViewport;
   text: TextItem[];
   page: pdfjs.PDFPageProxy;
   linesOfText: LineOfText[];
+  images: Image[];
 }
 
 /**
@@ -78,30 +89,20 @@ export default class PdfViewer extends React.Component<
       let svgGfx = new pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
       svgGfx.embedFonts = true;
       const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
-      document.body.append(svg);
-
-      let objs = [];
-      for (var i = 0; i < opList.fnArray.length; i++) {
-        // paintInlineImageXObject paintImageXObject
-        if (opList.fnArray[i] == pdfjsLib.OPS.paintImageXObject) {
-          objs.push(opList.argsArray[i][0]);
-        }
+      const imgs = svg.querySelectorAll("svg image");
+      // document.body.append(svg)
+      let images = [] as Image[];
+      for (let img of imgs) {
+        images.push({
+          x: img.getAttribute("x"),
+          y: img.getAttribute("y"),
+          width: img.getAttribute("width"),
+          height: img.getAttribute("height"),
+          "xlink:href": img.getAttribute("xlink:href"),
+          transform: img.getAttribute("transform"),
+          gTransform: img.parentNode.getAttribute("transform")
+        });
       }
-      const img = await page.objs.get(objs[0]);
-      console.log(img)
-      // img object here ^^. render to canvas to view
-      /**
-     * var canvas = document.createElement("canvas"),
-    ctx = canvas.getContext("2d"),
-    img = [27,32,26,28, ... ];
-
-// Get a pointer to the current location in the image.
-var palette = ctx.getImageData(0,0,160,120); //x,y,w,h
-// Wrap your array as a Uint8ClampedArray
-palette.data.set(new Uint8ClampedArray(img)); // assuming values 0..255, RGBA, pre-mult.
-// Repost the data.
-ctx.putImageData(palette,0,0);
-     */
 
       const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
 
@@ -152,7 +153,8 @@ ctx.putImageData(palette,0,0);
             viewport,
             text: alignedTextContent,
             page,
-            linesOfText: []
+            linesOfText: [],
+            images
           })
         };
       });
@@ -210,6 +212,8 @@ ctx.putImageData(palette,0,0);
   render() {
     const { pages } = this.state;
     const havePages = pages.length > 0;
+    console.log('todo ctx.getImageData(sx, sy, sw, sh); on rect select');
+
     return (
       <>
         {havePages &&
@@ -239,10 +243,28 @@ ctx.putImageData(palette,0,0);
                   text={page.text}
                   columnLefts={this.state.columnLefts}
                   linesOfText={page.linesOfText}
+                  images={page.images}
                 />
               </div>
             );
           })}
+        {/* <div>
+          hey
+          {flatten<Image>(pages.map(p => p.images)).map(img => {
+            const { src, ...style } = img;
+            return (
+              <img
+                src={src}
+                style={
+                  {
+                    // ...style,
+                    maxWidth: pages[0].viewport.width
+                  }
+                }
+              />
+            );
+          })}
+        </div> */}
       </>
     );
   }

@@ -7,6 +7,7 @@ import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import PopupPortal from "./PopupPortal";
+import { Image } from "./PdfViewer";
 
 const title = {
   height: 0,
@@ -29,7 +30,8 @@ const PageSvgDefaults = {
     svgHeight: 0,
     text: [] as TextItem[],
     columnLefts: [] as number[],
-    linesOfText: [] as LineOfText[]
+    linesOfText: [] as LineOfText[],
+    images: [] as Image[]
   },
   state: {
     selectionRect: title,
@@ -236,6 +238,31 @@ export default class PageSvg extends React.Component<
           width={this.props.svgWidth}
           height={this.props.svgHeight}
         >
+          {this.props.images.length > 0 &&
+            this.props.images.map((img, i) => {
+              const { x, y, width, height } = img;
+              const mat = img.gTransform
+                .replace("matrix(", "")
+                .replace(")", "")
+                .split(" ");
+
+              return (
+                <image
+                  key={i}
+                  x={mat[4] + "px"}
+                  y={
+                    this.props.svgHeight - (parseInt(mat[5]) + parseInt(mat[3])) -3
+                  }
+                  width={mat[0]}
+                  height={mat[3] + "px"}
+                  href={img["xlink:href"]}
+                  style={{outline: '1px solid blue'}}
+                  // transform={
+                  //   img.transform
+                  // }
+                />
+              );
+            })}
           {/* {this.props.text.map(t => {
           return (
             <rect
