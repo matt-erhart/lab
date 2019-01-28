@@ -3,7 +3,15 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { TextItem } from "./PageText";
-import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
+import {
+  getRectCoords,
+  flatten,
+  get,
+  getRectEdges,
+  mode,
+  unique,
+  brewer12
+} from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import PopupPortal from "./PopupPortal";
@@ -31,12 +39,15 @@ const PageSvgDefaults = {
     text: [] as TextItem[],
     columnLefts: [] as number[],
     linesOfText: [] as LineOfText[],
-    images: [] as Image[]
+    images: [] as Image[],
+    height2color: {} as any,
+    fontNames2color: {} as any
   },
   state: {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
     showTextLineBoxes: false,
+    showTextBBoxes: true,
     duration: 0,
     div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }
@@ -251,34 +262,41 @@ export default class PageSvg extends React.Component<
                   key={i}
                   x={mat[4] + "px"}
                   y={
-                    this.props.svgHeight - (parseInt(mat[5]) + parseInt(mat[3])) -3
+                    this.props.svgHeight -
+                    (parseInt(mat[5]) + parseInt(mat[3])) -
+                    3
                   }
                   width={mat[0]}
                   height={mat[3] + "px"}
                   href={img["xlink:href"]}
-                  style={{outline: '1px solid blue'}}
+                  style={{ outline: "1px solid blue" }}
                   // transform={
                   //   img.transform
                   // }
                 />
               );
             })}
-          {/* {this.props.text.map(t => {
-          return (
-            <rect
-              x={t.left}
-              y={t.top}
-              width={t.width}
-              height={t.transform[0]}
-              style={{
-                stroke: "black",
-                fill: "none",
-                strokeWidth: 1,
-                opacity: 0.5
-              }}
-            />
-          );
-        })} */}
+          {this.state.showTextBBoxes &&
+            this.props.text.map((t, i) => {
+              const color = this.props.height2color[t.transform[0] + ""];
+              const fill = this.props.fontNames2color[t.style.fontFamily]
+              
+              return (
+                <rect
+                  key={i}
+                  x={t.left}
+                  y={t.top}
+                  width={t.width}
+                  height={t.transform[0]}
+                  style={{
+                    stroke: color,
+                    fill: fill,
+                    strokeWidth: 2,
+                    opacity: 0.5
+                  }}
+                />
+              );
+            })}
 
           {this.props.columnLefts && (
             <>
@@ -307,6 +325,8 @@ export default class PageSvg extends React.Component<
         >
           {this.props.linesOfText.length > 0 &&
             this.props.linesOfText.map((line, i) => {
+              const color = this.props.height2color[line.height + ""];
+
               return (
                 <div
                   draggable={false}
@@ -318,7 +338,7 @@ export default class PageSvg extends React.Component<
                     width: line.width,
                     height: line.height,
                     outline: this.state.showTextLineBoxes
-                      ? "1px solid lightgreen"
+                      ? "2px solid " + color
                       : "none"
                   }}
                   onClick={this.clickLine(line)}

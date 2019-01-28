@@ -5,7 +5,7 @@ const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-import { flatten, midPoint, getRectCoords, sortBy, unique } from "./utils";
+import { flatten, midPoint, getRectCoords, sortBy, unique, brewer12 } from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
 
@@ -50,7 +50,9 @@ const PdfViewerDefaults = {
   state: {
     scale: 1, // todo smooth zoom
     pages: [] as Page[],
-    columnLefts: [] as number[]
+    columnLefts: [] as number[],
+    height2color: {} as any,
+    fontNames2color: {} as any
   }
 };
 
@@ -168,14 +170,28 @@ export default class PdfViewer extends React.Component<
       cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
       cMapPacked: true
     });
+
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
     const makeHistogram = histogram();
-
-    const fontHeights = flatten<TextItem>(
+    let _fontHeights = flatten<TextItem>(
       this.state.pages.map(p => p.text)
     ).map(t => t.transform[0]);
-    // console.log(unique(fontHeights))
+    let fontHeights = unique(_fontHeights).sort()
+    let height2color = fontHeights.reduce((res, height, ix) => {
+      return {...res, [height+'']: brewer12[ix%12]}
+    },{})
 
+    let _fontNames = flatten<TextItem>(
+      this.state.pages.map(p => p.text)
+    ).map(t => t.style.fontFamily);
+    let fontNames = unique(_fontNames).sort()
+    let fontNames2color = fontNames.reduce((res, name, ix) => {
+      return {...res, [name+'']: brewer12[(ix)%12]}
+    },{})
+console.log(height2color, fontNames2color)
+
+    
+      
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
@@ -195,7 +211,7 @@ export default class PdfViewer extends React.Component<
         return all;
       }
     }, []);
-    this.setState({ columnLefts });
+    this.setState({ columnLefts, height2color, fontNames2color });
     this.setState(
       state => {
         return produce(state, draft => {
@@ -244,6 +260,8 @@ export default class PdfViewer extends React.Component<
                   columnLefts={this.state.columnLefts}
                   linesOfText={page.linesOfText}
                   images={page.images}
+                  height2color={this.state.height2color}
+                  fontNames2color={this.state.fontNames2color}
                 />
               </div>
             );
