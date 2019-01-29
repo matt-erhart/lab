@@ -1,3 +1,4 @@
+# page coords image
 fig bboxes, name, captions
 map from textItems to lines and block and back
 

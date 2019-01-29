@@ -11,7 +11,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div style={{userSelect: 'none'}}>
-        <PdfViewer pdfPath={pdfPath} pageNumbersToLoad={[]} />
+        <PdfViewer pdfPath={pdfPath} pageNumbersToLoad={[1,2]} />
       </div>
     );
   }

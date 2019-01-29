@@ -47,7 +47,7 @@ const PageSvgDefaults = {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
     showTextLineBoxes: false,
-    showTextBBoxes: true,
+    showTextBBoxes: false,
     duration: 0,
     div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }

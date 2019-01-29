@@ -5,7 +5,14 @@ const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-import { flatten, midPoint, getRectCoords, sortBy, unique, brewer12 } from "./utils";
+import {
+  flatten,
+  midPoint,
+  getRectCoords,
+  sortBy,
+  unique,
+  brewer12
+} from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
 
@@ -173,25 +180,23 @@ export default class PdfViewer extends React.Component<
 
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
     const makeHistogram = histogram();
-    let _fontHeights = flatten<TextItem>(
-      this.state.pages.map(p => p.text)
-    ).map(t => t.transform[0]);
-    let fontHeights = unique(_fontHeights).sort()
+    let _fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+      t => t.transform[0]
+    );
+    let fontHeights = unique(_fontHeights).sort();
     let height2color = fontHeights.reduce((res, height, ix) => {
-      return {...res, [height+'']: brewer12[ix%12]}
-    },{})
+      return { ...res, [height + ""]: brewer12[ix % 12] };
+    }, {});
 
-    let _fontNames = flatten<TextItem>(
-      this.state.pages.map(p => p.text)
-    ).map(t => t.style.fontFamily);
-    let fontNames = unique(_fontNames).sort()
+    let _fontNames = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+      t => t.style.fontFamily
+    );
+    let fontNames = unique(_fontNames).sort();
     let fontNames2color = fontNames.reduce((res, name, ix) => {
-      return {...res, [name+'']: brewer12[(ix)%12]}
-    },{})
-console.log(height2color, fontNames2color)
-
+      return { ...res, [name + ""]: brewer12[ix % 12] };
+    }, {});
     
-      
+
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
@@ -228,7 +233,7 @@ console.log(height2color, fontNames2color)
   render() {
     const { pages } = this.state;
     const havePages = pages.length > 0;
-    console.log('todo ctx.getImageData(sx, sy, sw, sh); on rect select');
+    console.log("todo ctx.getImageData(sx, sy, sw, sh); on rect select");
 
     return (
       <>
