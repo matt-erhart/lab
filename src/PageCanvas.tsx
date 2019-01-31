@@ -16,7 +16,7 @@ export default class PageCanvas extends React.Component<
   private canvasLayer = React.createRef<HTMLCanvasElement>();
   private canvasCrop = React.createRef<HTMLCanvasElement>();
   static defaultProps = PageCanvasDefaults.props;
-  fullQuality = "";
+
   async componentDidMount() {
     const { page, viewport } = this.props;
     this.canvasLayer.current.height = viewport.height;
@@ -38,11 +38,10 @@ export default class PageCanvas extends React.Component<
   };
 
   render() {
-    console.log("image", this.state.image);
-
+    
     return (
       <>
-          {this.state.image.length > 0 && <img src={this.state.image} alt="" />}
+        {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}
         <canvas
           draggable={false}
           style={{ position: "absolute" }}
@@ -53,7 +52,6 @@ export default class PageCanvas extends React.Component<
           style={{ position: "absolute", display: "none" }}
           ref={this.canvasCrop}
         />
-
       </>
     );
   }

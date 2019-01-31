@@ -55,7 +55,7 @@ interface Page {
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
   state: {
-    scale: 1, // todo smooth zoom
+    scale: 2, // todo smooth zoom
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
@@ -124,29 +124,14 @@ export default class PdfViewer extends React.Component<
           const top = yMax - (y + offsetY);
           const left = x - xMin;
           const fontHeight = tc.transform[0];
-          const coords = getRectCoords(left, top, tc.width, fontHeight);
-          const center = {
-            // todo delete?
-            left: midPoint(
-              coords.lt[0],
-              coords.lt[1],
-              coords.lb[0],
-              coords.lb[1]
-            ),
-            right: midPoint(
-              coords.rt[0],
-              coords.rt[1],
-              coords.rb[0],
-              coords.rb[1]
-            )
-          };
 
           return {
             ...tc,
             id: i,
-            center,
-            top,
-            left,
+            top: top * this.state.scale,
+            left: left * this.state.scale,
+            width: tc.width * this.state.scale,
+            height: tc.height * this.state.scale,
             fallbackFontName: fontData.data
               ? fontData.data.fallbackName
               : "sans-serif",
@@ -195,7 +180,6 @@ export default class PdfViewer extends React.Component<
     let fontNames2color = fontNames.reduce((res, name, ix) => {
       return { ...res, [name + ""]: brewer12[ix % 12] };
     }, {});
-    
 
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
@@ -233,7 +217,7 @@ export default class PdfViewer extends React.Component<
   render() {
     const { pages } = this.state;
     const havePages = pages.length > 0;
-    console.log("todo ctx.getImageData(sx, sy, sw, sh); on rect select");
+    // console.log("todo ctx.getImageData(sx, sy, sw, sh); on rect select");
 
     return (
       <>
@@ -258,6 +242,7 @@ export default class PdfViewer extends React.Component<
                   height={height}
                 />
                 <PageSvg
+                  scale={this.state.scale}
                   key={"svg-" + pageNum}
                   svgWidth={width}
                   svgHeight={height}

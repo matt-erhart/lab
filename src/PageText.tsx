@@ -6,7 +6,6 @@ export type TextItem = pdfjs.TextContentItem & {
   id: number;
   top: number;
   left: number;
-  center: {left: number[], right: number[]};
   fallbackFontName: string;
   style: { fontFamily: string; ascent: number; descent: number };
 };

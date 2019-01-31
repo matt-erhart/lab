@@ -41,7 +41,8 @@ const PageSvgDefaults = {
     linesOfText: [] as LineOfText[],
     images: [] as Image[],
     height2color: {} as any,
-    fontNames2color: {} as any
+    fontNames2color: {} as any,
+    scale: 1
   },
   state: {
     selectionRect: title,
