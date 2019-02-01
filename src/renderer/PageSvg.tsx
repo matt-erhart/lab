@@ -270,7 +270,7 @@ export default class PageSvg extends React.Component<
                   width={mat[0]}
                   height={mat[3] + "px"}
                   href={img["xlink:href"]}
-                  style={{ outline: "1px solid blue" }}
+                  style={{ outline: "2px solid pink" }}
                   // transform={
                   //   img.transform
                   // }

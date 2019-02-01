@@ -1,10 +1,17 @@
 import * as React from "react";
-import * as pdfjs from "pdfjs-dist";
+import * as pdfjs from "pdfjs-dist/webpack";
+// if (typeof window !== "undefined" && "Worker" in window) {
+//   pdfjs.GlobalWorkerOptions.workerSrc = '../../node_modules/pdfjs-dist/build/pdf.worker.js'
+//   pdfjs.disableWorker = false
+// }
 import { PDFJSStatic, PDFJS } from "pdfjs-dist";
 const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
+
+
+
 import {
   flatten,
   midPoint,
