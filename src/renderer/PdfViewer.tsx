@@ -242,6 +242,7 @@ export default class PdfViewer extends React.Component<
                 key={pageNum}
                 style={{ position: "relative", width, height }}
               >
+              
                 <PageCanvas
                   key={"canvas-" + pageNum}
                   page={page.page}

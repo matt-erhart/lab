@@ -309,7 +309,7 @@ export default class PageSvg extends React.Component<
                     x2={left}
                     y1={0}
                     y2={this.props.svgHeight}
-                    style={{ stroke: "lightblue" }}
+                    style={{ stroke: "blue" }}
                   />
                 );
               })}

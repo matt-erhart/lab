@@ -10,7 +10,6 @@ import * as ReactDOM from "react-dom";
 // const pdfPath = require("./soylent-uist2010.pdf")
 // const pdfPath = require("./poverty.pdf");
 
-
 import styled from "styled-components";
 const NavBar = styled.div`
   background-color: #23629f;
@@ -23,7 +22,7 @@ const NavBar = styled.div`
 `;
 
 const NavItem = styled.a`
-  margin-right: 20px;
+  margin-right: 40px;
   text-align: center;
   vertical-align: middle;
   padding: 8px;
@@ -44,7 +43,7 @@ const ViewPortContainer = styled.div`
 
 const MainContainer = styled.div`
   overflow: scroll;
-  margin-top: 8px;
+  margin-top: 9px;
   box-sizing: border-box;
 `;
 
@@ -81,6 +80,7 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
     const { pdfMeta, currentPdfPath } = this.state;
     return (
       <ViewPortContainer>
+        123
         <NavBar>
           {pdfMeta.length > 0 &&
             pdfMeta.map(pdf => {
@@ -97,9 +97,9 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
             })}
         </NavBar>
         <MainContainer>
-          {currentPdfPath.length > 0 && (
+          {/* {currentPdfPath.length > 0 && (
             <PdfViewer pdfPath={currentPdfPath} pageNumbersToLoad={[1]} />
-          )}
+          )} */}
         </MainContainer>
       </ViewPortContainer>
     );
@@ -115,9 +115,11 @@ document.body.style.overflow = "hidden";
 document.body.style.fontFamily = "Arial";
 const rootEl = document.getElementById("app");
 export const render = (Component: typeof App) =>
-  ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
-    rootEl
-  );
+  ReactDOM.render(<Component />, rootEl);
+
+import { hot } from "react-hot-loader/root";
+
+hot(render(App))
+
+// if ((module as any).hot)
+//   (module as any).hot.accept("./PageSvg", () => render(App));

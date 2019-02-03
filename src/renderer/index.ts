@@ -1,5 +1,2 @@
-import { App, render } from "./App";
+import  "./App";
 
-render(App);
-
-// if ((module as any).hot) (module as any).hot.accept("./App", () => render(App));
