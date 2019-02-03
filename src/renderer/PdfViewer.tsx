@@ -1,19 +1,18 @@
 import * as React from "react";
-const pdfjs = require("../../modules/pdfjs-dist/lib/pdf");
-// var PdfjsWorker = require.resolve('../../modules/pdfjs-dist/lib/pdf.worker.js');
-var PdfjsWorker = require("../../modules/pdfjs-dist/lib/pdf.worker.js");
+// const pdfjs = require("../../modules/pdfjs-dist/lib/pdf");
 
-// pdfjs.disableWorker = true;
+var pdfjs = require('pdfjs-dist')
+var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
 if (typeof window !== "undefined" && "Worker" in window) {
   pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
 }
+
 // pdfjs.disableWorker = false;
 // import { PDFJSStatic, PDFJS } from "pdfjs-dist";
 // const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-
 
 import {
   flatten,
@@ -149,7 +148,6 @@ export default class PdfViewer extends React.Component<
           };
         })
       );
-
       this.setState(state => {
         return {
           pages: state.pages.concat({
@@ -168,11 +166,13 @@ export default class PdfViewer extends React.Component<
   async componentDidMount() {
     const pdf = await pdfjs.getDocument({
       url: this.props.pdfPath,
-      //@ts-ignore
+      // @ts-ignore
       cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
       cMapPacked: true,
       stopAtErrors: false
     });
+
+    console.log("page?");
 
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
 

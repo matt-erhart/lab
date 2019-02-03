@@ -1,28 +1,40 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "target": "es2015",
-    "downlevelIteration": true,
-    "importHelpers": true,
-    "sourceMap": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "jsx": "react",
-    "allowJs": true,
-    "checkJs": false,
-    "lib": ["dom", "es6", "esnext"],
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": false,
+    "alwaysStrict": true,
+    "listEmittedFiles": false,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
+    "removeComments": true,
+    "strictFunctionTypes": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "target": "ES2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowJs": false,
+    "stripInternal": true,
+    "checkJs": false,
+    "jsx": "react",
+    "esModuleInterop": true,
+
     "noUnusedLocals": false,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true
-  },
-  "exclude": [
-    "pdfjs"
-]
+    "noUnusedParameters": false,
+
+    "forceConsistentCasingInFileNames": true,
+
+    "allowSyntheticDefaultImports": true,
+
+    "lib": [
+      "es2015",
+      "dom",
+      "es2017.object",
+      "es2015.promise",
+      "es2016.array.include"
+    ]
+  }
 }

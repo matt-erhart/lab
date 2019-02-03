@@ -79,7 +79,6 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
 
   render() {
     const { pdfMeta, currentPdfPath } = this.state;
-    console.log(currentPdfPath);
     return (
       <ViewPortContainer>
         <NavBar>
@@ -99,7 +98,7 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
         </NavBar>
         <MainContainer>
           {currentPdfPath.length > 0 && (
-            <PdfViewer pdfPath={require('./Wobbrock-2015.pdf')} pageNumbersToLoad={[1]} />
+            <PdfViewer pdfPath={currentPdfPath} pageNumbersToLoad={[1]} />
           )}
         </MainContainer>
       </ViewPortContainer>
