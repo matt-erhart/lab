@@ -1,15 +1,13 @@
 import * as React from "react";
-// const pdfjs = require("../../modules/pdfjs-dist/lib/pdf");
 
-var pdfjs = require('pdfjs-dist')
+import * as _pdfjs from "pdfjs-dist";
 var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
 if (typeof window !== "undefined" && "Worker" in window) {
-  pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
+  (_pdfjs as any).GlobalWorkerOptions.workerPort = new PdfjsWorker();
 }
+import { PDFJSStatic, PDFDocumentProxy } from "pdfjs-dist";
+const pdfjs: PDFJSStatic = _pdfjs as any;
 
-// pdfjs.disableWorker = false;
-// import { PDFJSStatic, PDFJS } from "pdfjs-dist";
-// const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
@@ -78,8 +76,7 @@ export default class PdfViewer extends React.Component<
 > {
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
-  // pdfjs.PDFDocumentProxy,
-  loadPages = async (pdf, pageNumbersToLoad: number[]) => {
+  loadPages = async (pdf: PDFDocumentProxy, pageNumbersToLoad: number[]) => {
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
     const willLoadAllPages = pageNumbersToLoad.length === 0;
     const pageNumPropsOk =
@@ -162,8 +159,18 @@ export default class PdfViewer extends React.Component<
       });
     }
   };
+  componentDidMount() {
+    this.loadPdf();
+  }
 
-  async componentDidMount() {
+  componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
+    if (prevProps.pdfPath !== this.props.pdfPath) {
+      this.setState({pages: []})
+      this.loadPdf();
+    }
+  }
+
+  loadPdf = async () => {
     const pdf = await pdfjs.getDocument({
       url: this.props.pdfPath,
       // @ts-ignore
@@ -171,8 +178,6 @@ export default class PdfViewer extends React.Component<
       cMapPacked: true,
       stopAtErrors: false
     });
-
-    console.log("page?");
 
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
 
@@ -188,6 +193,7 @@ export default class PdfViewer extends React.Component<
     let _fontNames = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.style.fontFamily
     );
+
     let fontNames = unique(_fontNames).sort();
     let fontNames2color = fontNames.reduce((res, name, ix) => {
       return { ...res, [name + ""]: brewer12[ix % 12] };
@@ -197,6 +203,7 @@ export default class PdfViewer extends React.Component<
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
     );
+
     const leftXHist = makeHistogram(leftXs);
     const leftXBinCounts = leftXHist.map(x => x.length);
     const leftXMean = mean(leftXBinCounts);
@@ -224,7 +231,7 @@ export default class PdfViewer extends React.Component<
       },
       () => console.log(this.state.pages[0])
     );
-  }
+  };
 
   render() {
     const { pages } = this.state;
@@ -242,7 +249,6 @@ export default class PdfViewer extends React.Component<
                 key={pageNum}
                 style={{ position: "relative", width, height }}
               >
-              
                 <PageCanvas
                   key={"canvas-" + pageNum}
                   page={page.page}

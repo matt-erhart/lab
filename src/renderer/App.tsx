@@ -80,7 +80,6 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
     const { pdfMeta, currentPdfPath } = this.state;
     return (
       <ViewPortContainer>
-        123
         <NavBar>
           {pdfMeta.length > 0 &&
             pdfMeta.map(pdf => {
@@ -97,9 +96,9 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
             })}
         </NavBar>
         <MainContainer>
-          {/* {currentPdfPath.length > 0 && (
+          {currentPdfPath.length > 0 && (
             <PdfViewer pdfPath={currentPdfPath} pageNumbersToLoad={[1]} />
-          )} */}
+          )}
         </MainContainer>
       </ViewPortContainer>
     );
@@ -120,6 +119,3 @@ export const render = (Component: typeof App) =>
 import { hot } from "react-hot-loader/root";
 
 hot(render(App))
-
-// if ((module as any).hot)
-//   (module as any).hot.accept("./PageSvg", () => render(App));
