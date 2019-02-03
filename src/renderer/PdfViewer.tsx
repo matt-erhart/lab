@@ -1,15 +1,18 @@
 import * as React from "react";
-import * as pdfjs from "pdfjs-dist/webpack";
-// if (typeof window !== "undefined" && "Worker" in window) {
-//   pdfjs.GlobalWorkerOptions.workerSrc = '../../node_modules/pdfjs-dist/build/pdf.worker.js'
-//   pdfjs.disableWorker = false
-// }
-import { PDFJSStatic, PDFJS } from "pdfjs-dist";
-const pdfjsLib: PDFJSStatic = pdfjs as any;
+const pdfjs = require("../../modules/pdfjs-dist/lib/pdf");
+// var PdfjsWorker = require.resolve('../../modules/pdfjs-dist/lib/pdf.worker.js');
+var PdfjsWorker = require("../../modules/pdfjs-dist/lib/pdf.worker.js");
+
+// pdfjs.disableWorker = true;
+if (typeof window !== "undefined" && "Worker" in window) {
+  pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
+}
+// pdfjs.disableWorker = false;
+// import { PDFJSStatic, PDFJS } from "pdfjs-dist";
+// const pdfjsLib: PDFJSStatic = pdfjs as any;
 import PageCanvas from "./PageCanvas";
 import PageText, { TextItem } from "./PageText";
 import PageSvg from "./PageSvg";
-
 
 
 import {
@@ -48,9 +51,9 @@ export interface Image {
 
 interface Page {
   pageNumber: number;
-  viewport: pdfjs.PDFPageViewport;
+  viewport: any; // pdfjs.PDFPageViewport;
   text: TextItem[];
-  page: pdfjs.PDFPageProxy;
+  page: any; // pdfjs.PDFPageProxy;
   linesOfText: LineOfText[];
   images: Image[];
 }
@@ -62,7 +65,7 @@ interface Page {
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
   state: {
-    scale: 2, // todo smooth zoom
+    scale: 1, // todo smooth zoom
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
@@ -76,11 +79,8 @@ export default class PdfViewer extends React.Component<
 > {
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
-
-  loadPages = async (
-    pdf: pdfjs.PDFDocumentProxy,
-    pageNumbersToLoad: number[]
-  ) => {
+  // pdfjs.PDFDocumentProxy,
+  loadPages = async (pdf, pageNumbersToLoad: number[]) => {
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
     const willLoadAllPages = pageNumbersToLoad.length === 0;
     const pageNumPropsOk =
@@ -100,11 +100,13 @@ export default class PdfViewer extends React.Component<
       const viewport = page.getViewport(this.state.scale);
       const text = await page.getTextContent();
 
-      // get images
+      // // get images
       const opList = await page.getOperatorList();
-      let svgGfx = new pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
+      let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
       svgGfx.embedFonts = true;
       const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
+      console.log(svg);
+
       const imgs = svg.querySelectorAll("svg image");
       // document.body.append(svg)
       let images = [] as Image[];
@@ -127,6 +129,7 @@ export default class PdfViewer extends React.Component<
           const fontData = await (page as any).commonObjs.ensureObj(
             tc.fontName
           );
+
           const [, , , offsetY, x, y] = tc.transform;
           const top = yMax - (y + offsetY);
           const left = x - xMin;
@@ -163,14 +166,16 @@ export default class PdfViewer extends React.Component<
   };
 
   async componentDidMount() {
-    const pdf = await pdfjsLib.getDocument({
+    const pdf = await pdfjs.getDocument({
       url: this.props.pdfPath,
       //@ts-ignore
       cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
-      cMapPacked: true
+      cMapPacked: true,
+      stopAtErrors: false
     });
 
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
+
     const makeHistogram = histogram();
     let _fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.transform[0]

@@ -1,3 +1,11 @@
+# some pdfs will fail because pdfjs thinks its node
+      nodeIntegration: false
+      preload... everything?
+
+# electron perf notes
+https://www.infoq.com/presentations/electron-pitfalls
+- main
+
 # scale
 page coords image
 fig bboxes, name, captions

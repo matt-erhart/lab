@@ -11,3 +11,4 @@ service-account.json
 cypress/screenshots/*
 .cache
 .parcel
+pdfjs*

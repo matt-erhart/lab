@@ -22,8 +22,10 @@ export default class PageCanvas extends React.Component<
     this.canvasLayer.current.height = viewport.height;
     this.canvasLayer.current.width = viewport.width;
     const canvasContext = this.canvasLayer.current.getContext("2d");
-    await page.render({ canvasContext, viewport });
-    this.getCanvasImage();
+    
+    await page.render({ canvasContext, viewport,  });
+    
+    // this.getCanvasImage();
   }
 
   getCanvasImage = () => {

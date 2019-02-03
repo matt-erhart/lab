@@ -3,6 +3,12 @@ module.exports = {
     globalObject: "this"
   },
   module: {
-    rules: [{ test: /\.(jpg|gif|png|pdf)$/, use: "file-loader" }]
+    rules: [
+      { test: /\.(jpg|gif|png|pdf)$/, use: "file-loader" },
+      {
+        test: /\.worker\.js$/,
+        use: "worker-loader"
+      }
+    ]
   }
 };
