@@ -5,7 +5,13 @@ var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
 if (typeof window !== "undefined" && "Worker" in window) {
   (_pdfjs as any).GlobalWorkerOptions.workerPort = new PdfjsWorker();
 }
-import { PDFJSStatic, PDFDocumentProxy } from "pdfjs-dist";
+import {
+  PDFJSStatic,
+  PDFDocumentProxy,
+  PDFInfo,
+  PDFMetadata,
+  PDFTreeNode
+} from "pdfjs-dist";
 const pdfjs: PDFJSStatic = _pdfjs as any;
 
 import PageCanvas from "./PageCanvas";
@@ -62,11 +68,16 @@ interface Page {
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
   state: {
-    scale: 1, // todo smooth zoom
+    scale: 2, // todo scale
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
-    fontNames2color: {} as any
+    fontNames2color: {} as any,
+    meta: {} as {
+      info: PDFInfo;
+      metadata: PDFMetadata;
+    },
+    outline: [] as PDFTreeNode[]
   }
 };
 
@@ -165,7 +176,7 @@ export default class PdfViewer extends React.Component<
 
   componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pdfPath !== this.props.pdfPath) {
-      this.setState({pages: []})
+      this.setState({ pages: [] });
       this.loadPdf();
     }
   }
@@ -178,6 +189,12 @@ export default class PdfViewer extends React.Component<
       cMapPacked: true,
       stopAtErrors: false
     });
+
+    const meta = await pdf.getMetadata();
+    const outline = await pdf.getOutline();
+    console.log(outline.map(x => x.title), meta.info.Title, outline.map(x => x.title)[0]);
+
+    this.setState({ meta, outline });
 
     await this.loadPages(pdf, this.props.pageNumbersToLoad);
 
