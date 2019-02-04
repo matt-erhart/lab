@@ -68,7 +68,7 @@ interface Page {
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
   state: {
-    scale: 2, // todo scale
+    scale: 1, // todo scale
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
@@ -88,6 +88,7 @@ export default class PdfViewer extends React.Component<
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
   loadPages = async (pdf: PDFDocumentProxy, pageNumbersToLoad: number[]) => {
+    const {scale} = this.state
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
     const willLoadAllPages = pageNumbersToLoad.length === 0;
     const pageNumPropsOk =
@@ -112,17 +113,16 @@ export default class PdfViewer extends React.Component<
       let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
       svgGfx.embedFonts = true;
       const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
-      console.log(svg);
 
-      const imgs = svg.querySelectorAll("svg image");
+      const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
       // document.body.append(svg)
       let images = [] as Image[];
       for (let img of imgs) {
         images.push({
-          x: img.getAttribute("x"),
-          y: img.getAttribute("y"),
-          width: img.getAttribute("width"),
-          height: img.getAttribute("height"),
+          x: img.getAttribute("x") * scale,
+          y: img.getAttribute("y") * scale,
+          width: img.getAttribute("width") * scale,
+          height: img.getAttribute("height") * scale,
           "xlink:href": img.getAttribute("xlink:href"),
           transform: img.getAttribute("transform"),
           gTransform: img.parentNode.getAttribute("transform")
@@ -219,7 +219,7 @@ export default class PdfViewer extends React.Component<
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
-    );
+    )
 
     const leftXHist = makeHistogram(leftXs);
     const leftXBinCounts = leftXHist.map(x => x.length);

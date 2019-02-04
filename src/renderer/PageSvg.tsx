@@ -48,7 +48,7 @@ const PageSvgDefaults = {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
     showTextLineBoxes: false,
-    showTextBBoxes: false,
+    showTextBBoxes: true,
     duration: 0,
     div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }
@@ -243,6 +243,7 @@ export default class PageSvg extends React.Component<
 
   render() {
     const { x, y, width, height } = this.state.selectionRect;
+    const { scale } = this.props;
     return (
       <>
         <svg
@@ -261,14 +262,15 @@ export default class PageSvg extends React.Component<
               return (
                 <image
                   key={i}
-                  x={mat[4] + "px"}
+                  x={parseInt(mat[4]) * scale + "px"}
                   y={
                     this.props.svgHeight -
-                    (parseInt(mat[5]) + parseInt(mat[3])) -
-                    3
+                    (parseInt(mat[5]) * scale + parseInt(mat[3]) * scale) -
+                    3 +
+                    "px"
                   }
-                  width={mat[0]}
-                  height={mat[3] + "px"}
+                  width={parseInt(mat[0]) * scale + "px"}
+                  height={parseInt(mat[3]) * scale + "px"}
                   href={img["xlink:href"]}
                   style={{ outline: "2px solid pink" }}
                   // transform={
@@ -280,8 +282,8 @@ export default class PageSvg extends React.Component<
           {this.state.showTextBBoxes &&
             this.props.text.map((t, i) => {
               const color = this.props.height2color[t.transform[0] + ""];
-              const fill = this.props.fontNames2color[t.style.fontFamily]
-              
+              const fill = this.props.fontNames2color[t.style.fontFamily];
+
               return (
                 <rect
                   key={i}
@@ -389,11 +391,13 @@ export default class PageSvg extends React.Component<
                   position: "absolute",
                   top: y,
                   left: x,
-                  width: width,
+                  width: width + 5,
                   height: height,
                   border: "1px solid grey",
                   background: "white",
-                  ...this.state.div.style
+                  lineHeight: "1em",
+                  ...this.state.div.style,
+                  fontSize: (this.state.div.style.fontSize * scale) * .92
                 }}
               >
                 {this.state.div.text}
@@ -415,7 +419,7 @@ export default class PageSvg extends React.Component<
                     minHeight: 50,
                     minWidth: 200,
                     fontFamily: this.state.div.style.fontFamily,
-                    fontSize: 10,
+                    fontSize: 10*scale,
                     boxShadow: "0 2px 12px -6px #777"
                   }}
                 />

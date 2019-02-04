@@ -1,3 +1,4 @@
+//@ts-ignore
 // see https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 export const brewer12 = [
 "#a6cee3",

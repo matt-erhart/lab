@@ -2,13 +2,10 @@ import * as React from "react";
 import PdfViewer from "./PdfViewer";
 import { AppContainer } from "react-hot-loader";
 import * as ReactDOM from "react-dom";
-
-// const pdfPath = require("./Chunking-TICS.pdf");
-// const pdfPath = require("./digitalVsPaper.pdf");
-// const pdfPath = require("./Wobbrock-2015.pdf");
-// const pdfPath = require("./checklist.pdf");
-// const pdfPath = require("./soylent-uist2010.pdf")
-// const pdfPath = require("./poverty.pdf");
+import fs = require('fs')
+import os = require("os");
+import path = require("path");
+import {filesInfoFromDir} from './io'
 
 import styled from "styled-components";
 const NavBar = styled.div`
@@ -47,7 +44,7 @@ const MainContainer = styled.div`
   box-sizing: border-box;
 `;
 
-interface PdfMeta {
+interface FileInfo {
   fullPath: string;
   fileName: string;
 }
@@ -55,7 +52,7 @@ interface PdfMeta {
 const AppDefaults = {
   props: {},
   state: {
-    pdfMeta: [] as PdfMeta[],
+    fileInfo: [] as FileInfo[],
     currentPdfPath: "C:\\Users\\merha\\pdfs\\Wobbrock-2015.pdf" as string
   }
 };
@@ -63,9 +60,8 @@ const AppDefaults = {
 export class App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
   componentDidMount() {
-    const os = require("os");
-    const path = require("path");
-    const fs = require("fs");
+    
+    
     const { homedir, username } = os.userInfo();
     const pdfDir = path.join(homedir, "pdfs");
     fs.readdir(pdfDir, (error, pdfNames) => {
