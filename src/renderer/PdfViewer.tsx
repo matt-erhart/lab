@@ -58,7 +58,7 @@ interface Page {
   text: TextItem[];
   page: any; // pdfjs.PDFPageProxy;
   linesOfText: LineOfText[];
-  images: Image[];
+  // images: Image[];
 }
 
 /**
@@ -171,13 +171,13 @@ export default class PdfViewer extends React.Component<
     }
   };
   componentDidMount() {
-    this.loadPdf();
+    // this.loadPdf();
   }
 
   componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pdfPath !== this.props.pdfPath) {
       this.setState({ pages: [] });
-      this.loadPdf();
+      // this.loadPdf();
     }
   }
 

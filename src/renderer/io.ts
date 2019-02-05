@@ -87,7 +87,7 @@ export const setupDirFromPdfs = async () => {
 
 setupDirFromPdfs();
 
-const existsElseMake = async (
+export const existsElseMake = async (
   path: string,
   promise: _pdfjs.PDFPromise<any> | Promise<any> | {},
   overwrite = false
@@ -101,7 +101,10 @@ const existsElseMake = async (
   }
 };
 
-const preprocessPdfs = (pdfDirs: string[], overwrite = false) => async () => {
+export const preprocessPdfs = (
+  pdfDirs: string[],
+  overwrite = false
+) => async () => {
   console.log("preprocessing pdf ", pdfDirs);
 
   // console.time("time");
@@ -176,7 +179,7 @@ const preprocessPdfs = (pdfDirs: string[], overwrite = false) => async () => {
           pageNumber,
           text: textToDisplay,
           // maybe use this to detect rotation?
-          viewport: { width, height, xMin, yMin, xMax, yMax }
+          viewportFlat: { width, height, xMin, yMin, xMax, yMax }
         });
         console.log("making ", textToDisplayFile);
       }
@@ -208,7 +211,7 @@ const preprocessPdfs = (pdfDirs: string[], overwrite = false) => async () => {
   // console.timeEnd("time");
 };
 
-const fontStats = (pages: PageToDisplay[]) => {
+export const fontStats = (pages: PageToDisplay[]) => {
   // todo use this for better line detection threshold. uses page median now.
   const makeHistogram = histogram();
   let _fontHeights = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(t =>
@@ -229,7 +232,7 @@ const fontStats = (pages: PageToDisplay[]) => {
   }, {});
 };
 
-const getLeftEdgeOfColumns = (pages: PageToDisplay[]) => {
+export const getLeftEdgeOfColumns = (pages: PageToDisplay[]) => {
   const leftXs = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(
     t => t.left
   );
@@ -254,16 +257,17 @@ const getLeftEdgeOfColumns = (pages: PageToDisplay[]) => {
   return [NaN];
 };
 
-const loadTextToDisplayJson = async (
+const loadPageJson = async (
   dir: string,
+  filePrefix: "textToDisplay" | "linesOfText",
   pageNumbers: number[] = []
 ) => {
   await existsElseMake(
-    path.join(dir, "textToDisplay.json"),
+    path.join(dir, filePrefix + ".json"),
     preprocessPdfs([dir])
   );
 
-  const jsons = await ls(dir + "/textToDisplay-page*.json");
+  const jsons = await ls(`${dir}/${filePrefix}-page*.json`);
   let pages = [];
   for (let j of jsons.sort()) {
     const page: PageToDisplay = await jsonfile.readFile(j);
@@ -272,7 +276,7 @@ const loadTextToDisplayJson = async (
   return pages; // sorted by page number
 };
 
-const getLines = (
+export const getLines = (
   columnLefts: number[],
   textItems: TextItemToDisplay[],
   pageNumber: number
@@ -378,10 +382,78 @@ const getLines = (
   return flatten<LineOfText>(linesInColumns);
 };
 
+export const getImageFiles = async (page, viewport) => {
+  const opList = await page.getOperatorList();
+  let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
+  svgGfx.embedFonts = true;
+  const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
+
+  const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
+  // document.body.append(svg)
+  let images = [] as Image[];
+  for (let img of imgs) {
+    if (!img) continue;
+    images.push({
+      x: img.getAttribute("x") * scale,
+      y: img.getAttribute("y") * scale,
+      width: img.getAttribute("width") * scale,
+      height: img.getAttribute("height") * scale,
+      "xlink:href": img.getAttribute("xlink:href"),
+      transform: img.getAttribute("transform"),
+      gTransform: img.parentNode.getAttribute("transform")
+    });
+  }
+};
+
+export const loadPdfPages = async (
+  path: string,
+  pageNumbersToLoad: number[] = [],
+  scale = 1
+) => {
+  const pdf = await pdfjs.getDocument({
+    url: this.props.pdfPath,
+    // @ts-ignore
+    cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
+    cMapPacked: true,
+    stopAtErrors: false
+  });
+
+  const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
+  const willLoadAllPages = pageNumbersToLoad.length === 0;
+  const pageNumPropsOk =
+    !willLoadAllPages &&
+    Math.min(...pageNumbersToLoad) >= 0 &&
+    Math.max(...pageNumbersToLoad) <= Math.max(...allPageNumbers);
+
+  let pageNumbers;
+  if (willLoadAllPages) {
+    pageNumbers = allPageNumbers;
+  } else {
+    pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
+  }
+
+  let pages = [] as _pdfjs.PDFPageProxy[];
+  for (const pageNumber of pageNumbers) {
+    const page = await pdf.getPage(pageNumber);
+    pages.push(page);
+  }
+  return pages;
+};
+
+export interface Image {
+  x: string;
+  y: string;
+  width: string;
+  height: string;
+  "xlink:href": string;
+  transform: string;
+  gTransform: string;
+}
+
 export type PageToDisplay = {
   pageNumber: number;
   text: TextItemToDisplay[];
-  viewport: {
+  viewportFlat: {
     width: number;
     height: number;
     xMin: number;
