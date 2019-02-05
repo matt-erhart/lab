@@ -1,25 +1,45 @@
 //@ts-ignore
 // see https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore
 export const brewer12 = [
-"#a6cee3",
-"grey",
-"#1f78b4",
-"#b2df8a",
-"#33a02c",
-"#fb9a99",
-"#e31a1c",
-"#fdbf6f",
-"#ff7f00",
-"#cab2d6",
-"#6a3d9a",
-"#ffff99",
-"#b15928",
-]
+  "#a6cee3",
+  "grey",
+  "#1f78b4",
+  "#b2df8a",
+  "#33a02c",
+  "#fb9a99",
+  "#e31a1c",
+  "#fdbf6f",
+  "#ff7f00",
+  "#cab2d6",
+  "#6a3d9a",
+  "#ffff99",
+  "#b15928"
+];
 
-export const unique = (arr) => {
-  const uniq = [...new Set(arr)]
-  return uniq.sort();
+export function roundedToFixed(_float: number, _digits: number){
+  var rounder = Math.pow(10, _digits);
+  return (Math.round(_float * rounder) / rounder).toFixed(_digits);
 }
+
+export const zeroPad = (aNumber: number, nDigits: number) => {
+  const str = String(aNumber);
+  const nZeros =  nDigits - str.length;
+  if (nZeros <= 0) {
+    return str;
+  } else {
+    return (
+      Array(nZeros)
+        .fill(0)
+        .join("") + str
+    );
+  }
+};
+
+
+export const unique = arr => {
+  const uniq = [...new Set(arr)];
+  return uniq.sort();
+};
 
 export const mode = (array: (string | number)[]) => {
   if (array.length == 0) return null;
