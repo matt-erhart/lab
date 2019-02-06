@@ -106,10 +106,8 @@ export const preprocessPdfs = (
   overwrite = false
 ) => async () => {
   console.log("preprocessing pdf ", pdfDirs);
-
   // console.time("time");
   const scale = 1;
-
   //   const dir = pdfDirs[0];
   for (let dir of pdfDirs) {
     const files = await ls(dir + "/*");
@@ -190,11 +188,11 @@ export const preprocessPdfs = (
       createdOn: new Date()
     });
 
-    let pages = await loadTextToDisplayJson(dir);
-    const columnLefts = getLeftEdgeOfColumns(pages);
+    let pagesOfText = await loadPageJson(dir, "textToDisplay");
+    const columnLefts = getLeftEdgeOfColumns(pagesOfText);
     await existsElseMake(path.join(dir, `columnLefts.json`), columnLefts);
 
-    for (let page of pages) {
+    for (let page of pagesOfText) {
       const pageId = zeroPad(page.pageNumber, 4);
       await existsElseMake(
         path.join(dir, `linesOfText-page${pageId}.json`),
@@ -257,7 +255,7 @@ export const getLeftEdgeOfColumns = (pages: PageToDisplay[]) => {
   return [NaN];
 };
 
-const loadPageJson = async (
+export const loadPageJson = async (
   dir: string,
   filePrefix: "textToDisplay" | "linesOfText",
   pageNumbers: number[] = []
@@ -410,14 +408,7 @@ export const loadPdfPages = async (
   pageNumbersToLoad: number[] = [],
   scale = 1
 ) => {
-  const pdf = await pdfjs.getDocument({
-    url: this.props.pdfPath,
-    // @ts-ignore
-    cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
-    cMapPacked: true,
-    stopAtErrors: false
-  });
-
+  const pdf = await pdfjs.getDocument(path);
   const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
   const willLoadAllPages = pageNumbersToLoad.length === 0;
   const pageNumPropsOk =

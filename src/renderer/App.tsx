@@ -2,10 +2,10 @@ import * as React from "react";
 import PdfViewer from "./PdfViewer";
 import { AppContainer } from "react-hot-loader";
 import * as ReactDOM from "react-dom";
-import fs = require('fs')
+import fs = require("fs");
 import os = require("os");
 import path = require("path");
-import {filesInfoFromDir} from './io'
+import { ls, listDirs } from "./io";
 
 import styled from "styled-components";
 const NavBar = styled.div`
@@ -44,56 +44,69 @@ const MainContainer = styled.div`
   box-sizing: border-box;
 `;
 
-interface FileInfo {
-  fullPath: string;
-  fileName: string;
+export interface PathInfo {
+  pdfPath: string;
+  pdfName: string;
+  dir: string;
 }
 
 const AppDefaults = {
   props: {},
   state: {
-    fileInfo: [] as FileInfo[],
-    currentPdfPath: "C:\\Users\\merha\\pdfs\\Wobbrock-2015.pdf" as string
+    pathInfo: [] as PathInfo[],
+    currentPathInfo: {} as PathInfo
   }
 };
 
 export class App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
-  componentDidMount() {
-    
-    
+  async componentDidMount() {
     const { homedir, username } = os.userInfo();
-    const pdfDir = path.join(homedir, "pdfs");
-    fs.readdir(pdfDir, (error, pdfNames) => {
-      const pdfMeta: PdfMeta[] = pdfNames.map(n => {
-        return { fullPath: path.join(pdfDir, n), fileName: n };
-      });
-      this.setState({ pdfMeta });
+    const pdfRootDir = path.join(homedir, "pdfs");
+    const pdfDirs = await listDirs(pdfRootDir);
+
+    const pathInfo = pdfDirs.map(dir => {
+      const normDir = path.normalize(dir);
+      const pathParts = normDir.split(path.sep);
+      const _fileName = pathParts[pathParts.length - 1];
+      const fileName =
+        _fileName === "" ? pathParts[pathParts.length - 2] : _fileName;
+      return {
+        pdfPath: path.join(normDir, fileName) + ".pdf",
+        pdfName: fileName + ".pdf",
+        dir: normDir
+      };
     });
+
+    this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
   }
 
   render() {
-    const { pdfMeta, currentPdfPath } = this.state;
+    const { currentPathInfo, pathInfo } = this.state;
+
     return (
       <ViewPortContainer>
         <NavBar>
-          {pdfMeta.length > 0 &&
-            pdfMeta.map(pdf => {
+          {pathInfo.length > 0 &&
+            pathInfo.map(info => {
               return (
                 <NavItem
-                  key={pdf.fileName}
+                  key={info.pdfName}
                   onClick={e => {
-                    this.setState({ currentPdfPath: pdf.fullPath });
+                    this.setState({ currentPathInfo: info });
+                  }}
+                  style={{
+                    color: currentPathInfo.dir === info.dir ? "white" : "black"
                   }}
                 >
-                  {pdf.fileName}
+                  {info.pdfName.replace(".pdf", "")}
                 </NavItem>
               );
             })}
         </NavBar>
         <MainContainer>
-          {currentPdfPath.length > 0 && (
-            <PdfViewer pdfPath={currentPdfPath} pageNumbersToLoad={[1]} />
+          {Object.keys(currentPathInfo).length > 0 && (
+            <PdfViewer pathInfo={currentPathInfo} pageNumbersToLoad={[1]} />
           )}
         </MainContainer>
       </ViewPortContainer>
@@ -114,4 +127,4 @@ export const render = (Component: typeof App) =>
 
 import { hot } from "react-hot-loader/root";
 
-hot(render(App))
+hot(render(App));

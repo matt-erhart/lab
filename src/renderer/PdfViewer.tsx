@@ -28,6 +28,7 @@ import {
 } from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
+import { loadPdfPages, loadPageJson } from "./io";
 
 export interface LineOfText {
   id: string;
@@ -61,12 +62,14 @@ interface Page {
   // images: Image[];
 }
 
+import { PathInfo } from "./App";
+
 /**
  * @class **PdfViewer**
  * todo zoom, file name prop, layer props, keyboard shortcuts
  */
 const PdfViewerDefaults = {
-  props: { pageNumbersToLoad: [] as number[], pdfPath: "" as any },
+  props: { pageNumbersToLoad: [] as number[], pathInfo: {} as PathInfo },
   state: {
     scale: 1, // todo scale
     pages: [] as Page[],
@@ -88,7 +91,7 @@ export default class PdfViewer extends React.Component<
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
   loadPages = async (pdf: PDFDocumentProxy, pageNumbersToLoad: number[]) => {
-    const {scale} = this.state
+    const { scale } = this.state;
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
     const willLoadAllPages = pageNumbersToLoad.length === 0;
     const pageNumPropsOk =
@@ -170,15 +173,30 @@ export default class PdfViewer extends React.Component<
       });
     }
   };
-  componentDidMount() {
+  async componentDidMount() {
+    const {
+      pathInfo: { pdfName, pdfPath, dir },
+      pageNumbersToLoad
+    } = this.props;
+    console.log(this.props)
+    
+    
+    const [pdfPages, linesOfText, textToDisplay] = await Promise.all([
+      loadPdfPages(pdfPath, pageNumbersToLoad),
+      loadPageJson(dir, "linesOfText", pageNumbersToLoad),
+      loadPageJson(dir, "textToDisplay", pageNumbersToLoad)
+    ]);
+    console.log(pdfPages, linesOfText, textToDisplay);
+    // todo render it
+
     // this.loadPdf();
   }
 
   componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
-    if (prevProps.pdfPath !== this.props.pdfPath) {
-      this.setState({ pages: [] });
-      // this.loadPdf();
-    }
+    // if (prevProps.pdfPath !== this.props.pdfPath) {
+    //   this.setState({ pages: [] });
+    //   // this.loadPdf();
+    // }
   }
 
   loadPdf = async () => {
@@ -192,7 +210,11 @@ export default class PdfViewer extends React.Component<
 
     const meta = await pdf.getMetadata();
     const outline = await pdf.getOutline();
-    console.log(outline.map(x => x.title), meta.info.Title, outline.map(x => x.title)[0]);
+    console.log(
+      outline.map(x => x.title),
+      meta.info.Title,
+      outline.map(x => x.title)[0]
+    );
 
     this.setState({ meta, outline });
 
@@ -219,7 +241,7 @@ export default class PdfViewer extends React.Component<
     // COLUMN LEFT EDGES
     const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
       t => t.left
-    )
+    );
 
     const leftXHist = makeHistogram(leftXs);
     const leftXBinCounts = leftXHist.map(x => x.length);
@@ -285,7 +307,7 @@ export default class PdfViewer extends React.Component<
                   text={page.text}
                   columnLefts={this.state.columnLefts}
                   linesOfText={page.linesOfText}
-                  images={page.images}
+                  // images={page.images}
                   height2color={this.state.height2color}
                   fontNames2color={this.state.fontNames2color}
                 />
