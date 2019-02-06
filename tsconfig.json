@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
     "noImplicitThis": false,
-    "alwaysStrict": true,
+    "alwaysStrict": false,
     "listEmittedFiles": false,
     "noImplicitReturns": true,
     "removeComments": true,

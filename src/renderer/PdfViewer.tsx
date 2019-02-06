@@ -28,7 +28,7 @@ import {
 } from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
-import { loadPdfPages, loadPageJson } from "./io";
+import { loadPdfPages, loadPageJson, PageOfText } from "./io";
 
 export interface LineOfText {
   id: string;
@@ -56,7 +56,7 @@ export interface Image {
 interface Page {
   pageNumber: number;
   viewport: any; // pdfjs.PDFPageViewport;
-  text: TextItem[];
+  text: PageOfText;
   page: any; // pdfjs.PDFPageProxy;
   linesOfText: LineOfText[];
   // images: Image[];
@@ -71,7 +71,7 @@ import { PathInfo } from "./App";
 const PdfViewerDefaults = {
   props: { pageNumbersToLoad: [] as number[], pathInfo: {} as PathInfo },
   state: {
-    scale: 1, // todo scale
+    scale: 2, // todo scale
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
@@ -205,92 +205,88 @@ export default class PdfViewer extends React.Component<
 
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pathInfo !== this.props.pathInfo) {
-      
-      
       await this.loadFiles()
     }
   }
     
 
-  loadPdf = async () => {
-    const pdf = await pdfjs.getDocument({
-      url: this.props.pdfPath,
-      // @ts-ignore
-      cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
-      cMapPacked: true,
-      stopAtErrors: false
-    });
+  // loadPdf = async () => {
+  //   const pdf = await pdfjs.getDocument({
+  //     url: this.props.pdfPath,
+  //     // @ts-ignore
+  //     cMapUrl: "../node_modules/pdfjs-dist/cmaps/",
+  //     cMapPacked: true,
+  //     stopAtErrors: false
+  //   });
 
-    const meta = await pdf.getMetadata();
-    const outline = await pdf.getOutline();
-    console.log(
-      outline.map(x => x.title),
-      meta.info.Title,
-      outline.map(x => x.title)[0]
-    );
+  //   const meta = await pdf.getMetadata();
+  //   const outline = await pdf.getOutline();
+  //   console.log(
+  //     outline.map(x => x.title),
+  //     meta.info.Title,
+  //     outline.map(x => x.title)[0]
+  //   );
 
-    this.setState({ meta, outline });
+  //   this.setState({ meta, outline });
 
-    await this.loadPages(pdf, this.props.pageNumbersToLoad);
+  //   await this.loadPages(pdf, this.props.pageNumbersToLoad);
 
-    const makeHistogram = histogram();
-    let _fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
-      t => t.transform[0]
-    );
-    let fontHeights = unique(_fontHeights).sort();
-    let height2color = fontHeights.reduce((res, height, ix) => {
-      return { ...res, [height + ""]: brewer12[ix % 12] };
-    }, {});
+  //   const makeHistogram = histogram();
+  //   let _fontHeights = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+  //     t => t.transform[0]
+  //   );
+  //   let fontHeights = unique(_fontHeights).sort();
+  //   let height2color = fontHeights.reduce((res, height, ix) => {
+  //     return { ...res, [height + ""]: brewer12[ix % 12] };
+  //   }, {});
 
-    let _fontNames = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
-      t => t.style.fontFamily
-    );
+  //   let _fontNames = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+  //     t => t.style.fontFamily
+  //   );
 
-    let fontNames = unique(_fontNames).sort();
-    let fontNames2color = fontNames.reduce((res, name, ix) => {
-      return { ...res, [name + ""]: brewer12[ix % 12] };
-    }, {});
+  //   let fontNames = unique(_fontNames).sort();
+  //   let fontNames2color = fontNames.reduce((res, name, ix) => {
+  //     return { ...res, [name + ""]: brewer12[ix % 12] };
+  //   }, {});
 
-    // COLUMN LEFT EDGES
-    const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
-      t => t.left
-    );
+  //   // COLUMN LEFT EDGES
+  //   const leftXs = flatten<TextItem>(this.state.pages.map(p => p.text)).map(
+  //     t => t.left
+  //   );
 
-    const leftXHist = makeHistogram(leftXs);
-    const leftXBinCounts = leftXHist.map(x => x.length);
-    const leftXMean = mean(leftXBinCounts);
-    const leftXStd = deviation(leftXBinCounts);
-    const leftXZscore = leftXBinCounts.map(x => (x - leftXMean) / leftXStd);
-    const zThresh = 1;
-    const columnLefts = leftXBinCounts.reduce((all, _val, ix) => {
-      if (leftXZscore[ix] > zThresh) {
-        // console.log(rollup(leftXHist[ix]))
-        all.push(Math.round(median(leftXHist[ix])));
-        return all;
-      } else {
-        return all;
-      }
-    }, []);
-    this.setState({ columnLefts, height2color, fontNames2color });
-    this.setState(
-      state => {
-        return produce(state, draft => {
-          draft.pages.forEach((page, i) => {
-            const lines = getLines(columnLefts, page.text, i);
-            page.linesOfText = lines;
-          });
-        });
-      },
-      () => console.log(this.state.pages[0])
-    );
-  };
+  //   const leftXHist = makeHistogram(leftXs);
+  //   const leftXBinCounts = leftXHist.map(x => x.length);
+  //   const leftXMean = mean(leftXBinCounts);
+  //   const leftXStd = deviation(leftXBinCounts);
+  //   const leftXZscore = leftXBinCounts.map(x => (x - leftXMean) / leftXStd);
+  //   const zThresh = 1;
+  //   const columnLefts = leftXBinCounts.reduce((all, _val, ix) => {
+  //     if (leftXZscore[ix] > zThresh) {
+  //       // console.log(rollup(leftXHist[ix]))
+  //       all.push(Math.round(median(leftXHist[ix])));
+  //       return all;
+  //     } else {
+  //       return all;
+  //     }
+  //   }, []);
+  //   this.setState({ columnLefts, height2color, fontNames2color });
+  //   this.setState(
+  //     state => {
+  //       return produce(state, draft => {
+  //         draft.pages.forEach((page, i) => {
+  //           const lines = getLines(columnLefts, page.text, i);
+  //           page.linesOfText = lines;
+  //         });
+  //       });
+  //     },
+  //     () => console.log(this.state.pages[0])
+  //   );
+  // };
 
   render() {
     const { pages } = this.state;
-    console.log(pages)
-    
+    console.log(pages)    
     const havePages = pages.length > 0;
-    // console.log("todo ctx.getImageData(sx, sy, sw, sh); on rect select");
 
     return (
       <>
@@ -308,12 +304,12 @@ export default class PdfViewer extends React.Component<
                   page={page.page}
                   viewport={page.viewport}
                 />
-                {/* <PageText
+                <PageText
                   key={"text-" + pageNum}
                   scale={this.state.scale}
-                  text={page.text}
-                  height={height}
-                /> */}
+                  pageOfText={page.text}
+                  // height={height}
+                />
                 {/* <PageSvg
                   scale={this.state.scale}
                   key={"svg-" + pageNum}

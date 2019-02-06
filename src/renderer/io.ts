@@ -230,7 +230,7 @@ export const fontStats = (pages: PageToDisplay[]) => {
   }, {});
 };
 
-export const getLeftEdgeOfColumns = (pages: PageToDisplay[]) => {
+export const getLeftEdgeOfColumns = (pages: PageOfText[]) => {
   const leftXs = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(
     t => t.left
   );
@@ -441,7 +441,7 @@ export interface Image {
   gTransform: string;
 }
 
-export type PageToDisplay = {
+export type PageOfText = {
   pageNumber: number;
   text: TextItemToDisplay[];
   viewportFlat: {
@@ -466,6 +466,7 @@ export type TextItemToDisplay = {
   style: { fontFamily: string; ascent: number; descent: number };
   fontHeight: number;
   fontWidth: number;
+  fontName: string;
   scaleX: number;
 };
 

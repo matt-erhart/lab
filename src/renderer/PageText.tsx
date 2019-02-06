@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
 import styled from "styled-components";
-
-export type TextItem = pdfjs.TextContentItem & {
-  id: number;
-  top: number;
-  left: number;
-  fallbackFontName: string;
-  style: { fontFamily: string; ascent: number; descent: number };
-};
+import { TextItemToDisplay, PageOfText } from "./io";
+// export type TextItem = pdfjs.TextContentItem & {
+//   id: number;
+//   top: number;
+//   left: number;
+//   fallbackFontName: string;
+//   style: { fontFamily: string; ascent: number; descent: number };
+// };
 
 const PageTextContainer = styled("div")<{ height: number; width: number }>`
   position: absolute;
@@ -18,7 +18,7 @@ const PageTextContainer = styled("div")<{ height: number; width: number }>`
 `;
 
 class AutoScaledText extends React.Component<{
-  textItem: TextItem;
+  textItem: TextItemToDisplay;
   scale: number;
 }> {
   divRef = React.createRef<HTMLDivElement>();
@@ -27,25 +27,27 @@ class AutoScaledText extends React.Component<{
     offsetY: 0,
     opacity: 1.0
   };
-
+  /**
+ * translateY(${Math.round(
+        1 - textItem.style.ascent
+      ) * 100}%)
+ */
   computeStyle = (
-    textItem: TextItem,
+    textItem: TextItemToDisplay,
     scale: number,
     scaleX: number
   ): React.CSSProperties => {
     return {
       height: "1em",
       fontFamily: `${textItem.fontName}, ${textItem.fallbackFontName}}`,
-      fontSize: `${textItem.transform[0] * scale}px`,
+      fontSize: `${textItem.fontHeight * scale}px`,
       position: "absolute",
-      top: textItem.top * scale + 3, // hack yet makes chrome+firefox happy
+      top: textItem.top * scale + 1 + Math.round(textItem.style.ascent * scale),
       left: textItem.left * scale,
-      transform: `scaleX(${scaleX}) translateY(${Math.round(
-        1 - textItem.style.ascent
-      ) * 100}%)`,
+      transform: `scaleX(${scaleX})`,
       transformOrigin: "left bottom",
       whiteSpace: "pre",
-      color: "transparent",
+      // color: "transparent",
       userSelect: "none"
     };
   };
@@ -74,10 +76,10 @@ class AutoScaledText extends React.Component<{
 
 const PageTextDefaults = {
   props: {
-    text: undefined as TextItem[],
-    width: 0,
-    height: 0,
-    scale: 0
+    pageOfText: {} as PageOfText,
+    // width: 0,
+    // height: 0,
+    scale: 1
   },
   state: {}
 };
@@ -90,9 +92,11 @@ export default class PageText extends React.PureComponent<
   state = PageTextDefaults.state;
 
   render() {
+    const { width, height } = this.props.pageOfText.viewportFlat;
+    const { scale } = this.props;
     return (
-      <PageTextContainer width={this.props.width} height={this.props.height}>
-        {this.props.text.map((textItem, i) => {
+      <PageTextContainer width={width * scale} height={height * scale}>
+        {this.props.pageOfText.text.map((textItem, i) => {
           return (
             <AutoScaledText
               key={i}
