@@ -174,30 +174,43 @@ export default class PdfViewer extends React.Component<
     }
   };
   async componentDidMount() {
+    await this.loadFiles()
+  }
+
+  loadFiles = async () => {
+    this.setState({pages: []})
     const {
       pathInfo: { pdfName, pdfPath, dir },
       pageNumbersToLoad
     } = this.props;
-    console.log(this.props)
-    
-    
+    console.log(pdfName)
     const [pdfPages, linesOfText, textToDisplay] = await Promise.all([
       loadPdfPages(pdfPath, pageNumbersToLoad),
       loadPageJson(dir, "linesOfText", pageNumbersToLoad),
       loadPageJson(dir, "textToDisplay", pageNumbersToLoad)
     ]);
-    console.log(pdfPages, linesOfText, textToDisplay);
-    // todo render it
 
-    // this.loadPdf();
+    let pages = [] as Page[]
+    for (let i in pdfPages) {
+      pages.push({
+        linesOfText: linesOfText[i],
+        page: pdfPages[i],
+        pageNumber: pageNumbersToLoad[i],
+        text: textToDisplay[i],
+        viewport: pdfPages[i].getViewport(this.state.scale)
+      })
+    }
+    this.setState({pages})
   }
 
-  componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
-    // if (prevProps.pdfPath !== this.props.pdfPath) {
-    //   this.setState({ pages: [] });
-    //   // this.loadPdf();
-    // }
+  async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
+    if (prevProps.pathInfo !== this.props.pathInfo) {
+      
+      
+      await this.loadFiles()
+    }
   }
+    
 
   loadPdf = async () => {
     const pdf = await pdfjs.getDocument({
@@ -274,6 +287,8 @@ export default class PdfViewer extends React.Component<
 
   render() {
     const { pages } = this.state;
+    console.log(pages)
+    
     const havePages = pages.length > 0;
     // console.log("todo ctx.getImageData(sx, sy, sw, sh); on rect select");
 
@@ -293,13 +308,13 @@ export default class PdfViewer extends React.Component<
                   page={page.page}
                   viewport={page.viewport}
                 />
-                <PageText
+                {/* <PageText
                   key={"text-" + pageNum}
                   scale={this.state.scale}
                   text={page.text}
                   height={height}
-                />
-                <PageSvg
+                /> */}
+                {/* <PageSvg
                   scale={this.state.scale}
                   key={"svg-" + pageNum}
                   svgWidth={width}
@@ -310,7 +325,7 @@ export default class PdfViewer extends React.Component<
                   // images={page.images}
                   height2color={this.state.height2color}
                   fontNames2color={this.state.fontNames2color}
-                />
+                /> */}
               </div>
             );
           })}
