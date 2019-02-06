@@ -2,7 +2,7 @@ import * as React from "react";
 import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
-import { TextItem } from "./PageText";
+import { PageOfText } from "./io";
 import {
   getRectCoords,
   flatten,
@@ -36,19 +36,18 @@ const PageSvgDefaults = {
   props: {
     svgWidth: 0,
     svgHeight: 0,
-    text: [] as TextItem[],
+    pageOfText: {} as PageOfText,
     columnLefts: [] as number[],
     linesOfText: [] as LineOfText[],
     images: [] as Image[],
     height2color: {} as any,
-    fontNames2color: {} as any,
-    scale: 1
+    fontNames2color: {} as any
   },
   state: {
     selectionRect: title,
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
-    showTextLineBoxes: false,
-    showTextBBoxes: true,
+    showTextLineBoxes: true,
+    showTextBBoxes: false,
     duration: 0,
     div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }
@@ -62,6 +61,7 @@ export default class PageSvg extends React.Component<
   divRef = React.createRef<HTMLDivElement>();
   selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
+
   componentDidMount() {
     // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
@@ -122,9 +122,8 @@ export default class PageSvg extends React.Component<
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
     const { x, y, width, height } = this.state.selectionRect;
-    const textCoords = this.props.text.map(t => {
-      const { left, top, width } = t;
-      const fontHeight = t.transform[0];
+    const textCoords = this.props.pageOfText.text.map(t => {
+      const { left, top, width, fontHeight } = t;
       return getRectCoords(left, top, width, fontHeight);
     });
   };
@@ -175,7 +174,7 @@ export default class PageSvg extends React.Component<
           str,
           top,
           height
-        } = this.props.text[id];
+        } = this.props.pageOfText.text[id];
 
         return { fontHeight: transform[0], fontFamily, str, top, height };
       });
@@ -243,7 +242,7 @@ export default class PageSvg extends React.Component<
 
   render() {
     const { x, y, width, height } = this.state.selectionRect;
-    const { scale } = this.props;
+    // const { scale } = this.props;
     return (
       <>
         <svg
@@ -251,7 +250,7 @@ export default class PageSvg extends React.Component<
           width={this.props.svgWidth}
           height={this.props.svgHeight}
         >
-          {this.props.images.length > 0 &&
+          {/* {this.props.images.length > 0 &&
             this.props.images.map((img, i) => {
               const { x, y, width, height } = img;
               const mat = img.gTransform
@@ -278,9 +277,9 @@ export default class PageSvg extends React.Component<
                   // }
                 />
               );
-            })}
+            })} */}
           {this.state.showTextBBoxes &&
-            this.props.text.map((t, i) => {
+            this.props.pageOfText.text.map((t, i) => {
               const color = this.props.height2color[t.transform[0] + ""];
               const fill = this.props.fontNames2color[t.style.fontFamily];
 
@@ -328,8 +327,8 @@ export default class PageSvg extends React.Component<
         >
           {this.props.linesOfText.length > 0 &&
             this.props.linesOfText.map((line, i) => {
-              const color = this.props.height2color[line.height + ""];
-
+              // const color = this.props.height2color[line.height + ""];
+              const color = 'lightgrey'
               return (
                 <div
                   draggable={false}
@@ -397,7 +396,7 @@ export default class PageSvg extends React.Component<
                   background: "white",
                   lineHeight: "1em",
                   ...this.state.div.style,
-                  fontSize: (this.state.div.style.fontSize * scale) * .92
+                  fontSize: this.state.div.style.fontSize
                 }}
               >
                 {this.state.div.text}
@@ -419,7 +418,7 @@ export default class PageSvg extends React.Component<
                     minHeight: 50,
                     minWidth: 200,
                     fontFamily: this.state.div.style.fontFamily,
-                    fontSize: 10*scale,
+                    fontSize: 10,
                     boxShadow: "0 2px 12px -6px #777"
                   }}
                 />

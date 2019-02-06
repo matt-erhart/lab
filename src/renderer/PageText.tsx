@@ -14,7 +14,6 @@ const PageTextContainer = styled("div")<{ height: number; width: number }>`
   position: absolute;
   height: ${props => props.height + "px"};
   width: ${props => props.width + "px"};
-  pointer-events: none;
 `;
 
 class AutoScaledText extends React.Component<{
@@ -47,8 +46,10 @@ class AutoScaledText extends React.Component<{
       transform: `scaleX(${scaleX})`,
       transformOrigin: "left bottom",
       whiteSpace: "pre",
-      // color: "transparent",
-      userSelect: "none"
+      color: "transparent",
+      // userSelect: "none",
+      outline: '1px solid grey'
+
     };
   };
 
@@ -84,6 +85,7 @@ const PageTextDefaults = {
   state: {}
 };
 
+// todo: solent superscript and text out of order even with highlight select
 export default class PageText extends React.PureComponent<
   typeof PageTextDefaults.props,
   typeof PageTextDefaults.state

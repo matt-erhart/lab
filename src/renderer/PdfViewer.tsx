@@ -63,6 +63,7 @@ interface Page {
 }
 
 import { PathInfo } from "./App";
+import { object } from "prop-types";
 
 /**
  * @class **PdfViewer**
@@ -90,107 +91,107 @@ export default class PdfViewer extends React.Component<
 > {
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
-  loadPages = async (pdf: PDFDocumentProxy, pageNumbersToLoad: number[]) => {
-    const { scale } = this.state;
-    const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
-    const willLoadAllPages = pageNumbersToLoad.length === 0;
-    const pageNumPropsOk =
-      !willLoadAllPages &&
-      Math.min(...pageNumbersToLoad) >= 0 &&
-      Math.max(...pageNumbersToLoad) <= Math.max(...allPageNumbers);
+  // loadPages = async (pdf: PDFDocumentProxy, pageNumbersToLoad: number[]) => {
+  //   const { scale } = this.state;
+  //   const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
+  //   const willLoadAllPages = pageNumbersToLoad.length === 0;
+  //   const pageNumPropsOk =
+  //     !willLoadAllPages &&
+  //     Math.min(...pageNumbersToLoad) >= 0 &&
+  //     Math.max(...pageNumbersToLoad) <= Math.max(...allPageNumbers);
 
-    let pageNumbers;
-    if (willLoadAllPages) {
-      pageNumbers = allPageNumbers;
-    } else {
-      pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
-    }
+  //   let pageNumbers;
+  //   if (willLoadAllPages) {
+  //     pageNumbers = allPageNumbers;
+  //   } else {
+  //     pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
+  //   }
 
-    for (const pageNumber of pageNumbers) {
-      const page = await pdf.getPage(pageNumber);
-      const viewport = page.getViewport(this.state.scale);
-      const text = await page.getTextContent();
+  //   for (const pageNumber of pageNumbers) {
+  //     const page = await pdf.getPage(pageNumber);
+  //     const viewport = page.getViewport(this.state.scale);
+  //     const text = await page.getTextContent();
 
-      // // get images
-      const opList = await page.getOperatorList();
-      let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
-      svgGfx.embedFonts = true;
-      const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
+  //     // // get images
+  //     const opList = await page.getOperatorList();
+  //     let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
+  //     svgGfx.embedFonts = true;
+  //     const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
 
-      const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
-      // document.body.append(svg)
-      let images = [] as Image[];
-      for (let img of imgs) {
-        images.push({
-          x: img.getAttribute("x") * scale,
-          y: img.getAttribute("y") * scale,
-          width: img.getAttribute("width") * scale,
-          height: img.getAttribute("height") * scale,
-          "xlink:href": img.getAttribute("xlink:href"),
-          transform: img.getAttribute("transform"),
-          gTransform: img.parentNode.getAttribute("transform")
-        });
-      }
+  //     const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
+  //     // document.body.append(svg)
+  //     let images = [] as Image[];
+  //     for (let img of imgs) {
+  //       images.push({
+  //         x: img.getAttribute("x") * scale,
+  //         y: img.getAttribute("y") * scale,
+  //         width: img.getAttribute("width") * scale,
+  //         height: img.getAttribute("height") * scale,
+  //         "xlink:href": img.getAttribute("xlink:href"),
+  //         transform: img.getAttribute("transform"),
+  //         gTransform: img.parentNode.getAttribute("transform")
+  //       });
+  //     }
 
-      const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
+  //     const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
 
-      const alignedTextContent = await Promise.all(
-        text.items.map(async (tc, i) => {
-          const fontData = await (page as any).commonObjs.ensureObj(
-            tc.fontName
-          );
+  //     const alignedTextContent = await Promise.all(
+  //       text.items.map(async (tc, i) => {
+  //         const fontData = await (page as any).commonObjs.ensureObj(
+  //           tc.fontName
+  //         );
 
-          const [, , , offsetY, x, y] = tc.transform;
-          const top = yMax - (y + offsetY);
-          const left = x - xMin;
-          const fontHeight = tc.transform[0];
+  //         const [, , , offsetY, x, y] = tc.transform;
+  //         const top = yMax - (y + offsetY);
+  //         const left = x - xMin;
+  //         const fontHeight = tc.transform[0];
 
-          return {
-            ...tc,
-            id: i,
-            top: top * this.state.scale,
-            left: left * this.state.scale,
-            width: tc.width * this.state.scale,
-            height: tc.height * this.state.scale,
-            fallbackFontName: fontData.data
-              ? fontData.data.fallbackName
-              : "sans-serif",
-            style: text.styles[tc.fontName]
-          };
-        })
-      );
-      this.setState(state => {
-        return {
-          pages: state.pages.concat({
-            pageNumber,
-            viewport,
-            text: alignedTextContent,
-            page,
-            linesOfText: [],
-            images
-          })
-        };
-      });
-    }
-  };
+  //         return {
+  //           ...tc,
+  //           id: i,
+  //           top: top * this.state.scale,
+  //           left: left * this.state.scale,
+  //           width: tc.width * this.state.scale,
+  //           height: tc.height * this.state.scale,
+  //           fallbackFontName: fontData.data
+  //             ? fontData.data.fallbackName
+  //             : "sans-serif",
+  //           style: text.styles[tc.fontName]
+  //         };
+  //       })
+  //     );
+  //     this.setState(state => {
+  //       return {
+  //         pages: state.pages.concat({
+  //           pageNumber,
+  //           viewport,
+  //           text: alignedTextContent,
+  //           page,
+  //           linesOfText: [],
+  //           images
+  //         })
+  //       };
+  //     });
+  //   }
+  // };
   async componentDidMount() {
-    await this.loadFiles()
+    await this.loadFiles();
   }
 
   loadFiles = async () => {
-    this.setState({pages: []})
+    this.setState({ pages: [] });
     const {
       pathInfo: { pdfName, pdfPath, dir },
       pageNumbersToLoad
     } = this.props;
-    console.log(pdfName)
+
     const [pdfPages, linesOfText, textToDisplay] = await Promise.all([
       loadPdfPages(pdfPath, pageNumbersToLoad),
       loadPageJson(dir, "linesOfText", pageNumbersToLoad),
       loadPageJson(dir, "textToDisplay", pageNumbersToLoad)
     ]);
 
-    let pages = [] as Page[]
+    let pages = [] as Page[];
     for (let i in pdfPages) {
       pages.push({
         linesOfText: linesOfText[i],
@@ -198,17 +199,62 @@ export default class PdfViewer extends React.Component<
         pageNumber: pageNumbersToLoad[i],
         text: textToDisplay[i],
         viewport: pdfPages[i].getViewport(this.state.scale)
-      })
+      });
     }
-    this.setState({pages})
-  }
+    if (this.state.scale !== 1){
+      const scaledPages = this.scalePages(pages, 1, this.state.scale);
+      console.log("scaled", scaledPages);
+      this.setState({ pages: scaledPages });
+    } else {
+      this.setState({ pages })
+    }
+    
+
+  };
+
+  scale = (obj, keyNames: string[], prevScale, scale) => {
+    const scaled = keyNames.reduce((all, keyName, ix) => {
+      if (!obj.hasOwnProperty(keyName)) return all;
+      return { ...all, [keyName]: (obj[keyName] / prevScale) * scale };
+    }, {});
+    
+    return scaled;
+  };
+
+  scalePages = (pages: Page[], prevScale: number = 1, scale: number = 1) => {
+    let keysToScale = [
+      "height",
+      "left",
+      "top",
+      "width",
+    
+    ];
+
+    let scaledPages = [] as Page[];
+    for (let [ix, page] of pages.entries()) {
+      const linesOfText = page.linesOfText.map(lot => {
+        return {
+          ...lot,
+          ...this.scale(lot, keysToScale, prevScale, scale)
+        };
+      });
+      const text = page.text.text.map(t => {
+        return {
+          ...t,
+          ...this.scale(t, keysToScale, prevScale, scale)
+        };
+      });
+      const viewport = page.page.getViewport(scale);
+      scaledPages.push({ ...page, linesOfText, viewport });
+    }
+    return scaledPages;
+  };
 
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pathInfo !== this.props.pathInfo) {
-      await this.loadFiles()
+      await this.loadFiles();
     }
   }
-    
 
   // loadPdf = async () => {
   //   const pdf = await pdfjs.getDocument({
@@ -285,7 +331,7 @@ export default class PdfViewer extends React.Component<
 
   render() {
     const { pages } = this.state;
-    console.log(pages)    
+    console.log(pages);
     const havePages = pages.length > 0;
 
     return (
@@ -294,35 +340,31 @@ export default class PdfViewer extends React.Component<
           pages.map((page, pageNum) => {
             const { width, height } = page.viewport;
             return (
-              <div
-                draggable={false}
-                key={pageNum}
-                style={{ position: "relative", width, height }}
-              >
+              <React.Fragment key={pageNum}>
                 <PageCanvas
                   key={"canvas-" + pageNum}
                   page={page.page}
                   viewport={page.viewport}
                 />
-                <PageText
+                {/* <PageText
                   key={"text-" + pageNum}
                   scale={this.state.scale}
                   pageOfText={page.text}
                   // height={height}
-                />
-                {/* <PageSvg
-                  scale={this.state.scale}
+                /> */}
+                <PageSvg
+                  // scale={this.state.scale}
                   key={"svg-" + pageNum}
                   svgWidth={width}
                   svgHeight={height}
-                  text={page.text}
-                  columnLefts={this.state.columnLefts}
+                  pageOfText={page.text}
+                  columnLefts={this.state.columnLefts.map(x=>x*this.state.scale)}
                   linesOfText={page.linesOfText}
                   // images={page.images}
                   height2color={this.state.height2color}
                   fontNames2color={this.state.fontNames2color}
-                /> */}
-              </div>
+                />
+              </React.Fragment>
             );
           })}
         {/* <div>
