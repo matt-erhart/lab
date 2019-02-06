@@ -13,9 +13,11 @@ import {
   PDFTreeNode
 } from "pdfjs-dist";
 const pdfjs: PDFJSStatic = _pdfjs as any;
+import jsonfile = require("jsonfile");
+import path = require("path");
 
 import PageCanvas from "./PageCanvas";
-import PageText, { TextItem } from "./PageText";
+import PageText from "./PageText";
 import PageSvg from "./PageSvg";
 
 import {
@@ -185,11 +187,13 @@ export default class PdfViewer extends React.Component<
       pageNumbersToLoad
     } = this.props;
 
-    const [pdfPages, linesOfText, textToDisplay] = await Promise.all([
+    const [pdfPages, linesOfText, textToDisplay, columnLefts] = await Promise.all([
       loadPdfPages(pdfPath, pageNumbersToLoad),
       loadPageJson(dir, "linesOfText", pageNumbersToLoad),
-      loadPageJson(dir, "textToDisplay", pageNumbersToLoad)
+      loadPageJson(dir, "textToDisplay", pageNumbersToLoad),
+      jsonfile.readFile(path.join(dir, 'columnLefts.json'))
     ]);
+
 
     let pages = [] as Page[];
     for (let i in pdfPages) {
@@ -204,9 +208,9 @@ export default class PdfViewer extends React.Component<
     if (this.state.scale !== 1){
       const scaledPages = this.scalePages(pages, 1, this.state.scale);
       console.log("scaled", scaledPages);
-      this.setState({ pages: scaledPages });
+      this.setState({ pages: scaledPages, columnLefts });
     } else {
-      this.setState({ pages })
+      this.setState({ pages, columnLefts })
     }
     
 

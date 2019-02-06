@@ -169,14 +169,13 @@ export default class PageSvg extends React.Component<
     const text = selectedLines.map(sl => {
       return sl.textIds.map(id => {
         const {
-          transform,
-          style: { fontFamily },
+          fontHeight,
           str,
-          top,
-          height
-        } = this.props.pageOfText.text[id];
+          style: { fontFamily },
+          top
+        } = this.props.pageOfText.text.find(x => x.id === id);
 
-        return { fontHeight: transform[0], fontFamily, str, top, height };
+        return { fontHeight, fontFamily, str, top };
       });
     });
     const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
@@ -184,8 +183,7 @@ export default class PageSvg extends React.Component<
     const extractedText = flatten(text)
       .reduce((res, t) => {
         return res + (t as any).str.replace(/-$/, ""); // end with dash
-      }, "")
-      .replace(/\s+/g, " ");
+      }, "").replace(/\s+/g, " ");
 
     //@ts-ignore
     this.setState({
@@ -242,7 +240,7 @@ export default class PageSvg extends React.Component<
 
   render() {
     const { x, y, width, height } = this.state.selectionRect;
-    // const { scale } = this.props;
+
     return (
       <>
         <svg
@@ -280,7 +278,7 @@ export default class PageSvg extends React.Component<
             })} */}
           {this.state.showTextBBoxes &&
             this.props.pageOfText.text.map((t, i) => {
-              const color = this.props.height2color[t.transform[0] + ""];
+              // const color = this.props.height2color[t.transform[0] + ""];
               const fill = this.props.fontNames2color[t.style.fontFamily];
 
               return (
@@ -289,9 +287,9 @@ export default class PageSvg extends React.Component<
                   x={t.left}
                   y={t.top}
                   width={t.width}
-                  height={t.transform[0]}
+                  height={t.fontHeight}
                   style={{
-                    stroke: color,
+                    stroke: "lightblue",
                     fill: fill,
                     strokeWidth: 2,
                     opacity: 0.5
@@ -328,7 +326,7 @@ export default class PageSvg extends React.Component<
           {this.props.linesOfText.length > 0 &&
             this.props.linesOfText.map((line, i) => {
               // const color = this.props.height2color[line.height + ""];
-              const color = 'lightgrey'
+              const color = "lightgrey";
               return (
                 <div
                   draggable={false}
@@ -389,17 +387,16 @@ export default class PageSvg extends React.Component<
                 style={{
                   position: "absolute",
                   top: y,
-                  left: x,
+                  left: x - 5,
                   width: width + 5,
                   height: height,
-                  border: "1px solid grey",
-                  background: "white",
+                  border: "2px solid lightblue",
                   lineHeight: "1em",
-                  ...this.state.div.style,
-                  fontSize: this.state.div.style.fontSize
+                  backgroundColor: 'transparent'
+
                 }}
               >
-                {this.state.div.text}
+                
               </div>
               <PopupPortal
                 referenceElement={this.selectionRectRef.current}
