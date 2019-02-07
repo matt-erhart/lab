@@ -6,6 +6,7 @@ import fs = require("fs");
 import os = require("os");
 import path = require("path");
 import { ls, listDirs } from "./io";
+import Select from "react-select";
 
 import styled from "styled-components";
 const NavBar = styled.div`
@@ -81,28 +82,31 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
     this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
   }
 
+  styleFn(provided, state) {
+    return { ...provided, minWidth: "200px" };
+  }
+
   render() {
     const { currentPathInfo, pathInfo } = this.state;
+    const fileOptions = pathInfo.map(info => ({
+      value: info,
+      label: info.pdfName.replace(".pdf", "")
+    }));
 
     return (
       <ViewPortContainer>
         <NavBar>
-          {pathInfo.length > 0 &&
-            pathInfo.map(info => {
-              return (
-                <NavItem
-                  key={info.pdfName}
-                  onClick={e => {
-                    this.setState({ currentPathInfo: info });
-                  }}
-                  style={{
-                    color: currentPathInfo.dir === info.dir ? "white" : "black"
-                  }}
-                >
-                  {info.pdfName.replace(".pdf", "")}
-                </NavItem>
-              );
-            })}
+          <div style={{ flex: 1 }}>
+            {pathInfo.length > 0 && (
+              <Select
+                style={this.styleFn}
+                options={fileOptions}
+                onChange={opt => {
+                  this.setState({ currentPathInfo: opt.value });
+                }}
+              />
+            )}
+          </div>
         </NavBar>
         <MainContainer>
           {Object.keys(currentPathInfo).length > 0 && (

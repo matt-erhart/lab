@@ -17,15 +17,30 @@ export default class PageCanvas extends React.Component<
   private canvasCrop = React.createRef<HTMLCanvasElement>();
   static defaultProps = PageCanvasDefaults.props;
 
-  async componentDidMount() {
+  renderCanvas = async () => {
     const { page, viewport } = this.props;
     this.canvasLayer.current.height = viewport.height;
     this.canvasLayer.current.width = viewport.width;
     const canvasContext = this.canvasLayer.current.getContext("2d");
-    
-    await page.render({ canvasContext, viewport,  });
-    
+    canvasContext.clearRect(0, 0, viewport.width, viewport.height);
+    try {
+      await page.render({ canvasContext, viewport });
+    } catch (err) {
+      console.log('todo this error: need to cancel previous render')
+    }
+  };
+
+  async componentDidMount() {
+    await this.renderCanvas();
+
     // this.getCanvasImage();
+  }
+
+  async componentDidUpdate(prevProps) {
+    const { viewport } = this.props;
+    if (prevProps.viewport !== viewport) {
+      await this.renderCanvas();
+    }
   }
 
   getCanvasImage = () => {
@@ -40,7 +55,6 @@ export default class PageCanvas extends React.Component<
   };
 
   render() {
-    
     return (
       <>
         {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}
