@@ -129,7 +129,6 @@ export default class PdfViewer extends React.Component<
     }
     if (this.state.scale !== 1) {
       const scaledPages = this.scalePages(pages, 1, this.state.scale);
-      console.log("scaled", scaledPages);
       this.setState({ pages: scaledPages, columnLefts });
     } else {
       this.setState({ pages, columnLefts });
@@ -188,7 +187,7 @@ export default class PdfViewer extends React.Component<
 
   render() {
     const { pages } = this.state;
-    console.log(pages);
+    
     const havePages = pages.length > 0;
 
     return (

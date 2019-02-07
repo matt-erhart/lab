@@ -1,5 +1,9 @@
 import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
+export const isCancelException = error => (
+  error.name === 'RenderingCancelledException'
+  || error.name === 'PromiseCancelledException'
+);
 
 const PageCanvasDefaults = {
   props: {
@@ -13,21 +17,39 @@ export default class PageCanvas extends React.Component<
   typeof PageCanvasDefaults.state
 > {
   state = PageCanvasDefaults.state;
+  private renderTask;
   private canvasLayer = React.createRef<HTMLCanvasElement>();
   private canvasCrop = React.createRef<HTMLCanvasElement>();
   static defaultProps = PageCanvasDefaults.props;
 
   renderCanvas = async () => {
     const { page, viewport } = this.props;
+
     this.canvasLayer.current.height = viewport.height;
     this.canvasLayer.current.width = viewport.width;
     const canvasContext = this.canvasLayer.current.getContext("2d");
-    canvasContext.clearRect(0, 0, viewport.width, viewport.height);
-    try {
-      await page.render({ canvasContext, viewport });
-    } catch (err) {
-      console.log('todo this error: need to cancel previous render')
+    // draw the page into the canvas
+    var pageTimestamp = new Date().getTime();
+
+    var renderContext = {
+      canvasContext: canvasContext,
+      viewport: viewport
+    };
+
+    if (this.renderTask && this.renderTask._internalRenderTask.running) {
+      this.renderTask.cancel();
     }
+
+    this.renderTask = page.render({ canvasContext, viewport });
+    this.renderTask
+      .then(() => this.renderTask = null)
+      .catch(err => {
+        if (isCancelException(err)) {
+          return null
+        } else {
+          throw(err)
+        }
+      });
   };
 
   async componentDidMount() {
