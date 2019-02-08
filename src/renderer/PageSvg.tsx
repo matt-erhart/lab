@@ -125,7 +125,7 @@ export default class PageSvg extends React.Component<
     const textCoords = this.props.pageOfText.text.map(t => {
       const { left, top, width, fontHeight } = t;
       return getRectCoords(left, top, width, fontHeight);
-    });
+    });    
   };
 
   getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
@@ -164,8 +164,8 @@ export default class PageSvg extends React.Component<
       { x: Infinity, y: Infinity, width: 0, bottom: 0, height: 0 }
     );
     const { bottom, ...newSelect } = bbox;
-    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
+    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
     const text = selectedLines.map(sl => {
       return sl.textIds.map(id => {
         const {

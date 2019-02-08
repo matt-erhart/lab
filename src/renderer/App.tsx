@@ -9,6 +9,7 @@ import { ls, listDirs } from "./io";
 import Select from "react-select";
 
 import styled from "styled-components";
+
 const NavBar = styled.div`
   background-color: #23629f;
   font-size: 30px;
@@ -17,6 +18,8 @@ const NavBar = styled.div`
   align-items: stretch;
   flex-flow: row;
   width: 100%;
+  flex: 0;
+  min-height: 50px;
 `;
 
 const NavItem = styled.a`
@@ -31,18 +34,22 @@ const NavItem = styled.a`
 `;
 
 const ViewPortContainer = styled.div`
-  min-height: 100vh;
+  max-height: 100vh;
   width: 100vw;
   background-color: grey;
   box-sizing: border-box;
   overflow: hidden;
   padding: 8px;
+  flex-flow: column;
+  display: flex;
 `;
 
 const MainContainer = styled.div`
-  overflow: scroll;
   margin-top: 9px;
-  box-sizing: border-box;
+  flex: 1;
+  background-color: white;
+  overflow: auto;
+  position: relative;
 `;
 
 export interface PathInfo {
@@ -109,8 +116,11 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
           </div>
         </NavBar>
         <MainContainer>
+          {/* <div ><div style={{position: 'relative'}}>hey</div></div>
+          <div ><div style={{position: 'relative'}}>123</div></div> */}
+            
           {Object.keys(currentPathInfo).length > 0 && (
-            <PdfViewer pathInfo={currentPathInfo} pageNumbersToLoad={[1]} />
+            <PdfViewer pathInfo={currentPathInfo} pageNumbersToLoad={[1,2]} />
           )}
         </MainContainer>
       </ViewPortContainer>

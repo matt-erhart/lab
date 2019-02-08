@@ -178,78 +178,66 @@ export default class PdfViewer extends React.Component<
       const deltaY = e.deltaY;
       this.setState(state => {
         const prevScale = this.state.scale;
-        const newScale = prevScale - (deltaY/ 1000);
-        const scaledPages =  this.scalePages(state.pages, prevScale, newScale);
-        return {pages: scaledPages, scale: newScale};
+        const newScale = prevScale - deltaY / 1000;
+        const scaledPages = this.scalePages(state.pages, prevScale, newScale);
+        return { pages: scaledPages, scale: newScale };
       });
     }
   };
 
   render() {
     const { pages } = this.state;
-    
     const havePages = pages.length > 0;
 
-    return (
-      <>
-        {havePages &&
-          pages.map((page, pageNum) => {
-            const { width, height } = page.viewport;
-            return (
-              <div
-                key={pageNum}
-                onWheel={this.zoom}
-              >
-                <PageCanvas
-                  key={"canvas-" + pageNum}
-                  page={page.page}
-                  viewport={page.viewport}
-                />
-                {/* <PageText
+    return pages.map((page, pageNum) => {
+      const { width, height } = page.viewport;
+      return (
+        <div key={pageNum} onWheel={this.zoom} style={{ width, height }}>
+          <PageCanvas
+            key={"canvas-" + pageNum}
+            page={page.page}
+            viewport={page.viewport}
+          />
+          {/* <PageText
                   key={"text-" + pageNum}
                   scale={this.state.scale}
                   pageOfText={page.text}
                   // height={height}
                 /> */}
-                <PageSvg
-                  // scale={this.state.scale}
-                  key={"svg-" + pageNum}
-                  svgWidth={width}
-                  svgHeight={height}
-                  pageOfText={page.text}
-                  columnLefts={this.state.columnLefts.map(
-                    x => x * this.state.scale
-                  )}
-                  linesOfText={page.linesOfText}
-                  // images={page.images}
-                  height2color={this.state.height2color}
-                  fontNames2color={this.state.fontNames2color}
-                />
-              </div>
-            );
-          })}
-        {/* <div>
-          hey
-          {flatten<Image>(pages.map(p => p.images)).map(img => {
-            const { src, ...style } = img;
-            return (
-              <img
-                src={src}
-                style={
-                  {
-                    // ...style,
-                    maxWidth: pages[0].viewport.width
-                  }
-                }
-              />
-            );
-          })}
-        </div> */}
-      </>
-    );
+          <PageSvg
+            // scale={this.state.scale}
+            key={"svg-" + pageNum}
+            svgWidth={width}
+            svgHeight={height}
+            pageOfText={page.text}
+            columnLefts={this.state.columnLefts.map(x => x * this.state.scale)}
+            linesOfText={page.linesOfText}
+            // images={page.images}
+            height2color={this.state.height2color}
+            fontNames2color={this.state.fontNames2color}
+          />
+        </div>
+      );
+    });
   }
 }
-
+// {/* <div>
+//   hey
+//   {flatten<Image>(pages.map(p => p.images)).map(img => {
+//     const { src, ...style } = img;
+//     return (
+//       <img
+//         src={src}
+//         style={
+//           {
+//             // ...style,
+//             maxWidth: pages[0].viewport.width
+//           }
+//         }
+//       />
+//     );
+//   })}
+// </div> */}
 // const getLines = (
 //   columnLefts: number[],
 //   textItems: TextItem[],
