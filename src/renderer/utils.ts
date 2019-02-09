@@ -16,6 +16,12 @@ export const brewer12 = [
   "#b15928"
 ];
 
+import uuidv1 = require("uuid/v1");
+export const withUid = (obj = {}) => {
+  return {id: uuidv1(), ...obj}
+}
+
+
 export function roundedToFixed(_float: number, _digits: number){
   var rounder = Math.pow(10, _digits);
   return (Math.round(_float * rounder) / rounder).toFixed(_digits);

@@ -17,12 +17,28 @@ import produce from "immer";
 import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 
+interface viewBox {
+  // aka rectange
+  id: id;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  imgPath?: string;
+  text?: string;
+  userId: string;
+  pubId: string;
+  pageNumber: number;
+  x1: number; // start of drag
+  y1: number; // start of drag
+}
+
 const title = {
   height: 0,
   width: 0,
-  x: 89,
+  left: 89,
   x1: 89,
-  y: 53,
+  top: 53,
   y1: 53
 };
 
@@ -82,7 +98,7 @@ export default class PageSvg extends React.Component<
             div: { ...this.state.div, text: "" },
             selectionRect: {
               ...selectionRect,
-              ...{ x1: mx, y1: my, x: mx, y: my, width: 0, height: 0 }
+              ...{ x1: mx, y1: my, left: mx, top: my, width: 0, height: 0 }
             }
           });
           break;
@@ -102,8 +118,8 @@ export default class PageSvg extends React.Component<
             const out = {
               selectionRect: {
                 ...state.selectionRect,
-                x: newX,
-                y: newY,
+                left: newX,
+                top: newY,
                 width: Math.abs(width),
                 height: Math.abs(height)
               }
@@ -121,7 +137,7 @@ export default class PageSvg extends React.Component<
   }
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
-    const { x, y, width, height } = this.state.selectionRect;
+    const { width, height } = this.state.selectionRect;
     const textCoords = this.props.pageOfText.text.map(t => {
       const { left, top, width, fontHeight } = t;
       return getRectCoords(left, top, width, fontHeight);
@@ -129,8 +145,8 @@ export default class PageSvg extends React.Component<
   };
 
   getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
-    const { x, y, width, height } = selectionRect;
-    const edge = getRectEdges(x, y, width, height);
+    const { left, top, width, height } = selectionRect;
+    const edge = getRectEdges(left, top, width, height);
 
     const selectedColumnIx = this.props.columnLefts.reduce(
       // todo util: betweenRanges
@@ -150,18 +166,18 @@ export default class PageSvg extends React.Component<
 
     const bbox = selectedLines.reduce(
       (res, sl) => {
-        const newY = Math.min(sl.top, res.y);
+        const newY = Math.min(sl.top, res.top);
         const newBottom = Math.max(sl.top + sl.height, res.bottom);
         const bbox = {
-          x: Math.min(sl.left, res.x),
-          y: newY,
+          left: Math.min(sl.left, res.left),
+          top: newY,
           width: Math.max(sl.width, res.width),
           bottom: newBottom,
           height: newBottom - newY
         };
         return bbox;
       },
-      { x: Infinity, y: Infinity, width: 0, bottom: 0, height: 0 }
+      { left: Infinity, top: Infinity, width: 0, bottom: 0, height: 0 }
     );
     const { bottom, ...newSelect } = bbox;
 
@@ -239,8 +255,9 @@ export default class PageSvg extends React.Component<
   }
 
   render() {
-    const { x, y, width, height } = this.state.selectionRect;
-
+    const { left, top, width, height } = this.state.selectionRect;
+    console.log(this.state.selectionRect)
+    
     return (
       <>
         <svg
@@ -364,7 +381,7 @@ export default class PageSvg extends React.Component<
             })} */}
           <Spring
             native
-            to={{ x, y, width, height }}
+            to={{ left, top, width, height }}
             config={{ duration: this.state.duration }}
           >
             {props => (
@@ -372,10 +389,10 @@ export default class PageSvg extends React.Component<
                 ref={this.selectionRectRef}
                 style={{
                   position: "absolute",
-                  top: props.y,
-                  left: props.x,
-                  width: props.width,
-                  height: props.height,
+                  top: top,
+                  left: left,
+                  width: width,
+                  height: height,
                   border: "1px solid grey"
                 }}
               />
@@ -386,8 +403,8 @@ export default class PageSvg extends React.Component<
               <div
                 style={{
                   position: "absolute",
-                  top: y,
-                  left: x - 5,
+                  top: top,
+                  left: left - 5,
                   width: width + 5,
                   height: height,
                   border: "2px solid lightblue",

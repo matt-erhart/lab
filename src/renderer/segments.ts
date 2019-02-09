@@ -1,19 +1,5 @@
 type id = string | number;
 
-interface pubBox {
-  // aka rectange
-  id: id;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  imgPath: string;
-  text: string;
-  userId: string;
-  pubId: string;
-  pageNumber: number;
-}
-
 interface textNode {
   nodes: textNode[];
 }

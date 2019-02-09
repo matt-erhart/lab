@@ -7,8 +7,9 @@ import os = require("os");
 import path = require("path");
 import { ls, listDirs } from "./io";
 import Select from "react-select";
-
+import { Portal } from "./Portal";
 import styled from "styled-components";
+
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -48,8 +49,9 @@ const MainContainer = styled.div`
   margin-top: 9px;
   flex: 1;
   background-color: white;
-  overflow: auto;
+  overflow: none;
   position: relative;
+  display: flex;
 `;
 
 export interface PathInfo {
@@ -69,6 +71,8 @@ const AppDefaults = {
 export class App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
   async componentDidMount() {
+    
+    // this.mainContainerRef.current.scrollTo(107.14, 490);
     const { homedir, username } = os.userInfo();
     const pdfRootDir = path.join(homedir, "pdfs");
     const pdfDirs = await listDirs(pdfRootDir);
@@ -116,11 +120,17 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
           </div>
         </NavBar>
         <MainContainer>
-          {/* <div ><div style={{position: 'relative'}}>hey</div></div>
-          <div ><div style={{position: 'relative'}}>123</div></div> */}
-            
           {Object.keys(currentPathInfo).length > 0 && (
-            <PdfViewer pathInfo={currentPathInfo} pageNumbersToLoad={[1,2]} />
+            <PdfViewer
+              pathInfo={currentPathInfo}
+              pageNumbersToLoad={[1, 2]}
+              viewBox={{
+                left: 107.148 - 20,
+                top: 490.84180000000083 - 20,
+                width: "50%",
+                height: "100%"
+              }}
+            />
           )}
         </MainContainer>
       </ViewPortContainer>
@@ -130,8 +140,6 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
 
 document.body.style.margin = "0px";
 document.body.style.padding = "0px";
-// document.documentElement.style.margin = "0px";
-// document.documentElement.style.padding = "0px";
 document.body.style.boxSizing = "border-box";
 document.body.style.overflow = "hidden";
 document.body.style.fontFamily = "Arial";

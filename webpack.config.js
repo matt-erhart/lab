@@ -8,6 +8,12 @@ module.exports = {
       {
         test: /\.worker\.js$/,
         use: "worker-loader"
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader'
+        }
       }
     ]
   }

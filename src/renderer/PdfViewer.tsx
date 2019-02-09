@@ -64,15 +64,26 @@ interface Page {
   // images: Image[];
 }
 
+
 import { PathInfo } from "./App";
 import { object } from "prop-types";
+import styled from "styled-components";
 
 /**
  * @class **PdfViewer**
  * todo zoom, file name prop, layer props, keyboard shortcuts
  */
 const PdfViewerDefaults = {
-  props: { pageNumbersToLoad: [] as number[], pathInfo: {} as PathInfo },
+  props: {
+    pageNumbersToLoad: [] as number[],
+    pathInfo: {} as PathInfo,
+    viewBox: {
+      top: 110,
+      left: 110,
+      width: "100%" as number | string | undefined,
+      height: "100%" as number | string | undefined
+    }
+  },
   state: {
     scale: 2, // todo scale
     pages: [] as Page[],
@@ -93,9 +104,12 @@ export default class PdfViewer extends React.Component<
 > {
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
+  scrollRef = React.createRef<HTMLDivElement>()
 
   async componentDidMount() {
     await this.loadFiles();
+    const {left, top} = this.props.viewBox
+    this.scrollRef.current.scrollTo(left, top)
   }
 
   loadFiles = async () => {
@@ -185,14 +199,18 @@ export default class PdfViewer extends React.Component<
     }
   };
 
-  render() {
+  renderPages = () => {
     const { pages } = this.state;
     const havePages = pages.length > 0;
-
+    if (!havePages) return null;
     return pages.map((page, pageNum) => {
       const { width, height } = page.viewport;
       return (
-        <div key={pageNum} onWheel={this.zoom} style={{ width, height }}>
+        <div
+          key={pageNum}
+          onWheel={this.zoom}
+          style={{ width, height, position: "relative" }}
+        >
           <PageCanvas
             key={"canvas-" + pageNum}
             page={page.page}
@@ -219,6 +237,25 @@ export default class PdfViewer extends React.Component<
         </div>
       );
     });
+  };
+
+  render() {
+    const {width, height} = this.props.viewBox
+
+    // todo: set height and width and then scrollto
+    return (
+      <div
+        ref={this.scrollRef}
+        style={{
+          maxWidth: width,
+          maxHeight: height,
+          boxSizing: "border-box",
+          overflow: "scroll"
+        }}
+      >
+        {this.renderPages()}
+      </div>
+    );
   }
 }
 // {/* <div>

@@ -1,37 +1,7 @@
-// const { format } = require('url')
-// import { BrowserWindow, app } from 'electron'
-// import isDev from 'electron-is-dev'
-// const { resolve } = require('app-root-path')
-
-// app.on('ready', async () => {
-//   const mainWindow = new BrowserWindow({
-//     width: 800,
-//     height: 600,
-//     show: true
-//   })
-
-//   mainWindow.once('ready-to-show', () => {
-//     mainWindow.show()
-//     if (isDev) { mainWindow.webContents.openDevTools() }
-//   })
-
-//   const devPath = 'http://localhost:1124'
-//   const prodPath = format({
-//     pathname: resolve('app/renderer/.parcel/production/index.html'),
-//     protocol: 'file:',
-//     slashes: true
-//   })
-//   const url = isDev ? devPath : prodPath
-//   if (isDev) mainWindow.webContents.openDevTools()
-//   // mainWindow.setMenu(null)
-//   mainWindow.loadURL(url)
-
-// })
-
-// app.on('window-all-closed', app.quit)
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
+
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -52,7 +22,6 @@ function createMainWindow() {
   if (isDevelopment) {
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
     // window.loadURL(`file://${__dirname}/../renderer/Wobbrock-2015.pdf`)
-
   } else {
     window.loadURL(
       formatUrl({
@@ -93,6 +62,6 @@ app.on("activate", () => {
 });
 
 // create main BrowserWindow when electron is ready
-app.on("ready", () => {
+app.on("ready", async () => {
   mainWindow = createMainWindow();
 });
