@@ -7,6 +7,8 @@ import path = require("path");
 import { ls, listDirs } from "./io";
 import lodashId = require("lodash-id");
 import { withUid } from "./utils";
+import { spawn } from "child_process";
+import {graph} from './graph'
 
 const initDb = async (path: string) => {
   const FileSync = require("lowdb/adapters/FileSync");
@@ -15,9 +17,6 @@ const initDb = async (path: string) => {
   return db;
 };
 
-const makeViewbox = (viewBox = { left: 0, top: 0, height: 0, width: 0 }) => {
-  return { ...viewBox };
-};
 type dbPaths = "viewBoxes";
 const getById = (
   db: low.LowdbAsync<any>,
@@ -27,13 +26,12 @@ const getById = (
   return db.get(dbPath).find({ id: id });
 };
 
-const test = async () => {
+const lowExamples = async () => {
   // 20ms setup
   const db = await initDb("C:\\Users\\merha\\pdfs\\db.json");
   await db.defaults({ viewBoxes: [] }).write();
   await db.read();
 
-  console.time("do stuff");
   // 1.5ms write
   const newVb = withUid(makeViewbox());
   const vb = await db
@@ -49,8 +47,164 @@ const test = async () => {
   post.assign({ height: 123 }).write();
 
   db.write();
-
-  console.timeEnd("do stuff");
 };
+
+type SourceTypes = "pdf";
+type NodeTypes =
+  | "viewbox"
+  | "textRange"
+  | "textEntity"
+  | "user"
+  | "publication"
+  | "venue";
+
+const ViewboxDefault = {
+  id: "",
+  left: 0,
+  top: 0,
+  height: 0,
+  width: 0,
+  type: "viewbox" as NodeTypes,
+  source: {
+    type: "pdf",
+    userId: "default",
+    pubId: "default",
+    pageNumber: 0
+  } as any
+};
+
+type Viewbox = typeof ViewboxDefault;
+const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
+  return {
+    ...ViewboxDefault,
+    id: withUid("viewbox").id,
+    ...viewbox
+  };
+};
+
+const UserDefault = { id: "", name: "default" };
+type User = typeof UserDefault;
+const makeUser = (user = {} as Partial<User>) => {
+  return {
+    ...UserDefault,
+    id: withUid("user").id,
+    ...user
+  };
+};
+
+const PublicationDefault = {
+  id: "",
+  title: "default",
+  format: "pdf" as "pdf" | "html",
+  idType: "" as "doi" | "random" | "isbn"
+};
+type Publication = typeof PublicationDefault;
+const makePublication = (publication = {} as Partial<Publication>) => {
+  // todo get id from pdf for cross user merging
+  return { ...PublicationDefault, id: withUid("pub").id, ...publication };
+};
+
+// todo create span for each unique linkids combo
+const TextEntityDefault = {
+  // text entity can link to anything
+  // can contain text entities 
+  // can be inserted into docs with autocomplete
+  // either get all or non of the text
+  id: "",
+  type: "textEntity" as NodeTypes,
+  text: "",
+  spans: "" // serialized slate doc?
+};
+
+type TextEntity = typeof TextEntityDefault;
+const makeTextEntity = (textEntity = {} as Partial<TextEntity>) => {
+  // todo get id from pdf for cross user merging
+  return { ...TextEntityDefault, id: withUid("textEntity").id, ...textEntity };
+};
+
+// todo on make textRange either just hightlight or also create a textEntity
+const TextRangeDefault = {
+  // ranges are in immutable docs like publications
+  // we point to a start node / charNum - end node / char num
+  // and it's always there
+  id: "",
+  range: {} as Range,
+  type: "textRange" as NodeTypes,
+  text: "",
+  source: {
+    type: "pdf",
+    userId: "default",
+    pubId: "default",
+    pageNumber: 0
+  } as any
+};
+
+type TextRange = typeof TextRangeDefault;
+const makeTextRange = (textRange = {} as Partial<TextRange>) => {
+  // todo get id from pdf for cross user merging
+  return { ...TextEntityDefault, id: withUid("textRange").id, ...textRange };
+};
+
+const test = () => {
+  console.time("do stuff");
+  graph.on('nodeAdded', ({key}) => {
+    console.log(key)
+    
+  })
+  // const graph = new Graph({ multi: true });
+
+  const user = makeUser();
+  graph.addNode(user.id, user);
+
+  const pub = makePublication();
+  graph.addNode(pub.id, pub);
+
+  const vb = makeViewbox({ top: 123 });
+  graph.addNode(vb.id, vb);
+  graph.addEdge(user.id, vb.id, { type: "createdBy" });
+  graph.addEdge(pub.id, vb.id, { type: "createdIn" });
+
+  const vb2 = makeViewbox({ left: 10 });
+  graph.addNode(vb2.id, vb2);
+  graph.addEdge(user.id, vb2.id, { type: "createdBy" });
+  graph.addEdge(pub.id, vb2.id, { type: "createdIn" });
+
+  const pub2 = makePublication({ title: "a pub title" });
+  graph.addNode(pub2.id, pub2);
+  graph.addEdge(user.id, vb2.id, { type: "createdBy" });
+
+  const textRange = makeTextRange();
+  graph.addNode(textRange.id, textRange);
+
+  const textEnt = makeTextEntity();
+  graph.addNode(textEnt.id, textEnt);
+  graph.addEdge(user.id, textEnt.id, { type: "createdBy" });
+
+  if (textRange.text.length > textRange.text.length) {
+    graph.addEdge(textEnt.id, textRange.id, { type: "more" });
+  } else if (textRange.text.length === textRange.text.length) {
+    graph.addEdge(textEnt.id, textRange.id, { type: "similar" });
+  } else {
+    // note order flipped
+    graph.addEdge(textRange.id, textEnt.id, { type: "more" });
+  }
+
+  let count = 0;
+
+  // graph.forEachEdge((edge, attr) => {
+  //   console.log(edge, attr, count++);
+  // });
+
+  // graph.forEachNode((node, attr) => {
+  //   console.log(node, attr, count++);
+  // });
+
+  // // With options:
+  console.timeEnd("do stuff");
+  // console.log(graph.inspect());
+};
+/*
+user, pub, venue, ent, range, viewbox
+*/
 
 test();

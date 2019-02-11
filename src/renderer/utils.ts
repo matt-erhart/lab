@@ -17,19 +17,18 @@ export const brewer12 = [
 ];
 
 import uuidv1 = require("uuid/v1");
-export const withUid = (obj = {}) => {
-  return {id: uuidv1(), ...obj}
-}
+export const withUid = (prefix = "", obj = {} ) => {
+  return { id: prefix + "-" + uuidv1(), ...obj };
+};
 
-
-export function roundedToFixed(_float: number, _digits: number){
+export function roundedToFixed(_float: number, _digits: number) {
   var rounder = Math.pow(10, _digits);
   return (Math.round(_float * rounder) / rounder).toFixed(_digits);
 }
 
 export const zeroPad = (aNumber: number, nDigits: number) => {
   const str = String(aNumber);
-  const nZeros =  nDigits - str.length;
+  const nZeros = nDigits - str.length;
   if (nZeros <= 0) {
     return str;
   } else {
@@ -40,7 +39,6 @@ export const zeroPad = (aNumber: number, nDigits: number) => {
     );
   }
 };
-
 
 export const unique = arr => {
   const uniq = [...new Set(arr)];

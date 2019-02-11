@@ -9,7 +9,7 @@ import { ls, listDirs } from "./io";
 import Select from "react-select";
 import { Portal } from "./Portal";
 import styled from "styled-components";
-
+import {graph} from './graph'
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -70,8 +70,13 @@ const AppDefaults = {
 
 export class App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
+  callback = ({ key }) => {
+    console.log("nodeAdded");
+  }
   async componentDidMount() {
-    
+  graph.on("nodeAdded", this.callback );
+  
+    graph.mergeNode('123')
     // this.mainContainerRef.current.scrollTo(107.14, 490);
     const { homedir, username } = os.userInfo();
     const pdfRootDir = path.join(homedir, "pdfs");
@@ -91,6 +96,10 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
     });
 
     this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
+  }
+  componentWillUnmount(){
+    graph.removeListener("nodeAdded", this.callback)
+
   }
 
   styleFn(provided, state) {
