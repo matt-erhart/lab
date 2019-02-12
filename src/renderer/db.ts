@@ -8,7 +8,7 @@ import { ls, listDirs } from "./io";
 import lodashId = require("lodash-id");
 import { withUid } from "./utils";
 import { spawn } from "child_process";
-import {graph} from './graph'
+
 
 const initDb = async (path: string) => {
   const FileSync = require("lowdb/adapters/FileSync");
@@ -51,11 +51,13 @@ const lowExamples = async () => {
 
 type SourceTypes = "pdf";
 type NodeTypes =
-  | "viewbox"
-  | "textRange"
-  | "textEntity"
+  | "userDoc/plain"
+  | "userDoc/quote"
+  | "userDoc/unit"
+  | "viewbox/pdf"
+  | "textRange/pdf"
+  | "publication/pdf"
   | "user"
-  | "publication"
   | "venue";
 
 const ViewboxDefault = {
@@ -64,17 +66,15 @@ const ViewboxDefault = {
   top: 0,
   height: 0,
   width: 0,
-  type: "viewbox" as NodeTypes,
-  source: {
-    type: "pdf",
-    userId: "default",
-    pubId: "default",
-    pageNumber: 0
-  } as any
+  type: "viewbox/pdf" as NodeTypes,
+  userId: "default",
+  pubId: "default",
+  pdfPath: "/c:/set/this/file.pdf",
+  pageNumber: 0
 };
 
 type Viewbox = typeof ViewboxDefault;
-const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
+export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
   return {
     ...ViewboxDefault,
     id: withUid("viewbox").id,
@@ -107,7 +107,7 @@ const makePublication = (publication = {} as Partial<Publication>) => {
 // todo create span for each unique linkids combo
 const TextEntityDefault = {
   // text entity can link to anything
-  // can contain text entities 
+  // can contain text entities
   // can be inserted into docs with autocomplete
   // either get all or non of the text
   id: "",
@@ -147,10 +147,9 @@ const makeTextRange = (textRange = {} as Partial<TextRange>) => {
 
 const test = () => {
   console.time("do stuff");
-  graph.on('nodeAdded', ({key}) => {
-    console.log(key)
-    
-  })
+  graph.on("nodeAdded", ({ key }) => {
+    console.log(key);
+  });
   // const graph = new Graph({ multi: true });
 
   const user = makeUser();

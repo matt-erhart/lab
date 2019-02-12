@@ -65,9 +65,8 @@ interface Page {
 }
 
 
-import { PathInfo } from "./App";
-import { object } from "prop-types";
 import styled from "styled-components";
+import { PdfPathInfo } from "../store/createStore";
 
 /**
  * @class **PdfViewer**
@@ -76,7 +75,7 @@ import styled from "styled-components";
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
-    pathInfo: {} as PathInfo,
+    pathInfo: {} as PdfPathInfo,
     viewBox: {
       top: 110,
       left: 110,
@@ -233,6 +232,8 @@ export default class PdfViewer extends React.Component<
             // images={page.images}
             height2color={this.state.height2color}
             fontNames2color={this.state.fontNames2color}
+            pdfPathInfo={this.props.pathInfo}
+            pageNumber={pageNum}
           />
         </div>
       );

@@ -9,7 +9,12 @@ import { ls, listDirs } from "./io";
 import Select from "react-select";
 import { Portal } from "./Portal";
 import styled from "styled-components";
-import {graph} from './graph'
+import { graph } from "./graph";
+import { getPersistor } from "@rematch/persist";
+import { PersistGate } from "redux-persist/lib/integration/react";
+const persistor = getPersistor(); //prevents initial redux state from takin over
+import store, { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import { Provider, connect } from "react-redux";
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -54,29 +59,37 @@ const MainContainer = styled.div`
   display: flex;
 `;
 
-export interface PathInfo {
-  pdfPath: string;
-  pdfName: string;
-  dir: string;
-}
-
 const AppDefaults = {
   props: {},
   state: {
-    pathInfo: [] as PathInfo[],
-    currentPathInfo: {} as PathInfo
+    pathInfo: [] as PdfPathInfo[],
+    currentPathInfo: {} as PdfPathInfo
   }
 };
 
-export class App extends React.Component<any, typeof AppDefaults.state> {
+// import {pubs} from '@src/constants/pubs'
+// const mapState = (state: iRootState) => ({
+//   pubId: state.idSelections.pubId,
+//   userId: state.idSelections.userId
+// });
+
+// const mapDispatch = ({ idSelections: { selectId } }: iDispatch) => ({
+//   selectId
+// });
+
+// type connectedProps = ReturnType<typeof mapState> &
+  // ReturnType<typeof mapDispatch>;
+
+class _App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
-  callback = ({ key }) => {
-    console.log("nodeAdded");
-  }
+  callback = (obj) => {
+    console.log('node added', obj);
+    console.log(graph)
+    
+  };
   async componentDidMount() {
-  graph.on("nodeAdded", this.callback );
-  
-    graph.mergeNode('123')
+    // graph.on("nodeAdded", this.callback);
+
     // this.mainContainerRef.current.scrollTo(107.14, 490);
     const { homedir, username } = os.userInfo();
     const pdfRootDir = path.join(homedir, "pdfs");
@@ -97,9 +110,8 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
 
     this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
   }
-  componentWillUnmount(){
-    graph.removeListener("nodeAdded", this.callback)
-
+  componentWillUnmount() {
+    // graph.removeListener("nodeAdded", this.callback);
   }
 
   styleFn(provided, state) {
@@ -143,6 +155,16 @@ export class App extends React.Component<any, typeof AppDefaults.state> {
           )}
         </MainContainer>
       </ViewPortContainer>
+    );
+  }
+}
+
+export class App extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <_App />
+      </Provider>
     );
   }
 }

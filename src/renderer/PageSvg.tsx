@@ -16,6 +16,8 @@ import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
+import { graph, addViewbox, Viewbox } from "./graph";
+import { PdfPathInfo } from "../store/createStore";
 
 interface viewBox {
   // aka rectange
@@ -46,7 +48,7 @@ const lefts = [] as number[];
 
 /**
  * @class **PageSvg**
- *
+ * 
  */
 const PageSvgDefaults = {
   props: {
@@ -57,7 +59,9 @@ const PageSvgDefaults = {
     linesOfText: [] as LineOfText[],
     images: [] as Image[],
     height2color: {} as any,
-    fontNames2color: {} as any
+    fontNames2color: {} as any,
+    pdfPathInfo: {} as PdfPathInfo,
+    pageNumber: NaN
   },
   state: {
     selectionRect: title,
@@ -65,7 +69,8 @@ const PageSvgDefaults = {
     showTextLineBoxes: true,
     showTextBBoxes: false,
     duration: 0,
-    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
+    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } },
+    viewBoxes: [] as Viewbox[]
   }
 };
 export default class PageSvg extends React.Component<
@@ -77,8 +82,26 @@ export default class PageSvg extends React.Component<
   divRef = React.createRef<HTMLDivElement>();
   selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
+  graphCallback = (eventName) => (change) => {
+    const {type, pageNumber} = change.attributes
+    // if (change.attributes.type === "viewbox/pdf" && )
+    console.log(eventName, change);
+    // switch (eventName) {
+    //   case "nodeAdded":
+    //     this.setState(state => {
+    //       return produce(state, draft => {
+    //         draft.viewBoxes.push(change)
+    //       })
+    //     })
 
-  componentDidMount() {
+    // }
+
+  };
+
+  async componentDidMount() {
+    graph.on("nodeAdded",   this.graphCallback("nodeAdded"));
+    graph.on('edgeAdded', this.graphCallback('edgeAdded'));
+
     // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
@@ -141,7 +164,7 @@ export default class PageSvg extends React.Component<
     const textCoords = this.props.pageOfText.text.map(t => {
       const { left, top, width, fontHeight } = t;
       return getRectCoords(left, top, width, fontHeight);
-    });    
+    });
   };
 
   getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
@@ -181,7 +204,14 @@ export default class PageSvg extends React.Component<
     );
     const { bottom, ...newSelect } = bbox;
 
+    const viewbox = addViewbox(
+      { ...newSelect, pdfPathInfo: this.props.pdfPathInfo },
+      graph
+    );
+    console.log('asdf')
+    
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+
     const text = selectedLines.map(sl => {
       return sl.textIds.map(id => {
         const {
@@ -199,7 +229,8 @@ export default class PageSvg extends React.Component<
     const extractedText = flatten(text)
       .reduce((res, t) => {
         return res + (t as any).str.replace(/-$/, ""); // end with dash
-      }, "").replace(/\s+/g, " ");
+      }, "")
+      .replace(/\s+/g, " ");
 
     //@ts-ignore
     this.setState({
@@ -251,13 +282,16 @@ export default class PageSvg extends React.Component<
   };
 
   componentWillUnmount() {
+    graph.removeListener("nodeAdded", this.graphCallback);
+    graph.removeListener("edgeAdded", this.graphCallback);
+
     this.sub.unsubscribe();
   }
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
-    console.log(this.state.selectionRect)
-    
+    // console.log(this.state.selectionRect)
+
     return (
       <>
         <svg
@@ -409,12 +443,9 @@ export default class PageSvg extends React.Component<
                   height: height,
                   border: "2px solid lightblue",
                   lineHeight: "1em",
-                  backgroundColor: 'transparent'
-
+                  backgroundColor: "transparent"
                 }}
-              >
-                
-              </div>
+              />
               <PopupPortal
                 referenceElement={this.selectionRectRef.current}
                 boundariesElement={this.divRef.current}
