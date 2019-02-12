@@ -13,9 +13,13 @@ import styled from "styled-components";
 import { getPersistor } from "@rematch/persist";
 import { PersistGate } from "redux-persist/lib/integration/react";
 const persistor = getPersistor(); //prevents initial redux state from takin over
-import store, { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import store, {
+  PdfPathInfo,
+  iRootState,
+  iDispatch
+} from "../store/createStore";
 import { Provider, connect } from "react-redux";
-
+import PdfNodes from "./PdfNodes";
 const NavBar = styled.div`
   background-color: #23629f;
   font-size: 30px;
@@ -68,19 +72,18 @@ const AppDefaults = {
 };
 
 // import {pubs} from '@src/constants/pubs'
-// const mapState = (state: iRootState) => ({
-//   pubId: state.idSelections.pubId,
-//   userId: state.idSelections.userId
-// });
+const mapState = (state: iRootState) => ({
+  pdfPathInfo: state.info.pdfPathInfo
+});
 
-// const mapDispatch = ({ idSelections: { selectId } }: iDispatch) => ({
-//   selectId
-// });
+const mapDispatch = ({ info: { updateState } }: iDispatch) => ({
+  updateState
+});
 
-// type connectedProps = ReturnType<typeof mapState> &
-  // ReturnType<typeof mapDispatch>;
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
 
-class _App extends React.Component<any, typeof AppDefaults.state> {
+class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
 
   async componentDidMount() {
@@ -105,6 +108,7 @@ class _App extends React.Component<any, typeof AppDefaults.state> {
     });
 
     this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
+    this.props.updateState({ pdfPathInfo: pathInfo[0] });
   }
   componentWillUnmount() {
     // graph.removeListener("nodeAdded", this.callback);
@@ -113,6 +117,11 @@ class _App extends React.Component<any, typeof AppDefaults.state> {
   styleFn(provided, state) {
     return { ...provided, minWidth: "200px" };
   }
+
+  setPathInfo = opt => {
+    this.setState({ currentPathInfo: opt.value });
+    this.props.updateState({ pdfPathInfo: opt.value });
+  };
 
   render() {
     const { currentPathInfo, pathInfo } = this.state;
@@ -129,9 +138,7 @@ class _App extends React.Component<any, typeof AppDefaults.state> {
               <Select
                 style={this.styleFn}
                 options={fileOptions}
-                onChange={opt => {
-                  this.setState({ currentPathInfo: opt.value });
-                }}
+                onChange={this.setPathInfo}
               />
             )}
           </div>
@@ -149,17 +156,22 @@ class _App extends React.Component<any, typeof AppDefaults.state> {
               }}
             />
           )}
+          <PdfNodes />
         </MainContainer>
       </ViewPortContainer>
     );
   }
 }
+const ConnectedApp = connect(
+  mapState,
+  mapDispatch
+)(_App);
 
-export class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <_App />
+        <ConnectedApp />
       </Provider>
     );
   }

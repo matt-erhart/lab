@@ -146,7 +146,13 @@ class PdfViewer extends React.Component<
       pathInfo: { pdfName, pdfPath, dir },
       pageNumbersToLoad
     } = this.props;
+    const seg = await jsonfile.readFile(path.join(dir, "userSegments.json"));
+    const pageNumbersToLoadFixed = checkGetPageNumsToLoad(
+      seg.numberOfPages,
+      pageNumbersToLoad
+    );
 
+    console.log("pageNumbersToLoadFixed", pageNumbersToLoadFixed);
     const [
       pdfPages,
       linesOfText,
@@ -160,13 +166,6 @@ class PdfViewer extends React.Component<
       jsonfile.readFile(path.join(dir, "columnLefts.json")),
       loadPageJson(dir, "userSegments", pageNumbersToLoad)
     ]);
-    const seg = await jsonfile.readFile(path.join(dir, "userSegments.json"));
-    const pageNumbersToLoadFixed = checkGetPageNumsToLoad(
-      seg.numberOfPages,
-      pageNumbersToLoad
-    );
-
-    console.log(userSegments);
 
     // 1st mount
     // if (this.props.viewboxes.length === 0 && userSegments.viewboxes.length !== 0){
@@ -183,8 +182,6 @@ class PdfViewer extends React.Component<
 
     let pages = [] as Page[];
     for (let i in pdfPages) {
-      console.log(pageNumbersToLoadFixed[i]);
-
       pages.push({
         linesOfText: linesOfText[i],
         page: pdfPages[i],
@@ -251,37 +248,56 @@ class PdfViewer extends React.Component<
     }
   };
 
-  onAddViewbox = (pageNumber: number) => viewbox => {
+  onAddViewbox = (pageNumber: number, scale) => viewbox => {
+    console.log("page num on make vb", pageNumber);
+    const { left, top, width, height } = viewbox;
+    // note we save with scale = 1
     this.props.addNodes([
       makeViewbox({
         ...viewbox,
+        // left: left / scale,
+        // top: top / scale,
+        // width: width / scale,
+        // height: height / scale,
         pdfPathInfo: this.props.pathInfo,
         pageNumber
       })
     ]);
-
   };
 
-  viewboxesForPage = pageNumber => {
-    return this.props.viewboxes.filter(
-      v => v.attributes.pageNumber === pageNumber
-    );
+  viewboxesForPage = (pageNumber, scale) => {
+    return this.props.viewboxes
+      .filter(v => v.attributes.pageNumber === pageNumber)
+      .map(x => {
+        const { left, top, width, height } = x.attributes;
+        // const { scale } = this.state;
+        return {
+          ...x,
+          attributes: {
+            ...x.attributes,
+            // left: left * scale,
+            // top: top * scale,
+            // width: width * scale,
+            // height: height * scale
+          }
+        };
+      });
   };
 
   renderPages = () => {
     const { pages } = this.state;
     const havePages = pages.length > 0;
     if (!havePages) return null;
-    return pages.map((page, pageNum) => {
+    return pages.map((page, pageIx) => {
       const { width, height } = page.viewport;
       return (
         <div
-          key={pageNum}
+          key={page.pageNumber}
           onWheel={this.zoom}
           style={{ width, height, position: "relative" }}
         >
           <PageCanvas
-            key={"canvas-" + pageNum}
+            key={"canvas-" + page.pageNumber}
             page={page.page}
             viewport={page.viewport}
           />
@@ -293,7 +309,7 @@ class PdfViewer extends React.Component<
                 /> */}
           <PageSvg
             // scale={this.state.scale}
-            key={"svg-" + pageNum}
+            key={"svg-" + page.pageNumber}
             svgWidth={width}
             svgHeight={height}
             pageOfText={page.text}
@@ -303,9 +319,8 @@ class PdfViewer extends React.Component<
             height2color={this.state.height2color}
             fontNames2color={this.state.fontNames2color}
             pdfPathInfo={this.props.pathInfo}
-            pageNumber={pageNum}
-            onAddViewbox={this.onAddViewbox(pageNum)}
-            viewboxes={this.viewboxesForPage(pageNum)}
+            onAddViewbox={this.onAddViewbox(page.pageNumber)}
+            viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
           />
         </div>
       );

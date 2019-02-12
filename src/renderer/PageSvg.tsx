@@ -64,7 +64,6 @@ const PageSvgDefaults = {
     height2color: {} as any,
     fontNames2color: {} as any,
     pdfPathInfo: {} as PdfPathInfo, // todo remove?
-    pageNumber: NaN,
     onAddViewbox: (viewbox: Viewbox) => {},
     viewboxes: [] as {key: string, attributes: Viewbox}[]
   },
@@ -102,7 +101,8 @@ export default class PageSvg extends React.Component<
       } = this.divRef.current.getBoundingClientRect();
       const mx = mouse.x - bbLeft;
       const my = mouse.y - bbTop;
-
+      console.log(mouse)
+      
       switch (mouse.type) {
         case "mousedown":
           this.setState({
@@ -141,8 +141,11 @@ export default class PageSvg extends React.Component<
           break;
 
         case "mouseup":
-          const text = this.getText(this.state.selectionRect);
-          this.setState({ duration: 200 });
+          if (!mouse.ctrlKey){
+            const text = this.getText(this.state.selectionRect); // todo take out the snaps part
+          } else {
+            this.props.onAddViewbox(this.state.selectionRect)
+          }
           break;
       }
     });
@@ -422,7 +425,7 @@ export default class PageSvg extends React.Component<
           {this.props.viewboxes.length > 0 && this.props.viewboxes.map(vb => {
             const {top, left, width, height} = vb.attributes
             
-            return <div style={{
+            return <div key={vb.key} style={{
               position: "absolute",
               top: top,
               left: left - 5,
@@ -433,7 +436,7 @@ export default class PageSvg extends React.Component<
               backgroundColor: "transparent"
             }}></div>
           })}
-          {this.state.div.text.length > 0 && (
+          {/* {this.state.div.text.length > 0 && (
             <>
               <div
                 style={{
@@ -470,7 +473,7 @@ export default class PageSvg extends React.Component<
                 />
               </PopupPortal>
             </>
-          )}
+          )} */}
         </div>
       </>
     );

@@ -13,7 +13,8 @@ const mouseMap = (e: MouseEvent) => {
   return {
     type: e.type,
     x: e.clientX,
-    y: e.clientY
+    y: e.clientY,
+    ctrlKey: e.ctrlKey
   };
 };
 type mouseData = ReturnType<typeof mouseMap>;
@@ -37,7 +38,7 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
       return mousemove.pipe(
         startWith(down),
         takeUntil(mouseup),
-        endWith({type: 'mouseup', x: 0, y: 0}), // todo end with mouseup event
+        endWith({type: 'mouseup', x: 0, y: 0, ctrlKey: down.ctrlKey}), // todo end with mouseup event
         // tap(x => console.log(x))
       ) as Observable<mouseData>
     })
