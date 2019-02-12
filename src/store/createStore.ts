@@ -73,14 +73,17 @@ export const info = createModel({
       // like this.setState
       return { ...state, ...payload };
     },
-    addNode(state, node: GraphNode) {
-      const isUnique = state.nodes.findIndex(n => n.key === node.key) === -1;
-      if (!isUnique) {
-        console.log("node already exists", node);
-        return state;
-      }
+    addNodes(state, nodes: GraphNode[]) {
       return produce(state, draft => {
-        return draft.nodes.push(node);
+        for (let node of nodes) {
+          const isUnique =
+            state.nodes.findIndex(n => n.key === node.key) === -1;
+          if (isUnique) {
+            draft.nodes.push(node);
+          } else {
+            console.log(node, "already exists");
+          }
+        }
       });
     },
     updateNode(state, node: GraphNode) {
@@ -104,12 +107,16 @@ export const info = createModel({
         });
       });
     },
-    deleteNode(state, nodeId) {
-      const ix = state.nodes.findIndex(n => n.key === nodeId);
+    deleteNodes(state, nodes: GraphNode[]) {
       return produce(state, draft => {
-        draft.nodes.splice(ix, 1);
-        console.log("deleteing node and connecting edges");
-        draft.edges.filter(e => e.source !== nodeId && e.target !== nodeId);
+        for (let node of nodes) {
+          const ix = draft.nodes.findIndex(n => n.key === node.key);
+          draft.nodes.splice(ix, 1);
+          console.log("deleteing node and connecting edges");
+          draft.edges.filter(
+            e => e.source !== node.key && e.target !== node.key
+          );
+        }
       });
     },
     addEdge(state, edge: GraphEdge) {
@@ -135,7 +142,7 @@ export const info = createModel({
         delete draft.edges[ix];
       });
     }
-  },
+  }
   // effects: dispatch => ({
   //   async loadPages(
   //     payload: { pdfPathInfo: PdfPathInfo; pageNumbersToLoad: number },

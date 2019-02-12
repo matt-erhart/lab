@@ -36,6 +36,7 @@ import {
   PageOfText,
   checkGetPageNumsToLoad
 } from "./io";
+import { makeViewbox } from "./db";
 
 export interface LineOfText {
   id: string;
@@ -76,6 +77,7 @@ import { PdfPathInfo, Viewbox } from "../store/createStore";
  * @class **PdfViewer**
  * todo zoom, file name prop, layer props, keyboard shortcuts
  */
+
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
@@ -86,7 +88,7 @@ const PdfViewerDefaults = {
       width: "100%" as number | string | undefined,
       height: "100%" as number | string | undefined
     },
-    userSegments: [] as Viewbox[]
+    viewboxes: [] as { key: string; attributes: Viewbox }[]
   },
   state: {
     scale: 2, // todo scale
@@ -102,8 +104,30 @@ const PdfViewerDefaults = {
   }
 };
 
-export default class PdfViewer extends React.Component<
-  typeof PdfViewerDefaults.props,
+import { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import { connect } from "react-redux";
+const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
+  const viewboxes = state.info.nodes.filter(
+    n =>
+      n.attributes.type === "viewbox/pdf" &&
+      n.attributes.pdfPathInfo.dir === props.pathInfo.dir
+    // todo ts and multi filter util
+  );
+  return {
+    viewboxes: viewboxes
+  };
+};
+
+const mapDispatch = ({ info: { addNodes, deleteNodes } }: iDispatch) => ({
+  addNodes,
+  deleteNodes
+});
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
+class PdfViewer extends React.Component<
+  typeof PdfViewerDefaults.props & connectedProps,
   typeof PdfViewerDefaults.state
 > {
   static defaultProps = PdfViewerDefaults.props;
@@ -142,12 +166,25 @@ export default class PdfViewer extends React.Component<
       pageNumbersToLoad
     );
 
-    // push segments to redux
+    console.log(userSegments);
+
+    // 1st mount
+    // if (this.props.viewboxes.length === 0 && userSegments.viewboxes.length !== 0){
+    //   this.props.addNodes(userSegments.viewboxes)
+    // }
+
+    // add viewbox
+    // this.props.addNodes([viewbox])
+    // save to json
+
+    // remove viewbox
+    // this.props.removeNodes([viewbox])
+    // save to json
 
     let pages = [] as Page[];
     for (let i in pdfPages) {
-      console.log(pageNumbersToLoadFixed[i])
-      
+      console.log(pageNumbersToLoadFixed[i]);
+
       pages.push({
         linesOfText: linesOfText[i],
         page: pdfPages[i],
@@ -214,6 +251,23 @@ export default class PdfViewer extends React.Component<
     }
   };
 
+  onAddViewbox = (pageNumber: number) => viewbox => {
+    this.props.addNodes([
+      makeViewbox({
+        ...viewbox,
+        pdfPathInfo: this.props.pathInfo,
+        pageNumber
+      })
+    ]);
+
+  };
+
+  viewboxesForPage = pageNumber => {
+    return this.props.viewboxes.filter(
+      v => v.attributes.pageNumber === pageNumber
+    );
+  };
+
   renderPages = () => {
     const { pages } = this.state;
     const havePages = pages.length > 0;
@@ -250,6 +304,8 @@ export default class PdfViewer extends React.Component<
             fontNames2color={this.state.fontNames2color}
             pdfPathInfo={this.props.pathInfo}
             pageNumber={pageNum}
+            onAddViewbox={this.onAddViewbox(pageNum)}
+            viewboxes={this.viewboxesForPage(pageNum)}
           />
         </div>
       );
@@ -275,3 +331,8 @@ export default class PdfViewer extends React.Component<
     );
   }
 }
+
+export default connect(
+  mapState,
+  mapDispatch
+)(PdfViewer);

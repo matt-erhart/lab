@@ -9,7 +9,6 @@ import lodashId = require("lodash-id");
 import { withUid } from "./utils";
 import { spawn } from "child_process";
 
-
 const initDb = async (path: string) => {
   const FileSync = require("lowdb/adapters/FileSync");
   const adapter = new FileSync(path.normalize());
@@ -60,26 +59,30 @@ type NodeTypes =
   | "user"
   | "venue";
 
-const ViewboxDefault = {
-  id: "",
-  left: 0,
-  top: 0,
-  height: 0,
-  width: 0,
-  type: "viewbox/pdf" as NodeTypes,
-  userId: "default",
-  pubId: "default",
-  pdfPath: "/c:/set/this/file.pdf",
-  pageNumber: 0
-};
-
-type Viewbox = typeof ViewboxDefault;
-export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
-  return {
-    ...ViewboxDefault,
-    id: withUid("viewbox").id,
-    ...viewbox
+  const ViewboxDefault = {
+    id: "",
+    left: 0,
+    top: 0,
+    height: 0,
+    width: 0,
+    type: "viewbox/pdf" as NodeTypes,
+    userId: "default",
+    pdfPathInfo: {} as  PdfPathInfo,
+    pageNumber: 0
   };
+
+export type Viewbox = typeof ViewboxDefault;
+export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
+  const key = withUid("viewbox").id;
+  const vb = {
+    key,
+    attributes: {
+      ...ViewboxDefault,
+      id: key,
+      ...viewbox
+    } as Viewbox
+  };
+  return vb
 };
 
 const UserDefault = { id: "", name: "default" };
@@ -206,4 +209,3 @@ const test = () => {
 user, pub, venue, ent, range, viewbox
 */
 
-test();

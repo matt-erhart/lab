@@ -286,7 +286,6 @@ export const loadPageJson = async (
   let pages = [];
   for (let pageNum of pageNumbers) {
     const pageId = zeroPad(pageNum, 4);
-    console.log(dir, pageId)
     const page: PageToDisplay = await jsonfile.readFile(
       `${dir}/${filePrefix}-page${pageId}.json`
     );

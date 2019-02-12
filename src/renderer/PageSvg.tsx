@@ -16,24 +16,27 @@ import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
-import { graph, addViewbox, Viewbox } from "./graph";
+// import { graph, addViewbox, Viewbox } from "./graph";
 import { PdfPathInfo } from "../store/createStore";
 
-interface viewBox {
-  // aka rectange
-  id: id;
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  imgPath?: string;
-  text?: string;
-  userId: string;
-  pubId: string;
-  pageNumber: number;
-  x1: number; // start of drag
-  y1: number; // start of drag
-}
+// todo consistant CAPS
+// interface viewBox {
+//   // aka rectange
+//   id: id;
+//   top: number;
+//   left: number;
+//   width: number;
+//   height: number;
+//   imgPath?: string;
+//   text?: string;
+//   userId: string;
+//   pubId: string;
+//   pageNumber: number;
+//   x1: number; // start of drag
+//   y1: number; // start of drag
+// }
+
+import {Viewbox} from './db'
 
 const title = {
   height: 0,
@@ -60,8 +63,10 @@ const PageSvgDefaults = {
     images: [] as Image[],
     height2color: {} as any,
     fontNames2color: {} as any,
-    pdfPathInfo: {} as PdfPathInfo,
-    pageNumber: NaN
+    pdfPathInfo: {} as PdfPathInfo, // todo remove?
+    pageNumber: NaN,
+    onAddViewbox: (viewbox: Viewbox) => {},
+    viewboxes: [] as {key: string, attributes: Viewbox}[]
   },
   state: {
     selectionRect: title,
@@ -69,8 +74,7 @@ const PageSvgDefaults = {
     showTextLineBoxes: true,
     showTextBBoxes: false,
     duration: 0,
-    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } },
-    viewBoxes: [] as Viewbox[]
+    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
   }
 };
 export default class PageSvg extends React.Component<
@@ -189,11 +193,12 @@ export default class PageSvg extends React.Component<
     );
     const { bottom, ...newSelect } = bbox;
 
-    const viewbox = addViewbox(
-      { ...newSelect, pdfPathInfo: this.props.pdfPathInfo },
-      graph
-    );
-    console.log('asdf')
+    // const viewbox = addViewbox(
+    //   { ...newSelect, pdfPathInfo: this.props.pdfPathInfo },
+    //   graph
+    // );
+    // console.log('asdf')
+    this.props.onAddViewbox(newSelect)
     
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
@@ -414,6 +419,20 @@ export default class PageSvg extends React.Component<
               />
             )}
           </Spring>
+          {this.props.viewboxes.length > 0 && this.props.viewboxes.map(vb => {
+            const {top, left, width, height} = vb.attributes
+            
+            return <div style={{
+              position: "absolute",
+              top: top,
+              left: left - 5,
+              width: width + 5,
+              height: height,
+              border: "2px solid green",
+              lineHeight: "1em",
+              backgroundColor: "transparent"
+            }}></div>
+          })}
           {this.state.div.text.length > 0 && (
             <>
               <div
