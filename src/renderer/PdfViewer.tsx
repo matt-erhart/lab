@@ -30,7 +30,12 @@ import {
 } from "./utils";
 import { histogram, mean, median, deviation } from "d3-array";
 import produce from "immer";
-import { loadPdfPages, loadPageJson, PageOfText } from "./io";
+import {
+  loadPdfPages,
+  loadPageJson,
+  PageOfText,
+  checkGetPageNumsToLoad
+} from "./io";
 
 export interface LineOfText {
   id: string;
@@ -64,9 +69,8 @@ interface Page {
   // images: Image[];
 }
 
-
 import styled from "styled-components";
-import { PdfPathInfo } from "../store/createStore";
+import { PdfPathInfo, Viewbox } from "../store/createStore";
 
 /**
  * @class **PdfViewer**
@@ -81,7 +85,8 @@ const PdfViewerDefaults = {
       left: 110,
       width: "100%" as number | string | undefined,
       height: "100%" as number | string | undefined
-    }
+    },
+    userSegments: [] as Viewbox[]
   },
   state: {
     scale: 2, // todo scale
@@ -103,12 +108,12 @@ export default class PdfViewer extends React.Component<
 > {
   static defaultProps = PdfViewerDefaults.props;
   state = PdfViewerDefaults.state;
-  scrollRef = React.createRef<HTMLDivElement>()
+  scrollRef = React.createRef<HTMLDivElement>();
 
   async componentDidMount() {
     await this.loadFiles();
-    const {left, top} = this.props.viewBox
-    this.scrollRef.current.scrollTo(left, top)
+    const { left, top } = this.props.viewBox;
+    this.scrollRef.current.scrollTo(left, top);
   }
 
   loadFiles = async () => {
@@ -122,20 +127,31 @@ export default class PdfViewer extends React.Component<
       pdfPages,
       linesOfText,
       textToDisplay,
-      columnLefts
+      columnLefts,
+      userSegments
     ] = await Promise.all([
       loadPdfPages(pdfPath, pageNumbersToLoad),
       loadPageJson(dir, "linesOfText", pageNumbersToLoad),
       loadPageJson(dir, "textToDisplay", pageNumbersToLoad),
-      jsonfile.readFile(path.join(dir, "columnLefts.json"))
+      jsonfile.readFile(path.join(dir, "columnLefts.json")),
+      loadPageJson(dir, "userSegments", pageNumbersToLoad)
     ]);
+    const seg = await jsonfile.readFile(path.join(dir, "userSegments.json"));
+    const pageNumbersToLoadFixed = checkGetPageNumsToLoad(
+      seg.numberOfPages,
+      pageNumbersToLoad
+    );
+
+    // push segments to redux
 
     let pages = [] as Page[];
     for (let i in pdfPages) {
+      console.log(pageNumbersToLoadFixed[i])
+      
       pages.push({
         linesOfText: linesOfText[i],
         page: pdfPages[i],
-        pageNumber: pageNumbersToLoad[i],
+        pageNumber: pageNumbersToLoadFixed[i],
         text: textToDisplay[i],
         viewport: pdfPages[i].getViewport(this.state.scale)
       });
@@ -241,7 +257,7 @@ export default class PdfViewer extends React.Component<
   };
 
   render() {
-    const {width, height} = this.props.viewBox
+    const { width, height } = this.props.viewBox;
 
     // todo: set height and width and then scrollto
     return (

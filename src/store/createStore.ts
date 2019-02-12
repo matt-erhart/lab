@@ -51,7 +51,7 @@ export const makeViewbox = (viewbox = {} as Partial<Viewbox>, graph) => {
     id: withUid("viewbox").id,
     ...viewbox
   };
-}
+};
 
 export interface PdfPathInfo {
   pdfPath: string;
@@ -135,7 +135,20 @@ export const info = createModel({
         delete draft.edges[ix];
       });
     }
-  }
+  },
+  // effects: dispatch => ({
+  //   async loadPages(
+  //     payload: { pdfPathInfo: PdfPathInfo; pageNumbersToLoad: number },
+  //     rootState
+  //   ) {
+  //     const userSegments = await loadPageJson(
+  //       payload.pdfPathInfo.dir,
+  //       "userSegments",
+  //       payload.pageNumbersToLoad
+  //     );
+  //     dispatch.count.increment(payload);
+  //   }
+  // })
 });
 
 const models = {

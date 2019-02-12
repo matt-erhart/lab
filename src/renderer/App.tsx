@@ -9,7 +9,7 @@ import { ls, listDirs } from "./io";
 import Select from "react-select";
 import { Portal } from "./Portal";
 import styled from "styled-components";
-import { graph } from "./graph";
+// import { graph } from "./graph";
 import { getPersistor } from "@rematch/persist";
 import { PersistGate } from "redux-persist/lib/integration/react";
 const persistor = getPersistor(); //prevents initial redux state from takin over
@@ -82,11 +82,7 @@ const AppDefaults = {
 
 class _App extends React.Component<any, typeof AppDefaults.state> {
   state = AppDefaults.state;
-  callback = (obj) => {
-    console.log('node added', obj);
-    console.log(graph)
-    
-  };
+
   async componentDidMount() {
     // graph.on("nodeAdded", this.callback);
 
@@ -144,7 +140,7 @@ class _App extends React.Component<any, typeof AppDefaults.state> {
           {Object.keys(currentPathInfo).length > 0 && (
             <PdfViewer
               pathInfo={currentPathInfo}
-              pageNumbersToLoad={[1, 2]}
+              pageNumbersToLoad={[]}
               viewBox={{
                 left: 107.148 - 20,
                 top: 490.84180000000083 - 20,

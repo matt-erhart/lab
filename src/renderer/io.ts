@@ -198,8 +198,19 @@ export const preprocessPdfs = (
         path.join(dir, `linesOfText-page${pageId}.json`),
         getLines(columnLefts, page.text, page.pageNumber)
       );
-    }
 
+      // also add a blank file to save user segments
+      await existsElseMake(path.join(dir, `userSegments-page${pageId}.json`), {
+        pageNumber: page.pageNumber,
+        viewBoxes: [],
+        textRanges: []
+      });
+    }
+    // use this to know if processing is done
+    await existsElseMake(path.join(dir, "userSegments.json"), {
+      numberOfPages: pdf.numPages,
+      createdOn: new Date()
+    });
     // use this to know if processing is done
     await existsElseMake(path.join(dir, "linesOfText.json"), {
       numberOfPages: pdf.numPages,
@@ -257,18 +268,28 @@ export const getLeftEdgeOfColumns = (pages: PageOfText[]) => {
 
 export const loadPageJson = async (
   dir: string,
-  filePrefix: "textToDisplay" | "linesOfText",
-  pageNumbers: number[] = []
+  filePrefix: "textToDisplay" | "linesOfText" | "userSegments",
+  pageNumbersToLoad: number[] = []
 ) => {
+  // todo: make sure filePrefix + ".json" gets made when all pages are done
   await existsElseMake(
     path.join(dir, filePrefix + ".json"),
     preprocessPdfs([dir])
   );
-
-  const jsons = await ls(`${dir}/${filePrefix}-page*.json`);
+  const finalFile = await jsonfile.readFile(
+    path.join(dir, filePrefix + ".json")
+  );
+  const numberOfPages = finalFile.numberOfPages;
+  const pageNumbers = checkGetPageNumsToLoad(numberOfPages, pageNumbersToLoad);
+    
+    
   let pages = [];
-  for (let j of jsons.sort()) {
-    const page: PageToDisplay = await jsonfile.readFile(j);
+  for (let pageNum of pageNumbers) {
+    const pageId = zeroPad(pageNum, 4);
+    console.log(dir, pageId)
+    const page: PageToDisplay = await jsonfile.readFile(
+      `${dir}/${filePrefix}-page${pageId}.json`
+    );
     pages.push(page);
   }
   return pages; // sorted by page number
@@ -403,13 +424,11 @@ export const getImageFiles = async (page, viewport) => {
   }
 };
 
-export const loadPdfPages = async (
-  path: string,
-  pageNumbersToLoad: number[] = [],
-  scale = 1
+export const checkGetPageNumsToLoad = (
+  numPages,
+  pageNumbersToLoad: number[]
 ) => {
-  const pdf = await pdfjs.getDocument(path);
-  const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
+  const allPageNumbers = [...Array(numPages).keys()].map(x => x + 1);
   const willLoadAllPages = pageNumbersToLoad.length === 0;
   const pageNumPropsOk =
     !willLoadAllPages &&
@@ -422,7 +441,30 @@ export const loadPdfPages = async (
   } else {
     pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
   }
+  
+  return pageNumbers
+};
 
+export const loadPdfPages = async (
+  path: string,
+  pageNumbersToLoad: number[] = [],
+  scale = 1
+) => {
+  const pdf = await pdfjs.getDocument(path);
+  // const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
+  // const willLoadAllPages = pageNumbersToLoad.length === 0;
+  // const pageNumPropsOk =
+  //   !willLoadAllPages &&
+  //   Math.min(...pageNumbersToLoad) >= 0 &&
+  //   Math.max(...pageNumbersToLoad) <= Math.max(...allPageNumbers);
+
+  // let pageNumbers;
+  // if (willLoadAllPages) {
+  //   pageNumbers = allPageNumbers;
+  // } else {
+  //   pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
+  // }
+  const pageNumbers = checkGetPageNumsToLoad(pdf.numPages, pageNumbersToLoad);
   let pages = [] as _pdfjs.PDFPageProxy[];
   for (const pageNumber of pageNumbers) {
     const page = await pdf.getPage(pageNumber);

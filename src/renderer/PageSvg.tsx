@@ -82,25 +82,10 @@ export default class PageSvg extends React.Component<
   divRef = React.createRef<HTMLDivElement>();
   selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
-  graphCallback = (eventName) => (change) => {
-    const {type, pageNumber} = change.attributes
-    // if (change.attributes.type === "viewbox/pdf" && )
-    console.log(eventName, change);
-    // switch (eventName) {
-    //   case "nodeAdded":
-    //     this.setState(state => {
-    //       return produce(state, draft => {
-    //         draft.viewBoxes.push(change)
-    //       })
-    //     })
 
-    // }
-
-  };
 
   async componentDidMount() {
-    graph.on("nodeAdded",   this.graphCallback("nodeAdded"));
-    graph.on('edgeAdded', this.graphCallback('edgeAdded'));
+   
 
     // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
@@ -282,9 +267,6 @@ export default class PageSvg extends React.Component<
   };
 
   componentWillUnmount() {
-    graph.removeListener("nodeAdded", this.graphCallback);
-    graph.removeListener("edgeAdded", this.graphCallback);
-
     this.sub.unsubscribe();
   }
 
