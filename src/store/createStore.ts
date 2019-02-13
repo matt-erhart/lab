@@ -63,7 +63,9 @@ const defaultInfo = {
   userId: "default",
   pdfPathInfo: {} as PdfPathInfo,
   nodes: [] as GraphNode[],
-  edges: [] as GraphEdge[]
+  edges: [] as GraphEdge[],
+  selectedNodes: [] as GraphNode[],
+  selectedEdges: [] as GraphEdge[]
 };
 
 export const info = createModel({
@@ -73,13 +75,20 @@ export const info = createModel({
       // like this.setState
       return { ...state, ...payload };
     },
-    addNodes(state, nodes: GraphNode[]) {
+    addNodes(
+      state,
+      payload: {
+        nodes: GraphNode[],
+        to: "nodes" | "selectedNodes"
+      }
+    ) {
+      const { nodes, to } = payload;
       return produce(state, draft => {
         for (let node of nodes) {
           const isUnique =
-            state.nodes.findIndex(n => n.key === node.key) === -1;
+            state[to].findIndex(n => n.key === node.key) === -1;
           if (isUnique) {
-            draft.nodes.push(node);
+            draft[to].push(node);
           } else {
             console.log(node, "already exists");
           }

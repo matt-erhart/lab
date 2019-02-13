@@ -1,5 +1,6 @@
 // https://github.com/typicode/lowdb
 // https://github.com/typicode/lodash-id
+// todo delete this file
 import low from "lowdb";
 import fs = require("fs");
 import os = require("os");
@@ -59,17 +60,17 @@ type NodeTypes =
   | "user"
   | "venue";
 
-  const ViewboxDefault = {
-    id: "",
-    left: 0,
-    top: 0,
-    height: 0,
-    width: 0,
-    type: "viewbox/pdf" as NodeTypes,
-    userId: "default",
-    pdfPathInfo: {} as  PdfPathInfo,
-    pageNumber: 0
-  };
+const ViewboxDefault = {
+  id: "",
+  left: 0,
+  top: 0,
+  height: 0,
+  width: 0,
+  type: "viewbox/pdf" as NodeTypes,
+  userId: "default",
+  pdfPathInfo: {} as PdfPathInfo,
+  pageNumber: 0
+};
 
 export type Viewbox = typeof ViewboxDefault;
 export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
@@ -82,7 +83,31 @@ export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
       ...viewbox
     } as Viewbox
   };
-  return vb
+  return vb;
+};
+
+//
+const UserDocDefault = {
+  id: "",
+  type: "userDoc/plain" as NodeTypes,
+  userId: "default",
+  text: "",
+  pdfPathInfo: {} as PdfPathInfo, //todo use edge since this isn't required
+
+};
+// todo turn all this into 'makeNode'
+export type UserDoc = typeof UserDocDefault;
+export const makeUserDoc = (userDoc = {} as Partial<UserDoc>) => {
+  const key = withUid("userDoc").id;
+  const vb = {
+    key,
+    attributes: {
+      ...UserDocDefault,
+      id: key,
+      ...userDoc
+    } as UserDoc
+  };
+  return vb;
 };
 
 const UserDefault = { id: "", name: "default" };
@@ -208,4 +233,3 @@ const test = () => {
 /*
 user, pub, venue, ent, range, viewbox
 */
-

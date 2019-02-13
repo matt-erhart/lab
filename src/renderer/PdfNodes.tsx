@@ -12,14 +12,26 @@ const PdfNodesDefaults = {
   state: {}
 };
 const mapState = (state: iRootState, props: typeof PdfNodesDefaults) => {
-  const viewboxes = state.info.nodes.filter(
-    n =>
-      n.attributes.type === "viewbox/pdf" &&
-      n.attributes.pdfPathInfo.dir === state.info.pdfPathInfo.dir
-    // todo ts and multi filter util
+//   const viewboxes = state.info.nodes.filter(
+//     n =>
+//       n.attributes.type === "viewbox/pdf" &&
+//       n.attributes.pdfPathInfo.dir === state.info.pdfPathInfo.dir
+//     // todo ts and multi filter util
+//   );
+//   const userDocs = state.info.nodes.filter(
+//     n =>
+//       n.attributes.type === "userDoc/plain" &&
+//       n.attributes.pdfPathInfo.dir === state.info.pdfPathInfo.dir
+//     // todo ts and multi filter util
+//   );
+  const nodes = state.info.nodes.filter(
+    n => n.attributes.pdfPathInfo.dir === state.info.pdfPathInfo.dir
   );
+  nodes.reverse();
   return {
-    viewboxes: viewboxes,
+    // viewboxes,
+    // userDocs,
+    nodes,
     pdfPathInfo: state.info.pdfPathInfo
   };
 };
@@ -38,34 +50,54 @@ class PdfNodes extends React.Component<
   state = PdfNodesDefaults.state;
   render() {
     return (
-      <div style={{ maxWidth: "50%", flex: 1, overflowY: 'scroll' }}>
-        {this.props.viewboxes.length > 0 &&
-          this.props.viewboxes.map(vb => {
-            const { left, top, width, height, pageNumber } = vb.attributes;
-
-            return (
-              <div
-                style={{
-                  margin: 10,
-                  padding: 10,
-                  border: "1px solid grey",
-                  borderRadius: "5px",
-                  backgroundColor: 'lightgrey'
-                }}
-              >
-                <PdfViewer
-                  key={vb.key}
-                  pathInfo={this.props.pdfPathInfo}
-                  pageNumbersToLoad={[pageNumber]}
-                  viewBox={{
-                    left: left - 40,
-                    top: top - 40,
-                    height: height + 80,
-                    width: "100%"
+      <div style={{ maxWidth: "50%", flex: 1, overflowY: "scroll" }}>
+        {this.props.nodes.length > 0 &&
+          this.props.nodes.map(node => {
+            if (node.attributes.type === "userDoc/plain") {
+              const { text } = node.attributes;
+              return (
+                <div
+                  key={node.key}
+                  style={{
+                    margin: 10,
+                    padding: 10,
+                    border: "1px solid grey",
+                    borderRadius: "5px",
+                    backgroundColor: "lightgrey",
+                    fontSize: 30
                   }}
-                />
-              </div>
-            );
+                >
+                  {text}
+                </div>
+              );
+            }
+            if (node.attributes.type === "viewbox/pdf") {
+              const { left, top, width, height, pageNumber } = node.attributes;
+
+              return (
+                <div
+                  key={node.key}
+                  style={{
+                    margin: 10,
+                    padding: 10,
+                    border: "1px solid grey",
+                    borderRadius: "5px",
+                    backgroundColor: "lightgrey"
+                  }}
+                >
+                  <PdfViewer
+                    pathInfo={this.props.pdfPathInfo}
+                    pageNumbersToLoad={[pageNumber]}
+                    viewBox={{
+                      left: left - 40,
+                      top: top - 40,
+                      height: height + 80,
+                      width: "100%"
+                    }}
+                  />
+                </div>
+              );
+            }
           })}
       </div>
     );

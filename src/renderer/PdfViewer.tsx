@@ -252,17 +252,18 @@ class PdfViewer extends React.Component<
     console.log("page num on make vb", pageNumber);
     const { left, top, width, height } = viewbox;
     // note we save with scale = 1
-    this.props.addNodes([
-      makeViewbox({
-        ...viewbox,
-        // left: left / scale,
-        // top: top / scale,
-        // width: width / scale,
-        // height: height / scale,
-        pdfPathInfo: this.props.pathInfo,
-        pageNumber
-      })
-    ]);
+    // todo save as 
+    const vb = makeViewbox({
+      ...viewbox,
+      // left: left / scale,
+      // top: top / scale,
+      // width: width / scale,
+      // height: height / scale,
+      pdfPathInfo: this.props.pathInfo,
+      pageNumber
+    })
+    this.props.addNodes({nodes: [vb],  to: 'nodes'});
+    this.props.addNodes({nodes: [vb],  to: 'selectedNodes'});
   };
 
   viewboxesForPage = (pageNumber, scale) => {
@@ -271,6 +272,7 @@ class PdfViewer extends React.Component<
       .map(x => {
         const { left, top, width, height } = x.attributes;
         // const { scale } = this.state;
+        // todo update on scale
         return {
           ...x,
           attributes: {

@@ -18,7 +18,7 @@ import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 // import { graph, addViewbox, Viewbox } from "./graph";
 import { PdfPathInfo } from "../store/createStore";
-
+import { makeUserDoc } from "./db";
 // todo consistant CAPS
 // interface viewBox {
 //   // aka rectange
@@ -36,7 +36,7 @@ import { PdfPathInfo } from "../store/createStore";
 //   y1: number; // start of drag
 // }
 
-import {Viewbox} from './db'
+import { Viewbox } from "./db";
 
 const title = {
   height: 0,
@@ -51,7 +51,7 @@ const lefts = [] as number[];
 
 /**
  * @class **PageSvg**
- * 
+ *
  */
 const PageSvgDefaults = {
   props: {
@@ -65,7 +65,7 @@ const PageSvgDefaults = {
     fontNames2color: {} as any,
     pdfPathInfo: {} as PdfPathInfo, // todo remove?
     onAddViewbox: (viewbox: Viewbox) => {},
-    viewboxes: [] as {key: string, attributes: Viewbox}[]
+    viewboxes: [] as { key: string; attributes: Viewbox }[]
   },
   state: {
     selectionRect: title,
@@ -73,11 +73,30 @@ const PageSvgDefaults = {
     showTextLineBoxes: true,
     showTextBBoxes: false,
     duration: 0,
-    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } }
+    div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } },
+    value: "",
+    showText: false
   }
 };
-export default class PageSvg extends React.Component<
-  typeof PageSvgDefaults.props,
+
+import { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import { connect } from "react-redux";
+const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
+  return {
+    selectedNodes: state.info.selectedNodes
+  };
+};
+
+const mapDispatch = ({ info: { addNodes, deleteNodes } }: iDispatch) => ({
+  addNodes,
+  deleteNodes
+});
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
+class PageSvg extends React.Component<
+  typeof PageSvgDefaults.props & connectedProps,
   typeof PageSvgDefaults.state
 > {
   static defaultProps = PageSvgDefaults.props;
@@ -86,10 +105,7 @@ export default class PageSvg extends React.Component<
   selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
 
-
   async componentDidMount() {
-   
-
     // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
@@ -101,8 +117,7 @@ export default class PageSvg extends React.Component<
       } = this.divRef.current.getBoundingClientRect();
       const mx = mouse.x - bbLeft;
       const my = mouse.y - bbTop;
-      console.log(mouse)
-      
+
       switch (mouse.type) {
         case "mousedown":
           this.setState({
@@ -111,7 +126,9 @@ export default class PageSvg extends React.Component<
             selectionRect: {
               ...selectionRect,
               ...{ x1: mx, y1: my, left: mx, top: my, width: 0, height: 0 }
-            }
+            },
+            showText: false,
+            value: ""
           });
           break;
         case "mousemove":
@@ -141,10 +158,11 @@ export default class PageSvg extends React.Component<
           break;
 
         case "mouseup":
-          if (!mouse.ctrlKey){
+          if (!mouse.ctrlKey) {
             const text = this.getText(this.state.selectionRect); // todo take out the snaps part
           } else {
-            this.props.onAddViewbox(this.state.selectionRect)
+            this.props.onAddViewbox(this.state.selectionRect);
+            this.setState({showText: true, value: ''})
           }
           break;
       }
@@ -196,13 +214,7 @@ export default class PageSvg extends React.Component<
     );
     const { bottom, ...newSelect } = bbox;
 
-    // const viewbox = addViewbox(
-    //   { ...newSelect, pdfPathInfo: this.props.pdfPathInfo },
-    //   graph
-    // );
-    // console.log('asdf')
-    this.props.onAddViewbox(newSelect)
-    
+    this.props.onAddViewbox(newSelect);
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
     const text = selectedLines.map(sl => {
@@ -217,6 +229,7 @@ export default class PageSvg extends React.Component<
         return { fontHeight, fontFamily, str, top };
       });
     });
+
     const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
     const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
     const extractedText = flatten(text)
@@ -227,7 +240,9 @@ export default class PageSvg extends React.Component<
 
     //@ts-ignore
     this.setState({
-      div: { text: extractedText, style: { fontFamily, fontSize } }
+      div: { text: extractedText, style: { fontFamily, fontSize } },
+      showText: true,
+      value: ""
     });
 
     // // adapt styles here
@@ -278,9 +293,36 @@ export default class PageSvg extends React.Component<
     this.sub.unsubscribe();
   }
 
+  onTextChange = e => {
+    this.setState({ value: e.target.value });
+  };
+
+  closeText = e => {
+    if (e.nativeEvent.key === "Escape") {
+      this.setState({ showText: false });
+      const hasText = this.state.value.length > 0;
+      if (hasText) {
+        const userDoc = makeUserDoc({
+          text: this.state.value,
+          pdfPathInfo: this.props.pdfPathInfo
+        });
+        this.props.addNodes({ nodes: [userDoc], to: "nodes" });
+        //add edge from selected to userdoc
+      }
+    }
+
+    //todo create node and id and add it
+    //todo update if already exists
+  };
+
+  onOpenText = e => {
+    this.setState({ value: e.target.value });
+  };
+
   render() {
     const { left, top, width, height } = this.state.selectionRect;
     // console.log(this.state.selectionRect)
+    // console.log(this.props.selectedNodes);
 
     return (
       <>
@@ -386,23 +428,6 @@ export default class PageSvg extends React.Component<
                 />
               );
             })}
-          {/* {this.state.lineGroups.length > 0 &&
-            this.state.lineGroups[0].lines.map((line, i) => {
-              return (
-                <div
-                  draggable={false}
-                  key={i}
-                  style={{
-                    position: "absolute",
-                    left: line.left,
-                    top: line.top,
-                    width: line.width,
-                    height: line.height,
-                    outline: "1px solid blue"
-                  }}
-                />
-              );
-            })} */}
           <Spring
             native
             to={{ left, top, width, height }}
@@ -422,21 +447,27 @@ export default class PageSvg extends React.Component<
               />
             )}
           </Spring>
-          {this.props.viewboxes.length > 0 && this.props.viewboxes.map(vb => {
-            const {top, left, width, height} = vb.attributes
-            
-            return <div key={vb.key} style={{
-              position: "absolute",
-              top: top,
-              left: left - 5,
-              width: width + 5,
-              height: height,
-              border: "2px solid green",
-              lineHeight: "1em",
-              backgroundColor: "transparent"
-            }}></div>
-          })}
-          {/* {this.state.div.text.length > 0 && (
+          {this.props.viewboxes.length > 0 &&
+            this.props.viewboxes.map(vb => {
+              const { top, left, width, height } = vb.attributes;
+
+              return (
+                <div
+                  key={vb.key}
+                  style={{
+                    position: "absolute",
+                    top: top,
+                    left: left - 5,
+                    width: width + 5,
+                    height: height,
+                    border: "2px solid green",
+                    lineHeight: "1em",
+                    backgroundColor: "transparent"
+                  }}
+                />
+              );
+            })}
+          {this.state.showText && (
             <>
               <div
                 style={{
@@ -461,21 +492,30 @@ export default class PageSvg extends React.Component<
                       preventScroll: true
                     })
                   }
+                  value={this.state.value}
+                  onChange={this.onTextChange}
+                  onKeyDown={this.closeText}
+                  // todo make node on type then make edge to selected viewbox node
                   style={{
                     width,
                     height,
                     minHeight: 50,
                     minWidth: 200,
                     fontFamily: this.state.div.style.fontFamily,
-                    fontSize: 10,
+                    fontSize: 20,
                     boxShadow: "0 2px 12px -6px #777"
                   }}
                 />
               </PopupPortal>
             </>
-          )} */}
+          )}
         </div>
       </>
     );
   }
 }
+
+export default connect(
+  mapState,
+  mapDispatch
+)(PageSvg);
