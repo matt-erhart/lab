@@ -27,11 +27,11 @@ let nodes = new Map([
   [
     "node1",
     {
-      x: 10,
-      y: 10,
-      radius: 70,
-      fill: "blue",
-      stroke: "silver",
+      x: 150,
+      y: 150,
+      radius: 30,
+      fill: "red",
+      stroke: "red",
       strokeWidth: 4,
       draggable: true,
       id: "node1"
@@ -40,14 +40,27 @@ let nodes = new Map([
   [
     "node2",
     {
-      x: 150,
-      y: 150,
-      radius: 70,
-      fill: "blue",
+      x: 200,
+      y: 200,
+      radius: 30,
+      fill: "green",
       stroke: "green",
       strokeWidth: 4,
       draggable: true,
       id: "node2"
+    }
+  ],
+  [
+    "node3",
+    {
+      x: 150,
+      y: 250,
+      radius: 30,
+      fill: "blue",
+      stroke: "blue",
+      strokeWidth: 4,
+      draggable: true,
+      id: "node3"
     }
   ]
 ]);
@@ -67,6 +80,36 @@ let links = new Map([
       source: "node1",
       target: "node2"
     }
+  ],
+  [
+    "link2",
+    {
+      line: {
+        strokeWidth: 3,
+        stroke: "black",
+        lineCap: "round",
+        id: "link2",
+        opacity: 0.3,
+        points: [0, 0]
+      },
+      source: "node1",
+      target: "node3"
+    }
+  ],
+  [
+    "link3",
+    {
+      line: {
+        strokeWidth: 3,
+        stroke: "black",
+        lineCap: "round",
+        id: "link3",
+        opacity: 0.3,
+        points: [0, 0]
+      },
+      source: "node2",
+      target: "node3"
+    }
   ]
 ]);
 
@@ -78,8 +121,8 @@ export default class App extends React.Component {
   componentDidMount() {
     this.stage = new Konva.Stage({
       container: this.canvasRef.current, // id of container <div>
-      width: 500,
-      height: 500,
+      width: window.innerWidth,
+      height: window.innerHeight,
       draggable: true
     });
 
@@ -101,7 +144,7 @@ export default class App extends React.Component {
     });
 
     links.forEach((link, key, map) => {
-      const line = new Konva.Line(links.get("link1").line);
+      const line = new Konva.Line(link.line);
       const source = nodes.get(link.source);
       const target = nodes.get(link.target);
       line.setPoints([source.x, source.y, target.x, target.y]);
@@ -111,10 +154,11 @@ export default class App extends React.Component {
     this.stage.add(layer);
     this.stage.add(lineLayer);
     layer.on("dragmove", e => {
+      // todo make updateLines(){}
       const movingId = e.target.id();
       const movingNode = layer.findOne("#" + movingId);
       const { x, y } = movingNode.attrs;
-
+      
       for (let link of links.values()) {
         if (link.target === movingId || link.source === movingId) {
           const line = lineLayer.findOne("#" + link.line.id);
