@@ -120,7 +120,7 @@ export default class App extends React.Component {
     });
     // this.stage.on("wheel", zoomWheel(this.stage));
 
-    var nodeLayer = new Konva.Layer();
+    let nodeLayer = new Konva.Layer();
     let linkLayer = new Konva.Layer();
 
     nodes.forEach((node, key, map) => {
@@ -141,11 +141,38 @@ export default class App extends React.Component {
     // draw the image
     nodeLayer.setZIndex(1);
     linkLayer.setZIndex(0);
+    this.stage.on("dblclick", e => {
+      const coords = this.stage.getPointerPosition();
+      const { dx, dy } = this.state.scroll;
+      const { x, y } = { x: coords.x + dx, y: coords.y + dy };
+
+      if (e.target.getType() === "Stage") {
+        // ADD NODE
+        addNode(nodes, nodeLayer, { x, y });
+        nodeLayer.draw();
+      } else if (e.target.getClassName() === "Circle") {
+        //REMOVE NODE and LINKS
+        const id = e.target.getAttrs().id;
+        const delNode = nodes.get(id);
+        nodes.delete(id);
+        nodeLayer.findOne("#" + id).destroy();
+
+        const linksToDelete = getLinksIdsOnNode(delNode, links);
+        linksToDelete.forEach(linkId => {
+          links.delete(linkId);
+          linkLayer.findOne("#" + linkId).destroy();
+        });
+        linkLayer.draw();
+        nodeLayer.draw();
+      }
+    });
     nodeLayer.draw();
     linkLayer.draw();
   }
 
   onScroll = e => {
+    // todo fast scrolling ghosting, maybe css transition?
+    // or just put them on one layer
     var dx = e.nativeEvent.target.scrollLeft;
     var dy = e.nativeEvent.target.scrollTop;
     this.setState({ scroll: { dx, dy } });
@@ -159,23 +186,50 @@ export default class App extends React.Component {
   render() {
     const { dx, dy } = this.state.scroll;
     return (
-      <ScrollContainer onScroll={this.onScroll}>
-        <div
-          style={{
-            width: this.state.canvasSize.width,
-            height: this.state.canvasSize.height,
-            overflow: "hidden"
-          }}
-        >
+      <div>
+        <ScrollContainer onScroll={this.onScroll}>
           <div
-            ref={this.canvasRef}
-            style={{ transform: "translate(" + dx + "px, " + dy + "px)" }}
-          />
-        </div>
-      </ScrollContainer>
+            style={{
+              width: this.state.canvasSize.width,
+              height: this.state.canvasSize.height,
+              overflow: "hidden"
+            }}
+          >
+            <div
+              ref={this.canvasRef}
+              style={{ transform: "translate(" + dx + "px, " + dy + "px)" }}
+            />
+          </div>
+        </ScrollContainer>
+      </div>
     );
   }
 }
+
+const getLinksIdsOnNode = (node, links: Map<string, {}>) => {
+  let linksOnNode = [] as string[];
+  links.forEach((link, key) => {
+    if (link.source === node.id || link.target === node.id) {
+      linksOnNode.push(key);
+    }
+  });
+  return linksOnNode;
+};
+
+const addNode = (nodes: Map<string, any>, nodeLayer, nodeConfig) => {
+  const id = Math.random() * 1000 + "";
+  const node = {
+    ...nodeConfig,
+    radius: 30,
+    fill: "red",
+    stroke: "red",
+    strokeWidth: 4,
+    draggable: true,
+    id
+  };
+  nodes.set(id, node);
+  nodeLayer.add(new Konva.Circle(node));
+};
 
 const updateLinks = (
   nodeLayer: konva.Layer<konva.Node>,
