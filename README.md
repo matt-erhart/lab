@@ -1,53 +1,61 @@
-# some pdfs will fail because pdfjs thinks its node
-      nodeIntegration: false
-      preload... everything?
+# npm graphs 
+https://github.com/levelgraph/levelgraph 1200 # easy save to disk 3x slower than graphology for neighbors
+https://github.com/graphology/graphology#readme 200 # 3x faster than levelgraph for neighbors
+http://js.cytoscape.org/
+
+https://github.com/cape-io/redux-graph
+https://www.npmjs.com/package/hexadb 5 stars
+
+# graph layouts
+import ForceGraph2D from 'react-force-graph-2d';
+
+https://ialab.it.monash.edu/webcola/index.html
+http://sigmajs.org/ dedicated to graph drawing.
 
 # electron perf notes
 https://www.infoq.com/presentations/electron-pitfalls
-- main
 
-# scale
-page coords image
-fig bboxes, name, captions
-map from textItems to lines and block and back
+# state management
+https://github.com/CharlesStover/reactn
+https://github.com/diegohaz/constate
+
+# expert mode
+https://github.com/ccampbell/mousetrap
+
+# async validation
+https://indicative.adonisjs.com/docs/syntax-guide
+
+# hooks
+https://github.com/neo/react-use-scroll-position
+https://github.com/LeetCode-OpenSource/rxjs-hooks#apis
+
+# node perf testing
+https://github.com/bestiejs/platform.js#readme
+https://benchmarkjs.com/
+
+# async handling
+https://github.com/staltz/callbag-basics # push and pull?
+https://mostcore.readthedocs.io/en/latest/api.html # fastest
+https://github.com/ReactiveX/rxjs
 
 
-# qol
+# td
 scale
 
-# auto
-paragraphs
-section titles
-gaps/boxes from whitespace
-figures 
-tables
-ordered lists
-super script
-sub script
-references
-math
+# semantic layout
+better columns & lines
+reading order
 
 # manual 
 drag corners/edges
 drag columns
-view histograms
-
-# nav
-keyboard by line
-auto grab paragraphs + sections
-
-# search by section
-
 
 # improve text overlay
 see snippet bellow
 
-
-
 # formalism
-x expands to [y,z] (for tooltips)
-a same as A (synonyms)
-x predicts y (possible causes)
+level of detail/precision/specificity + attrs (esp. causality + utility)
+broadcasting, static docs, cognitive tutors
 
 # queries
 what's the expected outcome of some scenario (what's y given x)

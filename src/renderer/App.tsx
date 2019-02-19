@@ -167,11 +167,15 @@ const ConnectedApp = connect(
   mapDispatch
 )(_App);
 
+import KonvaTest from "./KonvaTest";
 class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <ConnectedApp />
+        {/* <ConnectedApp /> */}
+        <div>
+          <KonvaTest />
+        </div>
       </Provider>
     );
   }

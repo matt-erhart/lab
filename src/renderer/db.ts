@@ -16,7 +16,15 @@ const initDb = async (path: string) => {
   let db = await low(adapter);
   return db;
 };
-
+type NodeTypes =
+  | "userDoc/plain"
+  | "userDoc/quote"
+  | "userDoc/unit"
+  | "viewbox/pdf"
+  | "textRange/pdf"
+  | "publication/pdf"
+  | "user"
+  | "venue";
 type dbPaths = "viewBoxes";
 const getById = (
   db: low.LowdbAsync<any>,

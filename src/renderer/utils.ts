@@ -16,8 +16,26 @@ export const brewer12 = [
   "#b15928"
 ];
 
+export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
+  const rows = [...Array(nRows).keys()];
+  const cols = [...Array(nCols).keys()];
+  let x = 0;
+  let y = 0;
+  let boxes = [];
+  let id = 0
+  for (let rowNum of rows) {
+    if (rowNum > 0) x += width + gap;
+    y = 0;
+    for (let colNum of cols) {
+      if (colNum > 0) y += height + gap;
+      boxes.push({ id: rowNum + "" + colNum + '' + (id++), x, y, width, height });
+    }
+  }
+  return boxes;
+};
+
 import uuidv1 = require("uuid/v1");
-export const withUid = (prefix = "", obj = {} ) => {
+export const withUid = (prefix = "", obj = {}) => {
   return { id: prefix + "-" + uuidv1(), ...obj };
 };
 
