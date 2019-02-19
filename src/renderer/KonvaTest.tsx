@@ -1,27 +1,17 @@
 import * as React from "react";
 import konva, { Circle } from "konva";
 // import { interval } from "rxjs";
-export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
-  const rows = [...Array(nRows).keys()];
-  const cols = [...Array(nCols).keys()];
-  let x = 0;
-  let y = 0;
-  let boxes = [];
-  let id = 0;
-  for (let rowNum of rows) {
-    if (rowNum > 0) x += width + gap;
-    y = 0;
-    for (let colNum of cols) {
-      if (colNum > 0) y += height + gap;
-      boxes.push({ id: rowNum + "" + colNum + "" + id++, x, y, width, height });
-    }
-  }
-  return boxes;
-};
-
+import styled from "styled-components";
 import { useRef, useEffect, useLayoutEffect } from "react";
-
 import Konva from "konva";
+
+const ScrollContainer = styled.div`
+  width: calc(100% - 22px);
+  height: calc(100vh - 22px);
+  overflow: auto;
+  margin: 10;
+  border: 1px solid grey;
+`;
 
 let nodes = new Map([
   [
@@ -116,7 +106,10 @@ let links = new Map([
 export default class App extends React.Component {
   canvasRef = React.createRef<HTMLDivElement>();
   stage: konva.Stage;
-  state = {};
+  state = {
+    canvasSize: { width: 3000, height: 3000 },
+    scroll: { dx: 0, dy: 0 }
+  };
 
   componentDidMount() {
     this.stage = new Konva.Stage({
@@ -125,80 +118,135 @@ export default class App extends React.Component {
       height: window.innerHeight,
       draggable: true
     });
+    // this.stage.on("wheel", zoomWheel(this.stage));
 
-    // then create layer
-    var layer = new Konva.Layer();
-    let lineLayer = new Konva.Layer();
-    var line = new Konva.Line({
-      dash: [10, 10, 0, 10],
-      strokeWidth: 3,
-      stroke: "black",
-      lineCap: "round",
-      id: "line",
-      opacity: 0.3,
-      points: [10, 10, 20, 20]
-    });
+    var nodeLayer = new Konva.Layer();
+    let linkLayer = new Konva.Layer();
 
     nodes.forEach((node, key, map) => {
-      layer.add(new Konva.Circle(node));
+      nodeLayer.add(new Konva.Circle(node));
     });
 
     links.forEach((link, key, map) => {
       const line = new Konva.Line(link.line);
       const source = nodes.get(link.source);
       const target = nodes.get(link.target);
-      line.setPoints([source.x, source.y, target.x, target.y]);
-      lineLayer.add(line);
+      line.points([source.x, source.y, target.x, target.y]);
+      linkLayer.add(line);
     });
 
-    this.stage.add(layer);
-    this.stage.add(lineLayer);
-    layer.on("dragmove", e => {
-      // todo make updateLines(){}
-      const movingId = e.target.id();
-      const movingNode = layer.findOne("#" + movingId);
-      const { x, y } = movingNode.attrs;
-      
-      for (let link of links.values()) {
-        if (link.target === movingId || link.source === movingId) {
-          const line = lineLayer.findOne("#" + link.line.id);
-
-          if (link.target === movingId) {
-            const target = layer.findOne("#" + link.target);
-            const points = [
-              line.attrs.points[0],
-              line.attrs.points[1],
-              target.x(),
-              target.y()
-            ]
-            console.log('target', points)
-            
-            line.setPoints(points);
-          }
-          if (link.source === movingId) {
-            const source = layer.findOne("#" + link.source);
-            const points = [
-              source.x(),
-              source.y(),
-              line.attrs.points[2],
-              line.attrs.points[3]
-            ]
-            console.log('source', points)
-
-            line.setPoints(points);
-          }
-        }
-      }
-      lineLayer.draw();
-    });
+    this.stage.add(nodeLayer);
+    this.stage.add(linkLayer);
+    nodeLayer.on("dragmove", e => updateLinks(nodeLayer, linkLayer)(e));
     // draw the image
-    layer.draw();
-    lineLayer.draw();
+    nodeLayer.setZIndex(1);
+    linkLayer.setZIndex(0);
+    nodeLayer.draw();
+    linkLayer.draw();
   }
+
+  onScroll = e => {
+    var dx = e.nativeEvent.target.scrollLeft;
+    var dy = e.nativeEvent.target.scrollTop;
+    this.setState({ scroll: { dx, dy } });
+    this.stage.x(-dx);
+    this.stage.y(-dy);
+    this.stage.batchDraw();
+  };
 
   componentWillUnmount() {}
 
   render() {
-    return <div ref={this.canvasRef} />;
+    const { dx, dy } = this.state.scroll;
+    return (
+      <ScrollContainer onScroll={this.onScroll}>
+        <div
+          style={{
+            width: this.state.canvasSize.width,
+            height: this.state.canvasSize.height,
+            overflow: "hidden"
+          }}
+        >
+          <div
+            ref={this.canvasRef}
+            style={{ transform: "translate(" + dx + "px, " + dy + "px)" }}
+          />
+        </div>
+      </ScrollContainer>
+    );
   }
 }
+
+const updateLinks = (
+  nodeLayer: konva.Layer<konva.Node>,
+  linkLayer: konva.Layer<konva.Node>
+) => (e: konva.KonvaEventObject<DragEvent>) => {
+  /**
+   *
+   */
+  const movingId = e.target.id();
+  const movingNode = nodeLayer.findOne("#" + movingId) as konva.Shape;
+  const { x, y } = movingNode.getAttrs();
+  console.log(x, y);
+
+  for (let link of links.values()) {
+    if (link.target === movingId || link.source === movingId) {
+      const line = linkLayer.findOne("#" + link.line.id) as konva.Line;
+
+      if (link.target === movingId) {
+        const target = nodeLayer.findOne("#" + link.target);
+        const p = line.points();
+        const points = [p[0], p[1], target.x(), target.y()];
+        line.points(points);
+      }
+      if (link.source === movingId) {
+        const source = nodeLayer.findOne("#" + link.source) as konva.Line;
+        const p = line.points();
+
+        const points = [source.x(), source.y(), p[2], p[3]];
+        console.log("source", points);
+
+        line.points(points);
+      }
+    }
+  }
+  linkLayer.draw();
+};
+
+const zoomWheel = (stage, scaleBy = 1.2) => e => {
+  e.evt.preventDefault();
+  var oldScale = stage.scaleX();
+
+  var mousePointTo = {
+    x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+    y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+  };
+
+  var newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+  stage.scale({ x: newScale, y: newScale });
+
+  var newPos = {
+    x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
+    y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+  };
+  stage.position(newPos);
+  stage.batchDraw();
+};
+
+export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
+  const rows = [...Array(nRows).keys()];
+  const cols = [...Array(nCols).keys()];
+  let x = 0;
+  let y = 0;
+  let boxes = [];
+  let id = 0;
+  for (let rowNum of rows) {
+    if (rowNum > 0) x += width + gap;
+    y = 0;
+    for (let colNum of cols) {
+      if (colNum > 0) y += height + gap;
+      boxes.push({ id: rowNum + "" + colNum + "" + id++, x, y, width, height });
+    }
+  }
+  return boxes;
+};
