@@ -13,103 +13,93 @@ const ScrollContainer = styled.div`
   border: 1px solid grey;
 `;
 
-let nodes = new Map([
-  [
-    "node1",
-    {
-      x: 150,
-      y: 150,
-      radius: 30,
-      fill: "red",
-      stroke: "red",
-      strokeWidth: 4,
-      draggable: true,
-      id: "node1"
-    }
-  ],
-  [
-    "node2",
-    {
-      x: 200,
-      y: 200,
-      radius: 30,
-      fill: "green",
-      stroke: "green",
-      strokeWidth: 4,
-      draggable: true,
-      id: "node2"
-    }
-  ],
-  [
-    "node3",
-    {
-      x: 150,
-      y: 250,
-      radius: 30,
-      fill: "blue",
-      stroke: "blue",
-      strokeWidth: 4,
-      draggable: true,
-      id: "node3"
-    }
-  ]
-]);
+let nodes = {
+  node1: {
+    x: 150,
+    y: 150,
+    radius: 30,
+    fill: "red",
+    stroke: "red",
+    strokeWidth: 10,
+    draggable: true,
+    id: "node1"
+  },
+  node2: {
+    x: 200,
+    y: 200,
+    radius: 30,
+    fill: "green",
+    stroke: "green",
+    strokeWidth: 10,
+    draggable: true,
+    id: "node2"
+  },
+  node3: {
+    x: 150,
+    y: 250,
+    radius: 30,
+    fill: "blue",
+    stroke: "blue",
+    strokeWidth: 10,
+    draggable: true,
+    id: "node3"
+  }
+};
 
-let links = new Map([
-  [
-    "link1",
-    {
-      line: {
-        strokeWidth: 3,
-        stroke: "black",
-        lineCap: "round",
-        id: "link1",
-        opacity: 0.3,
-        points: [0, 0]
-      },
-      source: "node1",
-      target: "node2"
-    }
-  ],
-  [
-    "link2",
-    {
-      line: {
-        strokeWidth: 3,
-        stroke: "black",
-        lineCap: "round",
-        id: "link2",
-        opacity: 0.3,
-        points: [0, 0]
-      },
-      source: "node1",
-      target: "node3"
-    }
-  ],
-  [
-    "link3",
-    {
-      line: {
-        strokeWidth: 3,
-        stroke: "black",
-        lineCap: "round",
-        id: "link3",
-        opacity: 0.3,
-        points: [0, 0]
-      },
-      source: "node2",
-      target: "node3"
-    }
-  ]
-]);
+let links = {
+  link1: {
+    line: {
+      strokeWidth: 3,
+      stroke: "black",
+      lineCap: "round",
+      id: "link1",
+      opacity: 0.3,
+      points: [0, 0]
+    },
+    source: "node1",
+    target: "node2",
+    id: "link1"
+  },
+  link2: {
+    line: {
+      strokeWidth: 3,
+      stroke: "black",
+      lineCap: "round",
+      id: "link2",
+      opacity: 0.3,
+      points: [0, 0]
+    },
+    source: "node1",
+    target: "node3",
+    id: "link2"
+  },
+  link3: {
+    line: {
+      strokeWidth: 3,
+      stroke: "black",
+      lineCap: "round",
+      id: "link3",
+      opacity: 0.3,
+      points: [0, 0]
+    },
+    source: "node2",
+    target: "node3",
+    id: "link3"
+  }
+};
 
 export default class App extends React.Component {
   canvasRef = React.createRef<HTMLDivElement>();
   stage: konva.Stage;
   state = {
     canvasSize: { width: 3000, height: 3000 },
-    scroll: { dx: 0, dy: 0 }
+    scroll: { dx: 0, dy: 0 },
+    selected: { nodes: [], links: [] }
   };
+
+  componentDidUpdate() {
+    console.log(this.state.selected.nodes);
+  }
 
   componentDidMount() {
     this.stage = new Konva.Stage({
@@ -123,14 +113,14 @@ export default class App extends React.Component {
     let nodeLayer = new Konva.Layer();
     let linkLayer = new Konva.Layer();
 
-    nodes.forEach((node, key, map) => {
+    Object.values(nodes).forEach(node => {
       nodeLayer.add(new Konva.Circle(node));
     });
 
-    links.forEach((link, key, map) => {
+    Object.values(links).forEach(link => {
       const line = new Konva.Line(link.line);
-      const source = nodes.get(link.source);
-      const target = nodes.get(link.target);
+      const source = nodes[link.source];
+      const target = nodes[link.target];
       line.points([source.x, source.y, target.x, target.y]);
       linkLayer.add(line);
     });
@@ -141,29 +131,83 @@ export default class App extends React.Component {
     // draw the image
     nodeLayer.setZIndex(1);
     linkLayer.setZIndex(0);
-    this.stage.on("dblclick", e => {
+    this.stage.on("click dblclick", e => {
       const coords = this.stage.getPointerPosition();
       const { dx, dy } = this.state.scroll;
       const { x, y } = { x: coords.x + dx, y: coords.y + dy };
+      const button = ["left", "middle", "right"][e.evt.button];
+      if (button === "left" && e.type === "dblclick") {
+        if (e.target.getType() === "Stage") {
+          // ADD NODE
+          addNode(nodes, nodeLayer, { x, y });
+        } else if (e.target.getClassName() === "Circle") {
+          //REMOVE NODE and LINKS
+          const id = e.target.getAttrs().id;
+          const delNode = nodes[id];
 
-      if (e.target.getType() === "Stage") {
-        // ADD NODE
-        addNode(nodes, nodeLayer, { x, y });
-        nodeLayer.draw();
-      } else if (e.target.getClassName() === "Circle") {
-        //REMOVE NODE and LINKS
-        const id = e.target.getAttrs().id;
-        const delNode = nodes.get(id);
-        nodes.delete(id);
-        nodeLayer.findOne("#" + id).destroy();
+          delete nodes[id];
 
-        const linksToDelete = getLinksIdsOnNode(delNode, links);
-        linksToDelete.forEach(linkId => {
-          links.delete(linkId);
-          linkLayer.findOne("#" + linkId).destroy();
-        });
-        linkLayer.draw();
-        nodeLayer.draw();
+          nodeLayer.findOne("#" + id).destroy();
+
+          const linksToDelete = getLinksIdsOnNode(delNode, links);
+          console.log(linksToDelete);
+
+          linksToDelete.forEach(linkId => {
+            delete links[linkId];
+            linkLayer.findOne("#" + linkId).destroy();
+          });
+          linkLayer.draw();
+          nodeLayer.draw();
+        }
+      }
+      if (button === "left" && e.type === "click") {
+        if (e.target.getClassName() === "Circle") {
+          const id = e.target.getAttrs().id;
+          const { selected } = this.state;
+          const ix = selected.nodes.findIndex(x => x === id);
+
+          let newSelected;
+          if (ix < 0) {
+            // select
+            newSelected = [...selected.nodes, id];
+            nodeLayer
+              .findOne("#" + id)
+              .shadowEnabled(true)
+              .setAttrs({
+                shadowColor: "black",
+                shadowBlur: 15,
+                shadowOffset: { x: 10, y: 10 },
+                shadowOpacity: 0.5
+              });
+          } else {
+            // deselect
+            newSelected = [
+              ...selected.nodes.slice(0, ix),
+              ...selected.nodes.slice(ix + 1)
+            ];
+            const node = nodeLayer.findOne("#" + id);
+            const fillColor = node.getAttr("fill");
+            console.log(fillColor);
+            nodeLayer.findOne("#" + id).shadowEnabled(false);
+          }
+          nodeLayer.draw();
+          this.setState(state => ({
+            selected: { links: state.selected.links, nodes: newSelected }
+          }));
+
+          // add node to selected
+        }
+      } else if (
+        button === "right" &&
+        e.target.getClassName() === "Circle"
+      ) {
+        linkSelectedToNode(
+          nodes,
+          this.state.selected.nodes,
+          e.target.getAttrs().id,
+          linkLayer,
+          nodeLayer
+        );
       }
     });
     nodeLayer.draw();
@@ -206,11 +250,43 @@ export default class App extends React.Component {
   }
 }
 
-const getLinksIdsOnNode = (node, links: Map<string, {}>) => {
+const linkSelectedToNode = (
+  nodes,
+  selectedNodeIds,
+  nodeId,
+  linkLayer,
+  nodeLayer
+) => {
+  const sourceNode = nodeLayer.findOne("#" + nodeId);
+
+  selectedNodeIds.forEach(targetId => {
+    const targetNode = nodeLayer.findOne("#" + targetId);
+
+    const linkId = Math.random() * 1000;
+    links[linkId] = {
+      line: {
+        strokeWidth: 3,
+        stroke: "black",
+        lineCap: "round",
+        id: linkId,
+        opacity: 0.3,
+        points: [sourceNode.x(), sourceNode.y(), targetNode.x(), targetNode.y()]
+      },
+      source: nodeId,
+      target: targetId,
+      id: linkId
+    };
+    const line = new Konva.Line(links[linkId].line);
+    linkLayer.add(line);
+  });
+  linkLayer.draw();
+};
+
+const getLinksIdsOnNode = (node, links) => {
   let linksOnNode = [] as string[];
-  links.forEach((link, key) => {
+  Object.values(links).forEach((link, key) => {
     if (link.source === node.id || link.target === node.id) {
-      linksOnNode.push(key);
+      linksOnNode.push(link.id);
     }
   });
   return linksOnNode;
@@ -221,14 +297,15 @@ const addNode = (nodes: Map<string, any>, nodeLayer, nodeConfig) => {
   const node = {
     ...nodeConfig,
     radius: 30,
-    fill: "red",
-    stroke: "red",
+    fill: "blue",
+    stroke: "blue",
     strokeWidth: 4,
     draggable: true,
     id
   };
-  nodes.set(id, node);
+  nodes[id] = node;
   nodeLayer.add(new Konva.Circle(node));
+  nodeLayer.draw();
 };
 
 const updateLinks = (
@@ -243,7 +320,7 @@ const updateLinks = (
   const { x, y } = movingNode.getAttrs();
   console.log(x, y);
 
-  for (let link of links.values()) {
+  for (let link of Object.values(links)) {
     if (link.target === movingId || link.source === movingId) {
       const line = linkLayer.findOne("#" + link.line.id) as konva.Line;
 
