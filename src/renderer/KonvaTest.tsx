@@ -1,5 +1,5 @@
 import * as React from "react";
-import konva, { Circle } from "konva";
+import konva, { Circle, Stage } from "konva";
 // import { interval } from "rxjs";
 import styled from "styled-components";
 import { useRef, useEffect, useLayoutEffect } from "react";
@@ -17,7 +17,7 @@ let nodes = {
   node1: {
     x: 150,
     y: 150,
-    radius: 30,
+    radius: 10,
     fill: "red",
     stroke: "red",
     strokeWidth: 10,
@@ -27,7 +27,7 @@ let nodes = {
   node2: {
     x: 200,
     y: 200,
-    radius: 30,
+    radius: 10,
     fill: "green",
     stroke: "green",
     strokeWidth: 10,
@@ -37,7 +37,7 @@ let nodes = {
   node3: {
     x: 150,
     y: 250,
-    radius: 30,
+    radius: 10,
     fill: "blue",
     stroke: "blue",
     strokeWidth: 10,
@@ -49,12 +49,12 @@ let nodes = {
 let links = {
   link1: {
     line: {
-      strokeWidth: 3,
+      strokeWidth: 4,
       stroke: "black",
       lineCap: "round",
       id: "link1",
       opacity: 0.3,
-      points: [0, 0]
+      points: [0, 0],
     },
     source: "node1",
     target: "node2",
@@ -62,7 +62,7 @@ let links = {
   },
   link2: {
     line: {
-      strokeWidth: 3,
+      strokeWidth: 4,
       stroke: "black",
       lineCap: "round",
       id: "link2",
@@ -75,7 +75,7 @@ let links = {
   },
   link3: {
     line: {
-      strokeWidth: 3,
+      strokeWidth: 4,
       stroke: "black",
       lineCap: "round",
       id: "link3",
@@ -106,7 +106,7 @@ export default class App extends React.Component {
       container: this.canvasRef.current, // id of container <div>
       width: window.innerWidth,
       height: window.innerHeight,
-      draggable: true
+      draggable: false
     });
     // this.stage.on("wheel", zoomWheel(this.stage));
 
@@ -127,10 +127,34 @@ export default class App extends React.Component {
 
     this.stage.add(nodeLayer);
     this.stage.add(linkLayer);
-    nodeLayer.on("dragmove", e => updateLinks(nodeLayer, linkLayer)(e));
+    nodeLayer.on("dragmove dragend", e => {
+      if (e.type === 'dragmove'){
+        updateLinks(nodeLayer, linkLayer)(e)
+      } else if (e.type === 'dragend'){
+        console.log('dragend')
+        updateLinks(nodeLayer, linkLayer)(e)
+      }
+    });
     // draw the image
     nodeLayer.setZIndex(1);
     linkLayer.setZIndex(0);
+    this.stage.on("mouseover mouseout", e => {
+      let node = e.target;
+      if (e.type === "mouseover") {
+        node.strokeWidth(10)
+      } else {
+        node.strokeWidth(4)
+      }
+      if (e.target.getClassName() === "Circle") {
+        nodeLayer.draw();
+      }
+      if (e.target.getClassName() === "Line") {
+        linkLayer.draw();
+      }
+
+      
+    });
+
     this.stage.on("click dblclick", e => {
       const coords = this.stage.getPointerPosition();
       const { dx, dy } = this.state.scroll;
@@ -144,14 +168,9 @@ export default class App extends React.Component {
           //REMOVE NODE and LINKS
           const id = e.target.getAttrs().id;
           const delNode = nodes[id];
-
           delete nodes[id];
-
           nodeLayer.findOne("#" + id).destroy();
-
           const linksToDelete = getLinksIdsOnNode(delNode, links);
-          console.log(linksToDelete);
-
           linksToDelete.forEach(linkId => {
             delete links[linkId];
             linkLayer.findOne("#" + linkId).destroy();
@@ -161,6 +180,52 @@ export default class App extends React.Component {
         }
       }
       if (button === "left" && e.type === "click") {
+        if (e.target.getType() === "Stage") {
+          this.state.selected.nodes.forEach(id => {
+            const n = nodeLayer.findOne("#" + id);
+            if (n) n.shadowEnabled(false);
+          });
+          this.state.selected.links.forEach(id => {
+            const n = linkLayer.findOne("#" + id);
+            if (n) n.shadowEnabled(false);
+          });
+          nodeLayer.draw();
+          linkLayer.draw();
+          this.setState({ selected: { nodes: [], links: [] } });
+        }
+        if (e.target.getClassName() === "Line") {
+          // todo combined line and circle cases
+          const id = e.target.getAttrs().id;
+          const { selected } = this.state;
+          const ix = selected.links.findIndex(x => x === id);
+
+          let newSelected;
+          if (ix < 0) {
+            // select
+            newSelected = [...selected.links, id];
+            linkLayer
+              .findOne("#" + id)
+              .shadowEnabled(true)
+              .setAttrs({
+                shadowColor: "blue",
+                shadowBlur: 10,
+                shadowOffset: { x: 0, y: 0 },
+                shadowOpacity: 1
+              });
+          } else {
+            // deselect
+            newSelected = [
+              ...selected.links.slice(0, ix),
+              ...selected.links.slice(ix + 1)
+            ];
+            const node = linkLayer.findOne("#" + id);
+            nodeLayer.findOne("#" + id).shadowEnabled(false);
+          }
+          linkLayer.draw();
+          this.setState(state => ({
+            selected: { links: newSelected, nodes: state.selected.nodes }
+          }));
+        }
         if (e.target.getClassName() === "Circle") {
           const id = e.target.getAttrs().id;
           const { selected } = this.state;
@@ -174,10 +239,10 @@ export default class App extends React.Component {
               .findOne("#" + id)
               .shadowEnabled(true)
               .setAttrs({
-                shadowColor: "black",
-                shadowBlur: 15,
-                shadowOffset: { x: 10, y: 10 },
-                shadowOpacity: 0.5
+                shadowColor: "blue",
+                shadowBlur: 20,
+                shadowOffset: { x: 0, y: 0 },
+                shadowOpacity: 1
               });
           } else {
             // deselect
@@ -197,10 +262,7 @@ export default class App extends React.Component {
 
           // add node to selected
         }
-      } else if (
-        button === "right" &&
-        e.target.getClassName() === "Circle"
-      ) {
+      } else if (button === "right" && e.target.getClassName() === "Circle") {
         linkSelectedToNode(
           nodes,
           this.state.selected.nodes,
@@ -296,7 +358,7 @@ const addNode = (nodes: Map<string, any>, nodeLayer, nodeConfig) => {
   const id = Math.random() * 1000 + "";
   const node = {
     ...nodeConfig,
-    radius: 30,
+    radius: 10,
     fill: "blue",
     stroke: "blue",
     strokeWidth: 4,
@@ -318,27 +380,27 @@ const updateLinks = (
   const movingId = e.target.id();
   const movingNode = nodeLayer.findOne("#" + movingId) as konva.Shape;
   const { x, y } = movingNode.getAttrs();
-  console.log(x, y);
+  
 
   for (let link of Object.values(links)) {
     if (link.target === movingId || link.source === movingId) {
       const line = linkLayer.findOne("#" + link.line.id) as konva.Line;
-
       if (link.target === movingId) {
         const target = nodeLayer.findOne("#" + link.target);
         const p = line.points();
-        const points = [p[0], p[1], target.x(), target.y()];
+        const points = [p[0], p[1],  target.x(), target.y()];
         line.points(points);
       }
+
       if (link.source === movingId) {
         const source = nodeLayer.findOne("#" + link.source) as konva.Line;
         const p = line.points();
-
+        const midX = (p[2]+source.x())/2
+        const midY = (p[3]+source.y())/2
         const points = [source.x(), source.y(), p[2], p[3]];
-        console.log("source", points);
-
         line.points(points);
       }
+
     }
   }
   linkLayer.draw();
