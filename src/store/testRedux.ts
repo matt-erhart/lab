@@ -2,19 +2,25 @@ import { dispatch, getState } from "./createStore";
 import { makePdfSegmentViewbox } from "./creators";
 // console.log("init", getState());
 
+const vbs = [...Array(500)].map(x => makePdfSegmentViewbox())
 const vb  = makePdfSegmentViewbox();
 const vb2 = makePdfSegmentViewbox();
+console.log(getState())
 
-dispatch.app.addBatch({
-  nodes: [vb, vb2],
+dispatch.graph.addBatch({
+  nodes: vbs.slice(0,2),
 });
+// console.log(getState())
 
-// dispatch.app.updateData([
-//   { nodeId: vb.id, data: { left: 10, top: 10 } as typeof vb.data }
-// ]);
+// const updates = vbs.slice(0,300).map(x => ({id: x.id, data: {left: 3, top: 10}}))
+// console.time('time')
 
+// dispatch.app.updateData(
+//     {nodes: updates}
+// );
 
+// console.timeEnd('time')
 
 // dispatch.app.deleteNodes([vb.id])
-// console.dir('empty', getState().app.nodes);
+// console.dir(getState().app.nodes);
 

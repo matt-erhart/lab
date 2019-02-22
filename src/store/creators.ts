@@ -9,14 +9,29 @@ export type NodeDataTypes =
   | "pdf.segment.textRange"
   | "pdf.publication"
   | "user"
-  | "venue";
+  | "person"
+  | "venue"
+  | "query" // queries have style overrides, combine subqueries to reuse, oop
+  | "projection/map/affinity/dimension/coordinates matter";
+
+export interface NodeMeta {
+  createdBy: string;
+  timeCreated: number;
+  timeUpdated: number;
+  editors?: string[]
+}
 
 export interface NodeBase {
   id: string;
+  data: Object;
+  style: Object;
+  meta: NodeMeta;
 }
 
 export interface Empty extends NodeBase {
   data: {};
+  style: {};
+  meta: NodeMeta;
 }
 
 interface LinkBase {
@@ -24,6 +39,8 @@ interface LinkBase {
   data: {
     type: "unset" | "more" | "similar";
   };
+  style: {};
+  meta: NodeMeta;
   source: string;
   target: string;
   undirected: boolean;
@@ -52,9 +69,16 @@ export interface PdfSegmentViewbox extends NodeBase {
 }
 export const makePdfSegmentViewbox = (viewbox = {} as Partial<Viewbox>) => {
   const data = mergeDefaults(ViewboxDefault, viewbox);
+  const now = Date.now()
   return {
     id: data.id,
-    data
+    data,
+    style: {},
+    meta: {
+      createdBy: "defaultUserId",
+      timeCreated: now,
+      timeUpdated: now
+    } as NodeMeta
   } as PdfSegmentViewbox;
 };
 
