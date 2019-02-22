@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Electron + React + Parcel + Pdfjs",
   "scripts": {
-    "tsnode": "npx ts-node-dev --respawn --transpileOnly ./src/renderer/utils.ts",
+    "tsnode": "npx ts-node-dev --respawn --transpileOnly ./src/store/testRedux.ts",
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
@@ -63,6 +63,7 @@
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "pdfjs-dist": "file:./modules/pdfjs-dist",
+    "pino": "^5.11.1",
     "platform": "^1.3.5",
     "rbush": "^2.0.2",
     "rbush-knn": "^2.1.0",

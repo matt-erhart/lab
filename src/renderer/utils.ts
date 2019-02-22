@@ -15,6 +15,14 @@ export const brewer12 = [
   "#ffff99",
   "#b15928"
 ];
+import uuidv1 = require("uuid/v1");
+export const mergeDefaults = <T>(defaults: T, data = {} as Partial<T>) => {
+  return {
+    ...defaults,
+    id: uuidv1(),
+    ...data
+  } as T;
+};
 
 export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
   const rows = [...Array(nRows).keys()];
@@ -34,7 +42,6 @@ export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
   return boxes;
 };
 
-import uuidv1 = require("uuid/v1");
 export const withUid = (prefix = "", obj = {}) => {
   return { id: prefix + "-" + uuidv1(), ...obj };
 };

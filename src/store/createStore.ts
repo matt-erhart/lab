@@ -1,174 +1,144 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
 import produce from "immer";
-import Graph = require("graphology");
 import { withUid } from "../renderer/utils";
 import { PdfPathInfo } from "../store/createStore";
+const pino = require("pino");
+const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extreme
+// logger.info({ patch: { b: 1 } });
+import { Nodes, Links } from "./creators";
+import { node } from "prop-types";
+import { linkSync } from "fs";
 
-const generator = function({ undirected, source, target, attributes }) {
-  return withUid().id;
-};
-
-export const graph = new Graph({ multi: true, edgeKeyGenerator: generator });
-
-interface GraphNode {
-  key: string;
-  attributes: {};
-}
-
-interface GraphEdge {
-  key: string;
-  attributes: {};
-  source: string;
-  target: string;
-  undirected: boolean;
-}
-
-type NodeTypes =
-  | "userDoc/plain"
-  | "userDoc/quote"
-  | "userDoc/unit"
-  | "viewbox/pdf"
-  | "textRange/pdf"
-  | "publication/pdf"
-  | "user"
-  | "venue";
-
-const ViewboxDefault = {
-  id: "",
-  left: 0,
-  top: 0,
-  height: 0,
-  width: 0,
-  type: "viewbox/pdf" as NodeTypes,
+const defaultApp = {
   userId: "default",
   pdfPathInfo: {} as PdfPathInfo,
-  pageNumber: 0
-};
-export type Viewbox = typeof ViewboxDefault;
-export const makeViewbox = (viewbox = {} as Partial<Viewbox>, graph) => {
-  return {
-    ...ViewboxDefault,
-    id: withUid("viewbox").id,
-    ...viewbox
-  };
+  nodes: {} as { [id: string]: Nodes },
+  links: {} as { [id: string]: Links },
+  selectedNodes: [] as string[],
+  selectedLinks: [] as string[]
 };
 
-export interface PdfPathInfo {
-  pdfPath: string;
-  pdfName: string;
-  dir: string;
-}
-
-const defaultInfo = {
-  userId: "default",
-  pdfPathInfo: {} as PdfPathInfo,
-  nodes: [] as GraphNode[],
-  edges: [] as GraphEdge[],
-  selectedNodes: [] as GraphNode[],
-  selectedEdges: [] as GraphEdge[]
-};
-
-export const info = createModel({
-  state: defaultInfo,
+export const app = createModel({
+  state: defaultApp,
   reducers: {
-    updateState(state, payload: Partial<typeof defaultInfo>) {
-      // like this.setState
-      return { ...state, ...payload };
-    },
-    addNodes(
+    addBatch(
       state,
       payload: {
-        nodes: GraphNode[],
-        to: "nodes" | "selectedNodes"
+        nodes?: Nodes[];
+        links?: Links[];
       }
     ) {
-      const { nodes, to } = payload;
       return produce(state, draft => {
-        for (let node of nodes) {
-          const isUnique =
-            state[to].findIndex(n => n.key === node.key) === -1;
-          if (isUnique) {
-            draft[to].push(node);
-          } else {
-            console.log(node, "already exists");
+        for (let key of Object.keys(payload)) {
+          for (let item of payload[key]) {
+            const isUnique = !state[key].hasOwnProperty(item.id);
+            if (isUnique) {
+              draft[key][item.id] = item;
+            } else {
+              console.log(item, "already exists. maybe you want update");
+            }
+          }
+        }
+        return;
+      });
+    },
+    removeBatch(
+      state,
+      payload: {
+        nodes?: string[];
+        links?: string[];
+      }
+    ) {
+      return produce(state, draft => {
+        for (let key of Object.keys(payload)) {
+          for (let id of payload[key]) {
+            const exists = state[key].hasOwnProperty(id);
+            if (exists) {
+              delete draft[key][id];
+            } else {
+              console.log(id, " no such item to remove");
+            }
+
+            const selectedName =
+              "selected" + key.charAt(0).toUpperCase() + key.slice(1);
+            if (draft[selectedName].findIndex(id) >= 0) {
+              // also remove from selected*
+              delete draft[selectedName][id];
+            }
+
+            if (key === "nodes") {
+              // also remove connected links
+              Object.values(draft.links).forEach(link => {
+                if ([link.source, link.target].includes(id)) {
+                  delete draft.links[link.id];
+                }
+              });
+            }
+          }
+        }
+        return;
+      });
+    },
+    updateData(
+      state,
+      payload: {
+        nodes: { id: string; data: {} }[];
+        links: { id: string; data: {} }[];
+      }
+    ) {
+      return produce(state, draft => {
+        for (let key of Object.keys(payload)) {
+          for (let item of payload[key]) {
+            const { id, data } = item;
+            draft[key][id].data = {
+              ...draft[key][id].data,
+              ...data
+            };
           }
         }
       });
     },
-    updateNode(state, node: GraphNode) {
-      return produce(state, draft => {
-        const ix = draft.nodes.findIndex(n => n.key === node.key);
-        if (ix === -1) return draft;
-        return (draft.nodes[ix] = { ...draft.nodes[ix], ...node });
-      });
-    },
-    updateAttributes(
+    updateLink(
       state,
-      payload: { key: string; type: "node" | "edge"; attributes: {} }
+      payload: {
+        id: string;
+        source?: string;
+        target?: string;
+        undirected?: boolean;
+      }
     ) {
-      const { key, type, attributes } = payload;
       return produce(state, draft => {
-        const ix = draft[type].findIndex(n => n.key === payload.key);
-        if (ix === -1) return draft;
-        return (draft[type][ix].attributes = {
-          ...draft[type][ix].attributes,
-          ...attributes
-        });
-      });
-    },
-    deleteNodes(state, nodes: GraphNode[]) {
-      return produce(state, draft => {
-        for (let node of nodes) {
-          const ix = draft.nodes.findIndex(n => n.key === node.key);
-          draft.nodes.splice(ix, 1);
-          console.log("deleteing node and connecting edges");
-          draft.edges.filter(
-            e => e.source !== node.key && e.target !== node.key
-          );
+        const exists = draft.links.hasOwnProperty(payload.id);
+        if (exists) {
+          draft.links[payload.id] = { ...draft.links[payload.id], ...payload };
         }
       });
     },
-    addEdge(state, edge: GraphEdge) {
-      const isUnique = state.edges.findIndex(x => x.key === edge.key) === -1;
-      if (!isUnique) {
-        console.log("edge already exists", edge);
-        return state;
+    toggleSelections(
+      state,
+      payload: {
+        selectedNodes: string[];
+        selectedLinks: string[];
       }
+    ) {
       return produce(state, draft => {
-        return draft.edges.push(edge);
+        for (let key of Object.keys(payload)) {
+          for (let id of payload[key]) {
+            const ix = draft[key].findIndex(id)
+            if (ix > -1) {
+              draft[key].splice(ix,1)
+            } else {
+              draft[key].push(id)
+            }
+          }
+        }
       });
     },
-    updateEdge(state, edge: GraphEdge) {
-      return produce(state, draft => {
-        const ix = draft.edges.findIndex(n => n.key === edge.key);
-        if (ix === -1) return draft;
-        return (draft.edges[ix] = { ...draft.nodes[ix], ...edge });
-      });
-    },
-    deleteEdge(state, edge: GraphNode) {
-      const ix = state.nodes.findIndex(n => n.key === edge.key);
-      return produce(state, draft => {
-        delete draft.edges[ix];
-      });
-    }
   }
-  // effects: dispatch => ({
-  //   async loadPages(
-  //     payload: { pdfPathInfo: PdfPathInfo; pageNumbersToLoad: number },
-  //     rootState
-  //   ) {
-  //     const userSegments = await loadPageJson(
-  //       payload.pdfPathInfo.dir,
-  //       "userSegments",
-  //       payload.pageNumbersToLoad
-  //     );
-  //     dispatch.count.increment(payload);
-  //   }
-  // })
 });
 
 const models = {
-  info
+  app
 };
 
 const store = init({

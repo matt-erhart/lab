@@ -13,6 +13,16 @@ const ScrollContainer = styled.div`
   border: 1px solid grey;
 `;
 
+// 10k nodes
+// 10k links
+// add a node from pdf
+// query pdfs only 
+// nodes links query='pdfs' patchNodeLink
+// derive state from props nodes/links/query/patches, i.e. redo the query
+// apply patch if matches query
+
+
+
 let nodes = {
   node1: {
     x: 150,

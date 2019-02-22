@@ -13,44 +13,44 @@ import { all } from "q";
 // change filter
 
 // cool for perf
-let t = [];
-let c = 0;
-for (let i in Array(10000).keys()) {
-  const time = Date.now();
-  t.push({ timeCreated: time, timeUpdated: time, version: c++ });
-}
+// let t = [];
+// let c = 0;
+// for (let i in Array(10000).keys()) {
+//   const time = Date.now();
+//   t.push({ timeCreated: time, timeUpdated: time, version: c++ });
+// }
 
-const graph = connectedCaveman(Graph, 40, 40);
-let nodes = {};
-let edges = {};
-let count = 0;
+// const graph = connectedCaveman(Graph, 40, 40);
+// let nodes = {};
+// let edges = {};
+// let count = 0;
+// // graph.forEachNode((node, attributes) => {
+// //   console.log(node, attributes)
+// //   nodes[] = ({ key: node.key, attributes: { a: count++ } });
+// // });
+// console.time("%%");
+
+// // let obj = {}
+// // let arr = []
+// let nodeMap = new Map()
 // graph.forEachNode((node, attributes) => {
-//   console.log(node, attributes)
-//   nodes[] = ({ key: node.key, attributes: { a: count++ } });
+//   // obj[node] = ({ key: node, attributes: { a: count++ } });
+//   // arr.push({ key: node, attributes: { a: count++ } });
+//   nodeMap.set(node, { key: node, attributes: { a: count++ } });
 // });
-console.time("%%");
-
-// let obj = {}
-// let arr = []
-let nodeMap = new Map()
-graph.forEachNode((node, attributes) => {
-  // obj[node] = ({ key: node, attributes: { a: count++ } });
-  // arr.push({ key: node, attributes: { a: count++ } });
-  nodeMap.set(node, { key: node, attributes: { a: count++ } });
-});
-// let obj = {};
-// let arr = [];
-// let keys = [];
-let edgeMap = new Map()
-graph.forEachEdge(
-  (edge, attributes, source, target, sourceAttributes, targetAttributes) => {
-    // arr.push({ key: count, source, target, attributes: { a: count } });
-    // obj[count] = { key: count, source, target, attributes: { a: count } };
-    // keys.push(count);
-    edgeMap.set(count, { key: count, source, target, attributes: { a: count } })
-    count++;
-  }
-);
+// // let obj = {};
+// // let arr = [];
+// // let keys = [];
+// let edgeMap = new Map()
+// graph.forEachEdge(
+//   (edge, attributes, source, target, sourceAttributes, targetAttributes) => {
+//     // arr.push({ key: count, source, target, attributes: { a: count } });
+//     // obj[count] = { key: count, source, target, attributes: { a: count } };
+//     // keys.push(count);
+//     edgeMap.set(count, { key: count, source, target, attributes: { a: count } })
+//     count++;
+//   }
+// );
 // console.log(arr)
 
 /**
@@ -74,52 +74,52 @@ graph.forEachEdge(
  *
  */
 // console.log(Object.values(obj).filter(x => x.source === '99'));
-console.log(edgeMap.values)
+// console.log(edgeMap.values)
 
-import Benchmark from "benchmark";
-var suite = new Benchmark.Suite();
-var options = {
-  maxTime: 0.5
-};
-// add tests
-suite.add(
-  "map",
-  function() {
-    // let x = arr.filter(x => x.source === '99')
+// import Benchmark from "benchmark";
+// var suite = new Benchmark.Suite();
+// var options = {
+//   maxTime: 0.5
+// };
+// // add tests
+// suite.add(
+//   "map",
+//   function() {
+//     // let x = arr.filter(x => x.source === '99')
 
-    let subNodes = new Map();
-    let subEdges = new Map();
-    for (let edge of edgeMap.values()){
-      if (edge.source === '99') {
-        subEdges.set(edge.key, edge)
-      }
-    }
-    for (let se of subEdges.values()){
-      if (edge.source === '99') {
-        subEdges.set(edge.key, edge)
-      }
-    }
+//     let subNodes = new Map();
+//     let subEdges = new Map();
+//     for (let edge of edgeMap.values()){
+//       if (edge.source === '99') {
+//         subEdges.set(edge.key, edge)
+//       }
+//     }
+//     for (let se of subEdges.values()){
+//       if (edge.source === '99') {
+//         subEdges.set(edge.key, edge)
+//       }
+//     }
 
 
-  },
-  options
-)
-  .on(
-    "cycle",
-    function(event) {
-      console.log(String(event.target));
-    },
-    options
-  )
-  .on(
-    "complete",
-    function() {
-      console.log("Fastest is " + this.filter("fastest").map("name"));
-    },
-    options
-  )
-  // run async
-  .run({ async: true });
+//   },
+//   options
+// )
+//   .on(
+//     "cycle",
+//     function(event) {
+//       console.log(String(event.target));
+//     },
+//     options
+//   )
+//   .on(
+//     "complete",
+//     function() {
+//       console.log("Fastest is " + this.filter("fastest").map("name"));
+//     },
+//     options
+//   )
+//   // run async
+//   .run({ async: true });
 
 //////////////////
 
