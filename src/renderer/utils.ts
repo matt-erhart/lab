@@ -15,6 +15,12 @@ export const brewer12 = [
   "#ffff99",
   "#b15928"
 ];
+export type NestedPartial<T> = {
+  [K in keyof T]?: T[K] extends Array<infer R>
+    ? Array<NestedPartial<R>>
+    : NestedPartial<T[K]>
+};
+
 import uuidv1 = require("uuid/v1");
 export const mergeDefaults = <T>(defaults: T, data = {} as Partial<T>) => {
   return {

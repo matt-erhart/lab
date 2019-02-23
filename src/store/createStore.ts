@@ -6,16 +6,12 @@ const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extre
 // logger.info({ patch: { b: 1 } });
 import { Nodes, Links } from "./creators";
 import jsonfile = require("jsonfile");
+import { NestedPartial } from "../renderer/utils";
+import path = require("path");
+
 // todo add undo/redo by 3rd arg to product
 let patches = [];
 let inversePatches = [];
-
-let defaultGraph = {
-  nodes: {} as { [id: string]: Nodes },
-  links: {} as { [id: string]: Links },
-  selectedNodes: [] as string[],
-  selectedLinks: [] as string[]
-};
 
 let defaultApp = {
   current: {
@@ -36,12 +32,23 @@ let defaultApp = {
     keyboardShortcuts: {}
   }
 };
+const savedModelsJson = jsonfile.readFileSync(
+  path.join("E:", "lab", "state.json")
+);
+
 export const app = createModel({
-  state: defaultApp
+  state: { ...defaultApp, ...savedModelsJson.app }
 });
 
+let defaultGraph = {
+  nodes: {} as { [id: string]: Nodes },
+  links: {} as { [id: string]: Links },
+  selectedNodes: [] as string[],
+  selectedLinks: [] as string[]
+};
+
 export const graph = createModel({
-  state: defaultGraph,
+  state: { ...defaultGraph, ...savedModelsJson.graph },
   reducers: {
     addBatch(
       state,
@@ -72,25 +79,28 @@ export const graph = createModel({
       }
     ) {
       return produce(state, draft => {
-        for (let key of Object.keys(payload)) {
-          for (let id of payload[key]) {
-            const exists = state[key].hasOwnProperty(id);
+        for (let payloadKey of Object.keys(payload)) {
+          for (let id of payload[payloadKey]) {
+            const exists = state[payloadKey].hasOwnProperty(id);
             if (exists) {
-              delete draft[key][id];
+              delete draft[payloadKey][id];
             } else {
               console.log(id, " no such item to remove");
             }
 
             const selectedName =
-              "selected" + key.charAt(0).toUpperCase() + key.slice(1);
-            if (draft[selectedName].findIndex(id) >= 0) {
-              // also remove from selected*
-              delete draft[selectedName][id];
+              "selected" +
+              payloadKey.charAt(0).toUpperCase() +
+              payloadKey.slice(1);
+            console.log(draft[selectedName]);
+            const ix = draft[selectedName].findIndex(x => x === id);
+            if (ix >= 0) {
+              delete draft[selectedName][ix];
             }
 
-            if (key === "nodes") {
+            if (payloadKey === "nodes") {
               // also remove connected links
-              Object.values(draft.links).forEach(link => {
+              (Object.values(draft.links) as Links[]).forEach(link => {
                 if ([link.source, link.target].includes(id)) {
                   delete draft.links[link.id];
                 }
@@ -101,52 +111,44 @@ export const graph = createModel({
         return;
       });
     },
-    updateData(
+    updateBatch(
       state,
       payload: {
-        nodes?: { id: string; data: {} }[];
-        links?: { id: string; data: {} }[];
+        nodes?: NestedPartial<Nodes>[];
+        links?: NestedPartial<Links>[];
       }
     ) {
+      // only updates data, style
       // 400 items = 9ms, 300 items = 7ms
       return produce(state, draft => {
-        for (let key of Object.keys(payload)) {
-          for (let item of payload[key]) {
-            const { id, data } = item;
-            for (let upKey of Object.keys(data)) {
-              draft[key][id].data[upKey] = data[upKey];
+        for (let payloadKey of Object.keys(payload)) {
+          for (let nodeOrLink of payload[payloadKey]) {
+            // like spread but faster
+            const { id, data, style, source, target, undirected } = nodeOrLink;
+            for (let keyToUpdate of Object.keys(data || {})) {
+              draft[payloadKey][id].data[keyToUpdate] = data[keyToUpdate];
             }
+            for (let keyToUpdate of Object.keys(style || {})) {
+              draft[payloadKey][id].style[keyToUpdate] = style[keyToUpdate];
+            }
+            if (source) draft.links[id].source = source;
+            if (target) draft.links[id].target = target;
+            if (undirected) draft.links[id].undirected = undirected;
           }
-        }
-      });
-    },
-    updateLink(
-      state,
-      payload: {
-        id: string;
-        source?: string;
-        target?: string;
-        undirected?: boolean;
-      }
-    ) {
-      return produce(state, draft => {
-        const exists = draft.links.hasOwnProperty(payload.id);
-        if (exists) {
-          draft.links[payload.id] = { ...draft.links[payload.id], ...payload };
         }
       });
     },
     toggleSelections(
       state,
       payload: {
-        selectedNodes: string[];
-        selectedLinks: string[];
+        selectedNodes?: string[];
+        selectedLinks?: string[];
       }
     ) {
       return produce(state, draft => {
         for (let key of Object.keys(payload)) {
           for (let id of payload[key]) {
-            const ix = draft[key].findIndex(id);
+            const ix = draft[key].findIndex(x => x === id);
             if (ix > -1) {
               draft[key].splice(ix, 1);
             } else {
@@ -178,32 +180,33 @@ const logit = {
 
 const saveToJson = {
   middleware: store => next => action => {
-    const saveIf = ["graph/addBatch", "graph/updateData"];
+    const saveIf = ["graph/addBatch", "graph/updateBatch", "graph/removeBatch"];
     const result = next(action);
     if (saveIf.includes(action.type)) {
-      // todo add requestidealcallback if window
+      // if need perf: requestidealcallback if window
       jsonfile.writeFile("./state.json", store.getState()).then(err => {});
     }
     return result;
   }
 };
 
-const initializeStateFromJson = {
-  async onStoreCreated(store) {
-    try {
-      const savedStore = await jsonfile.readFile("./state.json");
-      return { ...store, ...savedStore };
-    } catch (err) {
-      console.log(err)
-      
-      return store;
-    }
-  }
-};
+// const initializeStateFromJson = {
+//   onStoreCreated(store) {
+
+//     try {
+//       const savedStore = jsonfile.readFileSync(path.join("E:", "lab", "state.json"))
+//       return savedStore
+
+//     } catch (err) {
+//       console.log(err)
+//       return store;
+//     }
+//   }
+// };
 
 const store = init({
   models,
-  plugins: [logit, saveToJson, initializeStateFromJson]
+  plugins: [logit, saveToJson]
 });
 
 export default store;

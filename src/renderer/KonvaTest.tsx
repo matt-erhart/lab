@@ -4,7 +4,14 @@ import konva, { Circle, Stage } from "konva";
 import styled from "styled-components";
 import { useRef, useEffect, useLayoutEffect } from "react";
 import Konva from "konva";
-
+import store, { iRootState, iDispatch } from "../store/createStore";
+import {
+  makePdfSegmentViewbox,
+  Nodes,
+  Links,
+  makeLink
+} from "../store/creators";
+import { connect } from "react-redux";
 const ScrollContainer = styled.div`
   width: calc(100% - 22px);
   height: calc(100vh - 22px);
@@ -13,102 +20,46 @@ const ScrollContainer = styled.div`
   border: 1px solid grey;
 `;
 
-// 10k nodes
-// 10k links
-// add a node from pdf
-// query pdfs only 
-// nodes links query='pdfs' patchNodeLink
-// derive state from props nodes/links/query/patches, i.e. redo the query
-// apply patch if matches query
-
-
-
-let nodes = {
-  node1: {
-    x: 150,
-    y: 150,
-    radius: 10,
-    fill: "red",
-    stroke: "red",
-    strokeWidth: 10,
-    draggable: true,
-    id: "node1"
-  },
-  node2: {
-    x: 200,
-    y: 200,
-    radius: 10,
-    fill: "green",
-    stroke: "green",
-    strokeWidth: 10,
-    draggable: true,
-    id: "node2"
-  },
-  node3: {
-    x: 150,
-    y: 250,
-    radius: 10,
-    fill: "blue",
-    stroke: "blue",
-    strokeWidth: 10,
-    draggable: true,
-    id: "node3"
-  }
+const AppDefaults = {
+  props: {},
+  state: {}
 };
 
-let links = {
-  link1: {
-    line: {
-      strokeWidth: 4,
-      stroke: "black",
-      lineCap: "round",
-      id: "link1",
-      opacity: 0.3,
-      points: [0, 0],
-    },
-    source: "node1",
-    target: "node2",
-    id: "link1"
-  },
-  link2: {
-    line: {
-      strokeWidth: 4,
-      stroke: "black",
-      lineCap: "round",
-      id: "link2",
-      opacity: 0.3,
-      points: [0, 0]
-    },
-    source: "node1",
-    target: "node3",
-    id: "link2"
-  },
-  link3: {
-    line: {
-      strokeWidth: 4,
-      stroke: "black",
-      lineCap: "round",
-      id: "link3",
-      opacity: 0.3,
-      points: [0, 0]
-    },
-    source: "node2",
-    target: "node3",
-    id: "link3"
-  }
-};
+// import {pubs} from '@src/constants/pubs'
+const mapState = (state: iRootState) => ({
+  nodes: state.graph.nodes,
+  links: state.graph.links,
+  selectedNodes: state.graph.selectedNodes,
+  selectedLinks: state.graph.selectedLinks
+});
 
-export default class App extends React.Component {
+const mapDispatch = ({
+  graph: { addBatch, removeBatch, updateBatch, toggleSelections }
+}: iDispatch) => ({
+  addBatch,
+  removeBatch,
+  updateBatch,
+  toggleSelections
+});
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
+export class App extends React.Component<
+  connectedProps,
+  typeof AppDefaults.state
+> {
   canvasRef = React.createRef<HTMLDivElement>();
   stage: konva.Stage;
   state = {
     canvasSize: { width: 3000, height: 3000 },
-    scroll: { dx: 0, dy: 0 },
-    selected: { nodes: [], links: [] }
+    scroll: { dx: 0, dy: 0 }
   };
+  nodes: { [id: string]: Nodes };
+  links: { [id: string]: Links };
 
   componentDidUpdate() {
-    console.log(this.state.selected.nodes);
+    // todo if new stuff comes in update fast and draw
   }
 
   componentDidMount() {
@@ -122,48 +73,60 @@ export default class App extends React.Component {
 
     let nodeLayer = new Konva.Layer();
     let linkLayer = new Konva.Layer();
+    this.nodes = this.props.nodes;
+    console.log("nodes", this.nodes);
 
-    Object.values(nodes).forEach(node => {
-      nodeLayer.add(new Konva.Circle(node));
+    Object.values(this.nodes).forEach(node => {
+      nodeLayer.add(
+        new Konva.Circle({
+          id: node.id,
+          radius: 5,
+          x: Math.random() * 500,
+          y: Math.random() * 500,
+          fill: "black",
+          draggable: true,
+          ...node.style
+        })
+      );
     });
 
-    Object.values(links).forEach(link => {
-      const line = new Konva.Line(link.line);
-      const source = nodes[link.source];
-      const target = nodes[link.target];
-      line.points([source.x, source.y, target.x, target.y]);
-      linkLayer.add(line);
-    });
+    // Object.values(links).forEach(link => {
+    //   const line = new Konva.Line(link.line);
+    //   const source = nodes[link.source];
+    //   const target = nodes[link.target];
+    //   line.points([source.x, source.y, target.x, target.y]);
+    //   linkLayer.add(line);
+    // });
 
     this.stage.add(nodeLayer);
-    this.stage.add(linkLayer);
-    nodeLayer.on("dragmove dragend", e => {
-      if (e.type === 'dragmove'){
-        updateLinks(nodeLayer, linkLayer)(e)
-      } else if (e.type === 'dragend'){
-        console.log('dragend')
-        updateLinks(nodeLayer, linkLayer)(e)
-      }
-    });
+    // this.stage.add(linkLayer);
+
+    // nodeLayer.on("dragmove dragend", e => {
+    //   if (e.type === "dragmove") {
+    //     updateLinks(nodeLayer, linkLayer)(e);
+    //   } else if (e.type === "dragend") {
+    //     console.log("dragend");
+    //     updateLinks(nodeLayer, linkLayer)(e);
+    //   }
+    // });
+
     // draw the image
     nodeLayer.setZIndex(1);
-    linkLayer.setZIndex(0);
-    this.stage.on("mouseover mouseout", e => {
-      let node = e.target;
-      if (e.type === "mouseover") {
-        node.strokeWidth(10)
-      } else {
-        node.strokeWidth(4)
-      }
-      if (e.target.getClassName() === "Circle") {
-        nodeLayer.draw();
-      }
-      if (e.target.getClassName() === "Line") {
-        linkLayer.draw();
-      }
-
-      
-    });
+    // linkLayer.setZIndex(0);
+    // this.stage.on("mouseover mouseout", e => {
+    //   let node = e.target;
+    //   if (e.type === "mouseover") {
+    //     node.strokeWidth(10);
+    //   } else {
+    //     node.strokeWidth(4);
+    //   }
+    //   if (e.target.getClassName() === "Circle") {
+    //     nodeLayer.draw();
+    //   }
+    //   if (e.target.getClassName() === "Line") {
+    //     linkLayer.draw();
+    //   }
+    // });
 
     this.stage.on("click dblclick", e => {
       const coords = this.stage.getPointerPosition();
@@ -173,113 +136,93 @@ export default class App extends React.Component {
       if (button === "left" && e.type === "dblclick") {
         if (e.target.getType() === "Stage") {
           // ADD NODE
-          addNode(nodes, nodeLayer, { x, y });
+          let newNode = makePdfSegmentViewbox();
+          newNode.style = { ...newNode.style, x, y };
+          this.props.addBatch({ nodes: [newNode] });
+          addNodeToLayer(newNode, nodeLayer, newNode.style);
         } else if (e.target.getClassName() === "Circle") {
           //REMOVE NODE and LINKS
           const id = e.target.getAttrs().id;
-          const delNode = nodes[id];
-          delete nodes[id];
+          this.props.removeBatch({ nodes: [id] });
           nodeLayer.findOne("#" + id).destroy();
-          const linksToDelete = getLinksIdsOnNode(delNode, links);
-          linksToDelete.forEach(linkId => {
-            delete links[linkId];
-            linkLayer.findOne("#" + linkId).destroy();
-          });
-          linkLayer.draw();
+          // todo remove links
+          // const linksToDelete = getLinksIdsOnNode(delNode, links);
+          // linksToDelete.forEach(linkId => {
+          //   delete links[linkId];
+          //   linkLayer.findOne("#" + linkId).destroy();
+          // });
+          // linkLayer.draw();
           nodeLayer.draw();
         }
       }
       if (button === "left" && e.type === "click") {
+        // deselect all
         if (e.target.getType() === "Stage") {
-          this.state.selected.nodes.forEach(id => {
+          const selectedNodes = this.props.selectedNodes;
+          selectedNodes.forEach(id => {
             const n = nodeLayer.findOne("#" + id);
             if (n) n.shadowEnabled(false);
           });
-          this.state.selected.links.forEach(id => {
-            const n = linkLayer.findOne("#" + id);
-            if (n) n.shadowEnabled(false);
-          });
+
+          // todo deselect all links
+          // this.state.selected.links.forEach(id => {
+          //   const n = linkLayer.findOne("#" + id);
+          //   if (n) n.shadowEnabled(false);
+          // });
           nodeLayer.draw();
-          linkLayer.draw();
-          this.setState({ selected: { nodes: [], links: [] } });
+          // linkLayer.draw();
+          this.props.toggleSelections({ selectedNodes }); // add links to toggle here
         }
         if (e.target.getClassName() === "Line") {
           // todo combined line and circle cases
           const id = e.target.getAttrs().id;
-          const { selected } = this.state;
-          const ix = selected.links.findIndex(x => x === id);
 
-          let newSelected;
-          if (ix < 0) {
-            // select
-            newSelected = [...selected.links, id];
-            linkLayer
-              .findOne("#" + id)
-              .shadowEnabled(true)
-              .setAttrs({
-                shadowColor: "blue",
-                shadowBlur: 10,
-                shadowOffset: { x: 0, y: 0 },
-                shadowOpacity: 1
-              });
-          } else {
-            // deselect
-            newSelected = [
-              ...selected.links.slice(0, ix),
-              ...selected.links.slice(ix + 1)
-            ];
-            const node = linkLayer.findOne("#" + id);
-            nodeLayer.findOne("#" + id).shadowEnabled(false);
-          }
-          linkLayer.draw();
-          this.setState(state => ({
-            selected: { links: newSelected, nodes: state.selected.nodes }
-          }));
+          // todo link selection render
+          // linkLayer
+          //   .findOne("#" + id)
+          //   .shadowEnabled(true)
+          //   .setAttrs({
+          //     shadowColor: "blue",
+          //     shadowBlur: 10,
+          //     shadowOffset: { x: 0, y: 0 },
+          //     shadowOpacity: 1
+          //   });
+
+          // const node = linkLayer.findOne("#" + id);
+          // nodeLayer.findOne("#" + id).shadowEnabled(false);
         }
-        if (e.target.getClassName() === "Circle") {
-          const id = e.target.getAttrs().id;
-          const { selected } = this.state;
-          const ix = selected.nodes.findIndex(x => x === id);
-
-          let newSelected;
-          if (ix < 0) {
-            // select
-            newSelected = [...selected.nodes, id];
-            nodeLayer
-              .findOne("#" + id)
-              .shadowEnabled(true)
-              .setAttrs({
-                shadowColor: "blue",
-                shadowBlur: 20,
-                shadowOffset: { x: 0, y: 0 },
-                shadowOpacity: 1
-              });
-          } else {
-            // deselect
-            newSelected = [
-              ...selected.nodes.slice(0, ix),
-              ...selected.nodes.slice(ix + 1)
-            ];
-            const node = nodeLayer.findOne("#" + id);
-            const fillColor = node.getAttr("fill");
-            console.log(fillColor);
-            nodeLayer.findOne("#" + id).shadowEnabled(false);
-          }
-          nodeLayer.draw();
-          this.setState(state => ({
-            selected: { links: state.selected.links, nodes: newSelected }
-          }));
-
-          // add node to selected
+        // linkLayer.draw();
+      }
+      if (button === "left" && e.target.getClassName() === "Circle") {
+        const id = e.target.getAttrs().id;
+        const isSelected = this.props.selectedNodes.includes(id);
+        const clickedNode = nodeLayer.findOne("#" + id);
+        if (!isSelected) {
+          if (clickedNode)
+            clickedNode.shadowEnabled(true).setAttrs({
+              shadowColor: "blue",
+              shadowBlur: 20,
+              shadowOffset: { x: 0, y: 0 },
+              shadowOpacity: 1
+            });
+        } else {
+          if (clickedNode) clickedNode.shadowEnabled(false);
         }
+        this.props.toggleSelections({ selectedNodes: [id] });
+        nodeLayer.draw();
+
+        // add node to selected
       } else if (button === "right" && e.target.getClassName() === "Circle") {
+        //todo links
         linkSelectedToNode(
-          nodes,
-          this.state.selected.nodes,
+          this.props.nodes,
+          this.props.selectedNodes,
           e.target.getAttrs().id,
           linkLayer,
           nodeLayer
         );
+        console.log('todo links are in there but not rendered', linkLayer)
+
       }
     });
     nodeLayer.draw();
@@ -322,6 +265,11 @@ export default class App extends React.Component {
   }
 }
 
+export default connect(
+  mapState,
+  mapDispatch
+)(App);
+
 const linkSelectedToNode = (
   nodes,
   selectedNodeIds,
@@ -330,25 +278,11 @@ const linkSelectedToNode = (
   nodeLayer
 ) => {
   const sourceNode = nodeLayer.findOne("#" + nodeId);
-
   selectedNodeIds.forEach(targetId => {
     const targetNode = nodeLayer.findOne("#" + targetId);
+    const newLink = makeLink(nodes[nodeId], nodes[targetId])
 
-    const linkId = Math.random() * 1000;
-    links[linkId] = {
-      line: {
-        strokeWidth: 3,
-        stroke: "black",
-        lineCap: "round",
-        id: linkId,
-        opacity: 0.3,
-        points: [sourceNode.x(), sourceNode.y(), targetNode.x(), targetNode.y()]
-      },
-      source: nodeId,
-      target: targetId,
-      id: linkId
-    };
-    const line = new Konva.Line(links[linkId].line);
+    const line = new Konva.Line(newLink.style);
     linkLayer.add(line);
   });
   linkLayer.draw();
@@ -364,19 +298,18 @@ const getLinksIdsOnNode = (node, links) => {
   return linksOnNode;
 };
 
-const addNode = (nodes: Map<string, any>, nodeLayer, nodeConfig) => {
-  const id = Math.random() * 1000 + "";
-  const node = {
-    ...nodeConfig,
+const addNodeToLayer = (node, nodeLayer, style = {}) => {
+  // const id = Math.random() * 1000 + "";
+  const config = {
     radius: 10,
     fill: "blue",
     stroke: "blue",
     strokeWidth: 4,
     draggable: true,
-    id
+    id: node.id,
+    ...style
   };
-  nodes[id] = node;
-  nodeLayer.add(new Konva.Circle(node));
+  nodeLayer.add(new Konva.Circle({ ...config }));
   nodeLayer.draw();
 };
 
@@ -390,7 +323,6 @@ const updateLinks = (
   const movingId = e.target.id();
   const movingNode = nodeLayer.findOne("#" + movingId) as konva.Shape;
   const { x, y } = movingNode.getAttrs();
-  
 
   for (let link of Object.values(links)) {
     if (link.target === movingId || link.source === movingId) {
@@ -398,19 +330,18 @@ const updateLinks = (
       if (link.target === movingId) {
         const target = nodeLayer.findOne("#" + link.target);
         const p = line.points();
-        const points = [p[0], p[1],  target.x(), target.y()];
+        const points = [p[0], p[1], target.x(), target.y()];
         line.points(points);
       }
 
       if (link.source === movingId) {
         const source = nodeLayer.findOne("#" + link.source) as konva.Line;
         const p = line.points();
-        const midX = (p[2]+source.x())/2
-        const midY = (p[3]+source.y())/2
+        const midX = (p[2] + source.x()) / 2;
+        const midY = (p[3] + source.y()) / 2;
         const points = [source.x(), source.y(), p[2], p[3]];
         line.points(points);
       }
-
     }
   }
   linkLayer.draw();
