@@ -4,7 +4,7 @@ import { PdfPathInfo } from "../store/createStore";
 const pino = require("pino");
 const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extreme
 // logger.info({ patch: { b: 1 } });
-import { Nodes, Links } from "./creators";
+import { Nodes, Links, aNode, aLink } from "./creators";
 import jsonfile = require("jsonfile");
 import { NestedPartial } from "../renderer/utils";
 import path = require("path");
@@ -114,11 +114,10 @@ export const graph = createModel({
     updateBatch(
       state,
       payload: {
-        nodes?: NestedPartial<Nodes>[];
-        links?: NestedPartial<Links>[];
+        nodes?: NestedPartial<aNode>[];
+        links?: NestedPartial<aLink>[];
       }
     ) {
-      // only updates data, style
       // 400 items = 9ms, 300 items = 7ms
       return produce(state, draft => {
         for (let payloadKey of Object.keys(payload)) {

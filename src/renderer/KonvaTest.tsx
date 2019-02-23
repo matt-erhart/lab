@@ -2,16 +2,18 @@ import * as React from "react";
 import konva, { Circle, Stage } from "konva";
 // import { interval } from "rxjs";
 import styled from "styled-components";
-import { useRef, useEffect, useLayoutEffect } from "react";
 import Konva from "konva";
 import store, { iRootState, iDispatch } from "../store/createStore";
 import {
   makePdfSegmentViewbox,
   Nodes,
   Links,
+  aNode,
+  aLink,
   makeLink
 } from "../store/creators";
 import { connect } from "react-redux";
+import { DeepPartial } from "redux";
 const ScrollContainer = styled.div`
   width: calc(100% - 22px);
   height: calc(100vh - 22px);
@@ -73,10 +75,14 @@ export class App extends React.Component<
 
     let nodeLayer = new Konva.Layer();
     let linkLayer = new Konva.Layer();
+    this.stage.add(nodeLayer);
+    this.stage.add(linkLayer);
+
     this.nodes = this.props.nodes;
-    console.log("nodes", this.nodes);
+    this.links = this.props.links;
 
     Object.values(this.nodes).forEach(node => {
+      // todo rectanges (with icon) or text
       nodeLayer.add(
         new Konva.Circle({
           id: node.id,
@@ -90,43 +96,38 @@ export class App extends React.Component<
       );
     });
 
-    // Object.values(links).forEach(link => {
-    //   const line = new Konva.Line(link.line);
-    //   const source = nodes[link.source];
-    //   const target = nodes[link.target];
-    //   line.points([source.x, source.y, target.x, target.y]);
-    //   linkLayer.add(line);
-    // });
+    Object.values(this.links).forEach(link => {
+      const line = new Konva.Line({ id: link.id, ...link.style });
+      linkLayer.add(line);
+    });
 
-    this.stage.add(nodeLayer);
-    // this.stage.add(linkLayer);
-
-    // nodeLayer.on("dragmove dragend", e => {
-    //   if (e.type === "dragmove") {
-    //     updateLinks(nodeLayer, linkLayer)(e);
-    //   } else if (e.type === "dragend") {
-    //     console.log("dragend");
-    //     updateLinks(nodeLayer, linkLayer)(e);
-    //   }
-    // });
+    nodeLayer.on("dragmove dragend", e => {
+      if (e.type === "dragmove") {
+        const _ = updateLinks(this.props.links, nodeLayer, linkLayer)(e);
+      } else if (e.type === "dragend") {
+        console.log("dragend");
+        const updated = updateLinks(this.props.links, nodeLayer, linkLayer)(e);
+        this.props.updateBatch(updated);
+      }
+    });
 
     // draw the image
     nodeLayer.setZIndex(1);
-    // linkLayer.setZIndex(0);
-    // this.stage.on("mouseover mouseout", e => {
-    //   let node = e.target;
-    //   if (e.type === "mouseover") {
-    //     node.strokeWidth(10);
-    //   } else {
-    //     node.strokeWidth(4);
-    //   }
-    //   if (e.target.getClassName() === "Circle") {
-    //     nodeLayer.draw();
-    //   }
-    //   if (e.target.getClassName() === "Line") {
-    //     linkLayer.draw();
-    //   }
-    // });
+    linkLayer.setZIndex(0);
+    this.stage.on("mouseover mouseout", e => {
+      let node = e.target;
+      if (e.type === "mouseover") {
+        node.strokeWidth(10);
+      } else {
+        node.strokeWidth(4);
+      }
+      if (e.target.getClassName() === "Circle") {
+        nodeLayer.draw();
+      }
+      if (e.target.getClassName() === "Line") {
+        linkLayer.draw();
+      }
+    });
 
     this.stage.on("click dblclick", e => {
       const coords = this.stage.getPointerPosition();
@@ -143,16 +144,23 @@ export class App extends React.Component<
         } else if (e.target.getClassName() === "Circle") {
           //REMOVE NODE and LINKS
           const id = e.target.getAttrs().id;
-          this.props.removeBatch({ nodes: [id] });
           nodeLayer.findOne("#" + id).destroy();
-          // todo remove links
-          // const linksToDelete = getLinksIdsOnNode(delNode, links);
-          // linksToDelete.forEach(linkId => {
-          //   delete links[linkId];
-          //   linkLayer.findOne("#" + linkId).destroy();
-          // });
-          // linkLayer.draw();
+          // todo remove links <--
+          const linksToDelete = getLinksIdsOnNode(id, this.props.links);
+          console.log(linksToDelete);
+
+          linksToDelete.forEach(linkId => {
+            linkLayer.findOne("#" + linkId).destroy();
+          });
+
+          this.props.removeBatch({ links: linksToDelete, nodes: [id] });
+          linkLayer.draw();
           nodeLayer.draw();
+        } else if (e.target.getClassName() === "Line") { 
+          const linkId = e.target.getAttrs().id
+          linkLayer.findOne("#" + linkId).destroy();
+          this.props.removeBatch({ links: [linkId]});
+          linkLayer.draw()          
         }
       }
       if (button === "left" && e.type === "click") {
@@ -165,33 +173,35 @@ export class App extends React.Component<
           });
 
           // todo deselect all links
-          // this.state.selected.links.forEach(id => {
-          //   const n = linkLayer.findOne("#" + id);
-          //   if (n) n.shadowEnabled(false);
-          // });
+          this.props.selectedLinks.forEach(id => {
+            const n = linkLayer.findOne("#" + id);
+            if (n) n.shadowEnabled(false);
+          });
+          this.props.toggleSelections({
+            selectedLinks: this.props.selectedLinks,
+            selectedNodes: this.props.selectedNodes
+          });
           nodeLayer.draw();
-          // linkLayer.draw();
-          this.props.toggleSelections({ selectedNodes }); // add links to toggle here
+          linkLayer.draw();
         }
         if (e.target.getClassName() === "Line") {
           // todo combined line and circle cases
           const id = e.target.getAttrs().id;
-
-          // todo link selection render
-          // linkLayer
-          //   .findOne("#" + id)
-          //   .shadowEnabled(true)
-          //   .setAttrs({
-          //     shadowColor: "blue",
-          //     shadowBlur: 10,
-          //     shadowOffset: { x: 0, y: 0 },
-          //     shadowOpacity: 1
-          //   });
-
-          // const node = linkLayer.findOne("#" + id);
-          // nodeLayer.findOne("#" + id).shadowEnabled(false);
+          const alreadySelected = this.props.selectedLinks.includes(id);
+          const clickedLink = linkLayer.findOne("#" + id);
+          if (!alreadySelected) {
+            clickedLink.shadowEnabled(true).setAttrs({
+              shadowColor: "blue",
+              shadowBlur: 10,
+              shadowOffset: { x: 0, y: 0 },
+              shadowOpacity: 1
+            });
+          } else {
+            clickedLink.shadowEnabled(false);
+          }
+          linkLayer.draw();
+          this.props.toggleSelections({ selectedLinks: [id] });
         }
-        // linkLayer.draw();
       }
       if (button === "left" && e.target.getClassName() === "Circle") {
         const id = e.target.getAttrs().id;
@@ -214,15 +224,15 @@ export class App extends React.Component<
         // add node to selected
       } else if (button === "right" && e.target.getClassName() === "Circle") {
         //todo links
-        linkSelectedToNode(
+        const newLinks = linkSelectedToNode(
           this.props.nodes,
           this.props.selectedNodes,
           e.target.getAttrs().id,
           linkLayer,
           nodeLayer
         );
-        console.log('todo links are in there but not rendered', linkLayer)
-
+        this.props.addBatch({ links: newLinks });
+        linkLayer.draw();
       }
     });
     nodeLayer.draw();
@@ -278,20 +288,22 @@ const linkSelectedToNode = (
   nodeLayer
 ) => {
   const sourceNode = nodeLayer.findOne("#" + nodeId);
+  let newLinks = [];
   selectedNodeIds.forEach(targetId => {
     const targetNode = nodeLayer.findOne("#" + targetId);
-    const newLink = makeLink(nodes[nodeId], nodes[targetId])
-
+    const newLink = makeLink(nodes[nodeId], nodes[targetId]);
     const line = new Konva.Line(newLink.style);
     linkLayer.add(line);
+    newLinks.push(newLink);
   });
   linkLayer.draw();
+  return newLinks;
 };
 
-const getLinksIdsOnNode = (node, links) => {
+const getLinksIdsOnNode = (nodeId: string, links: Links) => {
   let linksOnNode = [] as string[];
   Object.values(links).forEach((link, key) => {
-    if (link.source === node.id || link.target === node.id) {
+    if ([link.source, link.target].includes(nodeId)) {
       linksOnNode.push(link.id);
     }
   });
@@ -314,37 +326,40 @@ const addNodeToLayer = (node, nodeLayer, style = {}) => {
 };
 
 const updateLinks = (
+  links: Links,
   nodeLayer: konva.Layer<konva.Node>,
   linkLayer: konva.Layer<konva.Node>
-) => (e: konva.KonvaEventObject<DragEvent>) => {
-  /**
-   *
-   */
+) => (
+  e: konva.KonvaEventObject<DragEvent>
+): { nodes: DeepPartial<aNode>[]; links: DeepPartial<aLink>[] } => {
   const movingId = e.target.id();
   const movingNode = nodeLayer.findOne("#" + movingId) as konva.Shape;
   const { x, y } = movingNode.getAttrs();
 
+  const updatedLinks = [] as DeepPartial<aLink>[];
+
   for (let link of Object.values(links)) {
     if (link.target === movingId || link.source === movingId) {
-      const line = linkLayer.findOne("#" + link.line.id) as konva.Line;
+      // todo in props.links but not linkLayer?
+      const line = linkLayer.findOne("#" + link.id) as konva.Line;
+      if (!line) debugger;
+      const p = line.points();
+
       if (link.target === movingId) {
-        const target = nodeLayer.findOne("#" + link.target);
-        const p = line.points();
-        const points = [p[0], p[1], target.x(), target.y()];
+        const points = [p[0], p[1], x, y];
         line.points(points);
+        updatedLinks.push({ id: link.id, style: { points } });
       }
 
       if (link.source === movingId) {
-        const source = nodeLayer.findOne("#" + link.source) as konva.Line;
-        const p = line.points();
-        const midX = (p[2] + source.x()) / 2;
-        const midY = (p[3] + source.y()) / 2;
-        const points = [source.x(), source.y(), p[2], p[3]];
+        const points = [x, y, p[2], p[3]];
         line.points(points);
+        updatedLinks.push({ id: link.id, style: { points } });
       }
     }
   }
   linkLayer.draw();
+  return { links: updatedLinks, nodes: [{ id: movingId, style: { x, y } }] };
 };
 
 const zoomWheel = (stage, scaleBy = 1.2) => e => {

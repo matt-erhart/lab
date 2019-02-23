@@ -109,6 +109,7 @@ const LinkDefaults = {
   id: "",
   data: { type: "unset" },
   style: {
+    id: "",
     points: [10, 10, 20, 20],
     stroke: "black",
     strokeWidth: 3,
@@ -125,15 +126,16 @@ import uuidv1 = require("uuid/v1");
 export const makeLink = (sourceNode: Nodes, targetNode: Nodes) => {
   const { x: x1, y: y1 } = sourceNode.style as CircleConfig;
   const { x: x2, y: y2 } = targetNode.style as CircleConfig;
-
+  const id = uuidv1()
   return {
     ...LinkDefaults,
-    id: uuidv1(),
+    id,
     source: sourceNode.id,
     target: targetNode.id,
-    style: { ...LinkDefaults.style, points: [x1, y1, x2, y2] }
+    style: { ...LinkDefaults.style, id,  points: [x1, y1, x2, y2] }
   };
 };
-
-export type Nodes = PdfSegmentViewbox | Empty; // or...
-export type Links = LinkBase; // or...
+export type aNode = PdfSegmentViewbox | Empty
+export type aLink = LinkBase
+export type Nodes = {[id: string]: aNode}; // or...
+export type Links = {[id: string]: aLink};  // or...
