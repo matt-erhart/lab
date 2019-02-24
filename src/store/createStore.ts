@@ -16,10 +16,10 @@ let inversePatches = [];
 let defaultApp = {
   current: {
     userId: "",
-    openPdfs: [] as PdfPathInfo[],
-    openQueries: [],
-    visbleTabs: [],
-    focusedElementId: ""
+    openPdfs: [] as string[],
+    openQueries: [] as string[],
+    visbleTabs: [] as string[],
+    pdfPathInfo: PdfPathInfo
   },
   settings: {
     appearance: {
@@ -38,6 +38,7 @@ const savedModelsJson = jsonfile.readFileSync(
 
 export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app }
+
 });
 
 let defaultGraph = {

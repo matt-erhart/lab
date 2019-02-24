@@ -71,7 +71,7 @@ interface Page {
 }
 
 import styled from "styled-components";
-import { PdfPathInfo, Viewbox } from "../store/createStore";
+import { Viewbox } from "../store/createStore";
 
 /**
  * @class **PdfViewer**
@@ -81,7 +81,7 @@ import { PdfPathInfo, Viewbox } from "../store/createStore";
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
-    pathInfo: {} as PdfPathInfo,
+    pathInfo: { currentPdfDir: "", pdfRootDir: "" }, // todo <- use this path info them wireup to graph
     viewBox: {
       top: 110,
       left: 110,
@@ -104,7 +104,7 @@ const PdfViewerDefaults = {
   }
 };
 
-import { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
   const viewboxes = state.info.nodes.filter(
@@ -252,7 +252,7 @@ class PdfViewer extends React.Component<
     console.log("page num on make vb", pageNumber);
     const { left, top, width, height } = viewbox;
     // note we save with scale = 1
-    // todo save as 
+    // todo save as
     const vb = makeViewbox({
       ...viewbox,
       // left: left / scale,
@@ -261,9 +261,9 @@ class PdfViewer extends React.Component<
       // height: height / scale,
       pdfPathInfo: this.props.pathInfo,
       pageNumber
-    })
-    this.props.addNodes({nodes: [vb],  to: 'nodes'});
-    this.props.addNodes({nodes: [vb],  to: 'selectedNodes'});
+    });
+    this.props.addNodes({ nodes: [vb], to: "nodes" });
+    this.props.addNodes({ nodes: [vb], to: "selectedNodes" });
   };
 
   viewboxesForPage = (pageNumber, scale) => {
@@ -276,7 +276,7 @@ class PdfViewer extends React.Component<
         return {
           ...x,
           attributes: {
-            ...x.attributes,
+            ...x.attributes
             // left: left * scale,
             // top: top * scale,
             // width: width * scale,

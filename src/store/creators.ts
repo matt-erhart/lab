@@ -1,5 +1,6 @@
 import { mergeDefaults } from "../renderer/utils";
 import { number } from "prop-types";
+import uuidv1 = require("uuid/v1");
 
 export type NodeDataTypes =
   | "empty"
@@ -93,6 +94,46 @@ const makeNodeMeta = (meta = {}): NodeMeta => {
   };
 };
 
+const PdfPublicationDefaults = {
+  id: "",
+  data: {
+    type: "pdf.publication" as NodeDataTypes,
+    publicationType: "", // Journal Article, Conference proceedings, book
+    pdfDirName: "sameAsId",
+    fileExt: ".pdf", // saveAsId.pdf
+    title: "",
+    venue: "",
+    authors: [] as string[],
+    year: NaN as number,
+    volume: "" as string | number,
+    issue: "" as string | number,
+    url: "",
+    arxivId: "",
+    pmid: "",
+    doi: "",
+    isbn: "",
+    issn: "",
+    published: true
+  },
+  style: {
+    id: "",
+    x: Math.random() * 200,
+    y: Math.random() * 200,
+    fill: "grey",
+    stroke: "red"
+  },
+  meta: makeNodeMeta()
+};
+export type PdfPublication = typeof PdfPublicationDefaults
+
+export const makePdfPublication = (dirName: string, data = {}) => {
+  return {
+    ...PdfPublicationDefaults,
+    id: dirName,
+    data: { ...PdfPublicationDefaults.data, ...data }
+  };
+};
+
 interface LinkBase {
   id: string;
   data: {
@@ -113,29 +154,28 @@ const LinkDefaults = {
     points: [10, 10, 20, 20],
     stroke: "black",
     strokeWidth: 3,
-    opacity: .5,
-    fill: 'black'
+    opacity: 0.5,
+    fill: "black"
   } as Partial<LineConfig>,
   meta: makeNodeMeta(),
   source: "",
   target: "",
   undirected: true
 };
-import uuidv1 = require("uuid/v1");
 
 export const makeLink = (sourceNode: Nodes, targetNode: Nodes) => {
   const { x: x1, y: y1 } = sourceNode.style as CircleConfig;
   const { x: x2, y: y2 } = targetNode.style as CircleConfig;
-  const id = uuidv1()
+  const id = uuidv1();
   return {
     ...LinkDefaults,
     id,
     source: sourceNode.id,
     target: targetNode.id,
-    style: { ...LinkDefaults.style, id,  points: [x1, y1, x2, y2] }
+    style: { ...LinkDefaults.style, id, points: [x1, y1, x2, y2] }
   };
 };
-export type aNode = PdfSegmentViewbox | Empty
-export type aLink = LinkBase
-export type Nodes = {[id: string]: aNode}; // or...
-export type Links = {[id: string]: aLink};  // or...
+export type aNode = PdfSegmentViewbox | Empty;
+export type aLink = LinkBase;
+export type Nodes = { [id: string]: aNode }; // or...
+export type Links = { [id: string]: aLink }; // or...

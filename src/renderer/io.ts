@@ -65,9 +65,15 @@ export const ls = (fullpath: string, options = {}): Promise<string[]> => {
   });
 };
 
-export const setupDirFromPdfs = async () => {
-  const { homedir, username } = os.userInfo();
-  const pdfDir = path.join(homedir, "pdfs");
+export const setupDirFromPdfs = async (pdfDirPath = "") => {
+  let pdfDir;
+  if (pdfDirPath.length === 0) {
+    const { homedir, username } = os.userInfo();
+    pdfDir = path.join(homedir, "pdfs");
+  } else {
+    pdfDir = pdfDirPath;
+  }
+
   const infos = await listPdfs(pdfDir);
 
   for (let info of infos) {
@@ -83,9 +89,8 @@ export const setupDirFromPdfs = async () => {
 
   const dirs = await listDirs(pdfDir);
   await preprocessPdfs(dirs)();
+  return dirs
 };
-
-setupDirFromPdfs();
 
 export const existsElseMake = async (
   path: string,
@@ -105,7 +110,8 @@ export const preprocessPdfs = (
   pdfDirs: string[],
   overwrite = false
 ) => async () => {
-  console.log("preprocessing pdf ", pdfDirs);
+  // todo return new pdf nodes from this function
+  console.log("preprocessing pdfs");
   // console.time("time");
   const scale = 1;
   //   const dir = pdfDirs[0];
@@ -281,8 +287,7 @@ export const loadPageJson = async (
   );
   const numberOfPages = finalFile.numberOfPages;
   const pageNumbers = checkGetPageNumsToLoad(numberOfPages, pageNumbersToLoad);
-    
-    
+
   let pages = [];
   for (let pageNum of pageNumbers) {
     const pageId = zeroPad(pageNum, 4);
@@ -440,8 +445,8 @@ export const checkGetPageNumsToLoad = (
   } else {
     pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
   }
-  
-  return pageNumbers
+
+  return pageNumbers;
 };
 
 export const loadPdfPages = async (

@@ -16,15 +16,7 @@ const initDb = async (path: string) => {
   let db = await low(adapter);
   return db;
 };
-type NodeTypes =
-  | "userDoc/plain"
-  | "userDoc/quote"
-  | "userDoc/unit"
-  | "viewbox/pdf"
-  | "textRange/pdf"
-  | "publication/pdf"
-  | "user"
-  | "venue";
+
 type dbPaths = "viewBoxes";
 const getById = (
   db: low.LowdbAsync<any>,
@@ -57,88 +49,6 @@ const lowExamples = async () => {
   db.write();
 };
 
-type SourceTypes = "pdf";
-type NodeTypes =
-  | "userDoc/plain"
-  | "userDoc/quote"
-  | "userDoc/unit"
-  | "viewbox/pdf"
-  | "textRange/pdf"
-  | "publication/pdf"
-  | "user"
-  | "venue";
-
-const ViewboxDefault = {
-  id: "",
-  left: 0,
-  top: 0,
-  height: 0,
-  width: 0,
-  type: "viewbox/pdf" as NodeTypes,
-  userId: "default",
-  pdfPathInfo: {} as PdfPathInfo,
-  pageNumber: 0
-};
-
-export type Viewbox = typeof ViewboxDefault;
-export const makeViewbox = (viewbox = {} as Partial<Viewbox>) => {
-  const key = withUid("viewbox").id;
-  const vb = {
-    key,
-    attributes: {
-      ...ViewboxDefault,
-      id: key,
-      ...viewbox
-    } as Viewbox
-  };
-  return vb;
-};
-
-//
-const UserDocDefault = {
-  id: "",
-  type: "userDoc/plain" as NodeTypes,
-  userId: "default",
-  text: "",
-  pdfPathInfo: {} as PdfPathInfo, //todo use edge since this isn't required
-
-};
-// todo turn all this into 'makeNode'
-export type UserDoc = typeof UserDocDefault;
-export const makeUserDoc = (userDoc = {} as Partial<UserDoc>) => {
-  const key = withUid("userDoc").id;
-  const vb = {
-    key,
-    attributes: {
-      ...UserDocDefault,
-      id: key,
-      ...userDoc
-    } as UserDoc
-  };
-  return vb;
-};
-
-const UserDefault = { id: "", name: "default" };
-type User = typeof UserDefault;
-const makeUser = (user = {} as Partial<User>) => {
-  return {
-    ...UserDefault,
-    id: withUid("user").id,
-    ...user
-  };
-};
-
-const PublicationDefault = {
-  id: "",
-  title: "default",
-  format: "pdf" as "pdf" | "html",
-  idType: "" as "doi" | "random" | "isbn"
-};
-type Publication = typeof PublicationDefault;
-const makePublication = (publication = {} as Partial<Publication>) => {
-  // todo get id from pdf for cross user merging
-  return { ...PublicationDefault, id: withUid("pub").id, ...publication };
-};
 
 // todo create span for each unique linkids combo
 const TextEntityDefault = {
@@ -180,64 +90,3 @@ const makeTextRange = (textRange = {} as Partial<TextRange>) => {
   // todo get id from pdf for cross user merging
   return { ...TextEntityDefault, id: withUid("textRange").id, ...textRange };
 };
-
-const test = () => {
-  console.time("do stuff");
-  graph.on("nodeAdded", ({ key }) => {
-    console.log(key);
-  });
-  // const graph = new Graph({ multi: true });
-
-  const user = makeUser();
-  graph.addNode(user.id, user);
-
-  const pub = makePublication();
-  graph.addNode(pub.id, pub);
-
-  const vb = makeViewbox({ top: 123 });
-  graph.addNode(vb.id, vb);
-  graph.addEdge(user.id, vb.id, { type: "createdBy" });
-  graph.addEdge(pub.id, vb.id, { type: "createdIn" });
-
-  const vb2 = makeViewbox({ left: 10 });
-  graph.addNode(vb2.id, vb2);
-  graph.addEdge(user.id, vb2.id, { type: "createdBy" });
-  graph.addEdge(pub.id, vb2.id, { type: "createdIn" });
-
-  const pub2 = makePublication({ title: "a pub title" });
-  graph.addNode(pub2.id, pub2);
-  graph.addEdge(user.id, vb2.id, { type: "createdBy" });
-
-  const textRange = makeTextRange();
-  graph.addNode(textRange.id, textRange);
-
-  const textEnt = makeTextEntity();
-  graph.addNode(textEnt.id, textEnt);
-  graph.addEdge(user.id, textEnt.id, { type: "createdBy" });
-
-  if (textRange.text.length > textRange.text.length) {
-    graph.addEdge(textEnt.id, textRange.id, { type: "more" });
-  } else if (textRange.text.length === textRange.text.length) {
-    graph.addEdge(textEnt.id, textRange.id, { type: "similar" });
-  } else {
-    // note order flipped
-    graph.addEdge(textRange.id, textEnt.id, { type: "more" });
-  }
-
-  let count = 0;
-
-  // graph.forEachEdge((edge, attr) => {
-  //   console.log(edge, attr, count++);
-  // });
-
-  // graph.forEachNode((node, attr) => {
-  //   console.log(node, attr, count++);
-  // });
-
-  // // With options:
-  console.timeEnd("do stuff");
-  // console.log(graph.inspect());
-};
-/*
-user, pub, venue, ent, range, viewbox
-*/

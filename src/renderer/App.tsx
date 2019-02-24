@@ -20,6 +20,9 @@ import store, {
 } from "../store/createStore";
 import { Provider, connect } from "react-redux";
 import PdfNodes from "./PdfNodes";
+import { setupDirFromPdfs } from "./io";
+import { makePdfPublication, NodeDataTypes, aNode, PdfPublication } from "../store/creators";
+
 const NavBar = styled.div`
   background-color: #23629f;
   font-size: 30px;
@@ -62,23 +65,20 @@ const MainContainer = styled.div`
   position: relative;
   display: flex;
 `;
-
+const { homedir, username } = os.userInfo();
+const pdfRootDir = path.join(homedir, "pdfs");
 const AppDefaults = {
   props: {},
-  state: {
-    pathInfo: [] as PdfPathInfo[],
-    currentPathInfo: {} as PdfPathInfo
-  }
+  state: { pdfNodes: [] as PdfPublication[], pdfRootDir, currentPdfDir: ''  }
 };
 
 // import {pubs} from '@src/constants/pubs'
 const mapState = (state: iRootState) => ({
-  pdfPathInfo: state.info.pdfPathInfo
+  pdfPathInfo: state.app.focusedPdfInfo,
+  nodes: state.graph.nodes
 });
 
-const mapDispatch = ({ info: { updateState } }: iDispatch) => ({
-  updateState
-});
+const mapDispatch = ({ graph: { addBatch } }: iDispatch) => ({ addBatch });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -87,54 +87,67 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
 
   async componentDidMount() {
-    // graph.on("nodeAdded", this.callback);
-
-    // this.mainContainerRef.current.scrollTo(107.14, 490);
-    const { homedir, username } = os.userInfo();
-    const pdfRootDir = path.join(homedir, "pdfs");
-    const pdfDirs = await listDirs(pdfRootDir);
-
-    const pathInfo = pdfDirs.map(dir => {
+    const pdfDirs = await setupDirFromPdfs(this.state.pdfRootDir);
+    const pdfNodes = pdfDirs.map(dir => {
       const normDir = path.normalize(dir);
       const pathParts = normDir.split(path.sep);
       const _fileName = pathParts[pathParts.length - 1];
-      const fileName =
+      const pdfDirName =
         _fileName === "" ? pathParts[pathParts.length - 2] : _fileName;
-      return {
-        pdfPath: path.join(normDir, fileName) + ".pdf",
-        pdfName: fileName + ".pdf",
-        dir: normDir
-      };
-    });
 
-    this.setState({ pathInfo, currentPathInfo: pathInfo[0] });
-    this.props.updateState({ pdfPathInfo: pathInfo[0] });
+      return makePdfPublication(pdfDirName, { pdfDirName });
+    });
+    const allNodeIds = Object.keys(this.props.nodes);
+    const newPubs = pdfNodes.filter(
+      pdfNode => !allNodeIds.includes(pdfNode.id)
+    );
+    if (newPubs.length > 0) {
+      this.props.addBatch({ nodes: newPubs });
+    }
   }
-  componentWillUnmount() {
-    // graph.removeListener("nodeAdded", this.callback);
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const pdfNodes = (Object.values(nextProps.nodes) as aNode[]).filter(
+      n => n.data.type === "pdf.publication"
+    );
+    let wasUpdated = false;
+    if (pdfNodes.length !== prevState.pdfNodes.length) {
+      wasUpdated = true;
+    } else {
+      pdfNodes.forEach((node, ix) => {
+        if (node.meta.timeUpdated !== prevState.pdfNodes[ix].meta.timeUpdated) {
+          wasUpdated = true;
+        }
+      });
+    }
+    if (wasUpdated) {
+      return { pdfNodes };
+    } else {
+      return null;
+    }
   }
+
+  componentWillUnmount() {}
 
   styleFn(provided, state) {
     return { ...provided, minWidth: "200px" };
   }
 
   setPathInfo = opt => {
-    this.setState({ currentPathInfo: opt.value });
-    this.props.updateState({ pdfPathInfo: opt.value });
+    this.setState({ currentPdfDir: opt.value });
   };
-
   render() {
-    const { currentPathInfo, pathInfo } = this.state;
-    const fileOptions = pathInfo.map(info => ({
-      value: info,
-      label: info.pdfName.replace(".pdf", "")
+    const { pdfRootDir, pdfNodes, currentPdfDir } = this.state;
+    const fileOptions = pdfNodes.map(node => ({
+      value: node,
+      label: node.data.pdfDirName
     }));
 
     return (
       <ViewPortContainer>
         <NavBar>
           <div style={{ flex: 1 }}>
-            {pathInfo.length > 0 && (
+            {pdfNodes.length > 0 && (
               <Select
                 style={this.styleFn}
                 options={fileOptions}
@@ -144,9 +157,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           </div>
         </NavBar>
         <MainContainer>
-          {Object.keys(currentPathInfo).length > 0 && (
+          {currentPdfDir.length > 0 && (
             <PdfViewer
-              pathInfo={currentPathInfo}
+              pathInfo={{currentPdfDir, pdfRootDir}}
               pageNumbersToLoad={[]}
               viewBox={{
                 left: 107.148 - 20,
@@ -156,7 +169,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               }}
             />
           )}
-          <PdfNodes />
+         
         </MainContainer>
       </ViewPortContainer>
     );
@@ -172,10 +185,10 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {/* <ConnectedApp /> */}
-        <div>
+        <ConnectedApp />
+        {/* <div>
           <KonvaTest />
-        </div>
+        </div> */}
       </Provider>
     );
   }
