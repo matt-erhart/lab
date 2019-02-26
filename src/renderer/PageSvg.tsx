@@ -3,51 +3,15 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { PageOfText } from "./io";
-import {
-  getRectCoords,
-  flatten,
-  get,
-  getRectEdges,
-  mode,
-  unique,
-  brewer12
-} from "./utils";
+import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
-// import { graph, addViewbox, Viewbox } from "./graph";
-// import { PdfPathInfo } from "../store/createStore";
-// import { makeUserDoc } from "./db";
+import { iRootState, iDispatch } from "../store/createStore";
+import { connect } from "react-redux";
+import { makePdfSegmentViewbox, PdfSegmentViewbox } from "../store/creators";
 // todo consistant CAPS
-// interface viewBox {
-//   // aka rectange
-//   id: id;
-//   top: number;
-//   left: number;
-//   width: number;
-//   height: number;
-//   imgPath?: string;
-//   text?: string;
-//   userId: string;
-//   pubId: string;
-//   pageNumber: number;
-//   x1: number; // start of drag
-//   y1: number; // start of drag
-// }
-
-import { Viewbox } from "./db";
-
-const title = {
-  height: 0,
-  width: 0,
-  left: 89,
-  x1: 89,
-  top: 53,
-  y1: 53
-};
-
-const lefts = [] as number[];
 
 /**
  * @class **PageSvg**
@@ -63,12 +27,11 @@ const PageSvgDefaults = {
     images: [] as Image[],
     height2color: {} as any,
     fontNames2color: {} as any,
-    pdfPathInfo: {} as PdfPathInfo, // todo remove?
-    onAddViewbox: (viewbox: Viewbox) => {},
-    viewboxes: [] as { key: string; attributes: Viewbox }[]
+    onAddViewbox: (viewbox) => {},
+    viewboxes: [] as PdfSegmentViewbox[]
   },
   state: {
-    selectionRect: title,
+    selectionRect: { height: 0, width: 0, left: 0, x1: 0, top: 0, y1: 0 },
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
     showTextLineBoxes: true,
     showTextBBoxes: false,
@@ -79,8 +42,7 @@ const PageSvgDefaults = {
   }
 };
 
-import { iRootState, iDispatch } from "../store/createStore";
-import { connect } from "react-redux";
+
 const mapState = (state: iRootState, props) => {
   return {
     selectedNodes: state.graph.selectedNodes
@@ -106,7 +68,6 @@ class PageSvg extends React.Component<
   sub: Subscription;
 
   async componentDidMount() {
-    // this.getText(this.state.selectionRect);
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
     this.sub = dnd.subscribe(mouse => {
@@ -162,7 +123,7 @@ class PageSvg extends React.Component<
             const text = this.getText(this.state.selectionRect); // todo take out the snaps part
           } else {
             this.props.onAddViewbox(this.state.selectionRect);
-            this.setState({showText: true, value: ''})
+            this.setState({ showText: true, value: "" });
           }
           break;
       }
@@ -319,7 +280,7 @@ class PageSvg extends React.Component<
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
-
+        
     return (
       <>
         <svg
@@ -445,11 +406,11 @@ class PageSvg extends React.Component<
           </Spring>
           {this.props.viewboxes.length > 0 &&
             this.props.viewboxes.map(vb => {
-              const { top, left, width, height } = vb.attributes;
+              const { top, left, width, height } = vb.data;
 
               return (
                 <div
-                  key={vb.key}
+                  key={vb.id}
                   style={{
                     position: "absolute",
                     top: top,

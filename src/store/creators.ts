@@ -44,7 +44,7 @@ export interface PdfPathInfo {
   dir: string;
 }
 
-const ViewboxDefault = {
+const ViewboxDataDefault = {
   id: "",
   left: 0,
   top: 0,
@@ -55,16 +55,16 @@ const ViewboxDefault = {
   pageNumber: 0,
   type: "pdf.segment.viewbox" as NodeDataTypes
 };
-export type Viewbox = typeof ViewboxDefault;
+export type ViewboxData = typeof ViewboxDataDefault;
 export interface PdfSegmentViewbox extends NodeBase {
-  data: Viewbox;
+  data: ViewboxData;
 }
 import { CircleConfig, LineConfig } from "konva";
 export const makePdfSegmentViewbox = (
-  viewbox = {} as Partial<Viewbox>,
+  viewbox = {} as Partial<ViewboxData>,
   style = {} as Partial<CircleConfig>
 ) => {
-  const data = mergeDefaults(ViewboxDefault, viewbox);
+  const data = mergeDefaults(ViewboxDataDefault, viewbox);
   const now = Date.now();
   return {
     id: data.id,

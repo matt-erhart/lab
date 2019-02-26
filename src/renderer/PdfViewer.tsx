@@ -71,7 +71,6 @@ interface Page {
 }
 
 import styled from "styled-components";
-import { Viewbox } from "../store/createStore";
 
 /**
  * @class **PdfViewer**
@@ -100,7 +99,7 @@ const PdfViewerDefaults = {
       metadata: PDFMetadata;
     },
     outline: [] as PDFTreeNode[],
-    viewboxes: [],
+    viewboxes: [] as PdfSegmentViewbox[],
     patches: []
   }
 };
@@ -145,27 +144,31 @@ class PdfViewer extends React.Component<
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
-  ) {
+  ) {    
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
       const viewboxes = (Object.values(
         props.nodes
       ) as PdfSegmentViewbox[]).filter(n => {
-        n.data.type === "pdf.segment.viewbox" &&
-          n.data.pdfDir === props.pathInfo.pdfDir;
+        return (
+          n.data.type === "pdf.segment.viewbox" &&
+          n.data.pdfDir === props.pathInfo.pdfDir
+        );
       });
+
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
-          if (patch.op === "add") draft.viewboxes.push(patch.value);
-          if (patch.op === "remove") draft.viewboxes.filter(vb => vb.id !== id);
-          if (patch.op === "replace") draft.viewboxes[id] = patch.value;
+          if (patch.op === "add") draft.push(patch.value);
+          if (patch.op === "remove") draft.filter(vb => vb.id !== id);
+          if (patch.op === "replace") draft[id] = patch.value;
         });
-        return viewboxes;
+        return draft;
       });
+      return { viewboxes, patches: props.patches };
     }
     return null;
   }
@@ -260,7 +263,7 @@ class PdfViewer extends React.Component<
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pathInfo.pdfDir !== this.props.pathInfo.pdfDir) {
       await this.loadFiles();
-      this.setState({viewboxes: []})
+      this.setState({ viewboxes: [] });
     }
   }
 
@@ -276,15 +279,27 @@ class PdfViewer extends React.Component<
     }
   };
 
-  onAddViewbox = (pageNumber: number, scale) => viewbox => {
-    console.log("page num on make vb", pageNumber);
-    const { left, top, width, height } = viewbox;
+  onAddViewbox = (pageNumber: number, scale) => (viewboxCoords: {
+    left;
+    top;
+    width;
+    height;
+  }) => {
+    // each svg page gets this func with pagenum/scale
+    // each page calls it on mouseup with the coords
+    // this adds the node to redux, which gets passed in as props to svg
+    const { left, top, width, height } = viewboxCoords;
+
     // note we save with scale = 1
-    // todo save as
     const vb = makePdfSegmentViewbox({
-      ...viewbox,
+      ...{
+        left: left / scale,
+        top: top / scale,
+        width: width / scale,
+        height: height / scale
+      },
       pageNumber,
-      pdfDir: this.props.pdfDir
+      pdfDir: this.props.pathInfo.pdfDir
     });
 
     this.props.addBatch({ nodes: [vb] });
@@ -292,23 +307,22 @@ class PdfViewer extends React.Component<
   };
 
   viewboxesForPage = (pageNumber, scale) => {
-    return this.state.viewboxes.filter(v => v.data.pageNumber === pageNumber);
-    // todo scale here
-    // .map(vb => {
-    //   const { left, top, width, height } = vb.data;
-    //   // const { scale } = this.state;
-    //   // todo update on scale
-    //   return {
-    //     ...vb,
-    //     attributes: {
-    //       ...x.attributes
-    //       // left: left * scale,
-    //       // top: top * scale,
-    //       // width: width * scale,
-    //       // height: height * scale
-    //     }
-    //   };
-    // });
+    return this.state.viewboxes.filter(
+      v => v.data.pageNumber === pageNumber
+    ).map(vb => {
+      const { left, top, width, height } = vb.data;
+      // const { scale } = this.state;
+      // todo update on scale
+      return {
+        ...vb,
+        data: {
+          left: left * scale,
+          top: top * scale,
+          width: width * scale,
+          height: height * scale
+        }
+      };
+    });
   };
 
   renderPages = () => {
@@ -343,8 +357,8 @@ class PdfViewer extends React.Component<
             columnLefts={this.state.columnLefts.map(x => x * this.state.scale)}
             linesOfText={page.linesOfText}
             // images={page.images}
-            height2color={this.state.height2color}
-            fontNames2color={this.state.fontNames2color}
+            // height2color={this.state.height2color}
+            // fontNames2color={this.state.fontNames2color}
             pdfPathInfo={this.props.pathInfo}
             onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
             viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
@@ -356,8 +370,6 @@ class PdfViewer extends React.Component<
 
   render() {
     const { width, height } = this.props.viewBox;
-    console.log(this.props, this.state)
-    
 
     // todo: set height and width and then scrollto
     return (
