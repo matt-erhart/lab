@@ -109,7 +109,8 @@ import { connect } from "react-redux";
 import {
   NodeBase,
   PdfSegmentViewbox,
-  makePdfSegmentViewbox
+  makePdfSegmentViewbox,
+  makeLink
 } from "../store/creators";
 const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
   return {
@@ -144,7 +145,7 @@ class PdfViewer extends React.Component<
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
-  ) {    
+  ) {
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
@@ -289,40 +290,55 @@ class PdfViewer extends React.Component<
     // each page calls it on mouseup with the coords
     // this adds the node to redux, which gets passed in as props to svg
     const { left, top, width, height } = viewboxCoords;
-
+    const source = this.props.nodes[this.props.pathInfo.pdfDir];
+    let { x, y } = source.style;
+    const style = {
+      x: x + Math.random() * 60 - 40,
+      y: y + Math.random() * 60 + 40
+    };
+    console.log(style);
     // note we save with scale = 1
-    const vb = makePdfSegmentViewbox({
-      ...{
-        left: left / scale,
-        top: top / scale,
-        width: width / scale,
-        height: height / scale
+    const vb = makePdfSegmentViewbox(
+      {
+        ...{
+          left: left ,
+          top: top ,
+          width: width ,
+          height: height 
+        },
+        pageNumber,
+        pdfDir: this.props.pathInfo.pdfDir
       },
-      pageNumber,
-      pdfDir: this.props.pathInfo.pdfDir
-    });
+      style
+    );
 
-    this.props.addBatch({ nodes: [vb] });
+    const linkToPdf = makeLink(source, vb, { type: "more" });
+
+    this.props.addBatch({ nodes: [vb], links: [linkToPdf] });
+    this.props.toggleSelections({
+      selectedNodes: this.props.selectedNodes,
+      selectedLinks: this.props.selectedLinks
+    });
     this.props.toggleSelections({ selectedNodes: [vb.id] });
   };
 
   viewboxesForPage = (pageNumber, scale) => {
-    return this.state.viewboxes.filter(
-      v => v.data.pageNumber === pageNumber
-    ).map(vb => {
-      const { left, top, width, height } = vb.data;
-      // const { scale } = this.state;
-      // todo update on scale
-      return {
-        ...vb,
-        data: {
-          left: left * scale,
-          top: top * scale,
-          width: width * scale,
-          height: height * scale
-        }
-      };
-    });
+    return this.state.viewboxes
+      .filter(v => v.data.pageNumber === pageNumber)
+      .map(vb => {
+        const { left, top, width, height } = vb.data;
+        // const { scale } = this.state;
+        // todo update on scale
+        return {
+          ...vb,
+          data: {
+            left: left * scale,
+            top: top * scale,
+            width: width * scale,
+            height: height * scale
+          }
+        };
+      });
   };
 
   renderPages = () => {

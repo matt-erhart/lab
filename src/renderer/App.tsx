@@ -93,14 +93,18 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   async componentDidMount() {
     const pdfDirs = await setupDirFromPdfs(this.props.pdfRootDir);
-    const pdfNodes = pdfDirs.map(dir => {
+    const pdfNodes = pdfDirs.map((dir, ix) => {
       const normDir = path.normalize(dir);
       const pathParts = normDir.split(path.sep);
       const _fileName = pathParts[pathParts.length - 1];
       const pdfDir =
         _fileName === "" ? pathParts[pathParts.length - 2] : _fileName;
 
-      return makePdfPublication(pdfDir, { pdfDir });
+      return makePdfPublication(
+        pdfDir,
+        { pdfDir },
+        { x: ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+      );
     });
     const allNodeIds = Object.keys(this.props.nodes);
     const newPubs = pdfNodes.filter(
@@ -145,7 +149,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   render() {
     const { pdfRootDir, pdfDir } = this.props;
-    const {pdfNodes} = this.state
+    const { pdfNodes } = this.state;
     const fileOptions = pdfNodes.map(node => ({
       value: node,
       label: node.data.pdfDir
@@ -177,6 +181,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               }}
             />
           )}
+          <KonvaTest />
         </MainContainer>
       </ViewPortContainer>
     );
@@ -193,9 +198,6 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <ConnectedApp />
-        {/* <div>
-          <KonvaTest />
-        </div> */}
       </Provider>
     );
   }

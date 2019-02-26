@@ -1,5 +1,5 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
-import produce from "immer";
+import produce, { original } from "immer";
 import { PdfPathInfo } from "../store/createStore";
 const pino = require("pino");
 const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extreme
@@ -16,7 +16,7 @@ let inversePatches = [];
 let defaultApp = {
   current: {
     userId: "",
-    pdfDir: "Wobbrock-2015",
+    pdfDir: "colusso-HCI_TS_Model-CHI2019",
     pdfRootDir: "C:\\Users\\merha\\pdfs"
   },
   settings: {
@@ -39,8 +39,8 @@ export const app = createModel({
       payload: { userId?: string; pdfDir?: string; pdfRootDir?: string }
     ) {
       return produce(state, draft => {
-        draft.current = {...draft.current, ...payload}
-      })
+        draft.current = { ...draft.current, ...payload };
+      });
     }
   }
 });
@@ -54,7 +54,7 @@ let defaultGraph = {
 };
 
 export const graph = createModel({
-  state: { ...defaultGraph, ...savedModelsJson.graph },
+  state: { ...defaultGraph, ...savedModelsJson.graph } as  typeof defaultGraph,
   reducers: {
     addBatch(
       state,
@@ -150,6 +150,7 @@ export const graph = createModel({
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, undirected } = nodeOrLink;
+            draft[payloadKey][id].meta.timeUpdated = Date.now();
 
             for (let keyToUpdate of Object.keys(data || {})) {
               draft[payloadKey][id].data[keyToUpdate] = data[keyToUpdate];
@@ -159,13 +160,15 @@ export const graph = createModel({
             }
             if (source) draft.links[id].source = source;
             if (target) draft.links[id].target = target;
-            if (undirected) draft.links[id].undirected = undirected;
-            draft.links[id].meta.timeUpdated = Date.now();
-            draft.patches.push({
-              op: "replace",
-              path: ["links", id],
-              value: draft.links[id]
-            });
+            if (undirected !== undefined)
+              draft.links[id].undirected = undirected;
+
+            if (source)
+              draft.patches.push({
+                op: "replace",
+                path: ["links", id],
+                value: draft.links[id]
+              });
           }
         }
       });

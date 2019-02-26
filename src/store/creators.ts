@@ -25,7 +25,7 @@ export interface NodeMeta {
 
 export interface NodeBase {
   id: string;
-  data: {type: NodeDataTypes};
+  data: { type: NodeDataTypes };
   style: Object;
   meta: NodeMeta;
 }
@@ -51,7 +51,7 @@ const ViewboxDataDefault = {
   height: 0,
   width: 0,
   userId: "default",
-  pdfDir: '',
+  pdfDir: "",
   pageNumber: 0,
   type: "pdf.segment.viewbox" as NodeDataTypes
 };
@@ -70,14 +70,16 @@ export const makePdfSegmentViewbox = (
     id: data.id,
     data,
     style: {
+      id: data.id,
       type: "circle",
       x: Math.random() * 200,
       y: Math.random() * 200,
       fill: "blue",
       draggabled: true,
-      radius: 10,
+      radius: 5,
       stroke: "blue",
-      strokeWidth: 4
+      strokeWidth: 4,
+      ...style
     } as Partial<CircleConfig>,
     meta: makeNodeMeta()
   } as PdfSegmentViewbox;
@@ -124,13 +126,16 @@ const PdfPublicationDefaults = {
   },
   meta: makeNodeMeta()
 };
-export type PdfPublication = typeof PdfPublicationDefaults
+export type PdfPublication = typeof PdfPublicationDefaults;
 
-export const makePdfPublication = (dirName: string, data = {}) => {
+export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
+  console.log(style)
+  
   return {
     ...PdfPublicationDefaults,
     id: dirName,
-    data: { ...PdfPublicationDefaults.data, ...data }
+    data: { ...PdfPublicationDefaults.data, ...data },
+    style: { ...PdfPublicationDefaults.style, ...style, id: dirName }
   };
 };
 
@@ -163,7 +168,7 @@ const LinkDefaults = {
   undirected: true
 };
 
-export const makeLink = (sourceNode: Nodes, targetNode: Nodes) => {
+export const makeLink = (sourceNode: Nodes, targetNode: Nodes, data ={}) => {
   const { x: x1, y: y1 } = sourceNode.style as CircleConfig;
   const { x: x2, y: y2 } = targetNode.style as CircleConfig;
   const id = uuidv1();
@@ -172,9 +177,34 @@ export const makeLink = (sourceNode: Nodes, targetNode: Nodes) => {
     id,
     source: sourceNode.id,
     target: targetNode.id,
-    style: { ...LinkDefaults.style, id, points: [x1, y1, x2, y2] }
+    style: { ...LinkDefaults.style, id, points: [x1, y1, x2, y2] },
+    data: {...LinkDefaults.data, ...data}
   };
 };
+
+const UserMediaTextDefaults = {
+  id: "",
+  data: {type: 'userMedia.text', text: ''},
+  meta: makeNodeMeta(),
+  style: {
+    id: "",
+    x: 0,
+    y: 0,
+    stroke: 'black',
+    fill: "black"
+  } as Partial<LineConfig>,
+}
+export type UserMediaText = typeof UserMediaTextDefaults
+export const makeUserMediaText = (text, style) => {
+  const id = uuidv1();
+  return {
+    ...UserMediaTextDefaults,
+    id,
+    data: {...UserMediaTextDefaults.data, text},
+    style: {...UserMediaTextDefaults.style, ...style, id}
+  }
+}
+
 export type aNode = PdfSegmentViewbox | Empty;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...

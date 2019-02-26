@@ -10,7 +10,7 @@ import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import { makePdfSegmentViewbox, PdfSegmentViewbox } from "../store/creators";
+import { makePdfSegmentViewbox, PdfSegmentViewbox, makeUserMediaText, makeLink } from "../store/creators";
 // todo consistant CAPS
 
 /**
@@ -45,7 +45,8 @@ const PageSvgDefaults = {
 
 const mapState = (state: iRootState, props) => {
   return {
-    selectedNodes: state.graph.selectedNodes
+    selectedNodes: state.graph.selectedNodes,
+    nodes: state.graph.nodes
   };
 };
 
@@ -263,12 +264,17 @@ class PageSvg extends React.Component<
       this.setState({ showText: false });
       const hasText = this.state.value.length > 0;
       if (hasText) {
-        // todo text node here <-----------------------
-        // const userDoc = makeUserDoc({
-        //   text: this.state.value,
-        //   pdfPathInfo: this.props.pdfPathInfo
-        // });
-        // this.props.addNodes({ nodes: [userDoc], to: "nodes" });
+        const viewboxId = this.props.selectedNodes[0] // selected on creation
+        const source = this.props.nodes[viewboxId]
+        let { x, y } = source.style;
+        const style = {
+          x: x + Math.random() * 50 - 40,
+          y: y + Math.random() * 50 + 40
+        };
+        
+        const textNode = makeUserMediaText(this.state.value, style)
+        const link = makeLink(source, textNode, {type: 'more'})
+        this.props.addBatch({ nodes: [textNode], links: [link]});
         //add edge from selected to userdoc
       }
     }

@@ -2,7 +2,7 @@
   "app": {
     "current": {
       "userId": "",
-      "pdfDir": "Wobbrock-2015",
+      "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
       "pdfRootDir": "C:\\Users\\merha\\pdfs"
     },
     "settings": {
@@ -20,12 +20,12 @@
   },
   "graph": {
     "nodes": {
-      "1804.02445": {
-        "id": "1804.02445",
+      "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c": {
+        "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "1804.02445",
+          "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -42,24 +42,24 @@
           "published": true
         },
         "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
+          "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+          "x": 100.49363994769021,
+          "y": 47,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
+          "timeCreated": 1551219500798,
+          "timeUpdated": 1551220113411
         }
       },
-      "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9": {
-        "id": "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9",
+      "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c": {
+        "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9",
+          "pdfDir": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -76,856 +76,231 @@
           "published": true
         },
         "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
+          "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
+          "x": 207.63347754141537,
+          "y": 65.22569528663718,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
+          "timeCreated": 1551219500798,
+          "timeUpdated": 1551220114426
         }
       },
-      "cgf.13595": {
-        "id": "cgf.13595",
+      "d02f3630-3a15-11e9-8798-fd0684793ef2": {
+        "id": "d02f3630-3a15-11e9-8798-fd0684793ef2",
         "data": {
-          "type": "pdf.publication",
-          "publicationType": "",
-          "pdfDir": "cgf.13595",
-          "fileExt": ".pdf",
-          "title": "",
-          "venue": "",
-          "authors": [],
-          "year": null,
-          "volume": "",
-          "issue": "",
-          "url": "",
-          "arxivId": "",
-          "pmid": "",
-          "doi": "",
-          "isbn": "",
-          "issn": "",
-          "published": true
-        },
-        "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
-          "fill": "grey",
-          "stroke": "red"
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
-        }
-      },
-      "colusso-HCI_TS_Model-CHI2019": {
-        "id": "colusso-HCI_TS_Model-CHI2019",
-        "data": {
-          "type": "pdf.publication",
-          "publicationType": "",
-          "pdfDir": "colusso-HCI_TS_Model-CHI2019",
-          "fileExt": ".pdf",
-          "title": "",
-          "venue": "",
-          "authors": [],
-          "year": null,
-          "volume": "",
-          "issue": "",
-          "url": "",
-          "arxivId": "",
-          "pmid": "",
-          "doi": "",
-          "isbn": "",
-          "issn": "",
-          "published": true
-        },
-        "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
-          "fill": "grey",
-          "stroke": "red"
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
-        }
-      },
-      "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53": {
-        "id": "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53",
-        "data": {
-          "type": "pdf.publication",
-          "publicationType": "",
-          "pdfDir": "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53",
-          "fileExt": ".pdf",
-          "title": "",
-          "venue": "",
-          "authors": [],
-          "year": null,
-          "volume": "",
-          "issue": "",
-          "url": "",
-          "arxivId": "",
-          "pmid": "",
-          "doi": "",
-          "isbn": "",
-          "issn": "",
-          "published": true
-        },
-        "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
-          "fill": "grey",
-          "stroke": "red"
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
-        }
-      },
-      "soylent-uist2010": {
-        "id": "soylent-uist2010",
-        "data": {
-          "type": "pdf.publication",
-          "publicationType": "",
-          "pdfDir": "soylent-uist2010",
-          "fileExt": ".pdf",
-          "title": "",
-          "venue": "",
-          "authors": [],
-          "year": null,
-          "volume": "",
-          "issue": "",
-          "url": "",
-          "arxivId": "",
-          "pmid": "",
-          "doi": "",
-          "isbn": "",
-          "issn": "",
-          "published": true
-        },
-        "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
-          "fill": "grey",
-          "stroke": "red"
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
-        }
-      },
-      "Wobbrock-2015": {
-        "id": "Wobbrock-2015",
-        "data": {
-          "type": "pdf.publication",
-          "publicationType": "",
-          "pdfDir": "Wobbrock-2015",
-          "fileExt": ".pdf",
-          "title": "",
-          "venue": "",
-          "authors": [],
-          "year": null,
-          "volume": "",
-          "issue": "",
-          "url": "",
-          "arxivId": "",
-          "pmid": "",
-          "doi": "",
-          "isbn": "",
-          "issn": "",
-          "published": true
-        },
-        "style": {
-          "id": "",
-          "x": 79.89922029872893,
-          "y": 85.7319677469996,
-          "fill": "grey",
-          "stroke": "red"
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551196780185,
-          "timeUpdated": 1551196780185
-        }
-      },
-      "8cfd1fc0-39df-11e9-8fd1-6beac7154cde": {
-        "id": "8cfd1fc0-39df-11e9-8fd1-6beac7154cde",
-        "data": {
-          "id": "8cfd1fc0-39df-11e9-8fd1-6beac7154cde",
-          "left": 71.9948399999999,
-          "top": 524.4108000000001,
-          "height": 9.960000000000036,
-          "width": 164.45653200000004,
+          "id": "d02f3630-3a15-11e9-8798-fd0684793ef2",
+          "left": 131.022,
+          "top": 550.2860599999999,
+          "height": 105.61344000000008,
+          "width": 911.90619264,
           "userId": "default",
-          "pdfDir": "Wobbrock-2015",
+          "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
           "pageNumber": 1,
           "type": "pdf.segment.viewbox"
         },
         "style": {
+          "id": "d02f3630-3a15-11e9-8798-fd0684793ef2",
           "type": "circle",
-          "x": 107.08705122930495,
-          "y": 9.146526660099497,
+          "x": 114.18597766769265,
+          "y": 129.45349092909004,
           "fill": "blue",
           "draggabled": true,
-          "radius": 10,
+          "radius": 5,
           "stroke": "blue",
           "strokeWidth": 4
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551196791741,
-          "timeUpdated": 1551196791741
+          "timeCreated": 1551220097299,
+          "timeUpdated": 1551220335564
         }
       },
-      "17503220-39e0-11e9-a144-3dad01c1613c": {
-        "id": "17503220-39e0-11e9-a144-3dad01c1613c",
+      "d477b550-3a15-11e9-8798-fd0684793ef2": {
+        "id": "d477b550-3a15-11e9-8798-fd0684793ef2",
         "data": {
-          "id": "17503220-39e0-11e9-a144-3dad01c1613c",
-          "left": 252.59951999999993,
-          "top": 593.9017200000001,
-          "height": 9.960000000000036,
-          "width": 44.761236,
+          "type": "userMedia.text",
+          "text": "asdf"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551220342409
+        },
+        "style": {
+          "id": "d477b550-3a15-11e9-8798-fd0684793ef2",
+          "x": 123.65773831375665,
+          "y": 187.21928350629076,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "1d774cc0-3a16-11e9-8798-fd0684793ef2": {
+        "id": "1d774cc0-3a16-11e9-8798-fd0684793ef2",
+        "data": {
+          "id": "1d774cc0-3a16-11e9-8798-fd0684793ef2",
+          "left": 131.022,
+          "top": 504.4569999999999,
+          "height": 217.19848000000013,
+          "width": 911.9779238399999,
           "userId": "default",
-          "pdfDir": "Wobbrock-2015",
+          "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
           "pageNumber": 1,
           "type": "pdf.segment.viewbox"
         },
         "style": {
+          "id": "1d774cc0-3a16-11e9-8798-fd0684793ef2",
           "type": "circle",
-          "x": 155.9819897257099,
-          "y": 117.50786730131932,
+          "x": 63.01333684069297,
+          "y": 133.18603865578592,
           "fill": "blue",
           "draggabled": true,
-          "radius": 10,
+          "radius": 5,
           "stroke": "blue",
           "strokeWidth": 4
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551197023811,
-          "timeUpdated": 1551197023811
+          "timeCreated": 1551220226956,
+          "timeUpdated": 1551220226956
         }
       },
-      "967ad280-39e0-11e9-a144-3dad01c1613c": {
-        "id": "967ad280-39e0-11e9-a144-3dad01c1613c",
+      "2006aa30-3a16-11e9-8798-fd0684793ef2": {
+        "id": "2006aa30-3a16-11e9-8798-fd0684793ef2",
         "data": {
-          "id": "967ad280-39e0-11e9-a144-3dad01c1613c",
-          "left": 101.28012000000004,
-          "top": 223.81535999999994,
-          "height": 9.960000000000008,
-          "width": 193.922196,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 97.1016221749577,
-          "y": 120.38138629609688,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
+          "type": "userMedia.text",
+          "text": "asdf"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551197237160,
-          "timeUpdated": 1551197237160
-        }
-      },
-      "b71ed720-39e0-11e9-a144-3dad01c1613c": {
-        "id": "b71ed720-39e0-11e9-a144-3dad01c1613c",
-        "data": {
-          "id": "b71ed720-39e0-11e9-a144-3dad01c1613c",
-          "left": 252.59951999999993,
-          "top": 593.9017200000001,
-          "height": 9.960000000000036,
-          "width": 44.761236,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551220339319
         },
         "style": {
-          "type": "circle",
-          "x": 142.74889277793594,
-          "y": 117.5278267103428,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197291922,
-          "timeUpdated": 1551197291922
-        }
-      },
-      "b7ea8b90-39e0-11e9-a144-3dad01c1613c": {
-        "id": "b7ea8b90-39e0-11e9-a144-3dad01c1613c",
-        "data": {
-          "id": "b7ea8b90-39e0-11e9-a144-3dad01c1613c",
-          "left": null,
-          "top": null,
-          "height": 0,
-          "width": 0,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 79.25678441604558,
-          "y": 87.12195333466552,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197293258,
-          "timeUpdated": 1551197293258
-        }
-      },
-      "e13f9990-39e0-11e9-a144-3dad01c1613c": {
-        "id": "e13f9990-39e0-11e9-a144-3dad01c1613c",
-        "data": {
-          "id": "e13f9990-39e0-11e9-a144-3dad01c1613c",
-          "left": 252.59951999999993,
-          "top": 593.9017200000001,
-          "height": 9.960000000000036,
-          "width": 44.761236,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 29.32996809405499,
-          "y": 89.38520497450088,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197362601,
-          "timeUpdated": 1551197362601
-        }
-      },
-      "f46c3320-39e0-11e9-a144-3dad01c1613c": {
-        "id": "f46c3320-39e0-11e9-a144-3dad01c1613c",
-        "data": {
-          "id": "f46c3320-39e0-11e9-a144-3dad01c1613c",
-          "left": 71.9948399999999,
-          "top": 524.4108000000001,
-          "height": 9.960000000000036,
-          "width": 164.45653200000004,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 1.5451828213344676,
-          "y": 70.2244099502356,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197394770,
-          "timeUpdated": 1551197394770
-        }
-      },
-      "4f84f850-39e1-11e9-9e29-0f8b7fce8916": {
-        "id": "4f84f850-39e1-11e9-9e29-0f8b7fce8916",
-        "data": {
-          "id": "4f84f850-39e1-11e9-9e29-0f8b7fce8916",
-          "left": 114.96227999999992,
-          "top": 457.33020000000005,
-          "height": 9.95999999999998,
-          "width": 117.73616400000002,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 190.5004760614621,
-          "y": 47.010773423448704,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197547605,
-          "timeUpdated": 1551197547605
-        }
-      },
-      "6fe9aa00-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "6fe9aa00-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "6fe9aa00-39e1-11e9-8720-a1fa0bcd2938",
-          "left": 252.59951999999993,
-          "top": 593.9017200000001,
-          "height": 9.960000000000036,
-          "width": 44.761236,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 144.65752706842275,
-          "y": 139.84527653432005,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197601953,
-          "timeUpdated": 1551197601953
-        }
-      },
-      "71adef40-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "71adef40-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "71adef40-39e1-11e9-8720-a1fa0bcd2938",
-          "left": 71.9948399999999,
-          "top": 524.4108000000001,
-          "height": 9.960000000000036,
-          "width": 164.45653200000004,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 98.51187496424076,
-          "y": 91.28302102262165,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197604916,
-          "timeUpdated": 1551197604916
-        }
-      },
-      "74ab02a0-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "74ab02a0-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "74ab02a0-39e1-11e9-8720-a1fa0bcd2938",
-          "left": null,
-          "top": null,
-          "height": 0,
-          "width": 0,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 170.76940270383457,
-          "y": 41.42431727534483,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197609930,
-          "timeUpdated": 1551197609930
-        }
-      },
-      "91cd0c70-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "91cd0c70-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "91cd0c70-39e1-11e9-8720-a1fa0bcd2938",
-          "left": 71.9948399999999,
-          "top": 524.4108000000001,
-          "height": 9.960000000000036,
-          "width": 164.45653200000004,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 103.62074611947256,
-          "y": 65.89775109733384,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197658807,
-          "timeUpdated": 1551197658807
-        }
-      },
-      "9311c170-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "9311c170-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "9311c170-39e1-11e9-8720-a1fa0bcd2938",
-          "left": 72.00479999999993,
-          "top": 475.56696000000005,
-          "height": 9.95999999999998,
-          "width": 99.24144000000001,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 194.3064027939664,
-          "y": 60.910067449808466,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197660935,
-          "timeUpdated": 1551197660935
-        }
-      },
-      "f3a459d0-39e1-11e9-8720-a1fa0bcd2938": {
-        "id": "f3a459d0-39e1-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "f3a459d0-39e1-11e9-8720-a1fa0bcd2938",
-          "left": 246.59652000000003,
-          "top": 204.7496400000001,
-          "height": 9.960000000000008,
-          "width": 51.08982,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 2,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 137.64741785343827,
-          "y": 18.43577141113455,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197822957,
-          "timeUpdated": 1551197822957
-        }
-      },
-      "0fd94480-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "0fd94480-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "0fd94480-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 214.56,
-          "top": 100.44000000000005,
-          "height": 12,
-          "width": 182.63999999999993,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 146.45060800818297,
-          "y": 196.2953355520851,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197870280,
-          "timeUpdated": 1551197870280
-        }
-      },
-      "1172a930-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "1172a930-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "1172a930-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 109.68,
-          "top": 59.75999999999999,
-          "height": 18,
-          "width": 392.7384000000002,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 115.47786202006449,
-          "y": 49.95587122516838,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197872963,
-          "timeUpdated": 1551197872963
-        }
-      },
-      "506095d0-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "506095d0-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "506095d0-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 68.39220000000003,
-          "top": 354.48336,
-          "height": 9.95999999999998,
-          "width": 229.66465200000002,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 172.33889794123013,
-          "y": 170.51390951226608,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197978541,
-          "timeUpdated": 1551197978541
-        }
-      },
-      "51653490-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "51653490-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "51653490-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 157.68072,
-          "top": 393.8352,
-          "height": 9.95999999999998,
-          "width": 140.00074800000004,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 73.05475133312069,
-          "y": 15.09025535601336,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197980249,
-          "timeUpdated": 1551197980249
-        }
-      },
-      "527fcc50-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "527fcc50-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "527fcc50-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 118.9164,
-          "top": 434.28276,
-          "height": 9.95999999999998,
-          "width": 181.309848,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 103.28628861464564,
-          "y": 72.72465093332632,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197982101,
-          "timeUpdated": 1551197982101
-        }
-      },
-      "53ddfcc0-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "53ddfcc0-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "53ddfcc0-39e2-11e9-8720-a1fa0bcd2938",
-          "left": 154.19571599999998,
-          "top": 628.47288,
-          "height": 9.960000000000036,
-          "width": 115.65452399999995,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 137.72668623474536,
-          "y": 55.27381921731607,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197984396,
-          "timeUpdated": 1551197984396
-        }
-      },
-      "551bace0-39e2-11e9-8720-a1fa0bcd2938": {
-        "id": "551bace0-39e2-11e9-8720-a1fa0bcd2938",
-        "data": {
-          "id": "551bace0-39e2-11e9-8720-a1fa0bcd2938",
-          "left": null,
-          "top": null,
-          "height": 0,
-          "width": 0,
-          "userId": "default",
-          "pdfDir": "Wobbrock-2015",
-          "pageNumber": 1,
-          "type": "pdf.segment.viewbox"
-        },
-        "style": {
-          "type": "circle",
-          "x": 10.676448237696912,
-          "y": 91.58190275339618,
-          "fill": "blue",
-          "draggabled": true,
-          "radius": 10,
-          "stroke": "blue",
-          "strokeWidth": 4
-        },
-        "meta": {
-          "createdBy": "defaultUser",
-          "timeCreated": 1551197986478,
-          "timeUpdated": 1551197986478
+          "id": "2006aa30-3a16-11e9-8798-fd0684793ef2",
+          "x": 40.46477584354119,
+          "y": 188.40410132957706,
+          "stroke": "black",
+          "fill": "black"
         }
       }
     },
-    "links": {},
+    "links": {
+      "d02f5d40-3a15-11e9-8798-fd0684793ef2": {
+        "id": "d02f5d40-3a15-11e9-8798-fd0684793ef2",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "d02f5d40-3a15-11e9-8798-fd0684793ef2",
+          "points": [
+            100.49363994769021,
+            47,
+            114.18597766769265,
+            129.45349092909004
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551220335564
+        },
+        "source": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+        "target": "d02f3630-3a15-11e9-8798-fd0684793ef2",
+        "undirected": true
+      },
+      "d477b551-3a15-11e9-8798-fd0684793ef2": {
+        "id": "d477b551-3a15-11e9-8798-fd0684793ef2",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "d477b551-3a15-11e9-8798-fd0684793ef2",
+          "points": [
+            114.18597766769265,
+            129.45349092909004,
+            123.65773831375665,
+            187.21928350629076
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551220342409
+        },
+        "source": "d02f3630-3a15-11e9-8798-fd0684793ef2",
+        "target": "d477b550-3a15-11e9-8798-fd0684793ef2",
+        "undirected": true
+      },
+      "1d774cc1-3a16-11e9-8798-fd0684793ef2": {
+        "id": "1d774cc1-3a16-11e9-8798-fd0684793ef2",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "1d774cc1-3a16-11e9-8798-fd0684793ef2",
+          "points": [
+            100.49363994769021,
+            47,
+            63.01333684069297,
+            133.18603865578592
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551219516678
+        },
+        "source": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+        "target": "1d774cc0-3a16-11e9-8798-fd0684793ef2",
+        "undirected": true
+      },
+      "2006aa31-3a16-11e9-8798-fd0684793ef2": {
+        "id": "2006aa31-3a16-11e9-8798-fd0684793ef2",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "2006aa31-3a16-11e9-8798-fd0684793ef2",
+          "points": [
+            63.01333684069297,
+            133.18603865578592,
+            40.46477584354119,
+            188.40410132957706
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551219516678,
+          "timeUpdated": 1551220339319
+        },
+        "source": "1d774cc0-3a16-11e9-8798-fd0684793ef2",
+        "target": "2006aa30-3a16-11e9-8798-fd0684793ef2",
+        "undirected": true
+      }
+    },
     "selectedNodes": [
-      "17503220-39e0-11e9-a144-3dad01c1613c",
-      "967ad280-39e0-11e9-a144-3dad01c1613c",
-      "b71ed720-39e0-11e9-a144-3dad01c1613c",
-      "b7ea8b90-39e0-11e9-a144-3dad01c1613c",
-      "e13f9990-39e0-11e9-a144-3dad01c1613c",
-      "6fe9aa00-39e1-11e9-8720-a1fa0bcd2938",
-      "71adef40-39e1-11e9-8720-a1fa0bcd2938",
-      "74ab02a0-39e1-11e9-8720-a1fa0bcd2938",
-      "91cd0c70-39e1-11e9-8720-a1fa0bcd2938",
-      "9311c170-39e1-11e9-8720-a1fa0bcd2938",
-      "f3a459d0-39e1-11e9-8720-a1fa0bcd2938",
-      "0fd94480-39e2-11e9-8720-a1fa0bcd2938",
-      "1172a930-39e2-11e9-8720-a1fa0bcd2938",
-      "506095d0-39e2-11e9-8720-a1fa0bcd2938",
-      "51653490-39e2-11e9-8720-a1fa0bcd2938",
-      "527fcc50-39e2-11e9-8720-a1fa0bcd2938",
-      "53ddfcc0-39e2-11e9-8720-a1fa0bcd2938"
+      "1d774cc0-3a16-11e9-8798-fd0684793ef2"
     ],
     "selectedLinks": [],
-    "patches": [
-      {
-        "op": "add",
-        "path": [
-          "nodes",
-          "551bace0-39e2-11e9-8720-a1fa0bcd2938"
-        ],
-        "value": {
-          "id": "551bace0-39e2-11e9-8720-a1fa0bcd2938",
-          "data": {
-            "id": "551bace0-39e2-11e9-8720-a1fa0bcd2938",
-            "left": null,
-            "top": null,
-            "height": 0,
-            "width": 0,
-            "userId": "default",
-            "pdfDir": "Wobbrock-2015",
-            "pageNumber": 1,
-            "type": "pdf.segment.viewbox"
-          },
-          "style": {
-            "type": "circle",
-            "x": 10.676448237696912,
-            "y": 91.58190275339618,
-            "fill": "blue",
-            "draggabled": true,
-            "radius": 10,
-            "stroke": "blue",
-            "strokeWidth": 4
-          },
-          "meta": {
-            "createdBy": "defaultUser",
-            "timeCreated": 1551197986478,
-            "timeUpdated": 1551197986478
-          }
-        }
-      }
-    ]
+    "patches": []
   }
 }

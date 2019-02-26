@@ -34,6 +34,7 @@ interface FileInfo {
   pdfName: string;
   dataDir: string;
 }
+// todo no spaces for pdfdirs
 
 export const listPdfs = (fullPath: string): Promise<FileInfo[]> =>
   new Promise(resolve => {
