@@ -25,7 +25,7 @@ export interface NodeMeta {
 
 export interface NodeBase {
   id: string;
-  data: Object;
+  data: {type: NodeDataTypes};
   style: Object;
   meta: NodeMeta;
 }
@@ -51,7 +51,7 @@ const ViewboxDefault = {
   height: 0,
   width: 0,
   userId: "default",
-  pdfPathInfo: {} as PdfPathInfo,
+  pdfDir: '',
   pageNumber: 0,
   type: "pdf.segment.viewbox" as NodeDataTypes
 };
@@ -99,7 +99,7 @@ const PdfPublicationDefaults = {
   data: {
     type: "pdf.publication" as NodeDataTypes,
     publicationType: "", // Journal Article, Conference proceedings, book
-    pdfDirName: "sameAsId",
+    pdfDir: "sameAsId",
     fileExt: ".pdf", // saveAsId.pdf
     title: "",
     venue: "",

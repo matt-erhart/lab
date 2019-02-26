@@ -17,8 +17,8 @@ import produce from "immer";
 import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 // import { graph, addViewbox, Viewbox } from "./graph";
-import { PdfPathInfo } from "../store/createStore";
-import { makeUserDoc } from "./db";
+// import { PdfPathInfo } from "../store/createStore";
+// import { makeUserDoc } from "./db";
 // todo consistant CAPS
 // interface viewBox {
 //   // aka rectange
@@ -79,17 +79,17 @@ const PageSvgDefaults = {
   }
 };
 
-import { PdfPathInfo, iRootState, iDispatch } from "../store/createStore";
+import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
+const mapState = (state: iRootState, props) => {
   return {
-    selectedNodes: state.info.selectedNodes
+    selectedNodes: state.graph.selectedNodes
   };
 };
 
-const mapDispatch = ({ info: { addNodes, deleteNodes } }: iDispatch) => ({
-  addNodes,
-  deleteNodes
+const mapDispatch = ({ graph: { addBatch, removeBatch } }: iDispatch) => ({
+  addBatch,
+  removeBatch
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -302,17 +302,15 @@ class PageSvg extends React.Component<
       this.setState({ showText: false });
       const hasText = this.state.value.length > 0;
       if (hasText) {
-        const userDoc = makeUserDoc({
-          text: this.state.value,
-          pdfPathInfo: this.props.pdfPathInfo
-        });
-        this.props.addNodes({ nodes: [userDoc], to: "nodes" });
+        // todo text node here <-----------------------
+        // const userDoc = makeUserDoc({
+        //   text: this.state.value,
+        //   pdfPathInfo: this.props.pdfPathInfo
+        // });
+        // this.props.addNodes({ nodes: [userDoc], to: "nodes" });
         //add edge from selected to userdoc
       }
     }
-
-    //todo create node and id and add it
-    //todo update if already exists
   };
 
   onOpenText = e => {
@@ -321,8 +319,6 @@ class PageSvg extends React.Component<
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
-    // console.log(this.state.selectionRect)
-    // console.log(this.props.selectedNodes);
 
     return (
       <>

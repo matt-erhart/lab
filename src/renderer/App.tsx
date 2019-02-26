@@ -13,15 +13,16 @@ import styled from "styled-components";
 import { getPersistor } from "@rematch/persist";
 import { PersistGate } from "redux-persist/lib/integration/react";
 const persistor = getPersistor(); //prevents initial redux state from takin over
-import store, {
-  PdfPathInfo,
-  iRootState,
-  iDispatch
-} from "../store/createStore";
+import store, { iRootState, iDispatch } from "../store/createStore";
 import { Provider, connect } from "react-redux";
 import PdfNodes from "./PdfNodes";
 import { setupDirFromPdfs } from "./io";
-import { makePdfPublication, NodeDataTypes, aNode, PdfPublication } from "../store/creators";
+import {
+  makePdfPublication,
+  NodeDataTypes,
+  aNode,
+  PdfPublication
+} from "../store/creators";
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -69,16 +70,20 @@ const { homedir, username } = os.userInfo();
 const pdfRootDir = path.join(homedir, "pdfs");
 const AppDefaults = {
   props: {},
-  state: { pdfNodes: [] as PdfPublication[], pdfRootDir, currentPdfDir: ''  }
+  state: { pdfNodes: [] as PdfPublication[] }
 };
 
 // import {pubs} from '@src/constants/pubs'
 const mapState = (state: iRootState) => ({
-  pdfPathInfo: state.app.focusedPdfInfo,
+  pdfDir: state.app.current.pdfDir,
+  pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes
 });
 
-const mapDispatch = ({ graph: { addBatch } }: iDispatch) => ({ addBatch });
+const mapDispatch = ({
+  graph: { addBatch },
+  app: { setCurrent }
+}: iDispatch) => ({ addBatch, setCurrent });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -87,15 +92,15 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
 
   async componentDidMount() {
-    const pdfDirs = await setupDirFromPdfs(this.state.pdfRootDir);
+    const pdfDirs = await setupDirFromPdfs(this.props.pdfRootDir);
     const pdfNodes = pdfDirs.map(dir => {
       const normDir = path.normalize(dir);
       const pathParts = normDir.split(path.sep);
       const _fileName = pathParts[pathParts.length - 1];
-      const pdfDirName =
+      const pdfDir =
         _fileName === "" ? pathParts[pathParts.length - 2] : _fileName;
 
-      return makePdfPublication(pdfDirName, { pdfDirName });
+      return makePdfPublication(pdfDir, { pdfDir });
     });
     const allNodeIds = Object.keys(this.props.nodes);
     const newPubs = pdfNodes.filter(
@@ -107,6 +112,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    // todo switch to patches
     const pdfNodes = (Object.values(nextProps.nodes) as aNode[]).filter(
       n => n.data.type === "pdf.publication"
     );
@@ -134,13 +140,15 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    this.setState({ currentPdfDir: opt.value });
+    this.props.setCurrent({ pdfDir: opt.label });
   };
+
   render() {
-    const { pdfRootDir, pdfNodes, currentPdfDir } = this.state;
+    const { pdfRootDir, pdfDir } = this.props;
+    const {pdfNodes} = this.state
     const fileOptions = pdfNodes.map(node => ({
       value: node,
-      label: node.data.pdfDirName
+      label: node.data.pdfDir
     }));
 
     return (
@@ -157,9 +165,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           </div>
         </NavBar>
         <MainContainer>
-          {currentPdfDir.length > 0 && (
+          {pdfDir.length > 0 && (
             <PdfViewer
-              pathInfo={{currentPdfDir, pdfRootDir}}
+              pathInfo={{ pdfRootDir, pdfDir }}
               pageNumbersToLoad={[]}
               viewBox={{
                 left: 107.148 - 20,
@@ -169,7 +177,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               }}
             />
           )}
-         
         </MainContainer>
       </ViewPortContainer>
     );

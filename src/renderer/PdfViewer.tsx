@@ -19,6 +19,7 @@ import path = require("path");
 import PageCanvas from "./PageCanvas";
 import PageText from "./PageText";
 import PageSvg from "./PageSvg";
+import memoizeOne from "memoize-one";
 
 import {
   flatten,
@@ -36,7 +37,6 @@ import {
   PageOfText,
   checkGetPageNumsToLoad
 } from "./io";
-import { makeViewbox } from "./db";
 
 export interface LineOfText {
   id: string;
@@ -75,20 +75,19 @@ import { Viewbox } from "../store/createStore";
 
 /**
  * @class **PdfViewer**
- * todo zoom, file name prop, layer props, keyboard shortcuts
+ * todo zoom + viewbox adjust
  */
 
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
-    pathInfo: { currentPdfDir: "", pdfRootDir: "" }, // todo <- use this path info them wireup to graph
+    pathInfo: { pdfDir: "", pdfRootDir: "" },
     viewBox: {
       top: 110,
       left: 110,
       width: "100%" as number | string | undefined,
       height: "100%" as number | string | undefined
-    },
-    viewboxes: [] as { key: string; attributes: Viewbox }[]
+    }
   },
   state: {
     scale: 2, // todo scale
@@ -100,27 +99,36 @@ const PdfViewerDefaults = {
       info: PDFInfo;
       metadata: PDFMetadata;
     },
-    outline: [] as PDFTreeNode[]
+    outline: [] as PDFTreeNode[],
+    viewboxes: [],
+    patches: []
   }
 };
 
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
+import {
+  NodeBase,
+  PdfSegmentViewbox,
+  makePdfSegmentViewbox
+} from "../store/creators";
 const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
-  const viewboxes = state.info.nodes.filter(
-    n =>
-      n.attributes.type === "viewbox/pdf" &&
-      n.attributes.pdfPathInfo.dir === props.pathInfo.dir
-    // todo ts and multi filter util
-  );
   return {
-    viewboxes: viewboxes
+    nodes: state.graph.nodes,
+    links: state.graph.links,
+    selectedNodes: state.graph.selectedNodes,
+    selectedLinks: state.graph.selectedLinks,
+    patches: state.graph.patches
   };
 };
 
-const mapDispatch = ({ info: { addNodes, deleteNodes } }: iDispatch) => ({
-  addNodes,
-  deleteNodes
+const mapDispatch = ({
+  graph: { addBatch, removeBatch, toggleSelections, updateBatch }
+}: iDispatch) => ({
+  addBatch,
+  removeBatch,
+  toggleSelections,
+  updateBatch
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -134,6 +142,34 @@ class PdfViewer extends React.Component<
   state = PdfViewerDefaults.state;
   scrollRef = React.createRef<HTMLDivElement>();
 
+  static getDerivedStateFromProps(
+    props: typeof PdfViewerDefaults.props & connectedProps,
+    state: typeof PdfViewerDefaults.state
+  ) {
+    //todo use memoize-one as in react docs
+    //todo useGraph hook
+    if (state.viewboxes.length === 0) {
+      const viewboxes = (Object.values(
+        props.nodes
+      ) as PdfSegmentViewbox[]).filter(n => {
+        n.data.type === "pdf.segment.viewbox" &&
+          n.data.pdfDir === props.pathInfo.pdfDir;
+      });
+      return { viewboxes, patches: props.patches };
+    } else if (props.patches !== state.patches) {
+      const viewboxes = produce(state.viewboxes, draft => {
+        props.patches.forEach(patch => {
+          const id = patch.value.id;
+          if (patch.op === "add") draft.viewboxes.push(patch.value);
+          if (patch.op === "remove") draft.viewboxes.filter(vb => vb.id !== id);
+          if (patch.op === "replace") draft.viewboxes[id] = patch.value;
+        });
+        return viewboxes;
+      });
+    }
+    return null;
+  }
+
   async componentDidMount() {
     await this.loadFiles();
     const { left, top } = this.props.viewBox;
@@ -143,16 +179,20 @@ class PdfViewer extends React.Component<
   loadFiles = async () => {
     this.setState({ pages: [] });
     const {
-      pathInfo: { pdfName, pdfPath, dir },
-      pageNumbersToLoad
+      pageNumbersToLoad,
+      pathInfo: { pdfDir, pdfRootDir }
     } = this.props;
-    const seg = await jsonfile.readFile(path.join(dir, "userSegments.json"));
+    const fullDirPath = path.join(pdfRootDir, pdfDir);
+    const pdfPath = path.join(fullDirPath, pdfDir + ".pdf");
+    const seg = await jsonfile.readFile(
+      path.join(fullDirPath, "userSegments.json")
+    );
+
     const pageNumbersToLoadFixed = checkGetPageNumsToLoad(
       seg.numberOfPages,
       pageNumbersToLoad
     );
 
-    console.log("pageNumbersToLoadFixed", pageNumbersToLoadFixed);
     const [
       pdfPages,
       linesOfText,
@@ -161,24 +201,11 @@ class PdfViewer extends React.Component<
       userSegments
     ] = await Promise.all([
       loadPdfPages(pdfPath, pageNumbersToLoad),
-      loadPageJson(dir, "linesOfText", pageNumbersToLoad),
-      loadPageJson(dir, "textToDisplay", pageNumbersToLoad),
-      jsonfile.readFile(path.join(dir, "columnLefts.json")),
-      loadPageJson(dir, "userSegments", pageNumbersToLoad)
+      loadPageJson(fullDirPath, "linesOfText", pageNumbersToLoad),
+      loadPageJson(fullDirPath, "textToDisplay", pageNumbersToLoad),
+      jsonfile.readFile(path.join(fullDirPath, "columnLefts.json")),
+      loadPageJson(fullDirPath, "userSegments", pageNumbersToLoad)
     ]);
-
-    // 1st mount
-    // if (this.props.viewboxes.length === 0 && userSegments.viewboxes.length !== 0){
-    //   this.props.addNodes(userSegments.viewboxes)
-    // }
-
-    // add viewbox
-    // this.props.addNodes([viewbox])
-    // save to json
-
-    // remove viewbox
-    // this.props.removeNodes([viewbox])
-    // save to json
 
     let pages = [] as Page[];
     for (let i in pdfPages) {
@@ -231,8 +258,9 @@ class PdfViewer extends React.Component<
   };
 
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
-    if (prevProps.pathInfo !== this.props.pathInfo) {
+    if (prevProps.pathInfo.pdfDir !== this.props.pathInfo.pdfDir) {
       await this.loadFiles();
+      this.setState({viewboxes: []})
     }
   }
 
@@ -253,37 +281,34 @@ class PdfViewer extends React.Component<
     const { left, top, width, height } = viewbox;
     // note we save with scale = 1
     // todo save as
-    const vb = makeViewbox({
+    const vb = makePdfSegmentViewbox({
       ...viewbox,
-      // left: left / scale,
-      // top: top / scale,
-      // width: width / scale,
-      // height: height / scale,
-      pdfPathInfo: this.props.pathInfo,
-      pageNumber
+      pageNumber,
+      pdfDir: this.props.pdfDir
     });
-    this.props.addNodes({ nodes: [vb], to: "nodes" });
-    this.props.addNodes({ nodes: [vb], to: "selectedNodes" });
+
+    this.props.addBatch({ nodes: [vb] });
+    this.props.toggleSelections({ selectedNodes: [vb.id] });
   };
 
   viewboxesForPage = (pageNumber, scale) => {
-    return this.props.viewboxes
-      .filter(v => v.attributes.pageNumber === pageNumber)
-      .map(x => {
-        const { left, top, width, height } = x.attributes;
-        // const { scale } = this.state;
-        // todo update on scale
-        return {
-          ...x,
-          attributes: {
-            ...x.attributes
-            // left: left * scale,
-            // top: top * scale,
-            // width: width * scale,
-            // height: height * scale
-          }
-        };
-      });
+    return this.state.viewboxes.filter(v => v.data.pageNumber === pageNumber);
+    // todo scale here
+    // .map(vb => {
+    //   const { left, top, width, height } = vb.data;
+    //   // const { scale } = this.state;
+    //   // todo update on scale
+    //   return {
+    //     ...vb,
+    //     attributes: {
+    //       ...x.attributes
+    //       // left: left * scale,
+    //       // top: top * scale,
+    //       // width: width * scale,
+    //       // height: height * scale
+    //     }
+    //   };
+    // });
   };
 
   renderPages = () => {
@@ -321,7 +346,7 @@ class PdfViewer extends React.Component<
             height2color={this.state.height2color}
             fontNames2color={this.state.fontNames2color}
             pdfPathInfo={this.props.pathInfo}
-            onAddViewbox={this.onAddViewbox(page.pageNumber)}
+            onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
             viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
           />
         </div>
@@ -331,6 +356,8 @@ class PdfViewer extends React.Component<
 
   render() {
     const { width, height } = this.props.viewBox;
+    console.log(this.props, this.state)
+    
 
     // todo: set height and width and then scrollto
     return (

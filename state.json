@@ -1,1 +1,419 @@
-{"app":{"current":{"userId":"","openPdfs":[],"openQueries":[],"visbleTabs":[],"focusedElementId":""},"settings":{"appearance":{"windowStyleOnOpen":{"x":0,"y":0,"width":1000,"height":1000},"panels":{}},"fileSystem":{"pdfLibraryPath":""},"keyboardShortcuts":{}}},"graph":{"nodes":{"1804.02445":{"id":"1804.02445","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"1804.02445","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9":{"id":"2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"cgf.13595":{"id":"cgf.13595","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"cgf.13595","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"colusso-HCI_TS_Model-CHI2019":{"id":"colusso-HCI_TS_Model-CHI2019","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"colusso-HCI_TS_Model-CHI2019","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53":{"id":"Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"soylent-uist2010":{"id":"soylent-uist2010","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"soylent-uist2010","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}},"Wobbrock-2015":{"id":"Wobbrock-2015","data":{"type":"pdf.publication","publicationType":"","pdfDirName":"Wobbrock-2015","fileExt":".pdf","title":"","venue":"","authors":[],"year":null,"volume":"","issue":"","url":"","arxivId":"","pmid":"","doi":"","isbn":"","issn":"","published":true},"style":{"id":"","x":94.06243104955259,"y":25.534979219148024,"fill":"grey","stroke":"red"},"meta":{"createdBy":"defaultUser","timeCreated":1550965238251,"timeUpdated":1550965238251}}},"links":{},"selectedNodes":["c992d7d0-37ab-11e9-bc18-612ede716441","ca082ee0-37ab-11e9-bc18-612ede716441","cb659c00-37ab-11e9-bc18-612ede716441"],"selectedLinks":[]}}
+{
+  "app": {
+    "current": {
+      "userId": "",
+      "pdfDir": "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9",
+      "pdfRootDir": "C:\\Users\\merha\\pdfs"
+    },
+    "settings": {
+      "appearance": {
+        "windowStyleOnOpen": {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 1000
+        },
+        "panels": {}
+      },
+      "keyboardShortcuts": {}
+    }
+  },
+  "graph": {
+    "nodes": {
+      "1804.02445": {
+        "id": "1804.02445",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "1804.02445",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9": {
+        "id": "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2012_Poverty Impedes Cognitive Function_Science_4703a3c0-2b36-11e9-96c3-bf329bf8f6d9",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "cgf.13595": {
+        "id": "cgf.13595",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "cgf.13595",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "colusso-HCI_TS_Model-CHI2019": {
+        "id": "colusso-HCI_TS_Model-CHI2019",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "colusso-HCI_TS_Model-CHI2019",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53": {
+        "id": "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Scaling up analogical innovation with crowds and AI_e62553d0-2d8f-11e9-bc89-61cdb51bcf53",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "soylent-uist2010": {
+        "id": "soylent-uist2010",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "soylent-uist2010",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "Wobbrock-2015": {
+        "id": "Wobbrock-2015",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Wobbrock-2015",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "",
+          "x": 120.50073023142613,
+          "y": 14.73113539547768,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144237776,
+          "timeUpdated": 1551144237776
+        }
+      },
+      "c8ecf290-3966-11e9-a039-cbd6a37f00c6": {
+        "id": "c8ecf290-3966-11e9-a039-cbd6a37f00c6",
+        "data": {
+          "id": "c8ecf290-3966-11e9-a039-cbd6a37f00c6",
+          "left": 131.022,
+          "top": 594.1174199999999,
+          "height": 149.44478000000004,
+          "width": 911.9779238399999,
+          "userId": "default",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox"
+        },
+        "style": {
+          "type": "circle",
+          "x": 188.88535669543782,
+          "y": 96.21273786046083,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 10,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144923194,
+          "timeUpdated": 1551144923194
+        }
+      },
+      "d1095d10-3966-11e9-a039-cbd6a37f00c6": {
+        "id": "d1095d10-3966-11e9-a039-cbd6a37f00c6",
+        "data": {
+          "id": "d1095d10-3966-11e9-a039-cbd6a37f00c6",
+          "left": 72,
+          "top": 304.64891127999977,
+          "height": 101.60969811999973,
+          "width": 669.3163624,
+          "userId": "default",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox"
+        },
+        "style": {
+          "type": "circle",
+          "x": 108.33358731836542,
+          "y": 89.857568874779,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 10,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144936801,
+          "timeUpdated": 1551144936801
+        }
+      },
+      "d4f23000-3966-11e9-a039-cbd6a37f00c6": {
+        "id": "d4f23000-3966-11e9-a039-cbd6a37f00c6",
+        "data": {
+          "id": "d4f23000-3966-11e9-a039-cbd6a37f00c6",
+          "left": 71.99481423999998,
+          "top": 681.20139624,
+          "height": 101.60969811999996,
+          "width": 687.9142618600004,
+          "userId": "default",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox"
+        },
+        "style": {
+          "type": "circle",
+          "x": 159.94457871774168,
+          "y": 118.34211917379811,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 10,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144943360,
+          "timeUpdated": 1551144943360
+        }
+      },
+      "dd400ac0-3966-11e9-a039-cbd6a37f00c6": {
+        "id": "dd400ac0-3966-11e9-a039-cbd6a37f00c6",
+        "data": {
+          "id": "dd400ac0-3966-11e9-a039-cbd6a37f00c6",
+          "left": 71.99481424,
+          "top": 890.39414154,
+          "height": 80.63393589999998,
+          "width": 688.2729138600001,
+          "userId": "default",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox"
+        },
+        "style": {
+          "type": "circle",
+          "x": 30.041869643953056,
+          "y": 199.52878195203544,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 10,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551144957292,
+          "timeUpdated": 1551144957292
+        }
+      }
+    },
+    "links": {},
+    "selectedNodes": [
+      "c8ecf290-3966-11e9-a039-cbd6a37f00c6",
+      "d1095d10-3966-11e9-a039-cbd6a37f00c6",
+      "d4f23000-3966-11e9-a039-cbd6a37f00c6"
+    ],
+    "selectedLinks": [],
+    "patches": [
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "dd400ac0-3966-11e9-a039-cbd6a37f00c6"
+        ],
+        "value": {
+          "id": "dd400ac0-3966-11e9-a039-cbd6a37f00c6",
+          "data": {
+            "id": "dd400ac0-3966-11e9-a039-cbd6a37f00c6",
+            "left": 71.99481424,
+            "top": 890.39414154,
+            "height": 80.63393589999998,
+            "width": 688.2729138600001,
+            "userId": "default",
+            "pageNumber": 1,
+            "type": "pdf.segment.viewbox"
+          },
+          "style": {
+            "type": "circle",
+            "x": 30.041869643953056,
+            "y": 199.52878195203544,
+            "fill": "blue",
+            "draggabled": true,
+            "radius": 10,
+            "stroke": "blue",
+            "strokeWidth": 4
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551144957292,
+            "timeUpdated": 1551144957292
+          }
+        }
+      }
+    ]
+  }
+}

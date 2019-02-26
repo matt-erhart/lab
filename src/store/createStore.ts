@@ -16,18 +16,13 @@ let inversePatches = [];
 let defaultApp = {
   current: {
     userId: "",
-    openPdfs: [] as string[],
-    openQueries: [] as string[],
-    visbleTabs: [] as string[],
-    pdfPathInfo: PdfPathInfo
+    pdfDir: "Wobbrock-2015",
+    pdfRootDir: "C:\\Users\\merha\\pdfs"
   },
   settings: {
     appearance: {
       windowStyleOnOpen: { x: 0, y: 0, width: 1000, height: 1000 },
       panels: {}
-    },
-    fileSystem: {
-      pdfLibraryPath: ""
     },
     keyboardShortcuts: {}
   }
@@ -37,15 +32,25 @@ const savedModelsJson = jsonfile.readFileSync(
 );
 
 export const app = createModel({
-  state: { ...defaultApp, ...savedModelsJson.app }
-
+  state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
+  reducers: {
+    setCurrent(
+      state,
+      payload: { userId?: string; pdfDir?: string; pdfRootDir?: string }
+    ) {
+      return produce(state, draft => {
+        draft.current = {...draft.current, ...payload}
+      })
+    }
+  }
 });
 
 let defaultGraph = {
   nodes: {} as { [id: string]: Nodes },
   links: {} as { [id: string]: Links },
   selectedNodes: [] as string[],
-  selectedLinks: [] as string[]
+  selectedLinks: [] as string[],
+  patches: []
 };
 
 export const graph = createModel({
@@ -59,11 +64,17 @@ export const graph = createModel({
       }
     ) {
       return produce(state, draft => {
+        draft.patches = [];
         for (let key of Object.keys(payload)) {
           for (let item of payload[key]) {
             const isUnique = !state[key].hasOwnProperty(item.id);
             if (isUnique) {
               draft[key][item.id] = item;
+              draft.patches.push({
+                op: "add",
+                path: [key, item.id],
+                value: item
+              });
             } else {
               console.log(item, "already exists. maybe you want updateData()");
             }
@@ -80,10 +91,16 @@ export const graph = createModel({
       }
     ) {
       return produce(state, draft => {
+        draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let id of payload[payloadKey]) {
             const exists = state[payloadKey].hasOwnProperty(id);
             if (exists) {
+              draft.patches.push({
+                op: "remove",
+                path: [payloadKey, id],
+                value: draft[payloadKey][id]
+              });
               delete draft[payloadKey][id];
             } else {
               console.log(id, " no such item to remove");
@@ -93,7 +110,7 @@ export const graph = createModel({
               "selected" +
               payloadKey.charAt(0).toUpperCase() +
               payloadKey.slice(1);
-            console.log(draft[selectedName]);
+            // console.log(draft[selectedName]);
             const ix = draft[selectedName].findIndex(x => x === id);
             if (ix >= 0) {
               delete draft[selectedName][ix];
@@ -101,8 +118,14 @@ export const graph = createModel({
 
             if (payloadKey === "nodes") {
               // also remove connected links
+
               (Object.values(draft.links) as Links[]).forEach(link => {
                 if ([link.source, link.target].includes(id)) {
+                  draft.patches.push({
+                    op: "remove",
+                    path: ["links", id],
+                    value: draft.links[id]
+                  });
                   delete draft.links[link.id];
                 }
               });
@@ -119,12 +142,15 @@ export const graph = createModel({
         links?: NestedPartial<aLink>[];
       }
     ) {
+      // todo updatetime
       // 400 items = 9ms, 300 items = 7ms
       return produce(state, draft => {
+        draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, undirected } = nodeOrLink;
+
             for (let keyToUpdate of Object.keys(data || {})) {
               draft[payloadKey][id].data[keyToUpdate] = data[keyToUpdate];
             }
@@ -134,6 +160,12 @@ export const graph = createModel({
             if (source) draft.links[id].source = source;
             if (target) draft.links[id].target = target;
             if (undirected) draft.links[id].undirected = undirected;
+            draft.links[id].meta.timeUpdated = Date.now();
+            draft.patches.push({
+              op: "replace",
+              path: ["links", id],
+              value: draft.links[id]
+            });
           }
         }
       });
@@ -184,7 +216,8 @@ const saveToJson = {
     const result = next(action);
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
-      jsonfile.writeFile("./state.json", store.getState()).then(err => {});
+      // todo promises can race and corrupt file.
+      jsonfile.writeFileSync("./state.json", store.getState(), { spaces: 2 });
     }
     return result;
   }
