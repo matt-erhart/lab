@@ -68,6 +68,11 @@ class PageSvg extends React.Component<
   selectionRectRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
 
+  // componentDidUpdate(prevProps, state){
+  //   console.log(this.props )
+    
+  // }
+
   async componentDidMount() {
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
@@ -194,10 +199,10 @@ class PageSvg extends React.Component<
 
     const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
     const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
-    const extractedText = flatten(text)
+    const extractedText = (flatten(text)
       .reduce((res, t) => {
         return res + (t as any).str.replace(/-$/, ""); // end with dash
-      }, "")
+      }, "") as string)
       .replace(/\s+/g, " ");
 
     //@ts-ignore

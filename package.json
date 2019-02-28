@@ -85,6 +85,9 @@
   "electronWebpack": {
     "renderer": {
       "webpackConfig": "webpack.config.js"
+    },
+    "main": {
+      "webpackConfig": "webpack.config.js"
     }
   }
 }

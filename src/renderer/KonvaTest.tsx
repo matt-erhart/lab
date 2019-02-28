@@ -1,5 +1,5 @@
 import * as React from "react";
-import konva, { Circle, Stage } from "konva";
+import konva, { Circle, Stage, CircleConfig, LineConfig } from "konva";
 // import { interval } from "rxjs";
 import styled from "styled-components";
 import Konva from "konva";
@@ -34,9 +34,10 @@ const AppDefaults = {
       id: string;
       x: number;
       y: number;
-      data: {};
+      data: any;
+      style: {}
     },
-    hoveredDataType: "" as NodeDataTypes,
+    hoveredDataType: "" as NodeDataTypes | "",
     canvasSize: { width: 3000, height: 3000 },
     scroll: { dx: 0, dy: 0 }
   }
@@ -152,16 +153,15 @@ export class App extends React.Component<
     });
 
     Object.values(this.props.links).forEach(link => {
-      const line = new Konva.Line({ id: link.id, ...link.style });
+      const line = new Konva.Line({ id: link.id, ...(link.style as any) });
       this.linkLayer.add(line);
     });
-
-    this.nodeLayer.on("dragmove dragend", e => {
-      this.setState({ portal: {}, hoveredDataType: "" });
-
+    this.nodeLayer.on("dragmove dragend", (e) => {
+      
+      this.setState({ portal: null, hoveredDataType: "" });
       if (e.type === "dragmove") {
         const _ = updateLinks(this.props.links, this.nodeLayer, this.linkLayer)(
-          e
+          e as konva.KonvaEventObject<DragEvent>
         );
       } else if (e.type === "dragend") {
         console.log("dragend");
@@ -169,7 +169,7 @@ export class App extends React.Component<
           this.props.links,
           this.nodeLayer,
           this.linkLayer
-        )(e);
+        )(e as konva.KonvaEventObject<DragEvent>);
         this.props.updateBatch(updated);
       }
     });
@@ -195,7 +195,7 @@ export class App extends React.Component<
         nodeType = "links";
       }
       if (e.type === "mouseover") {
-        const { clientX: x, clientY: y } = e.evt;
+        const { clientX: x, clientY: y } = e.evt as any;
         this.setState({
           portal: {
             id,
@@ -208,16 +208,16 @@ export class App extends React.Component<
           hoveredDataType: this.props[nodeType][id].data.type
         });
       } else {
-        this.setState({ portal: {}, hoveredDataType: "" });
+        this.setState({ portal: null, hoveredDataType: "" });
       }
     });
 
     this.stage.on("click dblclick", e => {
-      this.setState({ portal: {}, hoveredDataType: "" });
+      this.setState({ portal: null, hoveredDataType: "" });
       const coords = this.stage.getPointerPosition();
       const { dx, dy } = this.state.scroll;
       const { x, y } = { x: coords.x + dx, y: coords.y + dy };
-      const button = ["left", "middle", "right"][e.evt.button];
+      const button = ["left", "middle", "right"][(e.evt as any).button];
       if (button === "left" && e.type === "dblclick") {
         if (e.target.getType() === "Stage") {
           // ADD NODE
@@ -252,13 +252,13 @@ export class App extends React.Component<
           const selectedNodes = this.props.selectedNodes;
           selectedNodes.forEach(id => {
             const n = this.nodeLayer.findOne("#" + id);
-            if (n) n.shadowEnabled(false);
+            if (n) (n as any).shadowEnabled(false);
           });
 
           // todo deselect all links
           this.props.selectedLinks.forEach(id => {
             const n = this.linkLayer.findOne("#" + id);
-            if (n) n.shadowEnabled(false);
+            if (n) (n as any).shadowEnabled(false);
           });
           this.props.toggleSelections({
             selectedLinks: this.props.selectedLinks,
@@ -271,14 +271,14 @@ export class App extends React.Component<
           // todo combined line and circle cases
           const id = e.target.getAttrs().id;
           const alreadySelected = this.props.selectedLinks.includes(id);
-          const clickedLink = this.linkLayer.findOne("#" + id);
+          const clickedLink = this.linkLayer.findOne("#" + id) as konva.Line
           if (!alreadySelected) {
             clickedLink.shadowEnabled(true).setAttrs({
               shadowColor: "blue",
               shadowBlur: 10,
               shadowOffset: { x: 0, y: 0 },
               shadowOpacity: 1
-            });
+            } as LineConfig);
           } else {
             clickedLink.shadowEnabled(false);
           }
@@ -289,7 +289,7 @@ export class App extends React.Component<
       if (button === "left" && e.target.getClassName() === "Circle") {
         const id = e.target.getAttrs().id;
         const isSelected = this.props.selectedNodes.includes(id);
-        const clickedNode = this.nodeLayer.findOne("#" + id);
+        const clickedNode = this.nodeLayer.findOne("#" + id) as konva.Circle
         if (!isSelected) {
           if (clickedNode)
             clickedNode.shadowEnabled(true).setAttrs({
@@ -297,7 +297,7 @@ export class App extends React.Component<
               shadowBlur: 20,
               shadowOffset: { x: 0, y: 0 },
               shadowOpacity: 1
-            });
+            } as CircleConfig);
         } else {
           if (clickedNode) clickedNode.shadowEnabled(false);
         }
@@ -355,8 +355,7 @@ export class App extends React.Component<
         </ScrollContainer>
 
         {this.state.hoveredDataType.length > 0 &&
-          this.state.hoveredDataType !== "pdf.segment.viewbox" && 
-          (
+          this.state.hoveredDataType !== "pdf.segment.viewbox" && (
             <Portal>
               <div
                 style={{
@@ -410,7 +409,7 @@ export class App extends React.Component<
                   left: this.state.portal.data.left - 20,
                   top: this.state.portal.data.top - 20,
                   width: this.state.portal.data.width + 40,
-                  height: this.state.portal.data.height +40
+                  height: this.state.portal.data.height + 40
                 }}
               />
             </div>

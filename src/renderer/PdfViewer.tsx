@@ -110,7 +110,8 @@ import {
   NodeBase,
   PdfSegmentViewbox,
   makePdfSegmentViewbox,
-  makeLink
+  makeLink,
+  aNode
 } from "../store/creators";
 const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
   return {
@@ -149,17 +150,23 @@ class PdfViewer extends React.Component<
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
+      console.time("derived state");
+
+      // todo conditional autocomplete
       const viewboxes = (Object.values(
-        props.nodes
+        props.nodes as any
       ) as PdfSegmentViewbox[]).filter(n => {
         return (
           n.data.type === "pdf.segment.viewbox" &&
           n.data.pdfDir === props.pathInfo.pdfDir
         );
       });
+      console.timeEnd("derived state");
 
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
+      console.time("derived state");
+
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
@@ -169,6 +176,8 @@ class PdfViewer extends React.Component<
         });
         return draft;
       });
+      console.timeEnd("derived state");
+
       return { viewboxes, patches: props.patches };
     }
     return null;
@@ -177,7 +186,8 @@ class PdfViewer extends React.Component<
   async componentDidMount() {
     await this.loadFiles();
     const { left, top } = this.props.viewBox;
-    this.scrollRef.current.scrollTo(left, top);
+
+    // this.scrollRef.current.scrollTo(left, top);
   }
 
   loadFiles = async () => {
@@ -291,20 +301,19 @@ class PdfViewer extends React.Component<
     // this adds the node to redux, which gets passed in as props to svg
     const { left, top, width, height } = viewboxCoords;
     const source = this.props.nodes[this.props.pathInfo.pdfDir];
-    let { x, y } = source.style;
+    let { x, y } = source.style as any;
     const style = {
       x: x + Math.random() * 60 - 40,
       y: y + Math.random() * 60 + 40
     };
-    console.log(style);
     // note we save with scale = 1
     const vb = makePdfSegmentViewbox(
       {
         ...{
-          left: left ,
-          top: top ,
-          width: width ,
-          height: height 
+          left: left,
+          top: top,
+          width: width,
+          height: height
         },
         pageNumber,
         pdfDir: this.props.pathInfo.pdfDir
@@ -314,12 +323,10 @@ class PdfViewer extends React.Component<
 
     const linkToPdf = makeLink(source, vb, { type: "more" });
 
-    this.props.addBatch({ nodes: [vb], links: [linkToPdf] });
-    this.props.toggleSelections({
-      selectedNodes: this.props.selectedNodes,
-      selectedLinks: this.props.selectedLinks
-    });
-    this.props.toggleSelections({ selectedNodes: [vb.id] });
+
+    //10ms update with just a div
+    this.props.addBatch({ nodes: [vb], links: [linkToPdf] }); 
+    this.props.toggleSelections({ selectedNodes: [vb.id], clearFirst: true });
   };
 
   viewboxesForPage = (pageNumber, scale) => {
@@ -364,6 +371,7 @@ class PdfViewer extends React.Component<
                   pageOfText={page.text}
                   // height={height}
                 /> */}
+        
           <PageSvg
             // scale={this.state.scale}
             key={"svg-" + page.pageNumber}
@@ -386,6 +394,7 @@ class PdfViewer extends React.Component<
 
   render() {
     const { width, height } = this.props.viewBox;
+    console.log("render pdfviewer");
 
     // todo: set height and width and then scrollto
     return (

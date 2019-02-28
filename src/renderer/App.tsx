@@ -15,7 +15,7 @@ import { PersistGate } from "redux-persist/lib/integration/react";
 const persistor = getPersistor(); //prevents initial redux state from takin over
 import store, { iRootState, iDispatch } from "../store/createStore";
 import { Provider, connect } from "react-redux";
-import PdfNodes from "./PdfNodes";
+// import PdfNodes from "./PdfNodes";
 import { setupDirFromPdfs } from "./io";
 import {
   makePdfPublication,

@@ -28,7 +28,7 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
     return {
       ...all,
       [eventName]: fromEvent(containerRef.current, eventName).pipe(
-        map(mouseMap)
+        map(mouseMap as any)
       )
     };
   }, {}) as { [eventName: string]: Observable<mouseData> };

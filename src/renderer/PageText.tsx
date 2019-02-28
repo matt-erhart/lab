@@ -2,13 +2,6 @@ import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
 import styled from "styled-components";
 import { TextItemToDisplay, PageOfText } from "./io";
-// export type TextItem = pdfjs.TextContentItem & {
-//   id: number;
-//   top: number;
-//   left: number;
-//   fallbackFontName: string;
-//   style: { fontFamily: string; ascent: number; descent: number };
-// };
 
 const PageTextContainer = styled("div")<{ height: number; width: number }>`
   position: absolute;
@@ -26,11 +19,7 @@ class AutoScaledText extends React.Component<{
     offsetY: 0,
     opacity: 1.0
   };
-  /**
- * translateY(${Math.round(
-        1 - textItem.style.ascent
-      ) * 100}%)
- */
+
   computeStyle = (
     textItem: TextItemToDisplay,
     scale: number,

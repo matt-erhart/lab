@@ -26,7 +26,7 @@ export interface NodeMeta {
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: Object;
+  style: {x: number, y: number};
   meta: NodeMeta;
 }
 
@@ -34,7 +34,6 @@ export interface Empty extends NodeBase {
   data: {
     type: "empty";
   };
-  style: {};
   meta: NodeMeta;
 }
 
@@ -139,7 +138,7 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
   };
 };
 
-interface LinkBase {
+export interface LinkBase {
   id: string;
   data: {
     type: "unset" | "more" | "similar";
@@ -168,9 +167,9 @@ const LinkDefaults = {
   undirected: true
 };
 
-export const makeLink = (sourceNode: Nodes, targetNode: Nodes, data ={}) => {
-  const { x: x1, y: y1 } = sourceNode.style as CircleConfig;
-  const { x: x2, y: y2 } = targetNode.style as CircleConfig;
+export const makeLink = (sourceNode: aNode, targetNode: aNode, data ={}) => {
+  const { x: x1, y: y1 } = sourceNode.style as Partial<CircleConfig>;
+  const { x: x2, y: y2 } = targetNode.style as Partial<CircleConfig>;
   const id = uuidv1();
   return {
     ...LinkDefaults,
@@ -205,7 +204,7 @@ export const makeUserMediaText = (text, style) => {
   }
 }
 
-export type aNode = PdfSegmentViewbox | Empty;
+export type aNode = PdfSegmentViewbox | Empty | UserMediaText
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

@@ -1,10 +1,10 @@
 // todo delete
-import { withUid } from "./utils";
-import Graph from "graphology";
-import connectedCaveman from "graphology-generators/community/connected-caveman";
-import subGraph from "graphology-utils/subgraph";
-import { flatten, unique } from "./utils";
-import { all } from "q";
+// import { withUid } from "./utils";
+// import Graph from "graphology";
+// import connectedCaveman from "graphology-generators/community/connected-caveman";
+// import subGraph from "graphology-utils/subgraph";
+// import { flatten, unique } from "./utils";
+// import { all } from "q";
 
 // mount -> filter all and 1st
 // itemsAdded

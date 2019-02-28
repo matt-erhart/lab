@@ -1,10 +1,9 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
 import produce, { original } from "immer";
-import { PdfPathInfo } from "../store/createStore";
 const pino = require("pino");
 const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extreme
 // logger.info({ patch: { b: 1 } });
-import { Nodes, Links, aNode, aLink } from "./creators";
+import { Nodes, Links, aNode, aLink, LinkBase } from "./creators";
 import jsonfile = require("jsonfile");
 import { NestedPartial } from "../renderer/utils";
 import path = require("path");
@@ -46,21 +45,21 @@ export const app = createModel({
 });
 
 let defaultGraph = {
-  nodes: {} as { [id: string]: Nodes },
-  links: {} as { [id: string]: Links },
+  nodes: {} as Nodes,
+  links: {} as Links,
   selectedNodes: [] as string[],
   selectedLinks: [] as string[],
   patches: []
 };
 
 export const graph = createModel({
-  state: { ...defaultGraph, ...savedModelsJson.graph } as  typeof defaultGraph,
+  state: { ...defaultGraph, ...savedModelsJson.graph } as typeof defaultGraph,
   reducers: {
     addBatch(
       state,
       payload: {
-        nodes?: Nodes[];
-        links?: Links[];
+        nodes?: Nodes[] | any;
+        links?: Links[] | any;
       }
     ) {
       return produce(state, draft => {
@@ -119,14 +118,16 @@ export const graph = createModel({
             if (payloadKey === "nodes") {
               // also remove connected links
 
-              (Object.values(draft.links) as Links[]).forEach(link => {
+              (Object.values(draft.links) as LinkBase[]).forEach(link => {
+                // todo changed without checking
                 if ([link.source, link.target].includes(id)) {
+                  const linkId = link.id as string;
                   draft.patches.push({
                     op: "remove",
-                    path: ["links", id],
-                    value: draft.links[id]
+                    path: ["links", linkId],
+                    value: draft.links[linkId]
                   });
-                  delete draft.links[link.id];
+                  delete draft.links[linkId];
                 }
               });
             }
@@ -178,11 +179,14 @@ export const graph = createModel({
       payload: {
         selectedNodes?: string[];
         selectedLinks?: string[];
+        clearFirst?: boolean
       }
     ) {
       return produce(state, draft => {
-        for (let key of Object.keys(payload)) {
-          for (let id of payload[key]) {
+        const {clearFirst, ...lists} = payload
+        for (let key of Object.keys(lists)) {
+          if (payload.clearFirst) draft[key] = []
+          for (let id of lists[key]) {
             const ix = draft[key].findIndex(x => x === id);
             if (ix > -1) {
               draft[key].splice(ix, 1);
@@ -220,7 +224,9 @@ const saveToJson = {
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
       // todo promises can race and corrupt file.
+      console.time('write to disk')
       jsonfile.writeFileSync("./state.json", store.getState(), { spaces: 2 });
+      console.timeEnd('write to disk')
     }
     return result;
   }

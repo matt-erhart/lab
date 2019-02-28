@@ -90,7 +90,7 @@ export const setupDirFromPdfs = async (pdfDirPath = "") => {
 
   const dirs = await listDirs(pdfDir);
   await preprocessPdfs(dirs)();
-  return dirs
+  return dirs;
 };
 
 export const existsElseMake = async (
@@ -227,26 +227,27 @@ export const preprocessPdfs = (
   // console.timeEnd("time");
 };
 
-export const fontStats = (pages: PageToDisplay[]) => {
-  // todo use this for better line detection threshold. uses page median now.
-  const makeHistogram = histogram();
-  let _fontHeights = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(t =>
-    roundedToFixed(t.fontHeight, 2)
-  );
-  let fontHeights = unique(_fontHeights).sort();
-  let height2color = fontHeights.reduce((res, height, ix) => {
-    return { ...res, [height + ""]: brewer12[ix % 12] };
-  }, {});
+// export const fontStats = (pages: []) => {
+//   //PageToDisplay
+//   // todo use this for better line detection threshold. uses page median now.
+//   const makeHistogram = histogram();
+//   let _fontHeights = flatten<any>(pages.map(p => p)).map(t =>
+//     roundedToFixed(t.fontHeight, 2)
+//   );
+//   let fontHeights = unique(_fontHeights).sort();
+//   let height2color = fontHeights.reduce((res, height, ix) => {
+//     return { ...res, [height + ""]: brewer12[ix % 12] };
+//   }, {});
 
-  let _fontNames = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(
-    t => t.style.fontFamily
-  );
+//   let _fontNames = flatten<TextItemToDisplay>(
+//     (pages as TextItemToDisplay[]).map(p => p.fontName) //was p.text
+//   ).map(t => t.style.fontFamily);
 
-  let fontNames = unique(_fontNames).sort();
-  let fontNames2color = fontNames.reduce((res, name, ix) => {
-    return { ...res, [name + ""]: brewer12[ix % 12] };
-  }, {});
-};
+//   let fontNames = unique(_fontNames).sort();
+//   let fontNames2color = fontNames.reduce((res, name, ix) => {
+//     return { ...res, [name + ""]: brewer12[ix % 12] };
+//   }, {});
+// };
 
 export const getLeftEdgeOfColumns = (pages: PageOfText[]) => {
   const leftXs = flatten<TextItemToDisplay>(pages.map(p => p.text)).map(
@@ -292,9 +293,9 @@ export const loadPageJson = async (
   let pages = [];
   for (let pageNum of pageNumbers) {
     const pageId = zeroPad(pageNum, 4);
-    const page: PageToDisplay = await jsonfile.readFile(
+    const page = await jsonfile.readFile(
       `${dir}/${filePrefix}-page${pageId}.json`
-    );
+    ); //todo PageToDisplay type
     pages.push(page);
   }
   return pages; // sorted by page number
@@ -406,28 +407,28 @@ export const getLines = (
   return flatten<LineOfText>(linesInColumns);
 };
 
-export const getImageFiles = async (page, viewport) => {
-  const opList = await page.getOperatorList();
-  let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
-  svgGfx.embedFonts = true;
-  const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
+// export const getImageFiles = async (page, viewport, scale = 1) => {
+//   const opList = await page.getOperatorList();
+//   let svgGfx = new pdfjs.SVGGraphics(page.commonObjs, page.objs);
+//   svgGfx.embedFonts = true;
+//   const svg = await svgGfx.getSVG(opList, viewport); //in svg:img elements
 
-  const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
-  // document.body.append(svg)
-  let images = [] as Image[];
-  for (let img of imgs) {
-    if (!img) continue;
-    images.push({
-      x: img.getAttribute("x") * scale,
-      y: img.getAttribute("y") * scale,
-      width: img.getAttribute("width") * scale,
-      height: img.getAttribute("height") * scale,
-      "xlink:href": img.getAttribute("xlink:href"),
-      transform: img.getAttribute("transform"),
-      gTransform: img.parentNode.getAttribute("transform")
-    });
-  }
-};
+//   const imgs = svg.querySelectorAll("svg image") as HTMLOrSVGImageElement[];
+//   // document.body.append(svg)
+//   let images = [] as Image[];
+//   for (let img of imgs) {
+//     if (!img) continue;
+//     images.push({
+//       x: img.getAttribute("x") * scale,
+//       y: img.getAttribute("y") * scale,
+//       width: img.getAttribute("width") * scale,
+//       height: img.getAttribute("height") * scale,
+//       "xlink:href": img.getAttribute("xlink:href"),
+//       transform: img.getAttribute("transform"),
+//       gTransform: img.parentNode.getAttribute("transform")
+//     });
+//   }
+// };
 
 export const checkGetPageNumsToLoad = (
   numPages,

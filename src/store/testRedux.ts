@@ -4,17 +4,18 @@ import { NestedPartial } from "../renderer/utils";
 
 // console.log("init", getState());
 
-// const vbs = [...Array(500)].map(x => makePdfSegmentViewbox());
+const vbs = [...Array(10)].map(x => makePdfSegmentViewbox());
 const vb = makePdfSegmentViewbox();
 const vb2 = makePdfSegmentViewbox();
 
 // dispatch.graph.addBatch({
 //   nodes: vbs.slice(0, 2)
 // });
+console.time('add batch')
+dispatch.graph.addBatch({nodes: [vbs]})
+dispatch.graph.toggleSelections({selectedNodes: [vbs[0].id]})
 
-dispatch.graph.addBatch({nodes: [vb]})
-
-dispatch.graph.removeBatch({nodes: [vb.id]})
+console.timeEnd('add batch')
 
 // const updates = vbs
 //   .slice(0, 300)
