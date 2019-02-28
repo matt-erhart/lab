@@ -7,16 +7,20 @@ import { Nodes, Links, aNode, aLink, LinkBase } from "./creators";
 import jsonfile = require("jsonfile");
 import { NestedPartial } from "../renderer/utils";
 import path = require("path");
-
+import { oc } from "ts-optchain";
+const settings = require("electron-settings");
+import { existsElseMake } from "../renderer/io";
 // todo add undo/redo by 3rd arg to product
 let patches = [];
 let inversePatches = [];
+const pdfRootDir = settings.get("pdfRootDir");
+console.log("create store", pdfRootDir);
 
 let defaultApp = {
   current: {
     userId: "",
-    pdfDir: "colusso-HCI_TS_Model-CHI2019",
-    pdfRootDir: "C:\\Users\\merha\\pdfs"
+    pdfDir: "",
+    pdfRootDir: pdfRootDir //C:\\Users\\merha\\pdfs
   },
   settings: {
     appearance: {
@@ -26,9 +30,18 @@ let defaultApp = {
     keyboardShortcuts: {}
   }
 };
-const savedModelsJson = jsonfile.readFileSync(
-  path.join("E:", "lab", "state.json")
-);
+
+let defaultGraph = {
+  nodes: {} as Nodes,
+  links: {} as Links,
+  selectedNodes: [] as string[],
+  selectedLinks: [] as string[],
+  patches: []
+};
+
+const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
+type state = { app: typeof defaultApp; graph: typeof defaultGraph };
+const savedModelsJson = jsonfile.readFileSync(stateJsonPath) as state;
 
 export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
@@ -43,14 +56,6 @@ export const app = createModel({
     }
   }
 });
-
-let defaultGraph = {
-  nodes: {} as Nodes,
-  links: {} as Links,
-  selectedNodes: [] as string[],
-  selectedLinks: [] as string[],
-  patches: []
-};
 
 export const graph = createModel({
   state: { ...defaultGraph, ...savedModelsJson.graph } as typeof defaultGraph,
@@ -179,13 +184,13 @@ export const graph = createModel({
       payload: {
         selectedNodes?: string[];
         selectedLinks?: string[];
-        clearFirst?: boolean
+        clearFirst?: boolean;
       }
     ) {
       return produce(state, draft => {
-        const {clearFirst, ...lists} = payload
+        const { clearFirst, ...lists } = payload;
         for (let key of Object.keys(lists)) {
-          if (payload.clearFirst) draft[key] = []
+          if (payload.clearFirst) draft[key] = [];
           for (let id of lists[key]) {
             const ix = draft[key].findIndex(x => x === id);
             if (ix > -1) {
@@ -224,9 +229,9 @@ const saveToJson = {
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
       // todo promises can race and corrupt file.
-      console.time('write to disk')
+      console.time("write to disk");
       jsonfile.writeFileSync("./state.json", store.getState(), { spaces: 2 });
-      console.timeEnd('write to disk')
+      console.timeEnd("write to disk");
     }
     return result;
   }

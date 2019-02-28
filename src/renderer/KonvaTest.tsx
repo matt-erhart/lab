@@ -370,7 +370,7 @@ export class App extends React.Component<
                   Object.keys(this.state.portal.data).map(key => {
                     const val = this.state.portal.data[key];
                     return (
-                      <div>
+                      <div key={key}>
                         {key}: {val}
                       </div>
                     );
@@ -381,7 +381,7 @@ export class App extends React.Component<
                   Object.keys(this.state.portal.style).map(key => {
                     const val = this.state.portal.style[key];
                     return (
-                      <div>
+                      <div key={key}>
                         {key}: {val}
                       </div>
                     );

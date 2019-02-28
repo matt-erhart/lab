@@ -112,6 +112,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     );
     if (newPubs.length > 0) {
       this.props.addBatch({ nodes: newPubs });
+      if (this.props.pdfDir === "")
+        this.props.setCurrent({ pdfDir: newPubs[0].id });
     }
   }
 

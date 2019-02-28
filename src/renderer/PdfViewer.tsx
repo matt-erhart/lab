@@ -323,7 +323,6 @@ class PdfViewer extends React.Component<
 
     const linkToPdf = makeLink(source, vb, { type: "more" });
 
-
     //10ms update with just a div
     this.props.addBatch({ nodes: [vb], links: [linkToPdf] }); 
     this.props.toggleSelections({ selectedNodes: [vb.id], clearFirst: true });

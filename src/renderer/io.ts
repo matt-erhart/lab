@@ -30,9 +30,8 @@ import {
 import { histogram, mean, median, deviation } from "d3-array";
 
 interface FileInfo {
-  pdfPath: string;
-  pdfName: string;
-  dataDir: string;
+  fullFilePath: string;
+  fileNameWithExt: string;
 }
 // todo no spaces for pdfdirs
 
@@ -41,9 +40,8 @@ export const listPdfs = (fullPath: string): Promise<FileInfo[]> =>
     glob(fullPath + "/*.pdf", { nodir: true }, (err, files) => {
       const fileInfo = files.map(f => {
         return {
-          pdfPath: f,
-          pdfName: path.basename(f),
-          dataDir: f.replace(".pdf", "")
+          fullFilePath: f,
+          fileNameWithExt: path.basename(f)
         };
       });
       resolve(fileInfo);
@@ -66,29 +64,39 @@ export const ls = (fullpath: string, options = {}): Promise<string[]> => {
   });
 };
 
-export const setupDirFromPdfs = async (pdfDirPath = "") => {
-  let pdfDir;
-  if (pdfDirPath.length === 0) {
-    const { homedir, username } = os.userInfo();
-    pdfDir = path.join(homedir, "pdfs");
-  } else {
-    pdfDir = pdfDirPath;
-  }
+export const setupDirFromPdfs = async (pdfRootDir = "") => {
+  // let pdfDir;
+  // if (pdfDirPath.length === 0) {
+  //   const { homedir, username } = os.userInfo();
+  //   pdfDir = path.join(homedir, "pdfs");
+  // } else {
+  //   pdfDir = pdfDirPath;
+  // }
 
-  const infos = await listPdfs(pdfDir);
+  const pdfPathInfo = await listPdfs(pdfRootDir);
 
-  for (let info of infos) {
-    const dirExists = fs.pathExists(info.dataDir);
-    const postFix = dirExists ? "_" + uuidv1() : "";
-    const dataDir = dirExists ? info.dataDir + postFix : info.dataDir;
-    await fs.ensureDir(dataDir);
+  for (let info of pdfPathInfo) {
+    let neededDir = info.fileNameWithExt.replace(".pdf", "").replace(" ", "-");
+    let dirNameExists;
+    let count = 0;
+    let dataDir;
+
+    do {
+      count++;
+      dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
+      const postFix = dirNameExists ? "_" + count : "";
+      neededDir = dirNameExists ? neededDir + postFix : neededDir;
+      if (count > 100) debugger
+    } while (dirNameExists);
+
+    await fs.ensureDir(path.join(pdfRootDir, neededDir));
     await fs.move(
-      info.pdfPath,
-      path.join(dataDir, info.pdfName.replace(".pdf", postFix + ".pdf"))
+      info.fullFilePath,
+      path.join(path.join(pdfRootDir, neededDir), "./" + neededDir + ".pdf")
     );
   }
 
-  const dirs = await listDirs(pdfDir);
+  const dirs = await listDirs(pdfRootDir);
   await preprocessPdfs(dirs)();
   return dirs;
 };
@@ -104,6 +112,9 @@ export const existsElseMake = async (
     console.log("making ", path);
     const data = await promise;
     await jsonfile.writeFile(path, data);
+    return true;
+  } else {
+    return false;
   }
 };
 
@@ -127,6 +138,7 @@ export const preprocessPdfs = (
       pdf.getMetadata(),
       overwrite
     );
+
     await existsElseMake(
       path.join(dir, "outline.json"),
       pdf.getOutline(),
