@@ -3,7 +3,7 @@
     "current": {
       "userId": "",
       "pdfDir": "",
-      "pdfRootDir": "C:\\Users\\merha\\pdfs"
+      "pdfRootDir": "E:\\pdfsMedium"
     },
     "settings": {
       "appearance": {
@@ -20,12 +20,12 @@
   },
   "graph": {
     "nodes": {
-      "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b": {
-        "id": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
+      "2016-chi-sensemaking-ideation": {
+        "id": "2016-chi-sensemaking-ideation",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
+          "pdfDir": "2016-chi-sensemaking-ideation",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -42,24 +42,24 @@
           "published": true
         },
         "style": {
-          "id": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
-          "x": 4.115742311212278,
+          "id": "2016-chi-sensemaking-ideation",
+          "x": 40.81403656928144,
           "y": 50,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551386811572,
-          "timeUpdated": 1551386811572
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
         }
       },
-      "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c": {
-        "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+      "2016-cscw-ideagens-facexp": {
+        "id": "2016-cscw-ideagens-facexp",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+          "pdfDir": "2016-cscw-ideagens-facexp",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -76,24 +76,24 @@
           "published": true
         },
         "style": {
-          "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
-          "x": 2.7702223199862477,
-          "y": 137.5957742192262,
+          "id": "2016-cscw-ideagens-facexp",
+          "x": 87.54301323146922,
+          "y": 66.3418205659568,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551386811572,
-          "timeUpdated": 1551386811572
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
         }
       },
-      "colusso_1": {
-        "id": "colusso_1",
+      "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp": {
+        "id": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "colusso_1",
+          "pdfDir": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -110,24 +110,24 @@
           "published": true
         },
         "style": {
-          "id": "colusso_1",
-          "x": 29.7694266719112,
-          "y": 208.53429031626249,
+          "id": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
+          "x": 66.58795499448877,
+          "y": 51.94875014105382,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551386811572,
-          "timeUpdated": 1551386811572
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
         }
       },
-      "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c": {
-        "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
+      "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph": {
+        "id": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
+          "pdfDir": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -144,24 +144,24 @@
           "published": true
         },
         "style": {
-          "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
-          "x": 62.592878051017806,
-          "y": 206.281419583742,
+          "id": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
+          "x": 15.08176907374543,
+          "y": 66.41204495872054,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551386811572,
-          "timeUpdated": 1551386811572
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
         }
       },
-      "colusso": {
-        "id": "colusso",
+      "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An": {
+        "id": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
         "data": {
           "type": "pdf.publication",
           "publicationType": "",
-          "pdfDir": "colusso",
+          "pdfDir": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
           "fileExt": ".pdf",
           "title": "",
           "venue": "",
@@ -178,16 +178,1512 @@
           "published": true
         },
         "style": {
-          "id": "colusso",
-          "x": 36.502015137733586,
-          "y": 177.41639635340363,
+          "id": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
+          "x": 6.933325061584768,
+          "y": 208.5593646152497,
           "fill": "grey",
           "stroke": "red"
         },
         "meta": {
           "createdBy": "defaultUser",
-          "timeCreated": 1551386811572,
-          "timeUpdated": 1551386811572
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown": {
+        "id": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+          "x": 36.789028925186955,
+          "y": 204.22499853443495,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma": {
+        "id": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+          "x": 86.85733408125894,
+          "y": 629.4523850566607,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data": {
+        "id": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+          "x": 92.0567972522972,
+          "y": 678.4598038893021,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics": {
+        "id": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "x": 106.21208643648724,
+          "y": 602.2049316340081,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17": {
+        "id": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+          "x": 75.04766884965743,
+          "y": 618.9274223621112,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio": {
+        "id": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+          "x": 98.85285973163823,
+          "y": 393.24034116026115,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati": {
+        "id": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+          "x": 101.78636564816243,
+          "y": 396.1958741198228,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research": {
+        "id": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+          "x": 26.755794472983563,
+          "y": 1086.4147054018015,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L": {
+        "id": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+          "x": 81.39923569410782,
+          "y": 73.78009741076039,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating": {
+        "id": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+          "x": 84.20055787167937,
+          "y": 1187.8521214656878,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza": {
+        "id": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+          "x": 72.24819169702297,
+          "y": 143.8817540039979,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)": {
+        "id": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+          "x": 72.7981371335607,
+          "y": 206.0387697505874,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp": {
+        "id": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+          "x": 84.61545759037931,
+          "y": 409.82314008661416,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics": {
+        "id": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+          "x": 36.736164585335686,
+          "y": 629.919207291166,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur": {
+        "id": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+          "x": 95.65377093588117,
+          "y": 876.3087227288129,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering": {
+        "id": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+          "x": 66.22253557277307,
+          "y": 1183.9710983309735,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf": {
+        "id": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+          "x": 31.587699695831176,
+          "y": 1512.481178943982,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)": {
+        "id": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+          "x": 92.20395251409151,
+          "y": 1243.7545460249773,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie": {
+        "id": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+          "x": 54.57032122793011,
+          "y": 1764.6107125568542,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research": {
+        "id": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+          "x": 97.22411759407453,
+          "y": 774.4774429855813,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown": {
+        "id": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+          "x": 93.06124333026489,
+          "y": 291.415585265804,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017": {
+        "id": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+          "x": 112.06306128590577,
+          "y": 2253.626040389743,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown": {
+        "id": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+          "x": 85.89103803728051,
+          "y": 1748.7537228611732,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a": {
+        "id": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+          "x": 45.9394559139173,
+          "y": 2424.6459194394693,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings": {
+        "id": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+          "x": 113.41815170860545,
+          "y": 2755.179300778287,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown": {
+        "id": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+          "x": 129.40946369066796,
+          "y": 976.0579668879024,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-": {
+        "id": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+          "x": 111.25036458950208,
+          "y": 1416.7866444257181,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA": {
+        "id": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+          "x": 107.74167391157293,
+          "y": 619.9162030293508,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics": {
+        "id": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "x": 77.54677108867502,
+          "y": 582.0816938731608,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics": {
+        "id": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+          "x": 70.33452538493971,
+          "y": 1045.8814272900686,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT": {
+        "id": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+          "x": 77.38590580670001,
+          "y": 2416.8255190337086,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown": {
+        "id": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+          "x": 42.20743425766754,
+          "y": 241.1296387229177,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Book_EngineeringABetterFuture": {
+        "id": "2018_Book_EngineeringABetterFuture",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Book_EngineeringABetterFuture",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Book_EngineeringABetterFuture",
+          "x": 50.72737620271758,
+          "y": 113.37084132418155,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics": {
+        "id": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "x": 129.531825637361,
+          "y": 1191.7298011338687,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown": {
+        "id": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+          "x": 88.80518066682544,
+          "y": 1191.239589871925,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown": {
+        "id": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+          "x": 103.15984273666268,
+          "y": 3885.0892765265703,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk": {
+        "id": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+          "x": 113.45354210021115,
+          "y": 3576.752673314478,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown": {
+        "id": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+          "x": 79.88588364254642,
+          "y": 3209.204628866638,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics": {
+        "id": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "x": 104.99028793987769,
+          "y": 1237.7967614977424,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018-Idyll-UIST": {
+        "id": "2018-Idyll-UIST",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018-Idyll-UIST",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018-Idyll-UIST",
+          "x": 85.6260209423323,
+          "y": 1622.4230181882667,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747": {
+        "id": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+          "x": 78.54273346100358,
+          "y": 2868.514918678578,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2019_Book_High-UtilityPatternMining": {
+        "id": "2019_Book_High-UtilityPatternMining",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2019_Book_High-UtilityPatternMining",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2019_Book_High-UtilityPatternMining",
+          "x": 55.53840537246169,
+          "y": 2069.4373873569803,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2019_chi-paper": {
+        "id": "2019_chi-paper",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2019_chi-paper",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2019_chi-paper",
+          "x": 99.55589456113455,
+          "y": 4722.654859890631,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
+        }
+      },
+      "2019-chi-sedc-paper": {
+        "id": "2019-chi-sedc-paper",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "2019-chi-sedc-paper",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "2019-chi-sedc-paper",
+          "x": 75.51249437031737,
+          "y": 4362.8670280905635,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551393810808,
+          "timeUpdated": 1551393810808
         }
       }
     },
@@ -199,14 +1695,14 @@
         "op": "add",
         "path": [
           "nodes",
-          "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b"
+          "2016-chi-sensemaking-ideation"
         ],
         "value": {
-          "id": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
+          "id": "2016-chi-sensemaking-ideation",
           "data": {
             "type": "pdf.publication",
             "publicationType": "",
-            "pdfDir": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
+            "pdfDir": "2016-chi-sensemaking-ideation",
             "fileExt": ".pdf",
             "title": "",
             "venue": "",
@@ -223,16 +1719,16 @@
             "published": true
           },
           "style": {
-            "id": "1870.full_a08fc6d0-3b8f-11e9-9ca0-af452320057b",
-            "x": 4.115742311212278,
+            "id": "2016-chi-sensemaking-ideation",
+            "x": 40.81403656928144,
             "y": 50,
             "fill": "grey",
             "stroke": "red"
           },
           "meta": {
             "createdBy": "defaultUser",
-            "timeCreated": 1551386811572,
-            "timeUpdated": 1551386811572
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
           }
         }
       },
@@ -240,14 +1736,14 @@
         "op": "add",
         "path": [
           "nodes",
-          "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c"
+          "2016-cscw-ideagens-facexp"
         ],
         "value": {
-          "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+          "id": "2016-cscw-ideagens-facexp",
           "data": {
             "type": "pdf.publication",
             "publicationType": "",
-            "pdfDir": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
+            "pdfDir": "2016-cscw-ideagens-facexp",
             "fileExt": ".pdf",
             "title": "",
             "venue": "",
@@ -264,16 +1760,16 @@
             "published": true
           },
           "style": {
-            "id": "cgf.13595_6d08c900-3a14-11e9-a756-1f4b9ff49b8c",
-            "x": 2.7702223199862477,
-            "y": 137.5957742192262,
+            "id": "2016-cscw-ideagens-facexp",
+            "x": 87.54301323146922,
+            "y": 66.3418205659568,
             "fill": "grey",
             "stroke": "red"
           },
           "meta": {
             "createdBy": "defaultUser",
-            "timeCreated": 1551386811572,
-            "timeUpdated": 1551386811572
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
           }
         }
       },
@@ -281,14 +1777,14 @@
         "op": "add",
         "path": [
           "nodes",
-          "colusso_1"
+          "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp"
         ],
         "value": {
-          "id": "colusso_1",
+          "id": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
           "data": {
             "type": "pdf.publication",
             "publicationType": "",
-            "pdfDir": "colusso_1",
+            "pdfDir": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
             "fileExt": ".pdf",
             "title": "",
             "venue": "",
@@ -305,16 +1801,16 @@
             "published": true
           },
           "style": {
-            "id": "colusso_1",
-            "x": 29.7694266719112,
-            "y": 208.53429031626249,
+            "id": "2017_A-Short-Survey-on-Taxonomy-Learning-from-Text-Corpora-Issues-,-Resources-and-Recent-Advances_Emnlp",
+            "x": 66.58795499448877,
+            "y": 51.94875014105382,
             "fill": "grey",
             "stroke": "red"
           },
           "meta": {
             "createdBy": "defaultUser",
-            "timeCreated": 1551386811572,
-            "timeUpdated": 1551386811572
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
           }
         }
       },
@@ -322,14 +1818,14 @@
         "op": "add",
         "path": [
           "nodes",
-          "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c"
+          "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph"
         ],
         "value": {
-          "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
+          "id": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
           "data": {
             "type": "pdf.publication",
             "publicationType": "",
-            "pdfDir": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
+            "pdfDir": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
             "fileExt": ".pdf",
             "title": "",
             "venue": "",
@@ -346,16 +1842,16 @@
             "published": true
           },
           "style": {
-            "id": "colusso-HCI_TS_Model-CHI2019_6d096540-3a14-11e9-a756-1f4b9ff49b8c",
-            "x": 62.592878051017806,
-            "y": 206.281419583742,
+            "id": "2017_A-Survey-on-Visual-Approaches-for-Analyzing-Scientific-Literature-and-Patents_IEEE-Transactions-on-Visualization-and-Computer-Graph",
+            "x": 15.08176907374543,
+            "y": 66.41204495872054,
             "fill": "grey",
             "stroke": "red"
           },
           "meta": {
             "createdBy": "defaultUser",
-            "timeCreated": 1551386811572,
-            "timeUpdated": 1551386811572
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
           }
         }
       },
@@ -363,14 +1859,14 @@
         "op": "add",
         "path": [
           "nodes",
-          "colusso"
+          "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An"
         ],
         "value": {
-          "id": "colusso",
+          "id": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
           "data": {
             "type": "pdf.publication",
             "publicationType": "",
-            "pdfDir": "colusso",
+            "pdfDir": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
             "fileExt": ".pdf",
             "title": "",
             "venue": "",
@@ -387,16 +1883,1820 @@
             "published": true
           },
           "style": {
-            "id": "colusso",
-            "x": 36.502015137733586,
-            "y": 177.41639635340363,
+            "id": "2017_Active-Learning-with-Visualization-for-Text-Data_Proceedings-of-the-2017-ACM-Workshop-on-Exploratory-Search-and-Interactive-Data-An",
+            "x": 6.933325061584768,
+            "y": 208.5593646152497,
             "fill": "grey",
             "stroke": "red"
           },
           "meta": {
             "createdBy": "defaultUser",
-            "timeCreated": 1551386811572,
-            "timeUpdated": 1551386811572
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown"
+        ],
+        "value": {
+          "id": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_An-Interactive-Tool-for-Natural-Language-Processing-on-Clinical-Text_Unknown",
+            "x": 36.789028925186955,
+            "y": 204.22499853443495,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma"
+        ],
+        "value": {
+          "id": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_As-We-May-Ink-Learning-from-Everyday-Analog-Pen-Use-to-Improve-Digital-Ink-Experiences_Proceedings-of-the-SIGCHI-Conference-on-Huma",
+            "x": 86.85733408125894,
+            "y": 629.4523850566607,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data"
+        ],
+        "value": {
+          "id": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Big-Scholarly-Data-A-Survey_IEEE-Transactions-on-Big-Data",
+            "x": 92.0567972522972,
+            "y": 678.4598038893021,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics"
+        ],
+        "value": {
+          "id": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Cite2vec-Citation-Driven-Document-Exploration-via-Word-Embeddings_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "x": 106.21208643648724,
+            "y": 602.2049316340081,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17"
+        ],
+        "value": {
+          "id": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Creative-Sense-Making_Proceedings-of-the-2017-ACM-SIGCHI-Conference-on-Creativity-and-Cognition---C&C-'17",
+            "x": 75.04766884965743,
+            "y": 618.9274223621112,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio"
+        ],
+        "value": {
+          "id": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Disrupting-students’-online-reading-and-research-habits-The-LINKS-intervention-and-its-impact-on-multiple-Internet-text-integratio",
+            "x": 98.85285973163823,
+            "y": 393.24034116026115,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati"
+        ],
+        "value": {
+          "id": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Evaluating-an-instrument-to-measure-mental-load-and-mental-effort-considering-different-sources-of-validity-evidence_Cogent-Educati",
+            "x": 101.78636564816243,
+            "y": 396.1958741198228,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research"
+        ],
+        "value": {
+          "id": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Facilitating-Vocabulary-Note-Taking-on-Computers-Through-the-Deep-Processing-Strategy_Journal-of-Educational-Computing-Research",
+            "x": 26.755794472983563,
+            "y": 1086.4147054018015,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L"
+        ],
+        "value": {
+          "id": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_HESDK-A-Hybrid-Approach-to-Extracting-Scientific-Domain-Knowledge-Entities_Proceedings-of-the-ACMIEEE-Joint-Conference-on-Digital-L",
+            "x": 81.39923569410782,
+            "y": 73.78009741076039,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating"
+        ],
+        "value": {
+          "id": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Incorporating-Expert-Knowledge_Proceedings-of-the-Thirty-First-AAAI-Conference-on-Artificial-Intelligence-(AAAI-17)-Incorporating",
+            "x": 84.20055787167937,
+            "y": 1187.8521214656878,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza"
+        ],
+        "value": {
+          "id": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Integrating-Visual-Analytics-Support-for-Grounded-Theory-Practice-in-Qualitative-Text-Analysis_Eurographics-Conference-on-Visualiza",
+            "x": 72.24819169702297,
+            "y": 143.8817540039979,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)"
+        ],
+        "value": {
+          "id": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Iterative-Machine-Teaching_Proceedings-of-the-34th-International-Conference-on-Machine-Learning-(ICML)",
+            "x": 72.7981371335607,
+            "y": 206.0387697505874,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp"
+        ],
+        "value": {
+          "id": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Learning-how-to-Active-Learn-A-Deep-Reinforcement-Learning-Approach_Emnlp",
+            "x": 84.61545759037931,
+            "y": 409.82314008661416,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics"
+        ],
+        "value": {
+          "id": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_LitPathExplorer-a-confidence-based-visual-text-analytics-tool-for-exploring-literature-enriched-pathway-models_Bioinformatics",
+            "x": 36.736164585335686,
+            "y": 629.919207291166,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur"
+        ],
+        "value": {
+          "id": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_NITE-A-Neural-Inductive-Teaching-Framework-for-Domain-Specific-NER_Proceedings-of-the-2017-Conference-on-Empirical-Methods-in-Natur",
+            "x": 95.65377093588117,
+            "y": 876.3087227288129,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering"
+        ],
+        "value": {
+          "id": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_NuSys-Towards-a-Document-IDE-for-Knowledge-Work_Proceedings-of-the-2017-ACM-Symposium-on-Document-Engineering",
+            "x": 66.22253557277307,
+            "y": 1183.9710983309735,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf"
+        ],
+        "value": {
+          "id": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_On-the-Positive-Effect-of-Reactive-Programming-on-Software-Comprehension-An-Empirical-Study_pdf",
+            "x": 31.587699695831176,
+            "y": 1512.481178943982,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)"
+        ],
+        "value": {
+          "id": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_PACTE-a-collaborative-platform-for-textual-annotation_12th-International-Conference-on-Computational-Semantics-(IWCS-2017)",
+            "x": 92.20395251409151,
+            "y": 1243.7545460249773,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie"
+        ],
+        "value": {
+          "id": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Rapid-tagging-and-reporting-for-functional-language-extraction-in-scientific-articles_ACM-International-Conference-Proceeding-Serie",
+            "x": 54.57032122793011,
+            "y": 1764.6107125568542,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research"
+        ],
+        "value": {
+          "id": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Reading-on-Paper-and-Digitally-What-the-Past-Decades-of-Empirical-Research-Reveal_Review-of-Educational-Research",
+            "x": 97.22411759407453,
+            "y": 774.4774429855813,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown"
+        ],
+        "value": {
+          "id": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Reimagining-the-{{Digital-Monograph}}-{{Design-Thinking}}-to-{{Build-New-Tools}}-for-{{Research}}_Unknown",
+            "x": 93.06124333026489,
+            "y": 291.415585265804,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017"
+        ],
+        "value": {
+          "id": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Semantic-Zooming-for-Ontology-Graph-Visualizations_Proceedings-of-the-Knowledge-Capture-Conference-on---K-CAP-2017",
+            "x": 112.06306128590577,
+            "y": 2253.626040389743,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown"
+        ],
+        "value": {
+          "id": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_SemEval-2017-Task-10-ScienceIE---Extracting-Keyphrases-and-Relations-from-Scientific-Publications_Unknown",
+            "x": 85.89103803728051,
+            "y": 1748.7537228611732,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a"
+        ],
+        "value": {
+          "id": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_SenseMap-Supporting-browser-based-online-sensemaking-through-analytic-provenance_2016-IEEE-Conference-on-Visual-Analytics-Science-a",
+            "x": 45.9394559139173,
+            "y": 2424.6459194394693,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings"
+        ],
+        "value": {
+          "id": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Smart-school-multimodal-dataset-and-challenges_CEUR-Workshop-Proceedings",
+            "x": 113.41815170860545,
+            "y": 2755.179300778287,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown"
+        ],
+        "value": {
+          "id": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Text-Annotation-Graphs-Annotating-Complex-Natural-Language-Phenomena_Unknown",
+            "x": 129.40946369066796,
+            "y": 976.0579668879024,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-"
+        ],
+        "value": {
+          "id": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Towards-a-Hybrid-Human-Computer-Scientific-Information-Extraction-Pipeline_2017-IEEE-13th-International-Conference-on-e-Science-(e-",
+            "x": 111.25036458950208,
+            "y": 1416.7866444257181,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA"
+        ],
+        "value": {
+          "id": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Where-to-Add-Actions-in-Human-in-the-Loop-Reinforcement-Learning_Proceedings-of-the-31th-Conference-on-Artificial-Intelligence-(AAA",
+            "x": 107.74167391157293,
+            "y": 619.9162030293508,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics"
+        ],
+        "value": {
+          "id": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2017_Word-sized-graphics-for-scientific-texts_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "x": 77.54677108867502,
+            "y": 582.0816938731608,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics"
+        ],
+        "value": {
+          "id": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Active-Learning-of-Regular-Expressions-for-Entity-Extraction_IEEE-Transactions-on-Cybernetics",
+            "x": 70.33452538493971,
+            "y": 1045.8814272900686,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT"
+        ],
+        "value": {
+          "id": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Active-Reading-of-Visualizations-LOOKING-ACTIONS-FOLLOWING-ACTIONS-CONTACT-ACTIONS-POSITIONING-ACTIONS-MARKING-ACTIONS-CREATION-ACT",
+            "x": 77.38590580670001,
+            "y": 2416.8255190337086,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown"
+        ],
+        "value": {
+          "id": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Adversarial-Data-Programming-Using-GANs-to-Relax-the-Bottleneck-of-Curated-Labeled-Data_Unknown",
+            "x": 42.20743425766754,
+            "y": 241.1296387229177,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Book_EngineeringABetterFuture"
+        ],
+        "value": {
+          "id": "2018_Book_EngineeringABetterFuture",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Book_EngineeringABetterFuture",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Book_EngineeringABetterFuture",
+            "x": 50.72737620271758,
+            "y": 113.37084132418155,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics"
+        ],
+        "value": {
+          "id": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Bridging-from-Goals-to-Tasks-with-Design-Study-Analysis-Reports_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "x": 129.531825637361,
+            "y": 1191.7298011338687,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown"
+        ],
+        "value": {
+          "id": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_ConceptScape-Collaborative-Concept-Mapping-for-Video-Learning_Unknown",
+            "x": 88.80518066682544,
+            "y": 1191.239589871925,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown"
+        ],
+        "value": {
+          "id": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Evaluation-of-Interactive-Machine-Learning-Systems_Unknown",
+            "x": 103.15984273666268,
+            "y": 3885.0892765265703,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk"
+        ],
+        "value": {
+          "id": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Extracting-Causal-Claims-from-Information-Systems-Papers-with-Natural-Language-Processing-for-Theory-Ontology-Learning-Abstract_Unk",
+            "x": 113.45354210021115,
+            "y": 3576.752673314478,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown"
+        ],
+        "value": {
+          "id": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_Formal-Ontology-Learning-from-English-IS-A-Sentences_Unknown",
+            "x": 79.88588364254642,
+            "y": 3209.204628866638,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics"
+        ],
+        "value": {
+          "id": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018_VIGOR-Interactive-Visual-Exploration-of-Graph-Query-Results_IEEE-Transactions-on-Visualization-and-Computer-Graphics",
+            "x": 104.99028793987769,
+            "y": 1237.7967614977424,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018-Idyll-UIST"
+        ],
+        "value": {
+          "id": "2018-Idyll-UIST",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018-Idyll-UIST",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018-Idyll-UIST",
+            "x": 85.6260209423323,
+            "y": 1622.4230181882667,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747"
+        ],
+        "value": {
+          "id": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2018-TheEconomiesandDimensionalityofPrototyping-ValueTimeCostandFidelityDETC2018-85747",
+            "x": 78.54273346100358,
+            "y": 2868.514918678578,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2019_Book_High-UtilityPatternMining"
+        ],
+        "value": {
+          "id": "2019_Book_High-UtilityPatternMining",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2019_Book_High-UtilityPatternMining",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2019_Book_High-UtilityPatternMining",
+            "x": 55.53840537246169,
+            "y": 2069.4373873569803,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2019_chi-paper"
+        ],
+        "value": {
+          "id": "2019_chi-paper",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2019_chi-paper",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2019_chi-paper",
+            "x": 99.55589456113455,
+            "y": 4722.654859890631,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "2019-chi-sedc-paper"
+        ],
+        "value": {
+          "id": "2019-chi-sedc-paper",
+          "data": {
+            "type": "pdf.publication",
+            "publicationType": "",
+            "pdfDir": "2019-chi-sedc-paper",
+            "fileExt": ".pdf",
+            "title": "",
+            "venue": "",
+            "authors": [],
+            "year": null,
+            "volume": "",
+            "issue": "",
+            "url": "",
+            "arxivId": "",
+            "pmid": "",
+            "doi": "",
+            "isbn": "",
+            "issn": "",
+            "published": true
+          },
+          "style": {
+            "id": "2019-chi-sedc-paper",
+            "x": 75.51249437031737,
+            "y": 4362.8670280905635,
+            "fill": "grey",
+            "stroke": "red"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1551393810808,
+            "timeUpdated": 1551393810808
           }
         }
       }

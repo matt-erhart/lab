@@ -44,7 +44,6 @@ export interface PdfPathInfo {
 }
 
 const ViewboxDataDefault = {
-  id: "",
   left: 0,
   top: 0,
   height: 0,
@@ -52,7 +51,8 @@ const ViewboxDataDefault = {
   userId: "default",
   pdfDir: "",
   pageNumber: 0,
-  type: "pdf.segment.viewbox" as NodeDataTypes
+  type: "pdf.segment.viewbox" as NodeDataTypes,
+  scale: 1
 };
 export type ViewboxData = typeof ViewboxDataDefault;
 export interface PdfSegmentViewbox extends NodeBase {
@@ -63,13 +63,15 @@ export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
   style = {} as Partial<CircleConfig>
 ) => {
-  const data = mergeDefaults(ViewboxDataDefault, viewbox);
   const now = Date.now();
+  const id = uuidv1()
+  console.log({...ViewboxDataDefault, ...viewbox})
+  
   return {
-    id: data.id,
-    data,
+    id: id,
+    data: {...ViewboxDataDefault, ...viewbox},
     style: {
-      id: data.id,
+      id: id,
       type: "circle",
       x: Math.random() * 200,
       y: Math.random() * 200,
@@ -127,9 +129,7 @@ const PdfPublicationDefaults = {
 };
 export type PdfPublication = typeof PdfPublicationDefaults;
 
-export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
-  console.log(style)
-  
+export const makePdfPublication = (dirName: string, data = {}, style = {}) => {  
   return {
     ...PdfPublicationDefaults,
     id: dirName,

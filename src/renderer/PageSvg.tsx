@@ -10,7 +10,12 @@ import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import { makePdfSegmentViewbox, PdfSegmentViewbox, makeUserMediaText, makeLink } from "../store/creators";
+import {
+  makePdfSegmentViewbox,
+  PdfSegmentViewbox,
+  makeUserMediaText,
+  makeLink
+} from "../store/creators";
 // todo consistant CAPS
 
 /**
@@ -27,7 +32,7 @@ const PageSvgDefaults = {
     images: [] as Image[],
     height2color: {} as any,
     fontNames2color: {} as any,
-    onAddViewbox: (viewbox) => {},
+    onAddViewbox: viewbox => {},
     viewboxes: [] as PdfSegmentViewbox[]
   },
   state: {
@@ -41,7 +46,6 @@ const PageSvgDefaults = {
     showText: false
   }
 };
-
 
 const mapState = (state: iRootState, props) => {
   return {
@@ -70,7 +74,7 @@ class PageSvg extends React.Component<
 
   // componentDidUpdate(prevProps, state){
   //   console.log(this.props )
-    
+
   // }
 
   async componentDidMount() {
@@ -181,6 +185,15 @@ class PageSvg extends React.Component<
     );
     const { bottom, ...newSelect } = bbox;
 
+    if (
+      bbox.left === Infinity ||
+      bbox.top === Infinity ||
+      bbox.width < 3 ||
+      bbox.height < 3
+    ) {
+      return;
+    }
+    
     this.props.onAddViewbox(newSelect);
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
@@ -199,11 +212,9 @@ class PageSvg extends React.Component<
 
     const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
     const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
-    const extractedText = (flatten(text)
-      .reduce((res, t) => {
-        return res + (t as any).str.replace(/-$/, ""); // end with dash
-      }, "") as string)
-      .replace(/\s+/g, " ");
+    const extractedText = (flatten(text).reduce((res, t) => {
+      return res + (t as any).str.replace(/-$/, ""); // end with dash
+    }, "") as string).replace(/\s+/g, " ");
 
     //@ts-ignore
     this.setState({
@@ -269,17 +280,17 @@ class PageSvg extends React.Component<
       this.setState({ showText: false });
       const hasText = this.state.value.length > 0;
       if (hasText) {
-        const viewboxId = this.props.selectedNodes[0] // selected on creation
-        const source = this.props.nodes[viewboxId]
+        const viewboxId = this.props.selectedNodes[0]; // selected on creation
+        const source = this.props.nodes[viewboxId];
         let { x, y } = source.style;
         const style = {
           x: x + Math.random() * 50 - 40,
           y: y + Math.random() * 50 + 40
         };
-        
-        const textNode = makeUserMediaText(this.state.value, style)
-        const link = makeLink(source, textNode, {type: 'more'})
-        this.props.addBatch({ nodes: [textNode], links: [link]});
+
+        const textNode = makeUserMediaText(this.state.value, style);
+        const link = makeLink(source, textNode, { type: "more" });
+        this.props.addBatch({ nodes: [textNode], links: [link] });
         //add edge from selected to userdoc
       }
     }
@@ -291,7 +302,7 @@ class PageSvg extends React.Component<
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
-        
+
     return (
       <>
         <svg

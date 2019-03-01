@@ -76,7 +76,10 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
   const pdfPathInfo = await listPdfs(pdfRootDir);
 
   for (let info of pdfPathInfo) {
-    let neededDir = info.fileNameWithExt.replace(".pdf", "").replace(" ", "-");
+    let neededDir = info.fileNameWithExt
+      .replace(/\.pdf/, "")
+      .replace(/\s/g, "-")
+      .replace(/%/g, "-");
     let dirNameExists;
     let count = 0;
     let dataDir;
@@ -86,7 +89,9 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
       dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
       const postFix = dirNameExists ? "_" + count : "";
       neededDir = dirNameExists ? neededDir + postFix : neededDir;
-      if (count > 100) debugger
+      console.log(neededDir);
+
+      if (count > 100) debugger;
     } while (dirNameExists);
 
     await fs.ensureDir(path.join(pdfRootDir, neededDir));
@@ -130,7 +135,13 @@ export const preprocessPdfs = (
   for (let dir of pdfDirs) {
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
-    const pdf = await pdfjs.getDocument(pdfPath);
+    let pdf
+    try {
+      pdf = await pdfjs.getDocument(pdfPath);
+    } catch (err) {
+      console.log(err)
+      debugger
+    }
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
 
     await existsElseMake(

@@ -1,21 +1,44 @@
-import { dispatch, getState } from "./createStore";
-import { makePdfSegmentViewbox } from "./creators";
-import { NestedPartial } from "../renderer/utils";
+import fs = require("fs-extra");
+import os = require("os");
+import path = require("path");
+import { listPdfs } from "../renderer/io";
+var iconv = require('iconv-lite');
 
-// console.log("init", getState());
+const doIt = async () => {
+    const pdfRootDir = 'C:\\Users\\merha\\Desktop'
+    const pdfPathInfo = await listPdfs(pdfRootDir)
+    let neededDir = pdfPathInfo[0].fileNameWithExt
+    .replace(/\.pdf/, "")
+    .replace(/\s/g, "-")
+    .replace(/%/g, "-");
+    
+    // console.log('asdf', str, neededDir)
+    await fs.ensureDir(path.join(pdfRootDir, neededDir));
+    await fs.move(
+      pdfPathInfo[0].fullFilePath,
+      path.join(path.join(pdfRootDir, neededDir), "./" + neededDir + ".pdf")
+    );
+}
+doIt()
 
-const vbs = [...Array(10)].map(x => makePdfSegmentViewbox());
-const vb = makePdfSegmentViewbox();
-const vb2 = makePdfSegmentViewbox();
+// import { dispatch, getState } from "./createStore";
+// import { makePdfSegmentViewbox } from "./creators";
+// import { NestedPartial } from "../renderer/utils";
 
-// dispatch.graph.addBatch({
-//   nodes: vbs.slice(0, 2)
-// });
-console.time('add batch')
-dispatch.graph.addBatch({nodes: [vbs]})
-dispatch.graph.toggleSelections({selectedNodes: [vbs[0].id]})
+// // console.log("init", getState());
 
-console.timeEnd('add batch')
+// const vbs = [...Array(10)].map(x => makePdfSegmentViewbox());
+// const vb = makePdfSegmentViewbox();
+// const vb2 = makePdfSegmentViewbox();
+
+// // dispatch.graph.addBatch({
+// //   nodes: vbs.slice(0, 2)
+// // });
+// console.time('add batch')
+// dispatch.graph.addBatch({nodes: [vbs]})
+// dispatch.graph.toggleSelections({selectedNodes: [vbs[0].id]})
+
+// console.timeEnd('add batch')
 
 // const updates = vbs
 //   .slice(0, 300)

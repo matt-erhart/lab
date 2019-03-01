@@ -20,7 +20,7 @@ import PageCanvas from "./PageCanvas";
 import PageText from "./PageText";
 import PageSvg from "./PageSvg";
 import memoizeOne from "memoize-one";
-
+import { oc } from "ts-optchain";
 import {
   flatten,
   midPoint,
@@ -85,7 +85,8 @@ const PdfViewerDefaults = {
       top: 110,
       left: 110,
       width: "100%" as number | string | undefined,
-      height: "100%" as number | string | undefined
+      height: "100%" as number | string | undefined,
+      scale: 1
     }
   },
   state: {
@@ -140,13 +141,14 @@ class PdfViewer extends React.Component<
   typeof PdfViewerDefaults.state
 > {
   static defaultProps = PdfViewerDefaults.props;
-  state = PdfViewerDefaults.state;
+  state = {...PdfViewerDefaults.state, scale: oc(this.props.viewBox).scale(1)}
   scrollRef = React.createRef<HTMLDivElement>();
 
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
   ) {
+
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
@@ -186,8 +188,7 @@ class PdfViewer extends React.Component<
   async componentDidMount() {
     await this.loadFiles();
     const { left, top } = this.props.viewBox;
-
-    // this.scrollRef.current.scrollTo(left, top);
+    this.scrollRef.current.scrollTo(left, top);
   }
 
   loadFiles = async () => {
@@ -309,12 +310,11 @@ class PdfViewer extends React.Component<
     // note we save with scale = 1
     const vb = makePdfSegmentViewbox(
       {
-        ...{
-          left: left,
-          top: top,
-          width: width,
-          height: height
-        },
+        left: left,
+        top: top,
+        width: width,
+        height: height,
+        scale,
         pageNumber,
         pdfDir: this.props.pathInfo.pdfDir
       },
@@ -324,7 +324,7 @@ class PdfViewer extends React.Component<
     const linkToPdf = makeLink(source, vb, { type: "more" });
 
     //10ms update with just a div
-    this.props.addBatch({ nodes: [vb], links: [linkToPdf] }); 
+    this.props.addBatch({ nodes: [vb], links: [linkToPdf] });
     this.props.toggleSelections({ selectedNodes: [vb.id], clearFirst: true });
   };
 
@@ -332,16 +332,17 @@ class PdfViewer extends React.Component<
     return this.state.viewboxes
       .filter(v => v.data.pageNumber === pageNumber)
       .map(vb => {
-        const { left, top, width, height } = vb.data;
+        const { left, top, width, height, scale: scaleAtCapture } = vb.data;        
         // const { scale } = this.state;
         // todo update on scale
         return {
           ...vb,
           data: {
-            left: left * scale,
-            top: top * scale,
-            width: width * scale,
-            height: height * scale
+            left: (left / scaleAtCapture) * this.state.scale,
+            top: (top / scaleAtCapture) * this.state.scale,
+            width: (width / scaleAtCapture) * this.state.scale,
+            height: (height / scaleAtCapture) * this.state.scale,
+            scale: scaleAtCapture
           }
         };
       });
@@ -370,7 +371,7 @@ class PdfViewer extends React.Component<
                   pageOfText={page.text}
                   // height={height}
                 /> */}
-        
+
           <PageSvg
             // scale={this.state.scale}
             key={"svg-" + page.pageNumber}

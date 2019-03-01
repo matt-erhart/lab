@@ -174,12 +174,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           {pdfDir.length > 0 && (
             <PdfViewer
               pathInfo={{ pdfRootDir, pdfDir }}
-              pageNumbersToLoad={[]}
+              pageNumbersToLoad={[1]}
               viewBox={{
                 left: 107.148 - 20,
                 top: 490.84180000000083 - 20,
                 width: "50%",
-                height: "100%"
+                height: "100%",
+                scale: 2
               }}
             />
           )}
@@ -195,11 +196,14 @@ const ConnectedApp = connect(
 )(_App);
 
 import KonvaTest from "./KonvaTest";
+import { Tooltip } from "./Tooltip";
 class App extends React.Component {
+  refEl = React.createRef()
   render() {
     return (
       <Provider store={store}>
-        <ConnectedApp />
+        {/* <ConnectedApp /> */}
+        <Tooltip/>
       </Provider>
     );
   }

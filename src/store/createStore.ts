@@ -230,7 +230,7 @@ const saveToJson = {
       // if need perf: requestidealcallback if window
       // todo promises can race and corrupt file.
       console.time("write to disk");
-      jsonfile.writeFileSync("./state.json", store.getState(), { spaces: 2 });
+      jsonfile.writeFileSync(path.join(pdfRootDir, "state.json"), store.getState(), { spaces: 2 });
       console.timeEnd("write to disk");
     }
     return result;

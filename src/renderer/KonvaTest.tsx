@@ -35,7 +35,7 @@ const AppDefaults = {
       x: number;
       y: number;
       data: any;
-      style: {}
+      style: {};
     },
     hoveredDataType: "" as NodeDataTypes | "",
     canvasSize: { width: 3000, height: 3000 },
@@ -70,6 +70,7 @@ export class App extends React.Component<
   typeof AppDefaults.state
 > {
   canvasRef = React.createRef<HTMLDivElement>();
+  scrollRef = React.createRef<HTMLDivElement>();
   stage: konva.Stage;
   state = AppDefaults.state;
   nodes: { [id: string]: Nodes };
@@ -156,8 +157,7 @@ export class App extends React.Component<
       const line = new Konva.Line({ id: link.id, ...(link.style as any) });
       this.linkLayer.add(line);
     });
-    this.nodeLayer.on("dragmove dragend", (e) => {
-      
+    this.nodeLayer.on("dragmove dragend", e => {
       this.setState({ portal: null, hoveredDataType: "" });
       if (e.type === "dragmove") {
         const _ = updateLinks(this.props.links, this.nodeLayer, this.linkLayer)(
@@ -271,7 +271,7 @@ export class App extends React.Component<
           // todo combined line and circle cases
           const id = e.target.getAttrs().id;
           const alreadySelected = this.props.selectedLinks.includes(id);
-          const clickedLink = this.linkLayer.findOne("#" + id) as konva.Line
+          const clickedLink = this.linkLayer.findOne("#" + id) as konva.Line;
           if (!alreadySelected) {
             clickedLink.shadowEnabled(true).setAttrs({
               shadowColor: "blue",
@@ -289,7 +289,7 @@ export class App extends React.Component<
       if (button === "left" && e.target.getClassName() === "Circle") {
         const id = e.target.getAttrs().id;
         const isSelected = this.props.selectedNodes.includes(id);
-        const clickedNode = this.nodeLayer.findOne("#" + id) as konva.Circle
+        const clickedNode = this.nodeLayer.findOne("#" + id) as konva.Circle;
         if (!isSelected) {
           if (clickedNode)
             clickedNode.shadowEnabled(true).setAttrs({
@@ -339,7 +339,7 @@ export class App extends React.Component<
     const { dx, dy } = this.state.scroll;
     return (
       <>
-        <ScrollContainer onScroll={this.onScroll}>
+        <ScrollContainer onScroll={this.onScroll} ref={this.scrollRef}>
           <div
             style={{
               width: this.state.canvasSize.width,
@@ -390,13 +390,15 @@ export class App extends React.Component<
             </Portal>
           )}
         {this.state.hoveredDataType === "pdf.segment.viewbox" && (
-          <Portal>
+          <PopupPortal
+            leftTop={{ left: this.state.portal.x, top: this.state.portal.y }}
+            boundariesElement={this.scrollRef.current}
+          >
             <div
               style={{
-                position: "absolute",
-                top: this.state.portal.y,
-                left: this.state.portal.x,
-                backgroundColor: "lightgrey"
+                width: this.state.portal.data.width + 100,
+                height: this.state.portal.data.height + 100,
+                backgroundColor: "grey"
               }}
             >
               <PdfViewer
@@ -406,14 +408,15 @@ export class App extends React.Component<
                 }}
                 pageNumbersToLoad={[this.state.portal.data.pageNumber]}
                 viewBox={{
-                  left: this.state.portal.data.left - 20,
-                  top: this.state.portal.data.top - 20,
-                  width: this.state.portal.data.width + 40,
-                  height: this.state.portal.data.height + 40
+                  left: this.state.portal.data.left - 50,
+                  top: this.state.portal.data.top - 50,
+                  width: this.state.portal.data.width + 100,
+                  height: this.state.portal.data.height + 100,
+                  scale: this.state.portal.data.scale
                 }}
               />
             </div>
-          </Portal>
+          </PopupPortal>
         )}
       </>
     );
