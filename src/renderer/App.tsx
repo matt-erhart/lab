@@ -198,12 +198,25 @@ const ConnectedApp = connect(
 import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
 class App extends React.Component {
-  refEl = React.createRef()
+  refEl = React.createRef();
+  state = { x: NaN, y: NaN };
   render() {
     return (
       <Provider store={store}>
         {/* <ConnectedApp /> */}
-        <Tooltip/>
+        <div
+          style={{
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "lightgrey"
+          }}
+          onClick={e => {
+            this.setState({ x: e.screenX, y: e.screenY });
+          }}
+        >
+          stuff
+        </div>
+        <Tooltip mouseX={this.state.x} mouseY={this.state.y} />
       </Provider>
     );
   }

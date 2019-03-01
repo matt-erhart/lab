@@ -4,6 +4,9 @@ add in a pdf with 37 pages and it's more like 200ms per dispatch, so
 need to prevent rerender of other svg pages
 diy popper that minimizes overlap of ref, mouse, and boundary
 
+# tours
+https://reactour.js.org
+
 # npm graphs 
 https://github.com/levelgraph/levelgraph 1200 # easy save to disk 3x slower than graphology for neighbors
 https://github.com/graphology/graphology#readme 200 # 3x faster than levelgraph for neighbors
