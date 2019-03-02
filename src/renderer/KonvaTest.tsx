@@ -18,6 +18,8 @@ import { DeepPartial } from "redux";
 import PopupPortal from "./PopupPortal";
 import { Portal } from "./Portal";
 import PdfViewer from "./PdfViewer";
+import { Tooltip } from "./Tooltip";
+import { oc } from "ts-optchain";
 
 const ScrollContainer = styled.div`
   width: calc(100% - 22px);
@@ -34,7 +36,15 @@ const AppDefaults = {
       id: string;
       x: number;
       y: number;
-      data: any;
+      data: {
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+        scale: number;
+        pdfDir: string;
+        pageNumber: number;
+      };
       style: {};
     },
     hoveredDataType: "" as NodeDataTypes | "",
@@ -158,7 +168,7 @@ export class App extends React.Component<
       this.linkLayer.add(line);
     });
     this.nodeLayer.on("dragmove dragend", e => {
-      this.setState({ portal: null, hoveredDataType: "" });
+      this.setState({ hoveredDataType: "" });
       if (e.type === "dragmove") {
         const _ = updateLinks(this.props.links, this.nodeLayer, this.linkLayer)(
           e as konva.KonvaEventObject<DragEvent>
@@ -196,24 +206,29 @@ export class App extends React.Component<
       }
       if (e.type === "mouseover") {
         const { clientX: x, clientY: y } = e.evt as any;
-        this.setState({
+        const newState = {
           portal: {
             id,
             type: nodeType,
             x,
-            y: y + 30,
+            y,
             data: this.props[nodeType][id].data,
             style: this.props[nodeType][id].style
           },
           hoveredDataType: this.props[nodeType][id].data.type
-        });
+        };
+        this.setState(newState);
+        console.log("set hoveredDataType", newState);
       } else {
-        this.setState({ portal: null, hoveredDataType: "" });
+        console.log("clearing hoveredDataType");
+        this.setState({ hoveredDataType: "" });
       }
     });
 
     this.stage.on("click dblclick", e => {
-      this.setState({ portal: null, hoveredDataType: "" });
+      // console.log("clearing hoveredDataType");
+
+      this.setState({ hoveredDataType: "" });
       const coords = this.stage.getPointerPosition();
       const { dx, dy } = this.state.scroll;
       const { x, y } = { x: coords.x + dx, y: coords.y + dy };
@@ -337,6 +352,7 @@ export class App extends React.Component<
 
   render() {
     const { dx, dy } = this.state.scroll;
+
     return (
       <>
         <ScrollContainer onScroll={this.onScroll} ref={this.scrollRef}>
@@ -354,74 +370,132 @@ export class App extends React.Component<
           </div>
         </ScrollContainer>
 
-        {this.state.hoveredDataType.length > 0 &&
-          this.state.hoveredDataType !== "pdf.segment.viewbox" && (
-            <Portal>
-              <div
-                style={{
-                  position: "absolute",
-                  top: this.state.portal.y,
-                  left: this.state.portal.x,
-                  backgroundColor: "lightgrey"
-                }}
-              >
-                <b>Data</b>
-                {this.state.portal.data &&
-                  Object.keys(this.state.portal.data).map(key => {
-                    const val = this.state.portal.data[key];
-                    return (
-                      <div key={key}>
-                        {key}: {val}
-                      </div>
-                    );
-                  })}
-                <hr />
-                <b>Default Style</b>
-                {this.state.portal.style &&
-                  Object.keys(this.state.portal.style).map(key => {
-                    const val = this.state.portal.style[key];
-                    return (
-                      <div key={key}>
-                        {key}: {val}
-                      </div>
-                    );
-                  })}
-              </div>
-            </Portal>
-          )}
-        {this.state.hoveredDataType === "pdf.segment.viewbox" && (
-          <PopupPortal
-            leftTop={{ left: this.state.portal.x, top: this.state.portal.y }}
-            boundariesElement={this.scrollRef.current}
-          >
-            <div
-              style={{
-                width: this.state.portal.data.width + 100,
-                height: this.state.portal.data.height + 100,
-                backgroundColor: "grey"
-              }}
+        {/* <Tooltip
+          mouseX={oc(this.state.portal).x(NaN)}
+          mouseY={oc(this.state.portal).y(NaN)}
+          width={500}
+          height={500}
+          open={
+            !["", "pdf.segment.viewbox"].includes(this.state.hoveredDataType)
+          }
+        >
+            <b>Data</b>
+            {oc(this.state.portal).data() &&
+              Object.keys(this.state.portal.data).map(key => {
+                const val = this.state.portal.data[key];
+                return (
+                  <div key={key}>
+                    {key}: {val}
+                  </div>
+                );
+              })}
+            <hr />
+            <b>Default Style</b>
+            {oc(this.state.portal).style() &&
+              Object.keys(this.state.portal.style).map(key => {
+                const val = this.state.portal.style[key];
+                return (
+                  <div key={key}>
+                    {key}: {val}
+                  </div>
+                );
+              })}
+        </Tooltip> */}
+        {["", "pdf.segment.viewbox"].includes(this.state.hoveredDataType) &&
+          oc(this.state.portal).data.width(0) > 0 && (
+            <Tooltip
+              mouseX={oc(this.state.portal).x(NaN)}
+              mouseY={oc(this.state.portal).y(NaN)}
+              width={oc(this.state.portal).data.width(0) + 100}
+              height={oc(this.state.portal).data.height(0) + 100}
+              close={this.state.hoveredDataType === ""}
             >
               <PdfViewer
                 pathInfo={{
                   pdfRootDir: this.props.pdfRootDir,
-                  pdfDir: this.state.portal.data.pdfDir
+                  pdfDir: oc(this.state.portal).data.pdfDir()
                 }}
-                pageNumbersToLoad={[this.state.portal.data.pageNumber]}
+                pageNumbersToLoad={[oc(this.state.portal).data.pageNumber()]}
                 viewBox={{
-                  left: this.state.portal.data.left - 50,
-                  top: this.state.portal.data.top - 50,
-                  width: this.state.portal.data.width + 100,
-                  height: this.state.portal.data.height + 100,
-                  scale: this.state.portal.data.scale
+                  left: oc(this.state.portal).data.left() - 50,
+                  top: oc(this.state.portal).data.top() - 50,
+                  width: oc(this.state.portal).data.width() + 100,
+                  height: oc(this.state.portal).data.height() + 100,
+                  scale: oc(this.state.portal).data.scale()
                 }}
               />
-            </div>
-          </PopupPortal>
-        )}
+            </Tooltip>
+          )}
       </>
     );
   }
 }
+
+const ViewboxToolTip = (portalData, hoveredDataType, pdfRootDir) => {
+  const {
+    x,
+    y,
+    data: { left, top, width, height, pdfDir, pageNumber, scale }
+  } = portalData;
+  const expandBy = 100;
+  return (
+    <Tooltip
+      mouseX={x}
+      mouseY={y}
+      width={width + expandBy}
+      height={height + expandBy}
+      close={hoveredDataType === ""}
+    >
+      <PdfViewer
+        pathInfo={{
+          pdfRootDir,
+          pdfDir
+        }}
+        pageNumbersToLoad={[pageNumber]}
+        viewBox={{
+          left: left - expandBy / 2,
+          top: top - expandBy / 2,
+          width: width + expandBy,
+          height: height + expandBy,
+          scale
+        }}
+      />
+    </Tooltip>
+  );
+};
+
+// const TooltipForDataType = (dataType: NodeDataTypes, data) => {
+
+//     <Tooltip
+//       mouseX={oc(this.state.portal).x(NaN)}
+//       mouseY={oc(this.state.portal).y(NaN)}
+//       width={500}
+//       height={500}
+//     >
+//       <b>Data</b>
+//       {oc(this.state.portal).data() &&
+//         Object.keys(this.state.portal.data).map(key => {
+//           const val = this.state.portal.data[key];
+//           return (
+//             <div key={key}>
+//               {key}: {val}
+//             </div>
+//           );
+//         })}
+//       <hr />
+//       <b>Default Style</b>
+//       {oc(this.state.portal).style() &&
+//         Object.keys(this.state.portal.style).map(key => {
+//           const val = this.state.portal.style[key];
+//           return (
+//             <div key={key}>
+//               {key}: {val}
+//             </div>
+//           );
+//         })}
+//     </Tooltip>
+//   )}
+// }
 
 export default connect(
   mapState,

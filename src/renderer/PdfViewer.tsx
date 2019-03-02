@@ -87,7 +87,8 @@ const PdfViewerDefaults = {
       width: "100%" as number | string | undefined,
       height: "100%" as number | string | undefined,
       scale: 1
-    }
+    },
+    showLineBoxes: false
   },
   state: {
     scale: 2, // todo scale
@@ -394,8 +395,6 @@ class PdfViewer extends React.Component<
 
   render() {
     const { width, height } = this.props.viewBox;
-    console.log("render pdfviewer");
-
     // todo: set height and width and then scrollto
     return (
       <div

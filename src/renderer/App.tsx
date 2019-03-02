@@ -203,8 +203,8 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {/* <ConnectedApp /> */}
-        <div
+        <ConnectedApp />
+        {/* <div
           style={{
             width: "100vw",
             height: "100vh",
@@ -215,8 +215,7 @@ class App extends React.Component {
           }}
         >
           stuff
-        </div>
-        <Tooltip mouseX={this.state.x} mouseY={this.state.y} />
+        </div> */}
       </Provider>
     );
   }
