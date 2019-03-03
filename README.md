@@ -1,3 +1,6 @@
+
+
+
 # render perf notes
 redux update is ~5ms per dispatch with just a div button + graph
 add in a pdf with 37 pages and it's more like 200ms per dispatch, so

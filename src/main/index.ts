@@ -118,6 +118,7 @@ function createMainWindow() {
   
     // Edit menu
     template[1].submenu.push(
+      //@ts-ignore
       { type: 'separator' },
       {
         label: 'Speech',
@@ -137,7 +138,7 @@ function createMainWindow() {
       { role: 'front' }
     ]
   }
-  
+  //@ts-ignore
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
   return window;

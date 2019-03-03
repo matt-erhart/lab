@@ -141,7 +141,7 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
 export interface LinkBase {
   id: string;
   data: {
-    type: "unset" | "more" | "similar";
+    type: "unset" | "more" | "similar" | string;
   };
   style: {};
   meta: NodeMeta;
@@ -152,7 +152,7 @@ export interface LinkBase {
 
 const LinkDefaults = {
   id: "",
-  data: { type: "unset" },
+  data: { type: "" },
   style: {
     id: "",
     points: [10, 10, 20, 20],
@@ -194,7 +194,7 @@ const UserMediaTextDefaults = {
   } as Partial<LineConfig>,
 }
 export type UserMediaText = typeof UserMediaTextDefaults
-export const makeUserMediaText = (text, style) => {
+export const makeUserMediaText = (text='', style={}) => {
   const id = uuidv1();
   return {
     ...UserMediaTextDefaults,

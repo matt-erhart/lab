@@ -156,34 +156,37 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       value: node,
       label: node.data.pdfDir
     }));
+    console.log(pdfNodes)
+    if (pdfNodes.length === 0) {
+      return <h2>Add some pdfs to your selected folder and view->reload</h2>
+    } 
 
     return (
       <ViewPortContainer>
         <NavBar>
           <div style={{ flex: 1 }}>
-            {pdfNodes.length > 0 && (
               <Select
                 style={this.styleFn}
                 options={fileOptions}
                 onChange={this.setPathInfo}
               />
-            )}
           </div>
         </NavBar>
         <MainContainer>
-          {pdfDir.length > 0 && (
-            <PdfViewer
-              pathInfo={{ pdfRootDir, pdfDir }}
-              pageNumbersToLoad={[1]}
-              viewBox={{
-                left: 107.148 - 20,
-                top: 490.84180000000083 - 20,
-                width: "50%",
-                height: "100%",
-                scale: 2
-              }}
-            />
-          )}
+            {pdfDir.length > 0 && (
+              <PdfViewer
+                pathInfo={{ pdfRootDir, pdfDir }}
+                pageNumbersToLoad={[1]}
+                viewBox={{
+                  left: 107.148 - 20,
+                  top: 490.84180000000083 - 20,
+                  width: "50vw",
+                  height: "100%",
+                  scale: 2
+                }}
+              />
+            )}
+
           <KonvaTest />
         </MainContainer>
       </ViewPortContainer>

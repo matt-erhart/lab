@@ -41,7 +41,12 @@ let defaultGraph = {
 
 const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
 type state = { app: typeof defaultApp; graph: typeof defaultGraph };
-const savedModelsJson = jsonfile.readFileSync(stateJsonPath) as state;
+let savedModelsJson 
+try {
+  savedModelsJson = jsonfile.readFileSync(stateJsonPath) as state;
+} catch (err){
+  savedModelsJson = {}
+}
 
 export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,

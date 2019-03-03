@@ -11,7 +11,8 @@ import {
   aNode,
   aLink,
   makeLink,
-  NodeDataTypes
+  NodeDataTypes,
+  makeUserMediaText
 } from "../store/creators";
 import { connect } from "react-redux";
 import { DeepPartial } from "redux";
@@ -20,33 +21,38 @@ import { Portal } from "./Portal";
 import PdfViewer from "./PdfViewer";
 import { Tooltip } from "./Tooltip";
 import { oc } from "ts-optchain";
+import produce from "immer";
+import { Formik } from "formik";
 
 const ScrollContainer = styled.div`
-  width: calc(100% - 22px);
+  min-width: calc(50vw - 22px);
   overflow: auto;
   margin: 10;
   border: 1px solid grey;
+  flex: 1;
 `;
 
 const AppDefaults = {
   props: {},
   state: {
-    portal: {} as {
-      type: "nodes" | "links" | string;
+    portals: [] as {
       id: string;
+      type: "nodes" | "links";
       x: number;
       y: number;
       data: {
-        width: number;
-        height: number;
-        left: number;
-        top: number;
-        scale: number;
-        pdfDir: string;
-        pageNumber: number;
+        type?: string;
+        width?: number;
+        height?: number;
+        left?: number;
+        top?: number;
+        scale?: number;
+        pdfDir?: string;
+        pageNumber?: number;
+        text?: string;
       };
       style: {};
-    },
+    }[],
     hoveredDataType: "" as NodeDataTypes | "",
     canvasSize: { width: 3000, height: 3000 },
     scroll: { dx: 0, dy: 0 }
@@ -60,7 +66,8 @@ const mapState = (state: iRootState) => ({
   selectedNodes: state.graph.selectedNodes,
   selectedLinks: state.graph.selectedLinks,
   patches: state.graph.patches,
-  pdfRootDir: state.app.current.pdfRootDir
+  pdfRootDir: state.app.current.pdfRootDir,
+  pdfDir: state.app.current.pdfDir
 });
 
 const mapDispatch = ({
@@ -132,6 +139,29 @@ export class App extends React.Component<
         }
       });
     }
+
+    if (prevProps.pdfDir !== this.props.pdfDir) {
+      //@ts-ignore
+      const current = this.nodeLayer.findOne("#" + this.props.pdfDir);
+      const prev = this.nodeLayer.findOne("#" + prevProps.pdfDir);
+      
+      //@ts-ignore
+      if (prev)
+        (prev as any).shadowEnabled(false);
+
+      //@ts-ignore
+      if (current)
+        (current as any)
+          //@ts-ignore
+          .shadowEnabled(true)
+          .setAttrs({
+            shadowColor: "yellow",
+            shadowBlur: 10,
+            shadowOffset: { x: 0, y: -5 },
+            shadowOpacity: 1
+          } as LineConfig);
+      this.nodeLayer.draw();
+    }
   }
 
   componentDidMount() {
@@ -163,18 +193,31 @@ export class App extends React.Component<
       );
     });
 
+    const n = this.nodeLayer.findOne("#" + this.props.pdfDir);
+    //@ts-ignore
+
+    if (n)
+      (n as any).shadowEnabled(true).setAttrs({
+        shadowColor: "yellow",
+        shadowBlur: 10,
+        shadowOffset: { x: 0, y: -5 },
+        shadowOpacity: 1
+      } as LineConfig);
+    this.nodeLayer.draw();
+
     Object.values(this.props.links).forEach(link => {
       const line = new Konva.Line({ id: link.id, ...(link.style as any) });
       this.linkLayer.add(line);
     });
     this.nodeLayer.on("dragmove dragend", e => {
       this.setState({ hoveredDataType: "" });
+      //@ts-ignore
       if (e.type === "dragmove") {
         const _ = updateLinks(this.props.links, this.nodeLayer, this.linkLayer)(
           e as konva.KonvaEventObject<DragEvent>
         );
+        //@ts-ignore
       } else if (e.type === "dragend") {
-        console.log("dragend");
         const updated = updateLinks(
           this.props.links,
           this.nodeLayer,
@@ -191,6 +234,7 @@ export class App extends React.Component<
       let node = e.target;
       let nodeType = "";
       let id = e.target.getAttrs().id;
+      //@ts-ignore
       if (e.type === "mouseover") {
         node.strokeWidth(10);
       } else {
@@ -204,23 +248,28 @@ export class App extends React.Component<
         this.linkLayer.draw();
         nodeType = "links";
       }
+      //@ts-ignore
       if (e.type === "mouseover") {
-        const { clientX: x, clientY: y } = e.evt as any;
+        const { clientX, clientY } = e.evt as any;
+
         const newState = {
-          portal: {
-            id,
-            type: nodeType,
-            x,
-            y,
-            data: this.props[nodeType][id].data,
-            style: this.props[nodeType][id].style
-          },
-          hoveredDataType: this.props[nodeType][id].data.type
+          id,
+          type: nodeType as "nodes" | "links",
+          x: clientX,
+          y: clientY,
+          data: this.props[nodeType][id].data,
+          style: this.props[nodeType][id].style
         };
-        this.setState(newState);
-        console.log("set hoveredDataType", newState);
+        this.setState(state => {
+          return produce(state, draft => {
+            // todo debounce this i.e. don't insta popup
+            if (draft.portals.findIndex(p => p.id === id) < 0) {
+              draft.portals.push(newState);
+            }
+            draft.hoveredDataType = this.props[nodeType][id].data.type;
+          });
+        });
       } else {
-        console.log("clearing hoveredDataType");
         this.setState({ hoveredDataType: "" });
       }
     });
@@ -233,10 +282,11 @@ export class App extends React.Component<
       const { dx, dy } = this.state.scroll;
       const { x, y } = { x: coords.x + dx, y: coords.y + dy };
       const button = ["left", "middle", "right"][(e.evt as any).button];
+      //@ts-ignore
       if (button === "left" && e.type === "dblclick") {
         if (e.target.getType() === "Stage") {
           // ADD NODE
-          let newNode = makePdfSegmentViewbox();
+          let newNode = makeUserMediaText();
           newNode.style = { ...newNode.style, x, y };
           this.props.addBatch({ nodes: [newNode] });
           // addNodeToLayer(newNode, this.nodeLayer, newNode.style);
@@ -250,17 +300,19 @@ export class App extends React.Component<
           linksToDelete.forEach(linkId => {
             this.linkLayer.findOne("#" + linkId).destroy();
           });
-
+          this.onClosePortal(id);
           this.props.removeBatch({ links: linksToDelete, nodes: [id] });
           this.linkLayer.draw();
           this.nodeLayer.draw();
         } else if (e.target.getClassName() === "Line") {
           const linkId = e.target.getAttrs().id;
+          this.onClosePortal(linkId);
           this.linkLayer.findOne("#" + linkId).destroy();
           this.props.removeBatch({ links: [linkId] });
           this.linkLayer.draw();
         }
       }
+      //@ts-ignore
       if (button === "left" && e.type === "click") {
         // deselect all
         if (e.target.getType() === "Stage") {
@@ -337,6 +389,16 @@ export class App extends React.Component<
     this.linkLayer.draw();
   }
 
+  onClosePortal = id => {
+    this.setState(state => {
+      const newState = produce(state, draft => {
+        draft.portals.splice(draft.portals.findIndex(p => p.id === id), 1);
+        return draft;
+      });
+      return newState;
+    });
+  };
+
   onScroll = e => {
     // todo fast scrolling ghosting, maybe css transition?
     // or just put them on one layer
@@ -369,133 +431,169 @@ export class App extends React.Component<
             />
           </div>
         </ScrollContainer>
-
-        {/* <Tooltip
-          mouseX={oc(this.state.portal).x(NaN)}
-          mouseY={oc(this.state.portal).y(NaN)}
-          width={500}
-          height={500}
-          open={
-            !["", "pdf.segment.viewbox"].includes(this.state.hoveredDataType)
-          }
-        >
-            <b>Data</b>
-            {oc(this.state.portal).data() &&
-              Object.keys(this.state.portal.data).map(key => {
-                const val = this.state.portal.data[key];
-                return (
-                  <div key={key}>
-                    {key}: {val}
-                  </div>
-                );
-              })}
-            <hr />
-            <b>Default Style</b>
-            {oc(this.state.portal).style() &&
-              Object.keys(this.state.portal.style).map(key => {
-                const val = this.state.portal.style[key];
-                return (
-                  <div key={key}>
-                    {key}: {val}
-                  </div>
-                );
-              })}
-        </Tooltip> */}
-        {["", "pdf.segment.viewbox"].includes(this.state.hoveredDataType) &&
-          oc(this.state.portal).data.width(0) > 0 && (
-            <Tooltip
-              mouseX={oc(this.state.portal).x(NaN)}
-              mouseY={oc(this.state.portal).y(NaN)}
-              width={oc(this.state.portal).data.width(0) + 100}
-              height={oc(this.state.portal).data.height(0) + 100}
-              close={this.state.hoveredDataType === ""}
-            >
-              <PdfViewer
-                pathInfo={{
-                  pdfRootDir: this.props.pdfRootDir,
-                  pdfDir: oc(this.state.portal).data.pdfDir()
-                }}
-                pageNumbersToLoad={[oc(this.state.portal).data.pageNumber()]}
-                viewBox={{
-                  left: oc(this.state.portal).data.left() - 50,
-                  top: oc(this.state.portal).data.top() - 50,
-                  width: oc(this.state.portal).data.width() + 100,
-                  height: oc(this.state.portal).data.height() + 100,
-                  scale: oc(this.state.portal).data.scale()
-                }}
-              />
-            </Tooltip>
-          )}
+        {oc(this.state.portals).length() > 0 &&
+          this.state.portals.map(portal => {
+            // todo through redux
+            const { x, y } = portal;
+            const defaultSize = { width: 400, height: 200 };
+            let width = oc(portal).data.width();
+            width = width ? width + 100 : defaultSize.width;
+            let height = oc(portal).data.height();
+            height = height ? height + 100 : defaultSize.height;
+            return (
+              <Tooltip
+                key={portal.id}
+                mouseX={x}
+                mouseY={y}
+                width={width}
+                height={height}
+                close={this.state.hoveredDataType === ""}
+                onClose={() => this.onClosePortal(portal.id)}
+              >
+                {oc(portal).data.width() && (
+                  <PdfViewer
+                    pathInfo={{
+                      pdfRootDir: this.props.pdfRootDir,
+                      pdfDir: oc(portal).data.pdfDir()
+                    }}
+                    pageNumbersToLoad={[oc(portal).data.pageNumber()]}
+                    viewBox={{
+                      left: oc(portal).data.left() - 50,
+                      top: oc(portal).data.top() - 50,
+                      width: oc(portal).data.width() + 100,
+                      height: oc(portal).data.height() + 100,
+                      scale: oc(portal).data.scale()
+                    }}
+                  />
+                )}
+                {portal.data.type === "userMedia.text" && (
+                  <Formik
+                    initialValues={{
+                      //@ts-ignore
+                      text: this.props.nodes[portal.id].data.text
+                    }}
+                    onSubmit={(values, actions) => {
+                      this.props.updateBatch({
+                        nodes: [{ id: portal.id, data: { text: values.text } }]
+                      });
+                      actions.setSubmitting(false);
+                    }}
+                    render={props => (
+                      <form onSubmit={props.handleSubmit}>
+                        <textarea
+                          placeholder="Enter some text"
+                          style={{
+                            width: width - 5,
+                            height: height - 5,
+                            fontSize: 20,
+                            fontFamily: "aria"
+                          }}
+                          onChange={props.handleChange}
+                          onMouseLeave={() => {
+                            this.props.updateBatch({
+                              nodes: [
+                                {
+                                  id: portal.id,
+                                  data: { text: props.values.text }
+                                }
+                              ]
+                            });
+                          }}
+                          value={props.values.text}
+                          name="text"
+                        />
+                      </form>
+                    )}
+                  />
+                )}
+                {portal.data.type === "pdf.publication" && (
+                  <Formik
+                    initialValues={{
+                      //@ts-ignore
+                      text: this.props.nodes[portal.id].data.title
+                    }}
+                    onSubmit={(values, actions) => {
+                      this.props.updateBatch({
+                        //@ts-ignore
+                        nodes: [{ id: portal.id, data: { title: values.text } }]
+                      });
+                      actions.setSubmitting(false);
+                    }}
+                    render={props => (
+                      <form onSubmit={props.handleSubmit}>
+                        <textarea
+                          placeholder="Enter Paper Title"
+                          style={{
+                            width: width - 5,
+                            height: height - 5,
+                            fontSize: 20,
+                            fontFamily: "aria"
+                          }}
+                          onChange={props.handleChange}
+                          onMouseLeave={() => {
+                            this.props.updateBatch({
+                              nodes: [
+                                {
+                                  id: portal.id,
+                                  //@ts-ignore
+                                  data: { title: props.values.text }
+                                }
+                              ]
+                            });
+                          }}
+                          value={props.values.text}
+                          name="text"
+                        />
+                      </form>
+                    )}
+                  />
+                )}
+                {portal.type === "links" && (
+                  <Formik
+                    initialValues={{
+                      text: this.props.links[portal.id].data.type
+                    }}
+                    onSubmit={(values, actions) => {
+                      this.props.updateBatch({
+                        nodes: [{ id: portal.id, data: { type: values.text } }]
+                      });
+                      actions.setSubmitting(false);
+                    }}
+                    render={props => (
+                      <form onSubmit={props.handleSubmit}>
+                        <textarea
+                          placeholder="Enter Link Type"
+                          style={{
+                            width: width - 5,
+                            height: height - 5,
+                            fontSize: 20,
+                            fontFamily: "aria"
+                          }}
+                          onChange={props.handleChange}
+                          onMouseLeave={() => {
+                            this.props.updateBatch({
+                              links: [
+                                {
+                                  id: portal.id,
+                                  data: { type: props.values.text }
+                                }
+                              ]
+                            });
+                          }}
+                          value={props.values.text}
+                          name="text"
+                        />
+                      </form>
+                    )}
+                  />
+                )}
+              </Tooltip>
+            );
+          })}
       </>
     );
   }
 }
-
-const ViewboxToolTip = (portalData, hoveredDataType, pdfRootDir) => {
-  const {
-    x,
-    y,
-    data: { left, top, width, height, pdfDir, pageNumber, scale }
-  } = portalData;
-  const expandBy = 100;
-  return (
-    <Tooltip
-      mouseX={x}
-      mouseY={y}
-      width={width + expandBy}
-      height={height + expandBy}
-      close={hoveredDataType === ""}
-    >
-      <PdfViewer
-        pathInfo={{
-          pdfRootDir,
-          pdfDir
-        }}
-        pageNumbersToLoad={[pageNumber]}
-        viewBox={{
-          left: left - expandBy / 2,
-          top: top - expandBy / 2,
-          width: width + expandBy,
-          height: height + expandBy,
-          scale
-        }}
-      />
-    </Tooltip>
-  );
-};
-
-// const TooltipForDataType = (dataType: NodeDataTypes, data) => {
-
-//     <Tooltip
-//       mouseX={oc(this.state.portal).x(NaN)}
-//       mouseY={oc(this.state.portal).y(NaN)}
-//       width={500}
-//       height={500}
-//     >
-//       <b>Data</b>
-//       {oc(this.state.portal).data() &&
-//         Object.keys(this.state.portal.data).map(key => {
-//           const val = this.state.portal.data[key];
-//           return (
-//             <div key={key}>
-//               {key}: {val}
-//             </div>
-//           );
-//         })}
-//       <hr />
-//       <b>Default Style</b>
-//       {oc(this.state.portal).style() &&
-//         Object.keys(this.state.portal.style).map(key => {
-//           const val = this.state.portal.style[key];
-//           return (
-//             <div key={key}>
-//               {key}: {val}
-//             </div>
-//           );
-//         })}
-//     </Tooltip>
-//   )}
-// }
 
 export default connect(
   mapState,
