@@ -66,14 +66,12 @@ const MainContainer = styled.div`
   position: relative;
   display: flex;
 `;
-const { homedir, username } = os.userInfo();
-const pdfRootDir = path.join(homedir, "pdfs");
+
 const AppDefaults = {
   props: {},
   state: { pdfNodes: [] as PdfPublication[] }
 };
 
-// import {pubs} from '@src/constants/pubs'
 const mapState = (state: iRootState) => ({
   pdfDir: state.app.current.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
@@ -88,28 +86,38 @@ const mapDispatch = ({
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
+const processNewPdfs = async (pdfRootDir, nodes) => {
+  const pdfDirs = await setupDirFromPdfs(pdfRootDir);
+
+  const pdfNodes = pdfDirs.map((dir, ix) => {
+    const normDir = path.normalize(dir);
+    const pathParts = normDir.split(path.sep);
+    const fileName = pathParts[pathParts.length - 1];
+    const pdfDir = fileName === "" ? pathParts[pathParts.length - 2] : fileName;
+
+    return makePdfPublication(
+      pdfDir,
+      { pdfDir },
+      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+    );
+  });
+
+  const allNodeIds = Object.keys(nodes);
+  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id));
+  return newPubs;
+};
+
+// todo rename _App
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
 
   async componentDidMount() {
-    const pdfDirs = await setupDirFromPdfs(this.props.pdfRootDir);
-    const pdfNodes = pdfDirs.map((dir, ix) => {
-      const normDir = path.normalize(dir);
-      const pathParts = normDir.split(path.sep);
-      const _fileName = pathParts[pathParts.length - 1];
-      const pdfDir =
-        _fileName === "" ? pathParts[pathParts.length - 2] : _fileName;
 
-      return makePdfPublication(
-        pdfDir,
-        { pdfDir },
-        { x: ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-      );
-    });
-    const allNodeIds = Object.keys(this.props.nodes);
-    const newPubs = pdfNodes.filter(
-      pdfNode => !allNodeIds.includes(pdfNode.id)
+    const newPubs = await processNewPdfs(
+      this.props.pdfRootDir,
+      this.props.nodes
     );
+
     if (newPubs.length > 0) {
       this.props.addBatch({ nodes: newPubs });
       if (this.props.pdfDir === "")
@@ -139,8 +147,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   }
 
-  componentWillUnmount() {}
-
+  //todo delete
   styleFn(provided, state) {
     return { ...provided, minWidth: "200px" };
   }
@@ -156,36 +163,36 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       value: node,
       label: node.data.pdfDir
     }));
-    console.log(pdfNodes)
+
     if (pdfNodes.length === 0) {
-      return <h2>Add some pdfs to your selected folder and view->reload</h2>
-    } 
+      return <h2>Add some pdfs to your selected folder and view->reload</h2>;
+    }
 
     return (
       <ViewPortContainer>
         <NavBar>
           <div style={{ flex: 1 }}>
-              <Select
-                style={this.styleFn}
-                options={fileOptions}
-                onChange={this.setPathInfo}
-              />
+            <Select
+              style={this.styleFn}
+              options={fileOptions}
+              onChange={this.setPathInfo}
+            />
           </div>
         </NavBar>
         <MainContainer>
-            {pdfDir.length > 0 && (
-              <PdfViewer
-                pathInfo={{ pdfRootDir, pdfDir }}
-                pageNumbersToLoad={[1]}
-                viewBox={{
-                  left: 107.148 - 20,
-                  top: 490.84180000000083 - 20,
-                  width: "50vw",
-                  height: "100%",
-                  scale: 2
-                }}
-              />
-            )}
+          {pdfDir.length > 0 && (
+            <PdfViewer
+              pathInfo={{ pdfRootDir, pdfDir }}
+              pageNumbersToLoad={[]}
+              viewBox={{
+                left: 107.148 - 20,
+                top: 490.84180000000083 - 20,
+                width: "50vw",
+                height: "100%",
+                scale: 2
+              }}
+            />
+          )}
 
           <KonvaTest />
         </MainContainer>
@@ -207,18 +214,6 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <ConnectedApp />
-        {/* <div
-          style={{
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "lightgrey"
-          }}
-          onClick={e => {
-            this.setState({ x: e.screenX, y: e.screenY });
-          }}
-        >
-          stuff
-        </div> */}
       </Provider>
     );
   }

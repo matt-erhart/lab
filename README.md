@@ -1,5 +1,4 @@
-
-
+2. node coords cannot be negative
 
 # render perf notes
 redux update is ~5ms per dispatch with just a div button + graph

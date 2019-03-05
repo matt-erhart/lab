@@ -73,8 +73,8 @@ export const makePdfSegmentViewbox = (
     style: {
       id: id,
       type: "circle",
-      x: Math.random() * 200,
-      y: Math.random() * 200,
+      x: Math.random() * 200 + 20,
+      y: Math.random() * 200 + 20,
       fill: "blue",
       draggabled: true,
       radius: 5,
@@ -120,8 +120,8 @@ const PdfPublicationDefaults = {
   },
   style: {
     id: "",
-    x: Math.random() * 200,
-    y: Math.random() * 200,
+    x: Math.random() * 200 + 20,
+    y: Math.random() * 200 + 20,
     fill: "grey",
     stroke: "red"
   },

@@ -135,12 +135,12 @@ export const preprocessPdfs = (
   for (let dir of pdfDirs) {
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
-    let pdf
+    let pdf;
     try {
       pdf = await pdfjs.getDocument(pdfPath);
     } catch (err) {
-      console.log(err)
-      debugger
+      console.log(err);
+      debugger;
     }
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
 

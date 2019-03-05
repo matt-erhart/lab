@@ -142,14 +142,16 @@ class PdfViewer extends React.Component<
   typeof PdfViewerDefaults.state
 > {
   static defaultProps = PdfViewerDefaults.props;
-  state = {...PdfViewerDefaults.state, scale: oc(this.props.viewBox).scale(1)}
+  state = {
+    ...PdfViewerDefaults.state,
+    scale: oc(this.props.viewBox).scale(1)
+  };
   scrollRef = React.createRef<HTMLDivElement>();
 
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
   ) {
-
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
@@ -304,8 +306,9 @@ class PdfViewer extends React.Component<
     const { left, top, width, height } = viewboxCoords;
     const source = this.props.nodes[this.props.pathInfo.pdfDir];
     let { x, y } = source.style as any;
+    const shiftedX = x + Math.random() * 60 - 40;
     const style = {
-      x: x + Math.random() * 60 - 40,
+      x: shiftedX < 20 ? x + 20 + Math.random() * 60 : shiftedX,
       y: y + Math.random() * 60 + 40
     };
     // note we save with scale = 1
@@ -333,7 +336,7 @@ class PdfViewer extends React.Component<
     return this.state.viewboxes
       .filter(v => v.data.pageNumber === pageNumber)
       .map(vb => {
-        const { left, top, width, height, scale: scaleAtCapture } = vb.data;        
+        const { left, top, width, height, scale: scaleAtCapture } = vb.data;
         // const { scale } = this.state;
         // todo update on scale
         return {

@@ -9,18 +9,15 @@ import { NestedPartial } from "../renderer/utils";
 import path = require("path");
 import { oc } from "ts-optchain";
 const settings = require("electron-settings");
-import { existsElseMake } from "../renderer/io";
-// todo add undo/redo by 3rd arg to product
-let patches = [];
-let inversePatches = [];
-const pdfRootDir = settings.get("pdfRootDir");
-console.log("create store", pdfRootDir);
 
+// stored in user/data.
+// todo add userId?
+const pdfRootDir = settings.get("pdfRootDir");
 let defaultApp = {
   current: {
     userId: "",
     pdfDir: "",
-    pdfRootDir: pdfRootDir //C:\\Users\\merha\\pdfs
+    pdfRootDir: pdfRootDir
   },
   settings: {
     appearance: {
@@ -36,16 +33,16 @@ let defaultGraph = {
   links: {} as Links,
   selectedNodes: [] as string[],
   selectedLinks: [] as string[],
-  patches: []
+  patches: [] //todo ts
 };
 
 const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
 type state = { app: typeof defaultApp; graph: typeof defaultGraph };
-let savedModelsJson 
+let savedModelsJson;
 try {
   savedModelsJson = jsonfile.readFileSync(stateJsonPath) as state;
-} catch (err){
-  savedModelsJson = {}
+} catch (err) {
+  savedModelsJson = {};
 }
 
 export const app = createModel({
@@ -206,12 +203,7 @@ export const graph = createModel({
           }
         }
       });
-    },
-    effects: dispatch => ({
-      async saveStateToDisk(_, rootState) {
-        // await jsonfile.writeFile("./state.json", rootState.app);
-      }
-    })
+    }
   }
 });
 
@@ -234,8 +226,13 @@ const saveToJson = {
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
       // todo promises can race and corrupt file.
+      // todo save on idle with cancel
       console.time("write to disk");
-      jsonfile.writeFileSync(path.join(pdfRootDir, "state.json"), store.getState(), { spaces: 2 });
+      jsonfile.writeFileSync(
+        path.join(pdfRootDir, "state.json"),
+        store.getState(),
+        { spaces: 2 }
+      );
       console.timeEnd("write to disk");
     }
     return result;

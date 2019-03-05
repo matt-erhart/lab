@@ -90,8 +90,8 @@ export class App extends React.Component<
   scrollRef = React.createRef<HTMLDivElement>();
   stage: konva.Stage;
   state = AppDefaults.state;
-  nodes: { [id: string]: Nodes };
-  links: { [id: string]: Links };
+  // nodes: { [id: string]: Nodes };
+  // links: { [id: string]: Links };
   nodeLayer: konva.Layer<konva.Node>;
   linkLayer: konva.Layer<konva.Node>;
 
@@ -144,10 +144,9 @@ export class App extends React.Component<
       //@ts-ignore
       const current = this.nodeLayer.findOne("#" + this.props.pdfDir);
       const prev = this.nodeLayer.findOne("#" + prevProps.pdfDir);
-      
+
       //@ts-ignore
-      if (prev)
-        (prev as any).shadowEnabled(false);
+      if (prev) (prev as any).shadowEnabled(false);
 
       //@ts-ignore
       if (current)

@@ -283,8 +283,9 @@ class PageSvg extends React.Component<
         const viewboxId = this.props.selectedNodes[0]; // selected on creation
         const source = this.props.nodes[viewboxId];
         let { x, y } = source.style;
+        const shiftedX = x + Math.random() * 50 - 40
         const style = {
-          x: x + Math.random() * 50 - 40,
+          x: shiftedX < 20 ? 20 + Math.random() * 50 : shiftedX,
           y: y + Math.random() * 50 + 40
         };
 
