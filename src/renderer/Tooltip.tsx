@@ -22,7 +22,8 @@ const TooltipDefaults = {
     translateX: 0,
     translateY: 0,
     dragStart: { x: null, y: null },
-    pin: false
+    pin: false,
+    delayOver: false
   }
 };
 export class Tooltip extends React.Component<
@@ -32,8 +33,12 @@ export class Tooltip extends React.Component<
   static defaultProps = TooltipDefaults.props;
   state = TooltipDefaults.state;
   intervalId;
+  delayRender; 
 
   componentDidMount() {
+    this.delayRender = setTimeout(() => {
+      this.setState({delayOver: true})
+    }, 600)
     const {
       // doesn't include scroll bars
       clientHeight,
@@ -87,6 +92,7 @@ export class Tooltip extends React.Component<
 
   componentWillUnmount() {
     clearTimeout(this.intervalId);
+    clearTimeout(this.delayRender);
   }
 
   onDragEnd = e => {
@@ -116,7 +122,10 @@ export class Tooltip extends React.Component<
   };
 
   render() {
-    if (this.state.show) {
+    console.log(this.state)
+    
+    
+    if (this.state.show && this.state.delayOver) {
       return (
         <Portal>
           <div
