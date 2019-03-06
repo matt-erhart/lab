@@ -15,6 +15,28 @@ export const brewer12 = [
   "#ffff99",
   "#b15928"
 ];
+
+export function getRegexIndexes(str: string, regex: RegExp): number[] {
+  var re = regex;
+  let match;
+  let results = [];
+  do {
+    match = re.exec(str);
+    if (match) {
+      results.push(match.index);
+    }
+  } while (match);
+  return results;
+}
+
+export const getSelectionRange = () => {
+  const selection = window.getSelection();
+  const range = selection.anchorNode
+    ? selection.getRangeAt(0).cloneRange() //clone or ref won't update
+    : undefined;
+  return { selection, range };
+};
+
 export type NestedPartial<T> = {
   [K in keyof T]?: T[K] extends Array<infer R>
     ? Array<NestedPartial<R>>
@@ -22,6 +44,7 @@ export type NestedPartial<T> = {
 };
 
 import uuidv1 = require("uuid/v1");
+import { RegExpLiteral } from "estree";
 export const mergeDefaults = <T>(defaults: T, data = {} as Partial<T>) => {
   return {
     ...defaults,

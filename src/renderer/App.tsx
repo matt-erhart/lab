@@ -112,7 +112,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
 
   async componentDidMount() {
-
     const newPubs = await processNewPdfs(
       this.props.pdfRootDir,
       this.props.nodes
@@ -205,15 +204,17 @@ const ConnectedApp = connect(
   mapDispatch
 )(_App);
 
+// import { D3Force } from "./testD3Force";
 import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
+import {TextEditor} from './TextEditor'
 class App extends React.Component {
-  refEl = React.createRef();
-  state = { x: NaN, y: NaN };
+
   render() {
     return (
       <Provider store={store}>
-        <ConnectedApp />
+        {/* <ConnectedApp /> */}
+        <TextEditor />
       </Provider>
     );
   }
