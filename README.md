@@ -1,4 +1,12 @@
-2. node coords cannot be negative
+Automatic, yet easily dismissible
+efficiency, correctness, and consideration of alternate possibilities
+showing various completions, the recommendations suggest refinements
+“elegant coupling of automated services with
+direct manipulation” are articulated in Eric Horvitz’s Principles of
+Mixed-Initiative User Interfaces (11)—required 
+predictive interaction (15)
+
+
 
 # render perf notes
 redux update is ~5ms per dispatch with just a div button + graph

@@ -138,7 +138,9 @@ export class Tooltip extends React.Component<
               zIndex: 10,
               transform: `translate(${this.state.translateX}px, ${
                 this.state.translateY
-              }px)`
+              }px)`,
+              resize: 'both',
+              overflow: 'auto'
             }}
             onMouseOver={e => {
               clearTimeout(this.intervalId);

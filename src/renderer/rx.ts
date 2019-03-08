@@ -9,7 +9,7 @@ import {
   tap
 } from "rxjs/operators";
 
-const mouseMap = (e: MouseEvent) => {  
+const mouseMap = (e: MouseEvent) => {
   return {
     type: e.type,
     x: e.clientX,
@@ -38,9 +38,40 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
       return mousemove.pipe(
         startWith(down),
         takeUntil(mouseup),
-        endWith({type: 'mouseup', x: 0, y: 0, ctrlKey: down.ctrlKey}), // todo end with mouseup event
+        endWith({ type: "mouseup", x: 0, y: 0, ctrlKey: down.ctrlKey }) // todo end with mouseup event
         // tap(x => console.log(x))
-      ) as Observable<mouseData>
+      ) as Observable<mouseData>;
+    })
+  ) as Observable<mouseData>;
+};
+
+// todo need some common container to make one component draggable cuz cursor
+// todo take an onDrag handler and apply mousedown.x-mousemove.x transform
+// note the difference between dragging something to transform it and
+// dragging something to drop in on something else, i.e. drag and drop
+// see resizedivider/resizer dragToTransform
+export const dragData = (el: HTMLElement) => {
+  const { mousedown, mousemove, mouseup } = [
+    "mousedown",
+    "mousemove",
+    "mouseup"
+  ].reduce((all, eventName) => {
+    return {
+      ...all,
+      [eventName]: fromEvent(document.documentElement, eventName).pipe(
+        map(mouseMap as any)
+      )
+    };
+  }, {}) as { [eventName: string]: Observable<mouseData> };
+
+  return mousedown.pipe(
+    mapIgnoreOuterUntilInnerDone((down: mouseData) => {
+      return mousemove.pipe(
+        startWith(down),
+        takeUntil(mouseup),
+        endWith({ type: "mouseup", x: null, y: null, ctrlKey: down.ctrlKey }) // todo end with mouseup event
+        // tap(x => console.log(x))
+      ) as Observable<mouseData>;
     })
   ) as Observable<mouseData>;
 };

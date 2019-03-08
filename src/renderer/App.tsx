@@ -23,6 +23,8 @@ import {
   aNode,
   PdfPublication
 } from "../store/creators";
+import TextEditor from "./TextEditor";
+
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -47,13 +49,28 @@ const NavItem = styled.a`
   }
 `;
 
+// const ViewPortContainer = styled.div`
+//   max-height: 100vh;
+//   width: 100vw;
+//   background-color: grey;
+//   box-sizing: border-box;
+//   overflow: hidden;
+//   padding: 8px;
+//   flex-flow: column;
+//   display: flex;
+// `;
+
 const ViewPortContainer = styled.div`
-  max-height: 100vh;
-  width: 100vw;
-  background-color: grey;
-  box-sizing: border-box;
-  overflow: hidden;
-  padding: 8px;
+  --padding: 20px;
+  --margin: 3px;
+  --height: calc(100vh - 5px - var(--margin) - var(--padding) * 2);
+  margin: var(--margin);
+  padding: var(--padding);
+  height: var(--height);
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  font-size: 30px;
+  overflow: none;
   flex-flow: column;
   display: flex;
 `;
@@ -182,7 +199,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           {pdfDir.length > 0 && (
             <PdfViewer
               pathInfo={{ pdfRootDir, pdfDir }}
-              pageNumbersToLoad={[]}
+              pageNumbersToLoad={[3]}
               viewBox={{
                 left: 107.148 - 20,
                 top: 490.84180000000083 - 20,
@@ -195,6 +212,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
           <KonvaTest />
         </MainContainer>
+        <TextEditor />
+
       </ViewPortContainer>
     );
   }
@@ -207,14 +226,14 @@ const ConnectedApp = connect(
 // import { D3Force } from "./testD3Force";
 import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
-import {TextEditor} from './TextEditor'
+// import { TextEditor } from "./TextEditor";/
+import { Resizer } from "./Resizer";
 class App extends React.Component {
-
   render() {
     return (
       <Provider store={store}>
-        {/* <ConnectedApp /> */}
-        <TextEditor />
+        <ConnectedApp />
+        {/* <Resizer /> */}
       </Provider>
     );
   }

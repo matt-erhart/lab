@@ -1,6 +1,17 @@
 import { getRegexIndexes } from "./utils";
 import { oc } from "ts-optchain";
 
+// todo use this
+function getCmd(value, regex = /@(\S*)$/) {
+  if (!value.startText) {
+    return null;
+  }
+  const startOffset = value.selection.start.offset;
+  const textBefore = value.startText.text.slice(0, startOffset);
+  const result = regex.exec(textBefore);
+  return result == null ? null : result[1];
+}
+
 export function getWordAtCursor(text: string, cursorLocInText: number) {
   // finds space character to left/right and the text in between
   const spaceIndexes: number[] = getRegexIndexes(text, /\s/g);
@@ -15,8 +26,6 @@ export function getWordAtCursor(text: string, cursorLocInText: number) {
       break;
     }
   }
-  console.log(text, cursorLocInText);
-
   const isAfterSpace = (text[cursorLocInText - 1] || " ") === " ";
   const isEndOfWord = (text[cursorLocInText] || " ") === " " && !isAfterSpace;
 
@@ -26,3 +35,19 @@ export function getWordAtCursor(text: string, cursorLocInText: number) {
     text: text.slice(leftSpaceIx, rightSpaceIx).trim()
   };
 }
+
+export const onSlash = (event, editor, next) => {
+  const { value } = editor;
+  const { selection } = value;
+  if (selection.isExpanded) return next();
+  const { startBlock } = value;
+  const { start } = selection;
+  const charBeforeSlash = startBlock.text[start.offset-1] || ' '
+  if ([' ', '/'].includes(charBeforeSlash)) {
+      return true
+  } else {
+      return false
+  }
+  return next()
+  
+};
