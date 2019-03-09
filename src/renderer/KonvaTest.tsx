@@ -124,6 +124,8 @@ export class App extends React.Component<
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.patches !== this.props.patches) {
+      console.log(this.props.patches)
+      
       this.props.patches.forEach(patch => {
         const isNode = patch.path[0] === "nodes";
         const layerName = isNode ? "nodeLayer" : "linkLayer";
@@ -337,64 +339,24 @@ export class App extends React.Component<
       if (button === "left" && e.type === "click") {
         // deselect all
         if (e.target.getType() === "Stage") {
-          // todo make this on redux update
-          // const selectedNodes = this.props.selectedNodes;
-          // selectedNodes.forEach(id => {
-          //   const n = this.nodeLayer.findOne("#" + id);
-          //   if (n) (n as any).shadowEnabled(false);
-          // });
 
-          // // todo deselect all links
-          // this.props.selectedLinks.forEach(id => {
-          //   const n = this.linkLayer.findOne("#" + id);
-          //   if (n) (n as any).shadowEnabled(false);
-          // });
           this.props.toggleSelections({
             selectedLinks: [],
             selectedNodes: [],
             clearFirst: true
           });
-          // this.nodeLayer.draw();
-          // this.linkLayer.draw();
+
         }
         if (e.target.getClassName() === "Line") {
           // todo combined line and circle cases
           const id = e.target.getAttrs().id;
-          // const alreadySelected = this.props.selectedLinks.includes(id);
-          // const clickedLink = this.linkLayer.findOne("#" + id) as konva.Line;
-          // if (!alreadySelected) {
-          //   clickedLink.shadowEnabled(true).setAttrs({
-          //     shadowColor: "blue",
-          //     shadowBlur: 10,
-          //     shadowOffset: { x: 0, y: 0 },
-          //     shadowOpacity: 1
-          //   } as LineConfig);
-          // } else {
-          //   clickedLink.shadowEnabled(false);
-          // }
-          // this.linkLayer.draw();
+
           this.props.toggleSelections({ selectedLinks: [id] });
         }
       }
       if (button === "left" && e.target.getClassName() === "Circle") {
         const id = e.target.getAttrs().id;
-        // const isSelected = this.props.selectedNodes.includes(id);
-        // const clickedNode = this.nodeLayer.findOne("#" + id) as konva.Circle;
-        // if (!isSelected) {
-        //   if (clickedNode)
-        //     clickedNode.shadowEnabled(true).setAttrs({
-        //       shadowColor: "blue",
-        //       shadowBlur: 20,
-        //       shadowOffset: { x: 0, y: 0 },
-        //       shadowOpacity: 1
-        //     } as CircleConfig);
-        // } else {
-        //   if (clickedNode) clickedNode.shadowEnabled(false);
-        // }
         this.props.toggleSelections({ selectedNodes: [id] });
-        // this.nodeLayer.draw();
-
-        // add node to selected
       } else if (button === "right" && e.target.getClassName() === "Circle") {
         //todo links
         const newLinks = linkSelectedToNode(

@@ -8,7 +8,12 @@ import { getWordAtCursor, onSlash } from "./TextEditorUtils";
 import { oc } from "ts-optchain";
 import { iDispatch, iRootState } from "../store/createStore";
 import { connect } from "react-redux";
-import { NodeDataTypes, UserMediaText } from "../store/creators";
+import {
+  NodeDataTypes,
+  UserMediaText,
+  makeUserMediaText,
+  makeLink
+} from "../store/creators";
 const schema = {
   inlines: {
     graph: {
@@ -72,6 +77,34 @@ export class TextEditor extends React.Component<
   };
 
   onKeyDown = getInputProps => (event, editor, next) => {
+    event.ctrlKey, event.key;
+    if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
+      console.log("make a new node");
+      const graphInlines = this.editor.value.document.getInlinesByType("graph");
+      const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
+      
+      
+      const graphText = makeUserMediaText(
+        Plain.serialize(this.state.editorValue),
+        {
+          x: 200 + Math.random() * 200,
+          y: 200 + Math.random() * 200
+        }
+      );
+
+      let newLinks = [];
+      for (let sourceId of idsToLink.filter(x => x !== graphText.id)) {
+        const newLink = makeLink(this.props.nodes[sourceId], graphText, {
+          type: "partOf"
+        });
+        
+        newLinks.push(newLink);
+      }     
+
+      this.props.addBatch({nodes: [graphText], links: newLinks})
+      // this.props.addBatch({links: [newLinks]})
+    }
+
     const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
       event.key
     );
@@ -93,6 +126,9 @@ export class TextEditor extends React.Component<
         const isSlashCmd = onSlash(event, editor, next);
         console.log("is slash cmd", isSlashCmd);
         return next();
+      case "return":
+        console.log("enter");
+
       default:
         return next();
     }
@@ -145,7 +181,6 @@ export class TextEditor extends React.Component<
   render() {
     const { wordAtCursor } = this.state;
     const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
-    console.log(this.state.editorValue.toJS());
 
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
@@ -156,7 +191,7 @@ export class TextEditor extends React.Component<
       >
         <Downshift
           itemToString={item => (item ? item.data.text : "")}
-          isOpen={true}
+          isOpen={wordAtCursor.length > 1}
           onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
             const { id } = autocompleteList[highlightedIndex] || { id: false };
             if (id) {
@@ -199,25 +234,28 @@ export class TextEditor extends React.Component<
                     marginBottom: 2
                   }}
                 >
-                  {autocompleteList.map((item, index) => (
-                    <Button1
-                      {...downshift.getItemProps({
-                        key: item.id,
-                        index,
-                        item,
-                        style: {
-                          backgroundColor:
-                            downshift.highlightedIndex === index
-                              ? "lightgreen"
-                              : null,
-                          fontWeight:
-                            downshift.selectedItem === item ? "bold" : "normal"
-                        }
-                      })}
-                    >
-                      {item.data.text}
-                    </Button1>
-                  ))}
+                  {downshift.isOpen &&
+                    autocompleteList.map((item, index) => (
+                      <Button1
+                        {...downshift.getItemProps({
+                          key: item.id,
+                          index,
+                          item,
+                          style: {
+                            backgroundColor:
+                              downshift.highlightedIndex === index
+                                ? "lightgreen"
+                                : null,
+                            fontWeight:
+                              downshift.selectedItem === item
+                                ? "bold"
+                                : "normal"
+                          }
+                        })}
+                      >
+                        {item.data.text}
+                      </Button1>
+                    ))}
                 </div>
               </div>
             );
@@ -250,7 +288,10 @@ export const renderSlateNodes = (props, _, next) => {
             border: isFocused ? "1px solid blue" : "none"
           }}
           contentEditable={false}
-        > {node.data.get('text')} </span>
+        >
+          {" "}
+          {node.data.get("text")}{" "}
+        </span>
       ); //made with wrapinline in slateutils
     default:
       return next();
