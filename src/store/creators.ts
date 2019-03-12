@@ -4,11 +4,9 @@ import uuidv1 = require("uuid/v1");
 
 export type NodeDataTypes =
   | "empty"
-  | "userMedia.text" //
-  | "userMedia.quote"
-  | "userMedia.semanticUnit"
+  | "userHtml" // html made by user after writing
   | "pdf.segment.viewbox" //
-  | "pdf.segment.textRange"
+  | "pdf.segment.text"
   | "pdf.publication" //
   | "user"
   | "person"
@@ -26,7 +24,7 @@ export interface NodeMeta {
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: {x: number, y: number};
+  style: { x: number; y: number };
   meta: NodeMeta;
 }
 
@@ -64,12 +62,12 @@ export const makePdfSegmentViewbox = (
   style = {} as Partial<CircleConfig>
 ) => {
   const now = Date.now();
-  const id = uuidv1()
-  console.log({...ViewboxDataDefault, ...viewbox})
-  
+  const id = uuidv1();
+  console.log({ ...ViewboxDataDefault, ...viewbox });
+
   return {
     id: id,
-    data: {...ViewboxDataDefault, ...viewbox},
+    data: { ...ViewboxDataDefault, ...viewbox },
     style: {
       id: id,
       type: "circle",
@@ -129,7 +127,7 @@ const PdfPublicationDefaults = {
 };
 export type PdfPublication = typeof PdfPublicationDefaults;
 
-export const makePdfPublication = (dirName: string, data = {}, style = {}) => {  
+export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
   return {
     ...PdfPublicationDefaults,
     id: dirName,
@@ -167,44 +165,46 @@ const LinkDefaults = {
   undirected: true
 };
 
-export const makeLink = (sourceNode: aNode, targetNode: aNode, data ={}) => {
+export const makeLink = (sourceNode: aNode, targetNode: aNode, data = {}) => {
   const { x: x1, y: y1 } = sourceNode.style as Partial<CircleConfig>;
   const { x: x2, y: y2 } = targetNode.style as Partial<CircleConfig>;
-  const id = uuidv1();
+  const id = "link-" + uuidv1();
   return {
     ...LinkDefaults,
     id,
     source: sourceNode.id,
     target: targetNode.id,
     style: { ...LinkDefaults.style, id, points: [x1, y1, x2, y2] },
-    data: {...LinkDefaults.data, ...data}
+    data: { ...LinkDefaults.data, ...data }
   };
 };
 
-const UserMediaTextDefaults = {
+const UserHtmlDefaults = {
   id: "",
-  data: {type: 'userMedia.text', text: ''},
+  data: { type: "userHtml" as NodeDataTypes, html: "", text: "" },
   meta: makeNodeMeta(),
   style: {
     id: "",
-    x: 0,
-    y: 0,
-    stroke: 'black',
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    stroke: "black",
     fill: "black"
-  } as Partial<LineConfig>,
-}
-export type UserMediaText = typeof UserMediaTextDefaults
-export const makeUserMediaText = (text='', style={}) => {
+  } as Partial<LineConfig>
+};
+export type UserHtml = typeof UserHtmlDefaults;
+export const makeUserHtml = (data = { html: "", text: "" }, style = {}) => {
   const id = uuidv1();
   return {
-    ...UserMediaTextDefaults,
+    ...UserHtmlDefaults,
     id,
-    data: {...UserMediaTextDefaults.data, text},
-    style: {...UserMediaTextDefaults.style, ...style, id}
-  }
-}
+    data: { ...UserHtmlDefaults.data, ...data },
+    style: { ...UserHtmlDefaults.style, ...style, id }
+  };
+};
 
-export type aNode = PdfSegmentViewbox | Empty | UserMediaText
+export type aNode = PdfSegmentViewbox | Empty | UserHtml;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

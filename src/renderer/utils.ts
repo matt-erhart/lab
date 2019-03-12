@@ -59,13 +59,13 @@ export const makeGridOfBoxes = (nRows, nCols, width, height, gap) => {
   let x = 0;
   let y = 0;
   let boxes = [];
-  let id = 0
+  let id = 0;
   for (let rowNum of rows) {
     if (rowNum > 0) x += width + gap;
     y = 0;
     for (let colNum of cols) {
       if (colNum > 0) y += height + gap;
-      boxes.push({ id: rowNum + "" + colNum + '' + (id++), x, y, width, height });
+      boxes.push({ id: rowNum + "" + colNum + "" + id++, x, y, width, height });
     }
   }
   return boxes;
@@ -131,6 +131,30 @@ export const midPoint = (x1: number, y1: number, x2: number, y2: number) => {
 
 export const dist = (x1: number, y1: number, x2: number, y2: number) => {
   return Math.hypot(x2 - x1, y2 - y1);
+};
+
+export const getBoxEdges = (
+  left: number,
+  top: number,
+  width: number,
+  height: number
+) => {
+  return {
+    minX: left,
+    minY: top,
+    maxX: left + width,
+    maxY: top + height
+  };
+};
+
+export const isBoxInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
+  smallBox: ReturnType<typeof getBoxEdges>
+) => {
+  const minXOk = smallBox.minX >= bigBox.minX;
+  const maxXOk = smallBox.maxX <= bigBox.maxX;
+  const minYOk = smallBox.minY >= bigBox.minY;
+  const maxYOk = smallBox.maxY <= bigBox.maxY;
+  return minXOk && maxXOk && minYOk && maxYOk;
 };
 
 export const getRectEdges = (

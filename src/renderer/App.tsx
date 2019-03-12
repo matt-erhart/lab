@@ -24,7 +24,7 @@ import {
   PdfPublication
 } from "../store/creators";
 import TextEditor from "./TextEditor";
-
+import  BoxMap  from "./BoxMap";
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -210,10 +210,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             />
           )}
 
-          <KonvaTest />
+          <BoxMap />
         </MainContainer>
         <TextEditor />
-
       </ViewPortContainer>
     );
   }
@@ -233,6 +232,7 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <ConnectedApp />
+        {/* <BoxMap /> */}
         {/* <Resizer /> */}
       </Provider>
     );

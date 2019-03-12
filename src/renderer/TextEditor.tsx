@@ -8,10 +8,11 @@ import { getWordAtCursor, onSlash } from "./TextEditorUtils";
 import { oc } from "ts-optchain";
 import { iDispatch, iRootState } from "../store/createStore";
 import { connect } from "react-redux";
+import { htmlSerializer } from "./htmlSerializer";
 import {
   NodeDataTypes,
-  UserMediaText,
-  makeUserMediaText,
+  UserHtml,
+  makeUserHtml,
   makeLink
 } from "../store/creators";
 const schema = {
@@ -76,33 +77,40 @@ export class TextEditor extends React.Component<
     }
   };
 
+  serialize = editorValue => {
+    const html = htmlSerializer.serialize(editorValue);
+    // const jsFromHtml = htmlSerializer.deserialize(html);
+    // const andBack = htmlSerializer.serialize(jsFromHtml);
+    // const js = this.state.editorValue.toJS();
+    const text = Plain.serialize(editorValue);
+    return { html, text };
+  };
+
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
     if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
       console.log("make a new node");
       const graphInlines = this.editor.value.document.getInlinesByType("graph");
       const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
-      
-      
-      const graphText = makeUserMediaText(
-        Plain.serialize(this.state.editorValue),
-        {
-          x: 200 + Math.random() * 200,
-          y: 200 + Math.random() * 200
-        }
-      );
+      const serialized = this.serialize(this.state.editorValue);
+
+      const graphText = makeUserHtml(serialized, {
+        x: 200 + Math.random() * 200,
+        y: 200 + Math.random() * 200
+      });
 
       let newLinks = [];
       for (let sourceId of idsToLink.filter(x => x !== graphText.id)) {
         const newLink = makeLink(this.props.nodes[sourceId], graphText, {
           type: "partOf"
         });
-        
-        newLinks.push(newLink);
-      }     
 
-      this.props.addBatch({nodes: [graphText], links: newLinks})
-      // this.props.addBatch({links: [newLinks]})
+        newLinks.push(newLink);
+      }
+
+      this.props.addBatch({ nodes: [graphText], links: newLinks });
+      this.editor.moveToRangeOfDocument().insertBlock("").deleteBackward(1)
+      this.setState({editorValue: this.editor.value})
     }
 
     const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
@@ -137,10 +145,10 @@ export class TextEditor extends React.Component<
   };
 
   getTextNodes = (inputText = "") => {
-    const userMediaText: UserMediaText[] = Object.values(
-      this.props.nodes
-    ).filter(node => node.data.type === ("userMedia.text" as NodeDataTypes));
-    return userMediaText.filter(t => t.data.text.includes(inputText));
+    const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
+      node => node.data.type === ("userHtml" as NodeDataTypes)
+    );
+    return userHtml.filter(t => t.data.text.includes(inputText));
   };
 
   onChange = change => {
@@ -148,12 +156,10 @@ export class TextEditor extends React.Component<
     this.getCurrentWord(change);
   };
 
-  wrapWithGraphNode = (node: UserMediaText) => {
+  wrapWithGraphNode = (node: UserHtml) => {
     try {
       const text = oc(node).data.text();
       if (text) {
-        console.log(text, this.state.wordAtCursor);
-
         const { id } = node;
 
         this.editor
@@ -166,7 +172,7 @@ export class TextEditor extends React.Component<
               text,
               id,
               isNode: true,
-              style: { fontWeight: "bold" }
+              style: { fontStyle: "italic" }
             } //access with props.node.data.get('text')
           })
           .moveAnchorForward(text.length)
@@ -206,6 +212,11 @@ export class TextEditor extends React.Component<
             }
           }}
           inputValue={wordAtCursor}
+          onSelect={() => {
+            if (autocompleteList.length === 1) {
+              this.wrapWithGraphNode(autocompleteList[0]);
+            }
+          }}
         >
           {downshift => {
             return (
