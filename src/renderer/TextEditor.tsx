@@ -24,30 +24,33 @@ const schema = {
 };
 /**
  * @class **TextEditor**
+ * todo: currectly ONLY ONE INSTANCE WITH ID="" ALLOWED
  */
 const TextEditorDefaults = {
-  props: {},
+  props: { nodesOrLinks: "nodes" as "nodes" | "links", id: "" },
   state: {
     editorValue: Plain.deserialize("") as Editor["value"],
-    wordAtCursor: ""
+    wordAtCursor: "",
+    hasError: false
   }
 };
 const mapState = (state: iRootState) => ({
   pdfDir: state.app.current.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
-  nodes: state.graph.nodes
+  nodes: state.graph.nodes,
+  links: state.graph.links
 });
 
 const mapDispatch = ({
-  graph: { addBatch, toggleSelections },
+  graph: { addBatch, toggleSelections, updateBatch },
   app: { setCurrent }
-}: iDispatch) => ({ addBatch, setCurrent, toggleSelections });
+}: iDispatch) => ({ addBatch, setCurrent, toggleSelections, updateBatch });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 export class TextEditor extends React.Component<
-  typeof TextEditorDefaults.props & connectedProps,
+  typeof TextEditorDefaults.props & Partial<connectedProps>,
   typeof TextEditorDefaults.state
 > {
   static defaultProps = TextEditorDefaults.props;
@@ -59,8 +62,29 @@ export class TextEditor extends React.Component<
     this.editor = editor;
   };
 
+  initHtml = () => {
+    const { id, nodesOrLinks } = this.props;
+    if (this.props.id.length > 0) {
+      const html = oc(this.props[nodesOrLinks][id]).data.html("<p></p>");
+      const editorValue = htmlSerializer.deserialize(html);
+      this.setState({ editorValue });
+    }
+  };
+
   componentDidMount() {
-    // this.edito;
+    this.initHtml();
+  }
+
+  componentWillUnmount(){
+    this.save()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.id !== this.props.id) {
+      this.initHtml();
+      if (this.props.id === "")
+        this.setState({ editorValue: Plain.deserialize("") });
+    }
   }
 
   getCurrentWord = editor => {
@@ -86,31 +110,106 @@ export class TextEditor extends React.Component<
     return { html, text };
   };
 
-  onKeyDown = getInputProps => (event, editor, next) => {
-    event.ctrlKey, event.key;
-    if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
-      console.log("make a new node");
-      const graphInlines = this.editor.value.document.getInlinesByType("graph");
-      const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
-      const serialized = this.serialize(this.state.editorValue);
+  save = () => {
+    const graphInlines = this.editor.value.document.getInlinesByType("graph");
+    const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
+    const serialized = this.serialize(this.state.editorValue);
+    let currentNode;
 
-      const graphText = makeUserHtml(serialized, {
+    if (this.props.id.length === 0) {
+      currentNode = makeUserHtml(serialized, {
+        // todo use scroll position in boxmap
         x: 200 + Math.random() * 200,
         y: 200 + Math.random() * 200
       });
+    } else {
+      currentNode = this.props.nodes[this.props.id];
+    }
 
-      let newLinks = [];
-      for (let sourceId of idsToLink.filter(x => x !== graphText.id)) {
-        const newLink = makeLink(this.props.nodes[sourceId], graphText, {
+    // have the links been created?
+    let newLinks = [];
+    for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
+      const ix = Object.values(this.props.links).findIndex(link => {
+        return (
+          link.source === sourceId &&
+          link.target === currentNode.id &&
+          link.data.type === "partOf"
+        );
+      });
+
+      if (ix === -1) {
+        const newLink = makeLink(this.props.nodes[sourceId], currentNode, {
           type: "partOf"
         });
-
         newLinks.push(newLink);
       }
+    }
 
-      this.props.addBatch({ nodes: [graphText], links: newLinks });
-      this.editor.moveToRangeOfDocument().insertBlock("").deleteBackward(1)
-      this.setState({editorValue: this.editor.value})
+    if (this.props.id.length === 0) {
+      this.props.addBatch({ nodes: [currentNode], links: newLinks });
+      this.editor
+        .moveToRangeOfDocument()
+        .insertBlock("")
+        .deleteBackward(1);
+      this.setState({ editorValue: this.editor.value });
+    } else {
+      this.props.updateBatch({
+        nodes: [{ id: currentNode.id, data: { ...serialized } }]
+      });
+    }
+  }
+
+  onKeyDown = getInputProps => (event, editor, next) => {
+    event.ctrlKey, event.key;
+    if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
+      this.save()
+      // console.log("make a new node");
+      // const graphInlines = this.editor.value.document.getInlinesByType("graph");
+      // const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
+      // const serialized = this.serialize(this.state.editorValue);
+      // let currentNode;
+
+      // if (this.props.id.length === 0) {
+      //   currentNode = makeUserHtml(serialized, {
+      //     // todo use scroll position in boxmap
+      //     x: 200 + Math.random() * 200,
+      //     y: 200 + Math.random() * 200
+      //   });
+      // } else {
+      //   currentNode = this.props.nodes[this.props.id];
+      // }
+
+      // // have the links been created?
+      // let newLinks = [];
+      // for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
+      //   const ix = Object.values(this.props.links).findIndex(link => {
+      //     return (
+      //       link.source === sourceId &&
+      //       link.target === currentNode.id &&
+      //       link.data.type === "partOf"
+      //     );
+      //   });
+
+      //   if (ix === -1) {
+      //     const newLink = makeLink(this.props.nodes[sourceId], currentNode, {
+      //       type: "partOf"
+      //     });
+      //     newLinks.push(newLink);
+      //   }
+      // }
+
+      // if (this.props.id.length === 0) {
+      //   this.props.addBatch({ nodes: [currentNode], links: newLinks });
+      //   this.editor
+      //     .moveToRangeOfDocument()
+      //     .insertBlock("")
+      //     .deleteBackward(1);
+      //   this.setState({ editorValue: this.editor.value });
+      // } else {
+      //   this.props.updateBatch({
+      //     nodes: [{ id: currentNode.id, data: { ...serialized } }]
+      //   });
+      // }
     }
 
     const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
@@ -184,7 +283,25 @@ export class TextEditor extends React.Component<
     }
   };
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    // You can also log the error to an error reporting service
+    console.error(error, info);
+  }
+
+  // saveOnMouseLeave = (id) => {
+  //   this.props.updateBatch({
+  //     nodes: [{ id: currentNode.id, data: { ...serialized } }]
+  //   });
+
+  // }
+
   render() {
+    if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
     const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
 
@@ -223,7 +340,6 @@ export class TextEditor extends React.Component<
               <div>
                 <div style={{ border: "1px solid lightgrey", margin: 10 }}>
                   <Editor
-                    autoFocus
                     ref={this.ref as any}
                     spellCheck={false}
                     onChange={this.onChange}
@@ -239,7 +355,7 @@ export class TextEditor extends React.Component<
                 </div>
                 <div
                   style={{
-                    height: "8vh",
+                    height: this.props.id.length === 0 ? "8vh" : "100%",
                     overflowY: "scroll",
                     marginTop: 2,
                     marginBottom: 2
@@ -313,6 +429,8 @@ const EditorContainer = styled.div`
   border: 1px solid black;
   border-radius: 5px;
   margin-top: 10px;
+  width: "auto";
+  height: "auto";
 `;
 
 const Button1 = styled.span`

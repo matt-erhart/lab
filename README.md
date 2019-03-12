@@ -1,4 +1,4 @@
-<span data-id="asdfasdfasdfasdf" data-node-or-link='node'> 
+1. no auto segment pls on click
 
 
 Automatic, yet easily dismissible

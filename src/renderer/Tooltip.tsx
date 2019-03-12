@@ -34,12 +34,12 @@ export class Tooltip extends React.Component<
   static defaultProps = TooltipDefaults.props;
   state = TooltipDefaults.state;
   intervalId;
-  delayRender; 
+  delayRender;
 
   componentDidMount() {
     this.delayRender = setTimeout(() => {
-      this.setState({delayOver: true})
-    }, this.props.delay)
+      this.setState({ delayOver: true });
+    }, this.props.delay);
     const {
       // doesn't include scroll bars
       clientHeight,
@@ -63,10 +63,10 @@ export class Tooltip extends React.Component<
     if (moreSpaceRight) {
       x = mouseX + 15;
     } else {
-      x = mouseX -25 - popupWidth;
+      x = mouseX - 25 - popupWidth;
     }
     return {
-      popup: { width: popupWidth, height: popupHeight+22, left: x, top: y }
+      popup: { width: popupWidth, height: popupHeight + 22, left: x, top: y }
     };
   }
 
@@ -122,7 +122,17 @@ export class Tooltip extends React.Component<
     });
   };
 
-  render() {    
+  render() {
+    const {
+      close,
+      width,
+      height,
+      mouseX,
+      mouseY,
+      onClose,
+      delay,
+      ...restProps
+    } = this.props;
     if (this.state.show && this.state.delayOver) {
       return (
         <Portal>
@@ -139,8 +149,8 @@ export class Tooltip extends React.Component<
               transform: `translate(${this.state.translateX}px, ${
                 this.state.translateY
               }px)`,
-              resize: 'both',
-              overflow: 'auto'
+              resize: "both",
+              overflow: "auto"
             }}
             onMouseOver={e => {
               clearTimeout(this.intervalId);
@@ -150,6 +160,8 @@ export class Tooltip extends React.Component<
                 this.selfDestruct();
               }
             }}
+            {...restProps}
+
           >
             <div
               style={{ backgroundColor: "lightblue" }}

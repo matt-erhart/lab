@@ -13,7 +13,7 @@ import { start } from "repl";
 
 const mouseMap = (e: MouseEvent) => {
   return {
-    type: e.type as 'mousedown' | 'mousemove' | 'mouseup',
+    type: e.type as "mousedown" | "mousemove" | "mouseup",
     x: e.clientX,
     y: e.clientY,
     ctrlKey: e.ctrlKey
@@ -52,7 +52,7 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
 // note the difference between dragging something to transform it and
 // dragging something to drop in on something else, i.e. drag and drop
 // see resizedivider/resizer dragToTransform
-export const dragData = () => {
+export const dragData = (el: HTMLElement) => {
   const { mousedown, mousemove, mouseup } = [
     "mousedown",
     "mousemove",
@@ -60,7 +60,7 @@ export const dragData = () => {
   ].reduce((all, eventName) => {
     return {
       ...all,
-      [eventName]: fromEvent(document.documentElement, eventName).pipe(
+      [eventName]: fromEvent(el, eventName).pipe(
         map(mouseMap as any)
       )
     };
@@ -70,7 +70,7 @@ export const dragData = () => {
     mapIgnoreOuterUntilInnerDone((down: mouseData) => {
       return mousemove.pipe(
         startWith(down),
-        map(move => ({ ...move, x: move.x-down.x, y: move.y-down.y})),
+        map(move => ({ ...move, x: move.x - down.x, y: move.y - down.y })),
         takeUntil(mouseup),
         endWith({ type: "mouseup", x: null, y: null, ctrlKey: down.ctrlKey }) // todo end with mouseup event
         // tap(x => console.log(x))
