@@ -41,9 +41,6 @@ https://www.infoq.com/presentations/electron-pitfalls
 https://github.com/CharlesStover/reactn
 https://github.com/diegohaz/constate
 
-# expert mode
-https://github.com/ccampbell/mousetrap
-
 # async validation
 https://indicative.adonisjs.com/docs/syntax-guide
 

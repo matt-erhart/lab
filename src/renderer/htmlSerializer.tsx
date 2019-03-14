@@ -93,15 +93,18 @@ const rules = [
   {
     // Special case for i, grab data
     deserialize(el, next) {
-      if (el.tagName.toLowerCase() == "i" ) {
+      if (
+        el.tagName.toLowerCase() == "i" &&
+        el.getAttribute("data-slatetype") === "graph"
+      ) {
         return {
           object: "inline",
-          type: "i",
+          type: "graph",
           nodes: next(el.childNodes),
           data: {
             id: el.getAttribute("data-id"),
             slateType: el.getAttribute("data-slatetype"),
-            isNode: el.getAttribute("data-isnode"),
+            isNode: el.getAttribute("data-isnode")
           }
         };
       }

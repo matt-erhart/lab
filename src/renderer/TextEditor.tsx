@@ -64,9 +64,10 @@ export class TextEditor extends React.Component<
 
   initHtml = () => {
     const { id, nodesOrLinks } = this.props;
-    if (this.props.id.length > 0) {
+    if (this.props.id.length > 0) {      
       const html = oc(this.props[nodesOrLinks][id]).data.html("<p></p>");
       const editorValue = htmlSerializer.deserialize(html);
+      console.log(editorValue.toJS());
       this.setState({ editorValue });
     }
   };
@@ -75,8 +76,8 @@ export class TextEditor extends React.Component<
     this.initHtml();
   }
 
-  componentWillUnmount(){
-    this.save()
+  componentWillUnmount() {
+    this.save();
   }
 
   componentDidUpdate(prevProps) {
@@ -157,12 +158,12 @@ export class TextEditor extends React.Component<
         nodes: [{ id: currentNode.id, data: { ...serialized } }]
       });
     }
-  }
+  };
 
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
     if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
-      this.save()
+      this.save();
       // console.log("make a new node");
       // const graphInlines = this.editor.value.document.getInlinesByType("graph");
       // const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
@@ -268,11 +269,9 @@ export class TextEditor extends React.Component<
           .wrapInline({
             type: "graph",
             data: {
-              text,
               id,
-              isNode: true,
-              style: { fontStyle: "italic" }
-            } //access with props.node.data.get('text')
+              isNode: true
+            }
           })
           .moveAnchorForward(text.length)
           .focus();
@@ -405,19 +404,19 @@ export const renderSlateNodes = (props, _, next) => {
   let data = node.data.toJS();
   switch (node.type) {
     case "graph":
+
       return (
         <span
           {...attributes}
           data-graph-path={node.data.get("type")}
           data-graph-id={node.data.get("id")}
           style={{
-            ...node.data.get("style"),
-            border: isFocused ? "1px solid blue" : "none"
+            border: isFocused ? "1px solid blue" : "none",
+            fontStyle: 'italic'
           }}
           contentEditable={false}
         >
-          {" "}
-          {node.data.get("text")}{" "}
+          {node.text}
         </span>
       ); //made with wrapinline in slateutils
     default:
