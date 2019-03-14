@@ -155,8 +155,6 @@ class PdfViewer extends React.Component<
     //todo use memoize-one as in react docs
     //todo useGraph hook
     if (state.viewboxes.length === 0) {
-      console.time("derived state");
-
       // todo conditional autocomplete
       const viewboxes = (Object.values(
         props.nodes as any
@@ -166,11 +164,9 @@ class PdfViewer extends React.Component<
           n.data.pdfDir === props.pathInfo.pdfDir
         );
       });
-      console.timeEnd("derived state");
 
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
-      console.time("derived state");
 
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
@@ -181,7 +177,6 @@ class PdfViewer extends React.Component<
         });
         return draft;
       });
-      console.timeEnd("derived state");
 
       return { viewboxes, patches: props.patches };
     }
@@ -275,11 +270,20 @@ class PdfViewer extends React.Component<
     return scaledPages;
   };
 
+  componentShouldUpdate(){
+    false
+  }
+
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
     if (prevProps.pathInfo.pdfDir !== this.props.pathInfo.pdfDir) {
       await this.loadFiles();
       this.setState({ viewboxes: [] });
     }
+    Object.keys(this.props).forEach(key => {
+      if (this.props[key] !== prevProps[key]) {
+        console.log(key, "changed from", prevProps[key], "to", this.props[key]);
+      }
+    });
   }
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -397,6 +401,7 @@ class PdfViewer extends React.Component<
   };
 
   render() {
+    console.log('pdf render')
     const { width, height } = this.props.viewBox;
     // todo: set height and width and then scrollto
     return (
@@ -408,6 +413,7 @@ class PdfViewer extends React.Component<
           boxSizing: "border-box",
           overflow: "scroll"
         }}
+        onScroll={e=>e.stopPropagation()}
       >
         {this.renderPages()}
       </div>

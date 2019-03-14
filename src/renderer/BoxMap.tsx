@@ -116,6 +116,7 @@ export class BoxMap extends React.Component<
   };
 
   onScroll = e => {
+    console.log('scroll')
     var dx = e.nativeEvent.target.scrollLeft;
     var dy = e.nativeEvent.target.scrollTop;
     this.setState({ dx, dy });
@@ -134,7 +135,7 @@ export class BoxMap extends React.Component<
     const userHtml = Object.values(props.nodes).filter(n => {
       const { x, y } = n.style;
       const edges = { minX: x, minY: y, maxX: x + 100, maxY: y + 100 };
-      return isInView(edges);
+      return true//isInView(edges);
     });
 
     const boxesInView = userHtml.map(h => {
@@ -227,26 +228,29 @@ export class BoxMap extends React.Component<
           scale,
           pageNumber
         } = box.data as ViewboxData;
+        console.log(pdfRootDir)
+        
         return (
-          <div style={{left, top, width, height, border: '1px solid red'}}>
-          {/* {JSON.stringify(box.data, null, 4)} */}
-           {/* <PdfViewer
-            pathInfo={{ pdfRootDir, pdfDir }}
-            pageNumbersToLoad={[pageNumber]}
-            viewBox={{
-              left: left - 50,
-              top: top - 50,
-              width: width + 100,
-              height: height + 100,
-              scale
-            }}
-          /> */}
+          <div key={box.data.id} style={{ left, top, width, height, border: "1px solid red" }}>
+            <PdfViewer
+            key={box.data.id}
+              pathInfo={{ pdfRootDir, pdfDir }}
+              pageNumbersToLoad={[pageNumber]}
+              viewBox={{
+                left: left - 50,
+                top: top - 50,
+                width: width + 100,
+                height: height + 100,
+                scale
+              }}
+            />
           </div>
         );
     }
   };
 
   render() {
+    console.log('render box map')
     return (
       <ScrollContainer
         ref={this.scrollRef}
