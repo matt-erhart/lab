@@ -37,6 +37,7 @@ import {
   PageOfText,
   checkGetPageNumsToLoad
 } from "./io";
+var equal = require("fast-deep-equal");
 
 export interface LineOfText {
   id: string;
@@ -80,14 +81,13 @@ import styled from "styled-components";
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
-    pathInfo: { pdfDir: "", pdfRootDir: "" },
-    viewBox: {
-      top: 110,
-      left: 110,
-      width: "100%" as number | string | undefined,
-      height: "100%" as number | string | undefined,
-      scale: 1
-    },
+    pdfDir: "",
+    pdfRootDir: "",
+    top: 110,
+    left: 110,
+    width: "100%" as number | string | undefined,
+    height: "100%" as number | string | undefined,
+    scale: 1,
     showLineBoxes: false
   },
   state: {
@@ -144,7 +144,7 @@ class PdfViewer extends React.Component<
   static defaultProps = PdfViewerDefaults.props;
   state = {
     ...PdfViewerDefaults.state,
-    scale: oc(this.props.viewBox).scale(1)
+    scale: oc(this.props).scale(1)
   };
   scrollRef = React.createRef<HTMLDivElement>();
 
@@ -161,19 +161,20 @@ class PdfViewer extends React.Component<
       ) as PdfSegmentViewbox[]).filter(n => {
         return (
           n.data.type === "pdf.segment.viewbox" &&
-          n.data.pdfDir === props.pathInfo.pdfDir
+          n.data.pdfDir === props.pdfDir
         );
       });
 
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
-
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
-          if (patch.op === "add") draft.push(patch.value);
-          if (patch.op === "remove") draft.filter(vb => vb.id !== id);
-          if (patch.op === "replace") draft[id] = patch.value;
+          if (patch.value.data.type === "pdf.segment.viewbox") {
+            if (patch.op === "add") draft.push(patch.value);
+            if (patch.op === "remove") draft.filter(vb => vb.id !== id);
+            if (patch.op === "replace") draft[id] = patch.value;
+          }
         });
         return draft;
       });
@@ -185,16 +186,13 @@ class PdfViewer extends React.Component<
 
   async componentDidMount() {
     await this.loadFiles();
-    const { left, top } = this.props.viewBox;
+    const { left, top } = this.props;
     this.scrollRef.current.scrollTo(left, top);
   }
 
   loadFiles = async () => {
     this.setState({ pages: [] });
-    const {
-      pageNumbersToLoad,
-      pathInfo: { pdfDir, pdfRootDir }
-    } = this.props;
+    const { pageNumbersToLoad, pdfDir, pdfRootDir } = this.props;
     const fullDirPath = path.join(pdfRootDir, pdfDir);
     const pdfPath = path.join(fullDirPath, pdfDir + ".pdf");
     const seg = await jsonfile.readFile(
@@ -270,20 +268,22 @@ class PdfViewer extends React.Component<
     return scaledPages;
   };
 
-  componentShouldUpdate(){
-    false
+  shouldComponentUpdate(nextProps, nextState) {
+    // todo perf refactor redux + props + derived state + should component update + redux leaf
+    const { viewboxes, pages, scale } = this.state;
+    return (
+      !equal(nextProps, this.props) ||
+      this.state.pages.length !== nextState.pages.length ||
+      this.state.scale !== nextState.scale ||
+      !equal(this.state.viewboxes, this.state.viewboxes)
+    );
   }
 
   async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
-    if (prevProps.pathInfo.pdfDir !== this.props.pathInfo.pdfDir) {
+    if (prevProps.pdfDir !== this.props.pdfDir) {
       await this.loadFiles();
       this.setState({ viewboxes: [] });
     }
-    Object.keys(this.props).forEach(key => {
-      if (this.props[key] !== prevProps[key]) {
-        console.log(key, "changed from", prevProps[key], "to", this.props[key]);
-      }
-    });
   }
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -308,7 +308,7 @@ class PdfViewer extends React.Component<
     // each page calls it on mouseup with the coords
     // this adds the node to redux, which gets passed in as props to svg
     const { left, top, width, height } = viewboxCoords;
-    const source = this.props.nodes[this.props.pathInfo.pdfDir];
+    const source = this.props.nodes[this.props.pdfDir];
     let { x, y } = source.style as any;
     const shiftedX = x + Math.random() * 60 - 40;
     const style = {
@@ -324,7 +324,7 @@ class PdfViewer extends React.Component<
         height: height,
         scale,
         pageNumber,
-        pdfDir: this.props.pathInfo.pdfDir
+        pdfDir: this.props.pdfDir
       },
       style
     );
@@ -358,6 +358,7 @@ class PdfViewer extends React.Component<
 
   renderPages = () => {
     const { pages } = this.state;
+    const { pdfDir, pdfRootDir } = this.props;
     const havePages = pages.length > 0;
     if (!havePages) return null;
     return pages.map((page, pageIx) => {
@@ -391,7 +392,7 @@ class PdfViewer extends React.Component<
             // images={page.images}
             // height2color={this.state.height2color}
             // fontNames2color={this.state.fontNames2color}
-            pdfPathInfo={this.props.pathInfo}
+            pdfPathInfo={{ pdfDir, pdfRootDir }}
             onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
             viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
           />
@@ -401,8 +402,8 @@ class PdfViewer extends React.Component<
   };
 
   render() {
-    console.log('pdf render')
-    const { width, height } = this.props.viewBox;
+    console.log("pdf render");
+    const { width, height } = this.props;
     // todo: set height and width and then scrollto
     return (
       <div
@@ -413,7 +414,7 @@ class PdfViewer extends React.Component<
           boxSizing: "border-box",
           overflow: "scroll"
         }}
-        onScroll={e=>e.stopPropagation()}
+        onScroll={e => e.stopPropagation()}
       >
         {this.renderPages()}
       </div>

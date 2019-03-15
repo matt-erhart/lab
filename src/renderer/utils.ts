@@ -16,6 +16,14 @@ export const brewer12 = [
   "#b15928"
 ];
 
+export const logPropChanges = (prevProps, props) => {
+  Object.keys(props).forEach(key => {
+    if (props[key] !== prevProps[key]) {
+      console.log(key, "changed from", prevProps[key], "to", props[key]);
+    }
+  });
+}
+
 export function getRegexIndexes(str: string, regex: RegExp): number[] {
   var re = regex;
   let match;

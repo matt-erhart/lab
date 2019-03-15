@@ -129,16 +129,33 @@ class PageSvg extends React.Component<
           break;
 
         case "mouseup":
-          if (!mouse.ctrlKey) {
-            const text = this.getText(this.state.selectionRect); // todo take out the snaps part
+          const { width, height } = this.state.selectionRect;
+          if (height > 2 || width > 2) {
+            if (!mouse.ctrlKey) {
+              this.inferMakeViewbox(this.state.selectionRect);
+            } else {
+              this.makeViewbox(this.state.selectionRect);
+            }
           } else {
-            this.props.onAddViewbox(this.state.selectionRect);
-            this.setState({ showText: true, value: "" });
+            this.setState({
+              selectionRect: PageSvgDefaults.state.selectionRect
+            });
           }
+
           break;
       }
     });
   }
+
+  makeViewbox = selectionRect => {
+    this.props.onAddViewbox(selectionRect);
+    this.setState({ selectionRect: { ...selectionRect, x1: 0, y1: 0 } });
+  };
+
+  inferMakeViewbox = selectionRect => {
+    const newSelect = this.snapToColumn(selectionRect);
+    this.makeViewbox(newSelect);
+  };
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
     const { width, height } = this.state.selectionRect;
@@ -148,7 +165,9 @@ class PageSvg extends React.Component<
     });
   };
 
-  getText = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
+  snapToColumn = (
+    selectionRect: typeof PageSvgDefaults.state.selectionRect
+  ) => {
     const { left, top, width, height } = selectionRect;
     const edge = getRectEdges(left, top, width, height);
 
@@ -184,7 +203,9 @@ class PageSvg extends React.Component<
       { left: Infinity, top: Infinity, width: 0, bottom: 0, height: 0 }
     );
     const { bottom, ...newSelect } = bbox;
+    return newSelect;
 
+    // todo get text from viewbox from bellow
     if (
       bbox.left === Infinity ||
       bbox.top === Infinity ||
@@ -193,7 +214,7 @@ class PageSvg extends React.Component<
     ) {
       return;
     }
-    
+
     this.props.onAddViewbox(newSelect);
     this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
@@ -283,7 +304,7 @@ class PageSvg extends React.Component<
         const viewboxId = this.props.selectedNodes[0]; // selected on creation
         const source = this.props.nodes[viewboxId];
         let { x, y } = source.style;
-        const shiftedX = x + Math.random() * 50 - 40
+        const shiftedX = x + Math.random() * 50 - 40;
         const style = {
           x: shiftedX < 20 ? 20 + Math.random() * 50 : shiftedX,
           y: y + Math.random() * 50 + 40
@@ -404,7 +425,7 @@ class PageSvg extends React.Component<
                       ? "2px solid " + color
                       : "none"
                   }}
-                  onClick={this.clickLine(line)}
+                  onDoubleClick={this.clickLine(line)}
                 />
               );
             })}

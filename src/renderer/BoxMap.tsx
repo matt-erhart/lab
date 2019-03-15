@@ -12,16 +12,12 @@ import { Tooltip } from "./Tooltip";
 import TextEditor from "./TextEditor";
 import { NodeDataTypes, ViewboxData } from "../store/creators";
 import PdfViewer from "./PdfViewer";
-const boxes = makeGridOfBoxes(100, 1000, 10, 10, 50).map(x => {
-  return { left: x.x, top: x.y, ...x };
-});
 
 /**
  * @class **BoxMap**
  */
 
 const BoxMapDefaults = {
-  props: { boxes: boxes },
   state: {
     dx: 0,
     dy: 0,
@@ -45,7 +41,8 @@ const BoxMapDefaults = {
       top: number;
       width: number;
       height: number;
-    }[]
+    }[],
+    editingId: ""
   }
 };
 const mapState = (state: iRootState) => ({
@@ -69,9 +66,9 @@ const mapDispatch = ({
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
-
+type props = typeof BoxMapDefaults.props & connectedProps;
 export class BoxMap extends React.Component<
-  typeof BoxMapDefaults.props & connectedProps,
+  props,
   typeof BoxMapDefaults.state
 > {
   static defaultProps = BoxMapDefaults.props;
@@ -80,6 +77,14 @@ export class BoxMap extends React.Component<
   mapRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
   transform;
+
+  // shouldComponentUpdate(
+  //   nextProps: props,
+  //   nextState: typeof BoxMapDefaults.state
+  // ) {
+  //   console.log(nextState.boxesInView !== this.state.boxesInView)
+  //   return nextState.boxesInView !== this.state.boxesInView
+  // }
 
   componentDidMount() {
     this.setSize();
@@ -98,7 +103,6 @@ export class BoxMap extends React.Component<
         this.setState({ dragX: data.x, dragY: data.y });
       }
       if (data.type === "mouseup") {
-        console.log("last move", lastMove);
         const update = this.props.selectedNodes.map(id => {
           const { x, y } = this.props.nodes[id].style;
           return { id, style: { x: x + lastMove.x, y: y + lastMove.y } };
@@ -116,7 +120,6 @@ export class BoxMap extends React.Component<
   };
 
   onScroll = e => {
-    console.log('scroll')
     var dx = e.nativeEvent.target.scrollLeft;
     var dy = e.nativeEvent.target.scrollTop;
     this.setState({ dx, dy });
@@ -135,7 +138,7 @@ export class BoxMap extends React.Component<
     const userHtml = Object.values(props.nodes).filter(n => {
       const { x, y } = n.style;
       const edges = { minX: x, minY: y, maxX: x + 100, maxY: y + 100 };
-      return true//isInView(edges);
+      return true; //isInView(edges);
     });
 
     const boxesInView = userHtml.map(h => {
@@ -158,7 +161,6 @@ export class BoxMap extends React.Component<
   }
 
   mousedownBox = box => e => {
-    console.log();
     e.nativeEvent.stopPropagation();
     if (typeof box.id === "string") {
       if (!box.isSelected && !e.shiftKey) {
@@ -184,23 +186,23 @@ export class BoxMap extends React.Component<
   };
 
   onDoubleClick = box => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const bbox = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-    const { left, top, width, height } = bbox;
-    console.log("dblclick", bbox);
-    this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+    this.setState({ editingId: box.id });
+    // const bbox = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+    // const { left, top, width, height } = bbox;
+    // this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
 
-    this.setState(state => {
-      return produce(state, draft => {
-        draft.editors.push({
-          id: box.id,
-          left,
-          top,
-          width,
-          height,
-          nodesOrLinks: "nodes"
-        });
-      });
-    });
+    // this.setState(state => {
+    //   return produce(state, draft => {
+    //     draft.editors.push({
+    //       id: box.id,
+    //       left,
+    //       top,
+    //       width,
+    //       height,
+    //       nodesOrLinks: "nodes"
+    //     });
+    //   });
+    // });
   };
   onKey = e => {
     const key2cmd = {
@@ -213,10 +215,35 @@ export class BoxMap extends React.Component<
     console.log(e.key);
   };
 
+  onLeaveEditor = e => {
+    this.setState({ editingId: "" });
+  };
+
   renderBox = (box: typeof BoxMapDefaults.state.boxesInView) => {
     switch (box.data.type as NodeDataTypes) {
+      case "pdf.publication":
+        return (
+          <div
+            style={{ backgroundColor: "white", padding: 5, maxWidth: 300 }}
+            draggable={false}
+          >
+            {box.data.pdfDir.replace("-", " ")}
+          </div>
+        );
       case "userHtml":
-        return ReactHtmlParser(box.data.html);
+        return (
+          <div
+            style={{ backgroundColor: "white", padding: 5, maxWidth: 300 }}
+            onMouseLeave={this.onLeaveEditor}
+          >
+            {/* {ReactHtmlParser(box.data.html)} */}
+            <TextEditor
+              key={box.id}
+              id={box.id}
+              readOnly={this.state.editingId !== box.id}
+            />
+          </div>
+        );
       case "pdf.segment.viewbox":
         const { pdfRootDir } = this.props;
         const {
@@ -228,29 +255,27 @@ export class BoxMap extends React.Component<
           scale,
           pageNumber
         } = box.data as ViewboxData;
-        console.log(pdfRootDir)
-        
+
+        const pagenum = [pageNumber];
         return (
-          <div key={box.data.id} style={{ left, top, width, height, border: "1px solid red" }}>
-            <PdfViewer
+          <PdfViewer
             key={box.data.id}
-              pathInfo={{ pdfRootDir, pdfDir }}
-              pageNumbersToLoad={[pageNumber]}
-              viewBox={{
-                left: left - 50,
-                top: top - 50,
-                width: width + 100,
-                height: height + 100,
-                scale
-              }}
-            />
-          </div>
+            pageNumbersToLoad={pagenum}
+            {...{
+              pdfRootDir,
+              pdfDir,
+              left: left - 50,
+              top: top - 50,
+              width: width + 100,
+              height: height + 100,
+              scale
+            }}
+          />
         );
     }
   };
 
   render() {
-    console.log('render box map')
     return (
       <ScrollContainer
         ref={this.scrollRef}
@@ -269,13 +294,23 @@ export class BoxMap extends React.Component<
                   top: box.top,
                   width: "auto",
                   height: "auto",
-                  border: box.isSelected ? "4px solid blue" : "1px solid blue"
+                  borderRadius: 7,
+                  border: box.isSelected
+                    ? "4px solid hsl(198, 100%, 50%)"
+                    : "4px solid lightgrey"
                 }}
                 onMouseDown={this.mousedownBox(box)}
                 onClick={this.clickBox(box)}
                 onDoubleClick={this.onDoubleClick(box)}
               >
-                <div style={{ userSelect: "none" }}>
+                <div
+                  draggable={false}
+                  style={{
+                    userSelect: "none",
+                    paddingTop: 15,
+                    backgroundColor: "lightgrey"
+                  }}
+                >
                   {/* {ReactHtmlParser(box.html)} */}
                   {this.renderBox(box)}
                 </div>
@@ -283,7 +318,7 @@ export class BoxMap extends React.Component<
             );
           })}
         </MapContainer>
-        {this.state.editors.length > 0 &&
+        {/* {this.state.editors.length > 0 &&
           this.state.editors.map((editor, ix) => {
             const { id, left, top, width, height } = editor;
             return (
@@ -305,7 +340,7 @@ export class BoxMap extends React.Component<
                 <TextEditor key={editor.id} id={editor.id} />
               </Tooltip>
             );
-          })}
+          })} */}
       </ScrollContainer>
     );
   }

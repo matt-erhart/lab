@@ -24,7 +24,7 @@ import {
   PdfPublication
 } from "../store/creators";
 import TextEditor from "./TextEditor";
-import  BoxMap  from "./BoxMap";
+import BoxMap from "./BoxMap";
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -172,6 +172,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     this.props.setCurrent({ pdfDir: opt.label });
   };
 
+  pageNum = [2] // prevent rerender from array creation
   render() {
     const { pdfRootDir, pdfDir } = this.props;
     const { pdfNodes } = this.state;
@@ -198,9 +199,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         <MainContainer>
           {pdfDir.length > 0 && (
             <PdfViewer
-              pathInfo={{ pdfRootDir, pdfDir }}
-              pageNumbersToLoad={[3]}
-              viewBox={{
+              pageNumbersToLoad={[]}
+              {...{
+                pdfRootDir,
+                pdfDir,
                 left: 107.148 - 20,
                 top: 490.84180000000083 - 20,
                 width: "50vw",

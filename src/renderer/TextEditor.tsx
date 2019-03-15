@@ -27,7 +27,11 @@ const schema = {
  * todo: currectly ONLY ONE INSTANCE WITH ID="" ALLOWED
  */
 const TextEditorDefaults = {
-  props: { nodesOrLinks: "nodes" as "nodes" | "links", id: "" },
+  props: {
+    nodesOrLinks: "nodes" as "nodes" | "links",
+    id: "",
+    readOnly: false
+  },
   state: {
     editorValue: Plain.deserialize("") as Editor["value"],
     wordAtCursor: "",
@@ -64,7 +68,7 @@ export class TextEditor extends React.Component<
 
   initHtml = () => {
     const { id, nodesOrLinks } = this.props;
-    if (this.props.id.length > 0) {      
+    if (this.props.id.length > 0) {
       const html = oc(this.props[nodesOrLinks][id]).data.html("<p></p>");
       const editorValue = htmlSerializer.deserialize(html);
       console.log(editorValue.toJS());
@@ -77,7 +81,7 @@ export class TextEditor extends React.Component<
   }
 
   componentWillUnmount() {
-    this.save();
+      this.save();
   }
 
   componentDidUpdate(prevProps) {
@@ -115,6 +119,7 @@ export class TextEditor extends React.Component<
     const graphInlines = this.editor.value.document.getInlinesByType("graph");
     const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
     const serialized = this.serialize(this.state.editorValue);
+    if (serialized.text.length === 0) return;
     let currentNode;
 
     if (this.props.id.length === 0) {
@@ -309,11 +314,13 @@ export class TextEditor extends React.Component<
     return (
       <EditorContainer
         ref={this.containerRef}
+        onMouseLeave={e => this.save()}
+
         // onScroll={this.setRange}
       >
         <Downshift
           itemToString={item => (item ? item.data.text : "")}
-          isOpen={wordAtCursor.length > 1}
+          isOpen={wordAtCursor.length > 1 && !this.props.readOnly}
           onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
             const { id } = autocompleteList[highlightedIndex] || { id: false };
             if (id) {
@@ -339,6 +346,7 @@ export class TextEditor extends React.Component<
               <div>
                 <div style={{ border: "1px solid lightgrey", margin: 10 }}>
                   <Editor
+                    readOnly={this.props.readOnly}
                     ref={this.ref as any}
                     spellCheck={false}
                     onChange={this.onChange}
@@ -357,7 +365,8 @@ export class TextEditor extends React.Component<
                     height: this.props.id.length === 0 ? "8vh" : "100%",
                     overflowY: "scroll",
                     marginTop: 2,
-                    marginBottom: 2
+                    marginBottom: 2,
+                    hidden: this.props.readOnly
                   }}
                 >
                   {downshift.isOpen &&
@@ -404,7 +413,6 @@ export const renderSlateNodes = (props, _, next) => {
   let data = node.data.toJS();
   switch (node.type) {
     case "graph":
-
       return (
         <span
           {...attributes}
@@ -412,7 +420,7 @@ export const renderSlateNodes = (props, _, next) => {
           data-graph-id={node.data.get("id")}
           style={{
             border: isFocused ? "1px solid blue" : "none",
-            fontStyle: 'italic'
+            fontStyle: "italic"
           }}
           contentEditable={false}
         >
