@@ -1,4 +1,17 @@
-1. no auto segment pls on click
+- drag handle
+- resize on padding
+- virtualized as in boxmap
+- windows
+  - freeform
+    - physics / collision detection
+  - parametric
+  - minimize/maximize/jump to size
+
+
+- show links on hover
+- html-to-image for zoom out
+
+
 
 
 Automatic, yet easily dismissible

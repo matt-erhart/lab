@@ -172,7 +172,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     this.props.setCurrent({ pdfDir: opt.label });
   };
 
-  pageNum = [2] // prevent rerender from array creation
+  pageNum = [2]; // prevent rerender from array creation
   render() {
     const { pdfRootDir, pdfDir } = this.props;
     const { pdfNodes } = this.state;
@@ -229,13 +229,15 @@ import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
 // import { TextEditor } from "./TextEditor";/
 import { Resizer } from "./Resizer";
+import { WindowContainer } from "./WindowContainer";
 class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <ConnectedApp />
+        {/* <ConnectedApp /> */}
         {/* <BoxMap /> */}
         {/* <Resizer /> */}
+        <WindowContainer />
       </Provider>
     );
   }

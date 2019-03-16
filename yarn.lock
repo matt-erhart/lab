@@ -715,6 +715,13 @@
     "@types/node" "*"
     "@types/react" "*"
 
+"@types/react-native@*":
+  version "0.57.40"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.57.40.tgz#a227acb6b2c7372cb678202df4cfe716ace9ce94"
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/react" "*"
+
 "@types/react@*":
   version "16.8.0"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.0.tgz#0933e105ea21739948b1525920e0536312d54c58"
@@ -752,12 +759,12 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/strip-json-comments/-/strip-json-comments-0.0.30.tgz#9aa30c04db212a9a0649d6ae6fd50accc40748a1"
 
-"@types/styled-components@^4.1.4":
-  version "4.1.7"
-  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-4.1.7.tgz#fdb59c66616e847106395f4023e452ca78b13033"
+"@types/styled-components@^4.1.12":
+  version "4.1.12"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-4.1.12.tgz#62c19bd1aa37b1a904d36c179a0fec66c24ac99c"
   dependencies:
-    "@types/node" "*"
     "@types/react" "*"
+    "@types/react-native" "*"
     csstype "^2.2.0"
 
 "@types/webpack-env@^1.13.6":
@@ -7644,7 +7651,7 @@ rxjs@^5.0.0-beta.12:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.3.3:
+rxjs@^6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.4.0.tgz#f3bb0fe7bda7fb69deac0c16f17b50b0b8790504"
   dependencies:
