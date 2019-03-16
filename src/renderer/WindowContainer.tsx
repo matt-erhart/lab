@@ -4,10 +4,11 @@ import produce from "immer";
 var equal = require("fast-deep-equal");
 import { dragData } from "./rx";
 import { Subscription } from "rxjs";
+import { Rectangle, removeOverlaps } from "webcola";
 
 const windows = [
   { id: "1", left: 100, top: 100, height: 100, width: 100 },
-  { id: "2", left: 500, top: 300, height: 100, width: 100 }
+  { id: "2", left: 101, top: 100, height: 100, width: 100 }
 ];
 
 /**
@@ -37,6 +38,24 @@ export class WindowContainer extends React.Component<
       return { windows };
     });
   };
+
+  componentDidMount() {
+    let rects = this.state.windows.map(w => {
+      const { left, top, width, height } = w;
+      return new Rectangle(left, left + width, top, top + height);
+    });
+    removeOverlaps(rects);
+    const windows = rects.map((r, ix) => {
+      const left = r.x;
+      const width = r.X - r.x;
+      const height = r.Y - r.y;
+      const top = r.y;
+      return { id: ix+'', left, width, height, top };
+    });
+
+    this.setState({ windows });
+    console.log(rects);
+  }
 
   render() {
     return (
@@ -134,18 +153,41 @@ export class ResizeableFrame extends React.Component<
       const {
         resizeInfo: { location }
       } = state;
+      const updateSides = {
+        right: { width: this.props.width + dx },
+        bottom: { height: this.props.height + dy },
+        top: { top: this.props.top + dy, height: this.props.height - dy },
+        left: { left: this.props.left + dx, width: this.props.width - dx }
+      };
 
-      if (location === "right") return { width: this.props.width + dx };
-      if (location === "bottom") return { height: this.props.height + dy };
-      if (location === "top")
-        return { top: this.props.top + dy, height: this.props.height - dy };
-      return null;
+      const update = {
+        ...updateSides,
+        topLeft: { ...updateSides.top, ...updateSides.left },
+        topRight: { ...updateSides.top, ...updateSides.right },
+        bottomRight: { ...updateSides.bottom, ...updateSides.right },
+        bottomLeft: { ...updateSides.bottom, ...updateSides.left }
+      };
+
+      if (update.hasOwnProperty(location)) {
+        console.log(location);
+
+        return update[location];
+      } else {
+        return null;
+      }
     });
+  };
+
+  onMouseUp = () => {
+    this.isMouseDown = false;
+    const { left, top, width, height } = this.state;
+    const { id } = this.props;
+    this.props.onChange({ id, left, top, width, height });
   };
 
   // todo this actually would make a good hook
   sub: Subscription;
-  onMouseDown = e => {
+  onMouseDownResize = e => {
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
       switch (mData.type) {
@@ -153,10 +195,24 @@ export class ResizeableFrame extends React.Component<
           this.resize(mData.dx, mData.dy);
           break;
         case "mouseup":
-          this.isMouseDown = false;
-          const { left, top, width, height } = this.state;
-          const { id } = this.props;
-          this.props.onChange({ id, left, top, width, height });
+          this.onMouseUp();
+          break;
+      }
+    });
+  };
+
+  onMouseDownMove = e => {
+    this.isMouseDown = true;
+    this.sub = dragData(e).subscribe(mData => {
+      switch (mData.type) {
+        case "mousemove":
+          this.setState({
+            top: this.props.top + mData.dy,
+            left: this.props.left + mData.dx
+          });
+          break;
+        case "mouseup":
+          this.onMouseUp();
           break;
       }
     });
@@ -167,8 +223,6 @@ export class ResizeableFrame extends React.Component<
   }
 
   render() {
-    // console.log(this.state)
-
     const { left, top, width, height, ...rest } = this.state;
     return (
       <div
@@ -181,19 +235,44 @@ export class ResizeableFrame extends React.Component<
           border: "1px solid black",
           padding: 5,
           cursor: this.state.resizeInfo.cursor,
-          userSelect: this.onMouseDown ? "none" : "auto"
+          userSelect: "none",
+          display: "flex",
+          flexDirection: "column",
+          margin: 0,
+          boxSizing: 'border-box'
         }}
-        onMouseDown={this.onMouseDown}
+        onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         {...rest}
       >
-        <div style={{ userSelect: "text", width: "100%", height: "100%" }}>
+        <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} />
+        <div
+          draggable={false}
+          style={{
+            userSelect: "text",
+            width: "100%",
+            height: "100%",
+            outline: "1px solid lightgrey",
+            margin: 0,
+            flex: 1
+          }}
+        >
           hey
         </div>
       </div>
     );
   }
 }
+
+const DragHandle = styled.div`
+  min-height: 10px;
+  background-color: lightblue;
+  flex: 0;
+  user-select: none;
+  &:hover {
+    cursor: all-scroll;
+  }
+`;
 
 type loc =
   | "left"
@@ -241,7 +320,7 @@ const getResizeInfo = (
   if (isTopLeft) return { location: "topLeft", cursor: "nwse-resize" };
   if (isBottomRight) return { location: "bottomRight", cursor: "nwse-resize" };
   if (isBottomLeft) return { location: "bottomLeft", cursor: "nesw-resize" };
-  if (isTopRight) return { location: "bottomRight", cursor: "nesw-resize" };
+  if (isTopRight) return { location: "topRight", cursor: "nesw-resize" };
 
   // else edge
   if (isLeft) return { location: "left", cursor: "ew-resize" };
