@@ -229,7 +229,7 @@ import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
 // import { TextEditor } from "./TextEditor";/
 import { Resizer } from "./Resizer";
-import { WindowContainer } from "./WindowContainer";
+import GraphContainer from "./GraphContainer";
 class App extends React.Component {
   render() {
     return (
@@ -237,7 +237,7 @@ class App extends React.Component {
         {/* <ConnectedApp /> */}
         {/* <BoxMap /> */}
         {/* <Resizer /> */}
-        <WindowContainer />
+        <GraphContainer />
       </Provider>
     );
   }

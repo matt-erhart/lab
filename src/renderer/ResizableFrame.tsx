@@ -55,16 +55,11 @@ const ResizableFrameDefaults = {
     id: "",
     onTransformStart: undefined as onTrans,
     onTransformEnd: undefined as onTrans,
-    onTransforming: undefined as onTrans
+    onTransforming: undefined as onTrans,
+    children: <span /> as React.ReactNode
   },
   state: {
-    resizeInfo: { location: "default", cursor: "default" } as hoverInfo,
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-    dx: 0,
-    dy: 0
+    resizeInfo: { location: "default", cursor: "default" } as hoverInfo
   }
 };
 export class ResizableFrame extends React.Component<
@@ -74,21 +69,21 @@ export class ResizableFrame extends React.Component<
   static defaultProps = ResizableFrameDefaults.props;
   state = ResizableFrameDefaults.state;
   isMouseDown = false;
-  componentDidMount() {
-    // well show the resize with this comps state,
-    // then call onTransform only on mouseup
-    const { left, top, width, height } = this.props;
-    this.setState({ left, top, width, height });
+  cache = { left: 0, top: 0, width: 0, height: 0, dx: 0, dy: 0 };
+
+  shouldComponentUpdate(props, state) {
+    for (let dim of ["left", "top", "width", "height"]) {
+      if (this.props[dim] !== props[dim]) {
+        return true;
+      }
+    }
+    if (state.resizeInfo !== this.state.resizeInfo) return true;
+    return false;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // calling onTransform will change the incoming props
-    // or if you just want to controll the frame from the outside,
-    // e.g. collision detection or force dirrected layout
-    // if (!equal(prevProps, this.props)) {
-    //   const { left, top, width, height } = this.props;
-    //   this.setState({ left, top, width, height });
-    // }
+  componentDidMount() {
+    const { left, top, width, height } = this.props;
+    this.cache = { ...this.cache, left, top, width, height };
   }
 
   onHover = e => {
@@ -106,10 +101,10 @@ export class ResizableFrame extends React.Component<
 
   resize = (dx, dy) => {
     const updateSides = {
-      right: { width: this.state.width + dx },
-      bottom: { height: this.state.height + dy },
-      top: { top: this.state.top + dy, height: this.state.height - dy },
-      left: { left: this.state.left + dx, width: this.state.width - dx }
+      right: { width: this.cache.width + dx },
+      bottom: { height: this.cache.height + dy },
+      top: { top: this.cache.top + dy, height: this.cache.height - dy },
+      left: { left: this.cache.left + dx, width: this.cache.width - dx }
     };
 
     const update = {
@@ -125,8 +120,8 @@ export class ResizableFrame extends React.Component<
         id: this.props.id,
         ...update[this.state.resizeInfo.location]
       });
-    } 
-    
+    }
+
     // else {
     //   // let this component handle it
     //   this.setState(state => {
@@ -144,7 +139,7 @@ export class ResizableFrame extends React.Component<
 
   onMouseUp = () => {
     const { left, top, width, height } = this.props;
-    this.setState({ left, top, width, height });
+    this.cache = { ...this.cache, left, top, width, height };
     this.isMouseDown = false;
     if (this.props.onTransformEnd) {
       const { id } = this.props;
@@ -175,16 +170,16 @@ export class ResizableFrame extends React.Component<
       switch (mData.type) {
         case "mousemove":
           const update = {
-            top: this.state.top + mData.dy,
-            left: this.state.left + mData.dx
+            top: this.cache.top + mData.dy,
+            left: this.cache.left + mData.dx
           };
           if (this.props.onTransforming) {
             // controlled
             this.props.onTransforming({ id: this.props.id, ...update });
-          } 
-        //   else {
-        //     this.setState(update);
-        //   }
+          }
+          //   else {
+          //     this.setState(update);
+          //   }
 
           break;
         case "mouseup":
@@ -209,14 +204,18 @@ export class ResizableFrame extends React.Component<
           top,
           width,
           height,
-          border: "1px solid black",
+          //   border: "1px solid black",
+          backgroundColor: "#fff",
           padding: 5,
           cursor: this.state.resizeInfo.cursor,
           userSelect: "none",
           display: "flex",
           flexDirection: "column",
           margin: 0,
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          //   outline: "1px solid black",
+          boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+          borderRadius: 2
         }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
@@ -228,12 +227,13 @@ export class ResizableFrame extends React.Component<
             userSelect: "text",
             width: "100%",
             height: "100%",
-            outline: "1px solid lightgrey",
+            // outline: "1px solid lightgrey",
             margin: 0,
-            flex: 1
+            flex: 1,
+            backgroundColor: "white"
           }}
         >
-          hey
+          {this.props.children}
         </div>
       </div>
     );

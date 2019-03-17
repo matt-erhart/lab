@@ -2,6 +2,9 @@ import { mergeDefaults } from "../renderer/utils";
 import { number } from "prop-types";
 import uuidv1 = require("uuid/v1");
 
+// todo! nodes are now frames
+// viewbox left/top should be scrollLeft/scrollTop
+
 export type NodeDataTypes =
   | "empty"
   | "userHtml" // html made by user after writing
@@ -24,7 +27,7 @@ export interface NodeMeta {
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: { x: number; y: number };
+  style: { left: number; top: number; width: number; height: number };
   meta: NodeMeta;
 }
 
@@ -59,7 +62,7 @@ export interface PdfSegmentViewbox extends NodeBase {
 import { CircleConfig, LineConfig } from "konva";
 export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
-  style = {} as Partial<CircleConfig>
+  style = {}
 ) => {
   const now = Date.now();
   const id = uuidv1();
@@ -71,15 +74,17 @@ export const makePdfSegmentViewbox = (
     style: {
       id: id,
       type: "circle",
-      x: Math.random() * 200 + 20,
-      y: Math.random() * 200 + 20,
+      left: Math.random() * 200 + 20,
+      top: Math.random() * 200 + 20,
+      width: 200,
+      height: 200,
       fill: "blue",
       draggabled: true,
       radius: 5,
       stroke: "blue",
       strokeWidth: 4,
       ...style
-    } as Partial<CircleConfig>,
+    },
     meta: makeNodeMeta()
   } as PdfSegmentViewbox;
 };
@@ -118,8 +123,10 @@ const PdfPublicationDefaults = {
   },
   style: {
     id: "",
-    x: Math.random() * 200 + 20,
-    y: Math.random() * 200 + 20,
+    left: Math.random() * 200 + 20,
+    top: Math.random() * 200 + 20,
+    width: 200,
+    height: 200,
     fill: "grey",
     stroke: "red"
   },
@@ -158,7 +165,7 @@ const LinkDefaults = {
     strokeWidth: 3,
     opacity: 0.5,
     fill: "black"
-  } as Partial<LineConfig>,
+  },
   meta: makeNodeMeta(),
   source: "",
   target: "",
@@ -187,11 +194,11 @@ const UserHtmlDefaults = {
     id: "",
     left: 0,
     top: 0,
-    width: 0,
-    height: 0,
+    width: 200,
+    height: 220,
     stroke: "black",
     fill: "black"
-  } as Partial<LineConfig>
+  }
 };
 export type UserHtml = typeof UserHtmlDefaults;
 export const makeUserHtml = (data = { html: "", text: "" }, style = {}) => {
