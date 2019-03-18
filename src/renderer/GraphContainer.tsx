@@ -167,16 +167,14 @@ export class GraphContainer extends React.Component<
         );
       case "userHtml":
         return (
-          <div
-            style={{ backgroundColor: "white", padding: 5, maxWidth: 300 }}
-            // onMouseLeave={this.onLeaveEditor}
-          >
-            {node.data.html}
-            {/* <TextEditor
+          <div style={{ flex: 1 }}>
+            <TextEditor
               key={node.id}
-              id={node.id}
-              readOnly={this.state.editingId !== node.id}
-            /> */}
+              width={frame.width - 13}
+              height={frame.height - 23}
+              // id={node.id}
+              // readOnly={this.state.editingId !== node.id}
+            />
           </div>
         );
       case "pdf.segment.viewbox":
@@ -307,7 +305,7 @@ const ScrollContainer = styled.div`
 `;
 
 const MapContainer = styled.div`
-  width: 10000px;
-  height: 10000px;
+  width: 30000px;
+  height: 30000px;
   position: relative;
 `;

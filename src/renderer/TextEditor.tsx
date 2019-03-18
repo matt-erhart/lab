@@ -15,6 +15,7 @@ import {
   makeUserHtml,
   makeLink
 } from "../store/creators";
+import console = require("console");
 const schema = {
   inlines: {
     graph: {
@@ -30,7 +31,9 @@ const TextEditorDefaults = {
   props: {
     nodesOrLinks: "nodes" as "nodes" | "links",
     id: "",
-    readOnly: false
+    readOnly: false,
+    width: 500,
+    height: 500
   },
   state: {
     editorValue: Plain.deserialize("") as Editor["value"],
@@ -81,7 +84,7 @@ export class TextEditor extends React.Component<
   }
 
   componentWillUnmount() {
-      this.save();
+    this.save();
   }
 
   componentDidUpdate(prevProps) {
@@ -250,10 +253,13 @@ export class TextEditor extends React.Component<
   };
 
   getTextNodes = (inputText = "") => {
-    const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
-      node => node.data.type === ("userHtml" as NodeDataTypes)
-    );
-    return userHtml.filter(t => t.data.text.includes(inputText));
+    if (this.props.nodes) {
+      const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
+        node => node.data.type === ("userHtml" as NodeDataTypes)
+      );
+      return userHtml.filter(t => t.data.text.includes(inputText));
+    }
+    return [];
   };
 
   onChange = change => {
@@ -303,8 +309,40 @@ export class TextEditor extends React.Component<
   //   });
 
   // }
-
   render() {
+    return (
+      <div 
+      onScroll={e=>e.stopPropagation()}
+      style={{
+        maring: 3,
+        height: this.props.height,
+        width: this.props.width,
+        overflowY: "auto",
+        border: "1px solid lightgrey",
+      }}>
+        <Editor
+          readOnly={this.props.readOnly}
+          ref={this.ref as any}
+          spellCheck={false}
+          onChange={this.onChange}
+          value={this.state.editorValue}
+          //   renderNode={renderNode({ userId, pubId })}
+          // onKeyDown={this.onKeyDown(downshift.getInputProps)}
+          //   onFocus={this.hideAutocomplete}
+          //   onBlur={this.hideAutocomplete}
+          style={{
+            margin: 5,
+            height: '95%',
+            cursor: 'text'
+          }}
+          renderNode={renderSlateNodes}
+          schema={schema}
+        />
+      </div>
+    );
+  }
+
+  _render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
     const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
@@ -315,7 +353,7 @@ export class TextEditor extends React.Component<
       <EditorContainer
         ref={this.containerRef}
         onMouseLeave={e => this.save()}
-
+        onClick={e => console.log("---------------------------------")}
         // onScroll={this.setRange}
       >
         <Downshift
@@ -369,7 +407,8 @@ export class TextEditor extends React.Component<
                     hidden: this.props.readOnly
                   }}
                 >
-                  {downshift.isOpen &&
+                  {false &&
+                    downshift.isOpen &&
                     autocompleteList.map((item, index) => (
                       <Button1
                         {...downshift.getItemProps({
@@ -436,8 +475,6 @@ const EditorContainer = styled.div`
   border: 1px solid black;
   border-radius: 5px;
   margin-top: 10px;
-  width: "auto";
-  height: "auto";
 `;
 
 const Button1 = styled.span`

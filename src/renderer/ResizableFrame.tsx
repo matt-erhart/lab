@@ -225,12 +225,10 @@ export class ResizableFrame extends React.Component<
           draggable={false}
           style={{
             userSelect: "text",
-            width: "100%",
-            height: "100%",
             // outline: "1px solid lightgrey",
             margin: 0,
             flex: 1,
-            backgroundColor: "white"
+            backgroundColor: "white",
           }}
         >
           {this.props.children}
