@@ -15,7 +15,14 @@ export type frame = Partial<{
   height: number;
 }>;
 export const updateOneFrame = (frames: frame[]) => (
-  newDims = { id: "", left: -1, width: -1, height: -1, top: -1 } as frame
+  newDims = {
+    id: "",
+    left: -1,
+    width: -1,
+    height: -1,
+    top: -1,
+    isSelected: false
+  } as frame
 ): frame[] => {
   const { id, left, top, width, height } = newDims;
 
@@ -53,10 +60,12 @@ const ResizableFrameDefaults = {
     width: 0,
     height: 0,
     id: "",
+    isSelected: false,
     onTransformStart: undefined as onTrans,
     onTransformEnd: undefined as onTrans,
     onTransforming: undefined as onTrans,
-    children: <span /> as React.ReactNode
+    children: <div /> as React.ReactNode,
+    dragHandle: <div/> as React.ReactElement
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo
@@ -72,12 +81,13 @@ export class ResizableFrame extends React.Component<
   cache = { left: 0, top: 0, width: 0, height: 0, dx: 0, dy: 0 };
 
   shouldComponentUpdate(props, state) {
-    for (let dim of ["left", "top", "width", "height"]) {
+    for (let dim of ["left", "top", "width", "height", "isSelected"]) {
       if (this.props[dim] !== props[dim]) {
         return true;
       }
     }
     if (state.resizeInfo !== this.state.resizeInfo) return true;
+    // if (this.props.children !== props.children) return true;
     return false;
   }
 
@@ -215,12 +225,19 @@ export class ResizableFrame extends React.Component<
           boxSizing: "border-box",
           //   outline: "1px solid black",
           boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-          borderRadius: 2
+          borderRadius: 2,
+          overflow: "auto"
         }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
+        onScroll={e => e.stopPropagation()}
       >
-        <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} />
+        {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
+        {React.cloneElement(this.props.dragHandle, {
+          ...this.props.dragHandle.props,
+          draggable: false,
+          onMouseDown: this.onMouseDownMove,
+        })}
         <div
           draggable={false}
           style={{
@@ -228,7 +245,7 @@ export class ResizableFrame extends React.Component<
             // outline: "1px solid lightgrey",
             margin: 0,
             flex: 1,
-            backgroundColor: "white",
+            backgroundColor: "white"
           }}
         >
           {this.props.children}
@@ -238,15 +255,6 @@ export class ResizableFrame extends React.Component<
   }
 }
 
-const DragHandle = styled.div`
-  min-height: 10px;
-  background-color: lightblue;
-  flex: 0;
-  user-select: none;
-  &:hover {
-    cursor: all-scroll;
-  }
-`;
 
 type loc =
   | "left"

@@ -6,12 +6,19 @@ import { dragData } from "./rx";
 import { Subscription } from "rxjs";
 import { Rectangle, removeOverlaps } from "webcola";
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
-import { getBoxEdges, isBoxInBox } from "./utils";
+import { getBoxEdges, isBoxInBox, isBoxPartlyInBox } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import PdfViewer from "./PdfViewer";
-import { ViewboxData, NodeDataTypes, aNode } from "../store/creators";
+import {
+  ViewboxData,
+  NodeDataTypes,
+  aNode,
+  makeUserHtml
+} from "../store/creators";
 import { TextEditor } from "./TextEditor";
+
+// import console = require("console");
 
 // window container for...
 // portal
@@ -94,26 +101,60 @@ export class GraphContainer extends React.Component<
     });
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    // todo perf
+    if (
+      Object.values(prevProps.nodes).length !==
+      Object.values(this.props.nodes).length
+    ) {
+      this.getFramesInView(this.state.containerBounds);
+    }
+  }
+
+  // static getDerivedStateFromProps(props, state) {
+  //   const { width, height } = state.containerBounds;
+  //   const { scrollLeft, scrollTop } = state;
+  //   const pad = 20;
+  //   const view = getBoxEdges(
+  //     scrollLeft - pad,
+  //     scrollTop - pad,
+  //     width + pad,
+  //     height + pad
+  //   );
+  //   const isInView = isBoxInBox(view);
+  //   const framesInView = Object.values(props.nodes).reduce((all, node) => {
+  //     const { left, top, width, height } = node.style;
+  //     const edges = getBoxEdges(left, top, width, height);
+  //     if (isInView(edges)) {
+  //       const isSelected = props.selectedNodes.includes(node.id);
+  //       all.push({ id: node.id, left, top, width, height, isSelected });
+  //     }
+  //     return all;
+  //   }, []);
+  //   console.log(framesInView);
+  //   return { frames: framesInView };
+  // }
+
   getFramesInView = containerBounds => {
     const { width, height } = containerBounds;
-    console.log(width, height);
-    const pad = 20;
+    const pad = 0;
     const view = getBoxEdges(
-      this.scroll.left - pad,
-      this.scroll.top - pad,
+      this.state.scrollLeft - pad,
+      this.state.scrollTop - pad,
       width + pad,
       height + pad
     );
-    const isInView = isBoxInBox(view);
+    const isInView = isBoxPartlyInBox(view);
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
-      const edges = getBoxEdges(left, top, width, height);
-      if (isInView(edges)) {
-        all.push({ id: node.id, left, top, width, height });
+      const edges = getBoxEdges(left, top, width, height);      
+      const inView = isInView(edges)
+      if (inView) {
+        const isSelected = this.props.selectedNodes.includes(node.id);
+        all.push({ id: node.id, left, top, width, height, isSelected });
       }
       return all;
     }, []);
-
     this.setState(state => {
       return { frames: framesInView };
     });
@@ -122,7 +163,7 @@ export class GraphContainer extends React.Component<
   onScroll = e => {
     var scrollLeft = e.nativeEvent.target.scrollLeft;
     var scrollTop = e.nativeEvent.target.scrollTop;
-    this.scroll = { left: scrollLeft, top: scrollTop };
+    this.setState({ scrollLeft, scrollTop });
     this.getFramesInView(this.state.containerBounds);
   };
 
@@ -137,19 +178,56 @@ export class GraphContainer extends React.Component<
   };
 
   onKey = e => {
-    // const key2cmd = {
-    //   Delete: () => {
-    //     this.props.removeBatch({ nodes: this.props.selectedNodes });
-    //     this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
-    //   }
-    // };
-    // key2cmd[e.key]();
-    // console.log(e.key);
+    switch (e.key) {
+      case "Delete":
+        if (this.props.selectedNodes.length > 0) {
+          this.props.removeBatch({ nodes: this.props.selectedNodes });
+          this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+        }
+      default:
+        return null;
+    }
   };
 
+  isSelected = id => {
+    return this.props.selectedNodes.includes(id);
+  };
+
+  onMouseSelect = frame => e => {
+    e.stopPropagation();
+    const isSelected = this.isSelected(frame.id);
+    if (typeof frame.id === "string") {
+      if (!isSelected && !e.shiftKey) {
+        this.props.toggleSelections({
+          selectedNodes: [frame.id],
+          clearFirst: true
+        });
+      }
+
+      if (e.shiftKey) {
+        this.props.toggleSelections({ selectedNodes: [frame.id] });
+      }
+    }
+    // this.getFramesInView(this.state.containerBounds);
+  };
+
+  // clickBox = box => e => {
+  //   e.stopPropagation();
+  // };
+
   deselectAll = e => {
-    // if (!e.shiftKey)
-    //   this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+    if (!e.shiftKey)
+      this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+  };
+
+  makeUserHtmlNode = e => {
+    const { clientX, clientY } = e;
+    console.log(clientX, clientY);
+    const userHtml = makeUserHtml({
+      data: { html: "", text: "" },
+      style: { left: clientX, top: clientY }
+    });
+    this.props.addBatch({ nodes: [userHtml] });
   };
 
   renderGraphNodes = (frame: frame) => {
@@ -159,7 +237,12 @@ export class GraphContainer extends React.Component<
       case "pdf.publication":
         return (
           <div
-            style={{ backgroundColor: "white", padding: 5 }}
+            key={node.id}
+            style={{
+              backgroundColor: "white",
+              padding: 5,
+              border: this.isSelected(frame.id) ? "1px solid blue" : "none"
+            }}
             draggable={false}
           >
             {node.data.pdfDir.replace("-", " ")}
@@ -167,12 +250,16 @@ export class GraphContainer extends React.Component<
         );
       case "userHtml":
         return (
-          <div style={{ flex: 1 }}>
+          <div
+            key={node.id}
+            style={{ flex: 1 }}
+            // onMouseEnter={e => this.setState({ editingId: node.id })}
+          >
             <TextEditor
               key={node.id}
               width={frame.width - 13}
               height={frame.height - 23}
-              // id={node.id}
+              id={node.id}
               // readOnly={this.state.editingId !== node.id}
             />
           </div>
@@ -214,14 +301,20 @@ export class GraphContainer extends React.Component<
     const { width, height } = this.state.containerBounds;
     const f1 = this.state.frames[0];
     const f2 = this.state.frames[1];
+
     return (
       <ScrollContainer
         ref={this.scrollRef}
         onScroll={this.onScroll}
         onKeyUp={this.onKey}
         tabIndex={0}
+        onClick={this.deselectAll}
       >
-        <MapContainer ref={this.mapRef} onClick={this.deselectAll}>
+        <MapContainer
+          ref={this.mapRef}
+          onClick={this.deselectAll}
+          onDoubleClick={this.makeUserHtmlNode}
+        >
           {width && height && (
             <svg
               viewBox={`0 0 ${width} ${height}`}
@@ -234,6 +327,7 @@ export class GraphContainer extends React.Component<
           )}
           {this.state.frames.map(frame => {
             const { left, top, width, height } = frame;
+            const isSelected = this.isSelected(frame.id);
             return (
               <ResizableFrame
                 key={frame.id}
@@ -241,6 +335,13 @@ export class GraphContainer extends React.Component<
                 {...{ left, top, width, height }}
                 onTransforming={this.onTransforming}
                 onTransformEnd={this.onTransformEnd}
+                isSelected={isSelected}
+                dragHandle={
+                  <DragHandle
+                    isSelected={isSelected}
+                    onClick={this.onMouseSelect(frame)}
+                  />
+                }
               >
                 {this.renderGraphNodes(frame)}
               </ResizableFrame>
@@ -308,4 +409,14 @@ const MapContainer = styled.div`
   width: 30000px;
   height: 30000px;
   position: relative;
+`;
+
+const DragHandle = styled.div<{ isSelected: boolean }>`
+  min-height: 10px;
+  background-color: ${props => (props.isSelected ? "lightblue" : "grey")};
+  flex: 0;
+  user-select: none;
+  &:hover {
+    cursor: all-scroll;
+  }
 `;

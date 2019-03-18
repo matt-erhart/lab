@@ -1,18 +1,22 @@
-- drag handle
-- resize on padding
-- virtualized as in boxmap
-- windows
-  - freeform
-    - physics / collision detection
-  - parametric
-  - minimize/maximize/jump to size
+- crud nodes
+- select links
+- crud links
+- render links
+
+- autocomplete tooltip for node
+
+- write after segment 
 
 
-- show links on hover
 - html-to-image for zoom out
 
+- prevent pdf renders
 
+- resizable main layout
 
+- 'a' things
+
+- autocomplete segment text
 
 Automatic, yet easily dismissible
 efficiency, correctness, and consideration of alternate possibilities

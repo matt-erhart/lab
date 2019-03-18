@@ -191,23 +191,21 @@ const UserHtmlDefaults = {
   data: { type: "userHtml" as NodeDataTypes, html: "", text: "" },
   meta: makeNodeMeta(),
   style: {
-    id: "",
     left: 0,
     top: 0,
     width: 200,
-    height: 220,
-    stroke: "black",
-    fill: "black"
+    height: 220
   }
 };
 export type UserHtml = typeof UserHtmlDefaults;
-export const makeUserHtml = (data = { html: "", text: "" }, style = {}) => {
+export const makeUserHtml = (props = { data: {}, style: {} }) => {
+  const data = { html: "", text: "", ...props.data };
   const id = uuidv1();
   return {
     ...UserHtmlDefaults,
     id,
     data: { ...UserHtmlDefaults.data, ...data },
-    style: { ...UserHtmlDefaults.style, ...style, id }
+    style: { ...UserHtmlDefaults.style, ...props.style }
   };
 };
 

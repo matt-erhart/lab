@@ -22,7 +22,7 @@ export const logPropChanges = (prevProps, props) => {
       console.log(key, "changed from", prevProps[key], "to", props[key]);
     }
   });
-}
+};
 
 export function getRegexIndexes(str: string, regex: RegExp): number[] {
   var re = regex;
@@ -53,6 +53,7 @@ export type NestedPartial<T> = {
 
 import uuidv1 = require("uuid/v1");
 import { RegExpLiteral } from "estree";
+
 export const mergeDefaults = <T>(defaults: T, data = {} as Partial<T>) => {
   return {
     ...defaults,
@@ -163,6 +164,19 @@ export const isBoxInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
   const minYOk = smallBox.minY >= bigBox.minY;
   const maxYOk = smallBox.maxY <= bigBox.maxY;
   return minXOk && maxXOk && minYOk && maxYOk;
+};
+
+export const isBoxPartlyInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
+  smallBox: ReturnType<typeof getBoxEdges>
+) => {
+  const minXOk = smallBox.minX <= bigBox.maxX && smallBox.minX >= bigBox.minX;
+  const maxXOk = smallBox.maxX >= bigBox.minX && smallBox.maxX <= bigBox.maxX;
+
+  const minYOk = smallBox.minY <= bigBox.maxY && smallBox.minY >= bigBox.minY;
+  const maxYOk = smallBox.maxY >= bigBox.minY && smallBox.maxY <= bigBox.maxY;
+
+  console.log(smallBox, bigBox, maxYOk);
+  return (minXOk || maxXOk) && (minYOk || maxYOk)
 };
 
 export const getRectEdges = (

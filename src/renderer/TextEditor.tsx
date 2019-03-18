@@ -72,9 +72,8 @@ export class TextEditor extends React.Component<
   initHtml = () => {
     const { id, nodesOrLinks } = this.props;
     if (this.props.id.length > 0) {
-      const html = oc(this.props[nodesOrLinks][id]).data.html("<p></p>");
+      const html = oc(this.props)[nodesOrLinks][id].data.html("<p></p>");
       const editorValue = htmlSerializer.deserialize(html);
-      console.log(editorValue.toJS());
       this.setState({ editorValue });
     }
   };
@@ -311,16 +310,18 @@ export class TextEditor extends React.Component<
   // }
   render() {
     return (
-      <div 
-      onScroll={e=>e.stopPropagation()}
-      style={{
-        maring: 3,
-        height: this.props.height,
-        width: this.props.width,
-        overflowY: "auto",
-        border: "1px solid lightgrey",
-      }}>
+      <div
+        onScroll={e => e.stopPropagation()}
+        style={{
+          maring: 3,
+          height: this.props.height,
+          width: this.props.width,
+          overflowY: "auto",
+          border: "1px solid lightgrey"
+        }}
+      >
         <Editor
+          autoFocus={false}
           readOnly={this.props.readOnly}
           ref={this.ref as any}
           spellCheck={false}
@@ -332,8 +333,8 @@ export class TextEditor extends React.Component<
           //   onBlur={this.hideAutocomplete}
           style={{
             margin: 5,
-            height: '95%',
-            cursor: 'text'
+            height: "95%",
+            cursor: "text"
           }}
           renderNode={renderSlateNodes}
           schema={schema}
