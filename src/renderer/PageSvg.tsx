@@ -16,6 +16,7 @@ import {
   makeUserMediaText,
   makeLink
 } from "../store/creators";
+import PortalContainer from "./PortalContainer";
 // todo consistant CAPS
 
 /**
@@ -38,7 +39,7 @@ const PageSvgDefaults = {
   state: {
     selectionRect: { height: 0, width: 0, left: 0, x1: 0, top: 0, y1: 0 },
     lineGroups: [] as { id: number; lines: LineOfText[] }[],
-    showTextLineBoxes: true,
+    showTextLineBoxes: false,
     showTextBBoxes: false,
     duration: 0,
     div: { text: "", style: { fontFamily: "" as string, fontSize: 0 } },
@@ -468,7 +469,7 @@ class PageSvg extends React.Component<
                 />
               );
             })}
-          {this.state.showText && (
+          {/* {this.state.showText && (
             <>
               <div
                 style={{
@@ -509,8 +510,9 @@ class PageSvg extends React.Component<
                 />
               </PopupPortal>
             </>
-          )}
+          )} */}
         </div>
+
       </>
     );
   }

@@ -71,19 +71,19 @@ export const graph = createModel({
     ) {
       return produce(state, draft => {
         draft.patches = [];
-        for (let key of Object.keys(payload)) {
-          for (let item of payload[key]) {
-            const isUnique = !state[key].hasOwnProperty(item.id);
+        for (let nodesOrLinks of Object.keys(payload)) {
+          for (let arrItem of payload[nodesOrLinks]) {
+            const isUnique = !state[nodesOrLinks].hasOwnProperty(arrItem.id);
+            
             if (isUnique) {
-              draft[key][item.id] = item;
+              draft[nodesOrLinks][arrItem.id] = arrItem;
               draft.patches.push({
                 op: "add",
-                path: [key, item.id],
-                value: item
+                path: [nodesOrLinks, arrItem.id],
+                value: arrItem
               });
             } else {
-              console.log(item, "already exists. maybe you want updateData()");
-              debugger
+              console.log(arrItem, "already exists. maybe you want updateData()");
             }
           }
         }

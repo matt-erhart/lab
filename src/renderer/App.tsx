@@ -24,7 +24,8 @@ import {
   PdfPublication
 } from "../store/creators";
 import TextEditor from "./TextEditor";
-import BoxMap from "./BoxMap";
+// import BoxMap from "./BoxMap";
+import GraphContainer from "./GraphContainer";
 
 const NavBar = styled.div`
   background-color: #23629f;
@@ -212,9 +213,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             />
           )}
 
-          <BoxMap />
+          <GraphContainer />
         </MainContainer>
-        <TextEditor />
       </ViewPortContainer>
     );
   }
@@ -229,15 +229,14 @@ import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
 // import { TextEditor } from "./TextEditor";/
 import { Resizer } from "./Resizer";
-import GraphContainer from "./GraphContainer";
 class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {/* <ConnectedApp /> */}
+        <ConnectedApp />
         {/* <BoxMap /> */}
         {/* <Resizer /> */}
-        <GraphContainer />
+        {/* <GraphContainer /> */}
       </Provider>
     );
   }

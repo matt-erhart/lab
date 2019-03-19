@@ -172,6 +172,8 @@ class TextEditor extends React.Component<
     }
   };
 
+ 
+
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
     if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
@@ -396,6 +398,7 @@ class TextEditor extends React.Component<
         }}
       >
         {downshift => {
+          // if (!downshift.isOpen) return null
           return (
             // <div>
             <div

@@ -143,45 +143,28 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
   };
 };
 
-export interface LinkBase {
-  id: string;
-  data: {
-    type: "unset" | "more" | "similar" | string;
-  };
-  style: {};
-  meta: NodeMeta;
-  source: string;
-  target: string;
-  undirected: boolean;
-}
-
 const LinkDefaults = {
   id: "",
-  data: { type: "" },
+  data: { text: "", html: "" },
   style: {
-    id: "",
-    points: [10, 10, 20, 20],
-    stroke: "black",
-    strokeWidth: 3,
-    opacity: 0.5,
-    fill: "black"
+    stroke: "lightgrey"
   },
   meta: makeNodeMeta(),
   source: "",
   target: "",
-  undirected: true
+  isDirected: true
 };
 
-export const makeLink = (sourceNode: aNode, targetNode: aNode, data = {}) => {
-  const { x: x1, y: y1 } = sourceNode.style as Partial<CircleConfig>;
-  const { x: x2, y: y2 } = targetNode.style as Partial<CircleConfig>;
+export type LinkBase = typeof LinkDefaults;
+
+export const makeLink = (sourceId: string, targetId: string, data = {}) => {
   const id = "link-" + uuidv1();
   return {
     ...LinkDefaults,
     id,
-    source: sourceNode.id,
-    target: targetNode.id,
-    style: { ...LinkDefaults.style, id, points: [x1, y1, x2, y2] },
+    source: sourceId,
+    target: targetId,
+    style: { ...LinkDefaults.style },
     data: { ...LinkDefaults.data, ...data }
   };
 };

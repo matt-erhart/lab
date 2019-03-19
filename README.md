@@ -1,26 +1,22 @@
-- autocomplete on edge of frame up or down match width
-- 
-
-- render links
 - select links
-- crud links
+- crUD links
+- move many
+- delete segment in pdf viewer
 
-
+- create link
+  - right click stage link to new html node
 - write after segment 
 
 
+
 - html-to-image for zoom out
-
 - prevent pdf renders
-
 - resizable main layout
-
 - 'a' things
-
 - autocomplete segment text
-
-
 - use attributes like id/ data- to prevent overlay events
+
+
 
 Automatic, yet easily dismissible
 efficiency, correctness, and consideration of alternate possibilities
@@ -29,7 +25,6 @@ showing various completions, the recommendations suggest refinements
 direct manipulation” are articulated in Eric Horvitz’s Principles of
 Mixed-Initiative User Interfaces (11)—required 
 predictive interaction (15)
-
 
 
 # render perf notes

@@ -6,7 +6,7 @@ import { dragData } from "./rx";
 import { Subscription } from "rxjs";
 import { Rectangle, removeOverlaps } from "webcola";
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
-import { getBoxEdges, isBoxInBox, isBoxPartlyInBox } from "./utils";
+import { getBoxEdges, isBoxInBox, isBoxPartlyInBox, unique } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import PdfViewer from "./PdfViewer";
@@ -14,7 +14,11 @@ import {
   ViewboxData,
   NodeDataTypes,
   aNode,
-  makeUserHtml
+  makeUserHtml,
+  makeLink,
+  aLink,
+  Links,
+  Nodes
 } from "../store/creators";
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
@@ -38,6 +42,7 @@ const GraphContainerDefaults = {
   props: {},
   state: {
     frames: frames,
+    links: [] as { source: ""; target: "" }[],
     containerBounds: {} as ClientRect | DOMRect,
     scrollLeft: 0,
     scrollTop: 0,
@@ -103,38 +108,26 @@ export class GraphContainer extends React.Component<
   };
 
   componentDidUpdate(prevProps, prevState) {
-    // todo perf
+    // todo perf. use patches
     if (
       Object.values(prevProps.nodes).length !==
-      Object.values(this.props.nodes).length
+        Object.values(this.props.nodes).length ||
+      Object.values(prevProps.links).length !==
+        Object.values(this.props.links).length
     ) {
       this.getFramesInView(this.state.containerBounds);
     }
   }
 
-  // static getDerivedStateFromProps(props, state) {
-  //   const { width, height } = state.containerBounds;
-  //   const { scrollLeft, scrollTop } = state;
-  //   const pad = 20;
-  //   const view = getBoxEdges(
-  //     scrollLeft - pad,
-  //     scrollTop - pad,
-  //     width + pad,
-  //     height + pad
-  //   );
-  //   const isInView = isBoxInBox(view);
-  //   const framesInView = Object.values(props.nodes).reduce((all, node) => {
-  //     const { left, top, width, height } = node.style;
-  //     const edges = getBoxEdges(left, top, width, height);
-  //     if (isInView(edges)) {
-  //       const isSelected = props.selectedNodes.includes(node.id);
-  //       all.push({ id: node.id, left, top, width, height, isSelected });
-  //     }
-  //     return all;
-  //   }, []);
-  //   console.log(framesInView);
-  //   return { frames: framesInView };
-  // }
+  getLinksIdsOnNode = (nodeId: string, links: Links) => {
+    let linksOnNode = [] as string[];
+    Object.values(links).forEach((link, key) => {
+      if ([link.source, link.target].includes(nodeId)) {
+        linksOnNode.push(link.id);
+      }
+    });
+    return linksOnNode;
+  };
 
   getFramesInView = containerBounds => {
     const { width, height } = containerBounds;
@@ -145,6 +138,7 @@ export class GraphContainer extends React.Component<
       width + pad,
       height + pad
     );
+
     const isInView = isBoxPartlyInBox(view);
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
@@ -156,8 +150,22 @@ export class GraphContainer extends React.Component<
       }
       return all;
     }, []);
+
+    const linkIds = framesInView.reduce((all, frame) => {
+      const linkIds = this.getLinksIdsOnNode(frame.id, this.props.links);
+      return unique([...all, ...linkIds]);
+    }, []);
+
+    const links = linkIds.map(id => {
+      const { source, target } = this.props.links[id] || {
+        source: "",
+        target: ""
+      };
+      return { source, target };
+    });
+
     this.setState(state => {
-      return { frames: framesInView };
+      return { frames: framesInView, links };
     });
   };
 
@@ -212,10 +220,6 @@ export class GraphContainer extends React.Component<
     // this.getFramesInView(this.state.containerBounds);
   };
 
-  // clickBox = box => e => {
-  //   e.stopPropagation();
-  // };
-
   deselectAll = e => {
     if (!e.shiftKey)
       this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
@@ -223,14 +227,48 @@ export class GraphContainer extends React.Component<
 
   makeUserHtmlNode = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
     const { clientX, clientY } = e;
+    const { left, top } = e.currentTarget.getBoundingClientRect();
     const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
     if (allowId) {
       const userHtml = makeUserHtml({
         data: { html: "", text: "" },
-        style: { left: clientX, top: clientY }
+        style: { left: clientX - left, top: clientY - top }
       });
       this.props.addBatch({ nodes: [userHtml] });
     }
+  };
+
+  rightClickNodeToLink = targetId => e => {
+    const { nodes, links, selectedNodes } = this.props;
+    const newLinks = this.linkSelectedToNode(
+      nodes,
+      links,
+      selectedNodes,
+      targetId
+    );
+
+    this.props.addBatch({ links: newLinks });
+  };
+
+  linkSelectedToNode = (
+    nodes: Nodes,
+    links: Links,
+    selectedNodes: string[],
+    targetId: string
+  ) => {
+    return selectedNodes.reduce((all, sourceId) => {
+      const isUnique =
+        Object.values(links).findIndex(
+          link => link.source === sourceId && link.target === targetId
+        ) === -1;
+
+      if (isUnique) {
+        all.push(makeLink(sourceId, targetId));
+      } else {
+        console.log("link already exists");
+      }
+      return all;
+    }, []) as aLink[];
   };
 
   renderGraphNodes = (frame: frame) => {
@@ -327,8 +365,25 @@ export class GraphContainer extends React.Component<
               height={height}
               style={{ position: "absolute", left: 0, top: 0 }}
               onDoubleClick={this.makeUserHtmlNode}
+              //todo  onContextMenu={}
             >
-              <LinkLine sourceFrame={f1} targetFrame={f2} />
+              {this.state.links.length > 0 &&
+                this.state.links.map(link => {
+                  const sourceFrame = this.state.frames.find(
+                    f => f.id === link.source
+                  );
+                  const targetFrame = this.state.frames.find(
+                    f => f.id === link.target
+                  );
+                  return (
+                    <LinkLine
+                      key={link.source + link.target}
+                      targetFrame={targetFrame}
+                      sourceFrame={sourceFrame}
+                    />
+                  );
+                })}
+              }
             </svg>
           )}
           {this.state.frames.map(frame => {
@@ -346,6 +401,7 @@ export class GraphContainer extends React.Component<
                   <DragHandle
                     isSelected={isSelected}
                     onClick={this.onMouseSelect(frame)}
+                    onContextMenu={this.rightClickNodeToLink(frame.id)}
                   />
                 }
               >
@@ -409,6 +465,8 @@ const ScrollContainer = styled.div`
   font-size: 30px;
   overflow: none;
   overflow: auto;
+  max-width: calc(50vw - 22px);
+  font-size: 25px;
 `;
 
 const MapContainer = styled.div`

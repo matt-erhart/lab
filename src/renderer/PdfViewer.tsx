@@ -38,6 +38,7 @@ import {
   checkGetPageNumsToLoad
 } from "./io";
 var equal = require("fast-deep-equal");
+import PortalContainer from "./PortalContainer";
 
 export interface LineOfText {
   id: string;
@@ -406,18 +407,21 @@ class PdfViewer extends React.Component<
     const { width, height } = this.props;
     // todo: set height and width and then scrollto
     return (
-      <div
-        ref={this.scrollRef}
-        style={{
-          maxWidth: width,
-          maxHeight: height,
-          boxSizing: "border-box",
-          overflow: "scroll"
-        }}
-        onScroll={e => e.stopPropagation()}
-      >
-        {this.renderPages()}
-      </div>
+      <>
+        <div
+          ref={this.scrollRef}
+          style={{
+            maxWidth: width,
+            maxHeight: height,
+            boxSizing: "border-box",
+            overflow: "scroll"
+          }}
+          onScroll={e => e.stopPropagation()}
+        >
+          {this.renderPages()}
+        </div>
+        <PortalContainer />
+      </>
     );
   }
 }
