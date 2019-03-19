@@ -87,7 +87,6 @@ export class ResizableFrame extends React.Component<
       }
     }
     if (state.resizeInfo !== this.state.resizeInfo) return true;
-    // if (this.props.children !== props.children) return true;
     return false;
   }
 

@@ -175,7 +175,6 @@ export const isBoxPartlyInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
   const minYOk = smallBox.minY <= bigBox.maxY && smallBox.minY >= bigBox.minY;
   const maxYOk = smallBox.maxY >= bigBox.minY && smallBox.maxY <= bigBox.maxY;
 
-  console.log(smallBox, bigBox, maxYOk);
   return (minXOk || maxXOk) && (minYOk || maxYOk)
 };
 

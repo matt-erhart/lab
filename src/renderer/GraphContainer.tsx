@@ -16,7 +16,8 @@ import {
   aNode,
   makeUserHtml
 } from "../store/creators";
-import { TextEditor } from "./TextEditor";
+import TextEditor from "./TextEditor";
+import { oc } from "ts-optchain";
 
 // import console = require("console");
 
@@ -147,8 +148,8 @@ export class GraphContainer extends React.Component<
     const isInView = isBoxPartlyInBox(view);
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
-      const edges = getBoxEdges(left, top, width, height);      
-      const inView = isInView(edges)
+      const edges = getBoxEdges(left, top, width, height);
+      const inView = isInView(edges);
       if (inView) {
         const isSelected = this.props.selectedNodes.includes(node.id);
         all.push({ id: node.id, left, top, width, height, isSelected });
@@ -220,14 +221,16 @@ export class GraphContainer extends React.Component<
       this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
   };
 
-  makeUserHtmlNode = e => {
+  makeUserHtmlNode = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
     const { clientX, clientY } = e;
-    console.log(clientX, clientY);
-    const userHtml = makeUserHtml({
-      data: { html: "", text: "" },
-      style: { left: clientX, top: clientY }
-    });
-    this.props.addBatch({ nodes: [userHtml] });
+    const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
+    if (allowId) {
+      const userHtml = makeUserHtml({
+        data: { html: "", text: "" },
+        style: { left: clientX, top: clientY }
+      });
+      this.props.addBatch({ nodes: [userHtml] });
+    }
   };
 
   renderGraphNodes = (frame: frame) => {
@@ -304,6 +307,7 @@ export class GraphContainer extends React.Component<
 
     return (
       <ScrollContainer
+        id="GraphScrollContainer"
         ref={this.scrollRef}
         onScroll={this.onScroll}
         onKeyUp={this.onKey}
@@ -311,16 +315,18 @@ export class GraphContainer extends React.Component<
         onClick={this.deselectAll}
       >
         <MapContainer
+          id="GraphMapContainer"
           ref={this.mapRef}
           onClick={this.deselectAll}
-          onDoubleClick={this.makeUserHtmlNode}
         >
           {width && height && (
             <svg
+              id="SvgLayer"
               viewBox={`0 0 ${width} ${height}`}
               width={width}
               height={height}
               style={{ position: "absolute", left: 0, top: 0 }}
+              onDoubleClick={this.makeUserHtmlNode}
             >
               <LinkLine sourceFrame={f1} targetFrame={f2} />
             </svg>

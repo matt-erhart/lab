@@ -1,9 +1,10 @@
-- crud nodes
+- autocomplete on edge of frame up or down match width
+- 
+
+- render links
 - select links
 - crud links
-- render links
 
-- autocomplete tooltip for node
 
 - write after segment 
 
@@ -17,6 +18,9 @@
 - 'a' things
 
 - autocomplete segment text
+
+
+- use attributes like id/ data- to prevent overlay events
 
 Automatic, yet easily dismissible
 efficiency, correctness, and consideration of alternate possibilities

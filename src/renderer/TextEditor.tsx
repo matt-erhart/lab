@@ -15,7 +15,8 @@ import {
   makeUserHtml,
   makeLink
 } from "../store/creators";
-import console = require("console");
+
+import { Portal } from "./Portal";
 const schema = {
   inlines: {
     graph: {
@@ -38,7 +39,8 @@ const TextEditorDefaults = {
   state: {
     editorValue: Plain.deserialize("") as Editor["value"],
     wordAtCursor: "",
-    hasError: false
+    hasError: false,
+    portalStyle: { left: -1, top: -1, width: -1, height: -1 }
   }
 };
 const mapState = (state: iRootState) => ({
@@ -56,7 +58,7 @@ const mapDispatch = ({
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-export class TextEditor extends React.Component<
+class TextEditor extends React.Component<
   typeof TextEditorDefaults.props & Partial<connectedProps>,
   typeof TextEditorDefaults.state
 > {
@@ -82,9 +84,9 @@ export class TextEditor extends React.Component<
     this.initHtml();
   }
 
-  componentWillUnmount() {
-    this.save();
-  }
+  // componentWillUnmount() {
+  //   this.save();
+  // }
 
   componentDidUpdate(prevProps) {
     if (prevProps.id !== this.props.id) {
@@ -101,7 +103,7 @@ export class TextEditor extends React.Component<
       anchorText,
       anchorOffset
     );
-    if (isAfterSpace) {
+    if (!isEndOfWord) {
       this.setState({ wordAtCursor: "" });
     } else {
       this.setState({ wordAtCursor: text });
@@ -125,10 +127,13 @@ export class TextEditor extends React.Component<
     let currentNode;
 
     if (this.props.id.length === 0) {
-      currentNode = makeUserHtml(serialized, {
-        // todo use scroll position in boxmap
-        x: 200 + Math.random() * 200,
-        y: 200 + Math.random() * 200
+      currentNode = makeUserHtml({
+        data: serialized,
+        style: {
+          // todo use scroll position in boxmap
+          left: 200 + Math.random() * 200,
+          top: 200 + Math.random() * 200
+        }
       });
     } else {
       currentNode = this.props.nodes[this.props.id];
@@ -160,7 +165,7 @@ export class TextEditor extends React.Component<
         .insertBlock("")
         .deleteBackward(1);
       this.setState({ editorValue: this.editor.value });
-    } else {
+    } else if (this.props.nodes[currentNode.id].data.html !== serialized.html) {
       this.props.updateBatch({
         nodes: [{ id: currentNode.id, data: { ...serialized } }]
       });
@@ -292,6 +297,11 @@ export class TextEditor extends React.Component<
     }
   };
 
+  onMouseOut = e => {
+    this.save();
+    this.setState({ portalStyle: TextEditorDefaults.state.portalStyle });
+  };
+
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
@@ -302,48 +312,55 @@ export class TextEditor extends React.Component<
     console.error(error, info);
   }
 
-  // saveOnMouseLeave = (id) => {
-  //   this.props.updateBatch({
-  //     nodes: [{ id: currentNode.id, data: { ...serialized } }]
-  //   });
-
+  // saveOnMouseLeave = (e) => {
+  //   this.save();
   // }
-  render() {
-    return (
-      <div
-        onScroll={e => e.stopPropagation()}
-        style={{
-          maring: 3,
-          height: this.props.height,
-          width: this.props.width,
-          overflowY: "auto",
-          border: "1px solid lightgrey"
-        }}
-      >
-        <Editor
-          autoFocus={false}
-          readOnly={this.props.readOnly}
-          ref={this.ref as any}
-          spellCheck={false}
-          onChange={this.onChange}
-          value={this.state.editorValue}
-          //   renderNode={renderNode({ userId, pubId })}
-          // onKeyDown={this.onKeyDown(downshift.getInputProps)}
-          //   onFocus={this.hideAutocomplete}
-          //   onBlur={this.hideAutocomplete}
-          style={{
-            margin: 5,
-            height: "95%",
-            cursor: "text"
-          }}
-          renderNode={renderSlateNodes}
-          schema={schema}
-        />
-      </div>
-    );
-  }
 
-  _render() {
+  getPortalStyle = e => {
+    const {
+      left,
+      top,
+      width,
+      height
+    } = e.currentTarget.getBoundingClientRect();
+
+    const {
+      // doesn't include scroll bars
+      clientHeight,
+      clientWidth
+    } = document.documentElement;
+    const spaceAbove = top;
+    const spaceBellow = clientHeight - (top + height);
+
+    const moreSpaceDown = spaceBellow > spaceAbove;
+    const portalHeight = 150;
+    let portalStyle;
+    if (moreSpaceDown) {
+      portalStyle = {
+        left: left - 12,
+        top: top + this.props.height - 4,
+        height: portalHeight,
+        width: this.props.width + 26
+      };
+    } else {
+      portalStyle = {
+        left: left - 12,
+        top: top - portalHeight - 2,
+        height: portalHeight,
+        width: this.props.width + 26
+      };
+    }
+
+    this.setState({ portalStyle });
+  };
+
+  onFocus = e => {
+    const allowId = oc(e).currentTarget.id("") === "container"; //todo unmagic string
+    if (allowId) {
+      this.getPortalStyle(e);
+    }
+  };
+  render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
     const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
@@ -351,92 +368,160 @@ export class TextEditor extends React.Component<
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
     return (
-      <EditorContainer
-        ref={this.containerRef}
-        onMouseLeave={e => this.save()}
-        onClick={e => console.log("---------------------------------")}
-        // onScroll={this.setRange}
-      >
-        <Downshift
-          itemToString={item => (item ? item.data.text : "")}
-          isOpen={wordAtCursor.length > 1 && !this.props.readOnly}
-          onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
-            const { id } = autocompleteList[highlightedIndex] || { id: false };
-            if (id) {
-              this.props.toggleSelections({
-                selectedNodes: [id],
-                clearFirst: true
-              });
-            }
+      <Downshift
+        itemToString={item => (item ? item.data.text : "")}
+        isOpen={
+          wordAtCursor.length > 1 &&
+          !this.props.readOnly &&
+          autocompleteList.length > 0
+        }
+        onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
+          const { id } = autocompleteList[highlightedIndex] || { id: false };
+          if (id) {
+            this.props.toggleSelections({
+              selectedNodes: [id],
+              clearFirst: true
+            });
+          }
 
-            if (!!selectedItem) {
-              this.wrapWithGraphNode(selectedItem);
-            }
-          }}
-          inputValue={wordAtCursor}
-          onSelect={() => {
-            if (autocompleteList.length === 1) {
-              this.wrapWithGraphNode(autocompleteList[0]);
-            }
-          }}
-        >
-          {downshift => {
-            return (
-              <div>
-                <div style={{ border: "1px solid lightgrey", margin: 10 }}>
-                  <Editor
-                    readOnly={this.props.readOnly}
-                    ref={this.ref as any}
-                    spellCheck={false}
-                    onChange={this.onChange}
-                    value={this.state.editorValue}
-                    //   renderNode={renderNode({ userId, pubId })}
-                    onKeyDown={this.onKeyDown(downshift.getInputProps)}
-                    //   onFocus={this.hideAutocomplete}
-                    //   onBlur={this.hideAutocomplete}
-                    style={{ padding: 5 }}
-                    renderNode={renderSlateNodes}
-                    schema={schema}
-                  />
-                </div>
-                <div
-                  style={{
-                    height: this.props.id.length === 0 ? "8vh" : "100%",
-                    overflowY: "scroll",
-                    marginTop: 2,
-                    marginBottom: 2,
-                    hidden: this.props.readOnly
-                  }}
-                >
-                  {false &&
-                    downshift.isOpen &&
-                    autocompleteList.map((item, index) => (
-                      <Button1
-                        {...downshift.getItemProps({
-                          key: item.id,
-                          index,
-                          item,
-                          style: {
-                            backgroundColor:
-                              downshift.highlightedIndex === index
-                                ? "lightgreen"
-                                : null,
-                            fontWeight:
-                              downshift.selectedItem === item
-                                ? "bold"
-                                : "normal"
-                          }
-                        })}
-                      >
-                        {item.data.text}
-                      </Button1>
-                    ))}
-                </div>
-              </div>
-            );
-          }}
-        </Downshift>
-      </EditorContainer>
+          if (!!selectedItem) {
+            this.wrapWithGraphNode(selectedItem);
+          }
+        }}
+        inputValue={wordAtCursor}
+        onSelect={() => {
+          if (autocompleteList.length === 1) {
+            this.wrapWithGraphNode(autocompleteList[0]);
+          }
+        }}
+      >
+        {downshift => {
+          return (
+            // <div>
+            <div
+              id={"container"}
+              ref={this.containerRef}
+              onScroll={e => e.stopPropagation()}
+              style={{
+                maring: 3,
+                height: this.props.height,
+                width: this.props.width,
+                overflowY: "auto",
+                border: "1px solid lightgrey",
+                position: "relative"
+              }}
+              onMouseLeave={this.onMouseOut}
+              onMouseDown={this.onFocus}
+            >
+              <Editor
+                readOnly={this.props.readOnly}
+                ref={this.ref as any}
+                spellCheck={false}
+                onChange={this.onChange}
+                value={this.state.editorValue}
+                //   renderNode={renderNode({ userId, pubId })}
+                onKeyDown={this.onKeyDown(downshift.getInputProps)}
+                // onFocus={this.onFocus}
+                //   onBlur={this.hideAutocomplete}
+                style={{
+                  margin: 5,
+                  height: "95%",
+                  cursor: "text",
+                  border: "1px solid grey"
+                }}
+                renderNode={renderSlateNodes}
+                schema={schema}
+              />
+              {this.state.portalStyle.left > -1 &&
+                this.state.wordAtCursor.length > 1 &&
+                autocompleteList.length > 0 && (
+                  <Portal>
+                    <div
+                      style={{
+                        ...this.state.portalStyle,
+                        overflowY: "scroll",
+                        marginTop: 2,
+                        marginBottom: 2,
+                        hidden: this.props.readOnly,
+                        // display: 'inline-block',
+                        position: "absolute",
+                        backgroundColor: "white",
+                        boxSizing: "border-box",
+                        //   outline: "1px solid black",
+                        boxShadow:
+                          "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                        zIndex: 2
+                      }}
+                      onMouseDown={e => e.stopPropagation()}
+                    >
+                      {" "}
+                      {downshift.isOpen &&
+                        autocompleteList.map((item, index) => (
+                          <Button1
+                            {...downshift.getItemProps({
+                              key: item.id,
+                              index,
+                              item,
+                              style: {
+                                backgroundColor:
+                                  downshift.highlightedIndex === index
+                                    ? "lightgreen"
+                                    : null,
+                                fontWeight:
+                                  downshift.selectedItem === item
+                                    ? "bold"
+                                    : "normal"
+                              }
+                            })}
+                          >
+                            {item.data.text}
+                          </Button1>
+                        ))}{" "}
+                    </div>
+                  </Portal>
+                )}
+              {/* <div
+                style={{
+                  height: 300,
+                  width: this.props.width,
+                  overflowY: "scroll",
+                  marginTop: 2,
+                  marginBottom: 2,
+                  hidden: this.props.readOnly,
+                  // display: 'inline-block',
+                  top: "-150%",
+                  left: "50%",
+                  position: 'absolute',
+                  backgroundColor: "blue",
+                  zIndex: 2
+                }}
+              >
+                {false &&
+                  downshift.isOpen &&
+                  autocompleteList.map((item, index) => (
+                    <Button1
+                      {...downshift.getItemProps({
+                        key: item.id,
+                        index,
+                        item,
+                        style: {
+                          backgroundColor:
+                            downshift.highlightedIndex === index
+                              ? "lightgreen"
+                              : null,
+                          fontWeight:
+                            downshift.selectedItem === item ? "bold" : "normal"
+                        }
+                      })}
+                    >
+                      {item.data.text}
+                    </Button1>
+                  ))}
+              </div> */}
+            </div>
+          );
+        }}
+      </Downshift>
     );
   }
 }
