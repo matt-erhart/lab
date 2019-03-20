@@ -2,6 +2,9 @@ import * as React from "react";
 import { Portal } from "./Portal";
 import { ResizableFrame, frame, updateOneFrame } from "./ResizableFrame";
 import styled from "styled-components";
+import produce from "immer";
+import { iRootState, iDispatch } from "../store/createStore";
+import { connect } from "react-redux";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -10,45 +13,66 @@ const frames = [
  * @class **PortalContainer**
  */
 const PortalContainerDefaults = {
-  props: {
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0
-  },
-  state: { frames: frames as frame[] }
+  props: {},
+  state: {}
 };
+/**
+ * a rect or a click
+ * if rect, then show in the right place
+ * if click,
+ */
 
-export default class PortalContainer extends React.Component<
-  typeof PortalContainerDefaults.props,
+const mapState = (state: iRootState) => ({
+  portals: state.app.portals,
+  nodes: state.graph.nodes,
+  links: state.graph.links
+});
+
+const mapDispatch = ({
+  graph: { addBatch },
+  app: { updatePortals, addPortals, removePortals }
+}: iDispatch) => ({ updatePortals, addPortals, removePortals });
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
+class PortalContainer extends React.Component<
+  typeof PortalContainerDefaults.props & connectedProps,
   typeof PortalContainerDefaults.state
 > {
   static defaultProps = PortalContainerDefaults.props;
   state = PortalContainerDefaults.state;
+
   onTransformStart = (transProps: frame) => {
     const { id } = transProps;
     //todo select with redux
   };
 
+  componentDidMount() {
+    // this.props.addPortals([
+    //   { id: "asdf", left: 110, top: 111, width: 111, height: 111 }
+    // ]);
+  }
+
   onTransforming = (transProps: frame) => {
-    // todo here is where svg lines could be updated
-    const updatedWindows = updateOneFrame(this.state.frames)(transProps);
-    this.setState(state => {
-      const updatedWindows = updateOneFrame(state.frames)(transProps);
-      return { frames: updatedWindows };
-    });
+    const updated = updateOneFrame(this.props.portals)(transProps);
+    this.props.updatePortals(updated);
   };
 
   onTransformEnd = (transProps: frame) => {
     const { id, left, top, width, height } = transProps;
   };
 
+  onClose = id => e => {
+    this.props.removePortals([id]);
+  };
+
   render() {
     return (
       <>
         <Portal>
-          {this.state.frames.length > 0 &&
-            this.state.frames.map(frame => {
+          {this.props.portals.length > 0 &&
+            this.props.portals.map(frame => {
               const { left, top, width, height } = frame;
               return (
                 <ResizableFrame
@@ -56,11 +80,13 @@ export default class PortalContainer extends React.Component<
                   id={frame.id}
                   {...{ left, top, width, height }}
                   onTransforming={this.onTransforming}
-                //   onTransformEnd={this.onTransformEnd}
+                  //   onTransformEnd={this.onTransformEnd}
                   isSelected={false}
-                  dragHandle={<DragHandle />}
+                  dragHandle={<TopBar onClose={this.onClose(frame.id)} />}
+                  // dragHandle={<DragHandle/>}
                 >
-                  TEXT
+                  todo svgpage will check/make stuff and send over an id in the frame
+                  need to render right
                 </ResizableFrame>
               );
             })}
@@ -69,6 +95,11 @@ export default class PortalContainer extends React.Component<
     );
   }
 }
+
+export default connect(
+  mapState,
+  mapDispatch
+)(PortalContainer);
 
 const DragHandle = styled.div`
   background-color: lightgreen;
@@ -79,3 +110,25 @@ const DragHandle = styled.div`
     cursor: all-scroll;
   }
 `;
+
+const TopBar = (props) => {
+  const {onClose, ...rest} = props
+  return (
+    <DragHandle {...rest}>
+      <b
+        style={{
+          float: "right",
+          fontSize: "10px",
+          marginRight: 3,
+          cursor: "pointer",
+          display: 'inline-block',
+          backgroundColor: 'lightgrey'
+        }}
+        {...props}
+        onClick={e => onClose()}
+      >
+        X
+      </b>
+    </DragHandle>
+  );
+};

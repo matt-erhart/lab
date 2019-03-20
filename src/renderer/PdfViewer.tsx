@@ -420,7 +420,6 @@ class PdfViewer extends React.Component<
         >
           {this.renderPages()}
         </div>
-        <PortalContainer />
       </>
     );
   }

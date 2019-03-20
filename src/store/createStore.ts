@@ -8,6 +8,7 @@ import jsonfile = require("jsonfile");
 import { NestedPartial } from "../renderer/utils";
 import path = require("path");
 import { oc } from "ts-optchain";
+import { frame } from "../renderer/ResizableFrame";
 const settings = require("electron-settings");
 
 // stored in user/data.
@@ -25,7 +26,8 @@ let defaultApp = {
       panels: {}
     },
     keyboardShortcuts: {}
-  }
+  },
+  portals: [] as frame[]
 };
 
 let defaultGraph = {
@@ -55,6 +57,26 @@ export const app = createModel({
       return produce(state, draft => {
         draft.current = { ...draft.current, ...payload };
       });
+    },
+    addPortals(state, payload: frame[]) {
+      return produce(state, draft => {
+        draft.portals.push(...payload);
+      });
+    },
+    removePortals(state, ids: string[]) {
+      return produce(state, draft => {
+        ids.forEach(id => {
+          draft.portals.splice(draft.portals.findIndex(p => p.id === id), 1);
+        });
+      });
+    },
+    updatePortals(state, frames: frame[]) {
+      return produce(state, draft => {
+        frames.forEach(frame => {
+          const ix = draft.portals.findIndex(p => p.id === frame.id);
+          draft.portals[ix] = { ...draft.portals[ix], ...frame };
+        });
+      });
     }
   }
 });
@@ -74,7 +96,7 @@ export const graph = createModel({
         for (let nodesOrLinks of Object.keys(payload)) {
           for (let arrItem of payload[nodesOrLinks]) {
             const isUnique = !state[nodesOrLinks].hasOwnProperty(arrItem.id);
-            
+
             if (isUnique) {
               draft[nodesOrLinks][arrItem.id] = arrItem;
               draft.patches.push({
@@ -83,7 +105,10 @@ export const graph = createModel({
                 value: arrItem
               });
             } else {
-              console.log(arrItem, "already exists. maybe you want updateData()");
+              console.log(
+                arrItem,
+                "already exists. maybe you want updateData()"
+              );
             }
           }
         }
@@ -215,7 +240,8 @@ const models = {
 
 const logit = {
   middleware: store => next => action => {
-    console.log("REDUX: ", action.type, Object.keys(action.payload));
+    if (!["app/updatePortals"].includes(action.type))
+      console.log("REDUX: ", action.type, Object.keys(action.payload));
     return next(action);
   }
 };

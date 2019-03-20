@@ -55,9 +55,14 @@ const mapState = (state: iRootState, props) => {
   };
 };
 
-const mapDispatch = ({ graph: { addBatch, removeBatch } }: iDispatch) => ({
+const mapDispatch = ({
+  graph: { addBatch, removeBatch },
+  app: { addPortals, removePortals }
+}: iDispatch) => ({
   addBatch,
-  removeBatch
+  removeBatch,
+  addPortals,
+  removePortals
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -323,6 +328,92 @@ class PageSvg extends React.Component<
     this.setState({ value: e.target.value });
   };
 
+  openTextPortal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const bounding = e.currentTarget.getBoundingClientRect();
+    const { clientX, clientY } = e;
+    // todo util for closest edge of div
+    const dists = {
+      up: clientY - bounding.top,
+      down: bounding.top + bounding.height - clientY,
+      left: clientX - bounding.left,
+      right: bounding.right - clientX
+    };
+
+    const minDist = Object.entries(dists).reduce(
+      (all, dist) => {
+        const [key, val] = dist;
+        if (Math.abs(val) < Math.abs(all.val)) {
+          return { key, val };
+        } else {
+          return all;
+        }
+      },
+      { key: "", val: Infinity }
+    );
+
+    const {
+      // doesn't include scroll bars
+      clientHeight,
+      clientWidth
+    } = document.documentElement;
+    const spaceUp = bounding.top;
+    const spaceDown = clientHeight - bounding.top + bounding.height;
+    const spaceLeft = bounding.left;
+    const spaceRight = clientWidth - bounding.right;
+
+    const defaultWidth = 300;
+    const defaultHeight = 100;
+    let frame = {
+      id: Math.random() + "",
+      left: 0,
+      top: 0,
+      width: 0,
+      height: 0
+    };
+    switch (minDist.key) {
+      case "up":
+        frame = {
+          ...frame,
+          left: bounding.left,
+          top: bounding.top - Math.min(defaultHeight, spaceUp),
+          height: Math.min(defaultHeight, spaceUp),
+          width: Math.min(clientWidth, defaultWidth)
+        };
+        break;
+      case "down":
+        frame = {
+          ...frame,
+          left: bounding.left,
+          top: bounding.top + bounding.height,
+          height: Math.min(defaultHeight, spaceDown),
+          width: Math.min(clientWidth, defaultWidth)
+        };
+        break;
+      case "left":
+        frame = {
+          ...frame,
+          left: bounding.left - Math.min(spaceLeft, defaultWidth),
+          top: bounding.top,
+          height: Math.min(defaultHeight, clientHeight),
+          width: Math.min(spaceLeft, defaultWidth)
+        };
+        break;
+      case "right":
+        frame = {
+          ...frame,
+          left: bounding.left + bounding.width,
+          top: bounding.top,
+          height: Math.min(defaultHeight, clientHeight),
+          width: Math.min(spaceRight, defaultWidth)
+        };
+        break;
+    }
+    // todo: is there a linked html node?
+    // if yes, get it's id
+    // if no, make it and get it's id
+    this.props.addPortals([frame]);
+  };
+
   render() {
     const { left, top, width, height } = this.state.selectionRect;
 
@@ -466,6 +557,7 @@ class PageSvg extends React.Component<
                     lineHeight: "1em",
                     backgroundColor: "transparent"
                   }}
+                  onClick={this.openTextPortal}
                 />
               );
             })}
@@ -512,7 +604,6 @@ class PageSvg extends React.Component<
             </>
           )} */}
         </div>
-
       </>
     );
   }

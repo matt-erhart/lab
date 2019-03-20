@@ -215,6 +215,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
           <GraphContainer />
         </MainContainer>
+        <PortalContainer />
       </ViewPortContainer>
     );
   }
@@ -252,5 +253,6 @@ export const render = (Component: typeof App) =>
   ReactDOM.render(<Component />, rootEl);
 
 import { hot } from "react-hot-loader/root";
+import PortalContainer from "./PortalContainer";
 
 hot(render(App));
