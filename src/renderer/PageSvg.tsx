@@ -14,11 +14,12 @@ import {
   makePdfSegmentViewbox,
   PdfSegmentViewbox,
   makeUserMediaText,
-  makeLink
+  makeLink,
+  makeUserHtml
 } from "../store/creators";
 import PortalContainer from "./PortalContainer";
 // todo consistant CAPS
-
+import { getNeighborhood } from "./graphUtils";
 /**
  * @class **PageSvg**
  *
@@ -51,18 +52,21 @@ const PageSvgDefaults = {
 const mapState = (state: iRootState, props) => {
   return {
     selectedNodes: state.graph.selectedNodes,
-    nodes: state.graph.nodes
+    nodes: state.graph.nodes,
+    links: state.graph.links,
+    portals: state.app.portals
   };
 };
 
 const mapDispatch = ({
   graph: { addBatch, removeBatch },
-  app: { addPortals, removePortals }
+  app: { addPortals, removePortals, updatePortals }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   addPortals,
-  removePortals
+  removePortals,
+  updatePortals
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -303,32 +307,49 @@ class PageSvg extends React.Component<
   };
 
   closeText = e => {
-    if (e.nativeEvent.key === "Escape") {
-      this.setState({ showText: false });
-      const hasText = this.state.value.length > 0;
-      if (hasText) {
-        const viewboxId = this.props.selectedNodes[0]; // selected on creation
-        const source = this.props.nodes[viewboxId];
-        let { x, y } = source.style;
-        const shiftedX = x + Math.random() * 50 - 40;
-        const style = {
-          x: shiftedX < 20 ? 20 + Math.random() * 50 : shiftedX,
-          y: y + Math.random() * 50 + 40
-        };
-
-        const textNode = makeUserMediaText(this.state.value, style);
-        const link = makeLink(source, textNode, { type: "more" });
-        this.props.addBatch({ nodes: [textNode], links: [link] });
-        //add edge from selected to userdoc
-      }
-    }
+    // if (e.nativeEvent.key === "Escape") {
+    //   this.setState({ showText: false });
+    //   const hasText = this.state.value.length > 0;
+    //   if (hasText) {
+    //     const viewboxId = this.props.selectedNodes[0]; // selected on creation
+    //     const source = this.props.nodes[viewboxId];
+    //     let { x, y } = source.style;
+    //     const shiftedX = x + Math.random() * 50 - 40;
+    //     const style = {
+    //       x: shiftedX < 20 ? 20 + Math.random() * 50 : shiftedX,
+    //       y: y + Math.random() * 50 + 40
+    //     };
+    //     const textNode = makeUserMediaText(this.state.value, style);
+    //     const link = makeLink(source, textNode, { type: "more" });
+    //     this.props.addBatch({ nodes: [textNode], links: [link] });
+    //     //add edge from selected to userdoc
+    //   }
+    // }
   };
 
   onOpenText = e => {
     this.setState({ value: e.target.value });
   };
 
-  openTextPortal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  openTextPortal = segmentId => (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const { nodes, links } = getNeighborhood(
+      [segmentId],
+      this.props.nodes,
+      this.props.links
+    );
+
+    let htmlNodes = nodes.filter(node => node.data.type === "userHtml");
+    if (htmlNodes.length === 0) {
+      htmlNodes.push(makeUserHtml());
+      const newLink = makeLink(segmentId, htmlNodes[0].id, {
+        text: "compress",
+        html: "<p>compress</p>"
+      });
+      this.props.addBatch({ nodes: htmlNodes, links: [newLink] });
+    }
+
     const bounding = e.currentTarget.getBoundingClientRect();
     const { clientX, clientY } = e;
     // todo util for closest edge of div
@@ -361,62 +382,66 @@ class PageSvg extends React.Component<
     const spaceLeft = bounding.left;
     const spaceRight = clientWidth - bounding.right;
 
-    const defaultWidth = 300;
-    const defaultHeight = 100;
-    let frame = {
-      id: Math.random() + "",
-      left: 0,
-      top: 0,
-      width: 0,
-      height: 0
-    };
-    switch (minDist.key) {
-      case "up":
-        frame = {
-          ...frame,
-          left: bounding.left,
-          top: bounding.top - Math.min(defaultHeight, spaceUp),
-          height: Math.min(defaultHeight, spaceUp),
-          width: Math.min(clientWidth, defaultWidth)
-        };
-        break;
-      case "down":
-        frame = {
-          ...frame,
-          left: bounding.left,
-          top: bounding.top + bounding.height,
-          height: Math.min(defaultHeight, spaceDown),
-          width: Math.min(clientWidth, defaultWidth)
-        };
-        break;
-      case "left":
-        frame = {
-          ...frame,
-          left: bounding.left - Math.min(spaceLeft, defaultWidth),
-          top: bounding.top,
-          height: Math.min(defaultHeight, clientHeight),
-          width: Math.min(spaceLeft, defaultWidth)
-        };
-        break;
-      case "right":
-        frame = {
-          ...frame,
-          left: bounding.left + bounding.width,
-          top: bounding.top,
-          height: Math.min(defaultHeight, clientHeight),
-          width: Math.min(spaceRight, defaultWidth)
-        };
-        break;
-    }
-    // todo: is there a linked html node?
-    // if yes, get it's id
-    // if no, make it and get it's id
-    this.props.addPortals([frame]);
+    const isOneNode = htmlNodes.length === 1;
+    const defaultWidth = isOneNode ? htmlNodes[0].style.width : 300;
+    const defaultHeight = isOneNode ? htmlNodes[0].style.height : 100;
+
+    let frames = [];
+    let shift = 0;
+    htmlNodes.forEach((node, ix) => {
+      let frame = { id: node.id, left: 0, top: 0, width: 0, height: 0 };
+      switch (minDist.key) {
+        case "up":
+          frame = {
+            ...frame,
+            left: bounding.left,
+            top: bounding.top - Math.min(defaultHeight, spaceUp) - shift,
+            height: Math.min(defaultHeight, spaceUp),
+            width: Math.min(clientWidth, bounding.width)
+          };
+          shift += frame.height;
+          break;
+        case "down":
+          frame = {
+            ...frame,
+            left: bounding.left,
+            top: bounding.top + bounding.height + shift,
+            height: Math.min(defaultHeight, spaceDown),
+            width: Math.min(clientWidth, bounding.width)
+          };
+          shift += frame.height;
+          break;
+        case "left":
+          frame = {
+            ...frame,
+            left: bounding.left - Math.min(spaceLeft, defaultWidth),
+            top: bounding.top + shift,
+            height: Math.min(defaultHeight, clientHeight),
+            width: Math.min(spaceLeft, defaultWidth)
+          };
+          shift += frame.height;
+          break;
+        case "right":
+          frame = {
+            ...frame,
+            left: bounding.left + bounding.width,
+            top: bounding.top + shift,
+            height: Math.min(defaultHeight, clientHeight),
+            width: Math.min(spaceRight, defaultWidth)
+          };
+          shift += frame.height;
+          break;
+      }
+
+      frames.push(frame);
+    });
+    console.log("FRAMES", frames);
+
+    this.props.updatePortals(frames);
   };
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
-
     return (
       <>
         <svg
@@ -557,7 +582,7 @@ class PageSvg extends React.Component<
                     lineHeight: "1em",
                     backgroundColor: "transparent"
                   }}
-                  onClick={this.openTextPortal}
+                  onClick={this.openTextPortal(vb.id)}
                 />
               );
             })}

@@ -74,7 +74,11 @@ export const app = createModel({
       return produce(state, draft => {
         frames.forEach(frame => {
           const ix = draft.portals.findIndex(p => p.id === frame.id);
-          draft.portals[ix] = { ...draft.portals[ix], ...frame };
+          if (ix === -1){ 
+            draft.portals.push(frame)
+          } else {
+            draft.portals[ix] = { ...draft.portals[ix], ...frame };
+          }
         });
       });
     }
@@ -197,12 +201,20 @@ export const graph = createModel({
             if (undirected !== undefined)
               draft.links[id].undirected = undirected;
 
-            if (source)
+            if (source) {
               draft.patches.push({
                 op: "replace",
                 path: ["links", id],
                 value: draft.links[id]
               });
+            } else {
+              draft.patches.push({
+                op: "replace",
+                path: ["nodes", id],
+                value: draft.nodes[id]
+              });
+            }
+              
           }
         }
       });

@@ -5,6 +5,8 @@ import styled from "styled-components";
 import produce from "immer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
+import TextEditor from "./TextEditor";
+import { Rectangle, removeOverlaps } from "webcola";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -16,11 +18,6 @@ const PortalContainerDefaults = {
   props: {},
   state: {}
 };
-/**
- * a rect or a click
- * if rect, then show in the right place
- * if click,
- */
 
 const mapState = (state: iRootState) => ({
   portals: state.app.portals,
@@ -29,9 +26,9 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = ({
-  graph: { addBatch },
+  graph: { addBatch, updateBatch },
   app: { updatePortals, addPortals, removePortals }
-}: iDispatch) => ({ updatePortals, addPortals, removePortals });
+}: iDispatch) => ({ updatePortals, addPortals, removePortals, updateBatch });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -54,6 +51,26 @@ class PortalContainer extends React.Component<
     // ]);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // console.log(this.props.portals.length, prevProps.portals.length)
+    
+    // if (this.props.portals.length > prevProps.portals.length) {
+    //   let rects = this.props.portals.map(w => {
+    //     const { left, top, width, height } = w;
+    //     return new Rectangle(left, left + width, top+left, top + height);
+    //   });
+    //   removeOverlaps(rects);
+    //   const shiftedPortals = rects.map((r, ix) => {
+    //     const left = r.x;
+    //     const width = r.X - r.x;
+    //     const height = r.Y - r.y;
+    //     const top = r.y;
+    //     return { id: this.props.portals[ix].id, left, width, height, top };
+    //   });
+    //   this.props.updatePortals(shiftedPortals);
+    // }
+  }
+
   onTransforming = (transProps: frame) => {
     const updated = updateOneFrame(this.props.portals)(transProps);
     this.props.updatePortals(updated);
@@ -61,6 +78,7 @@ class PortalContainer extends React.Component<
 
   onTransformEnd = (transProps: frame) => {
     const { id, left, top, width, height } = transProps;
+    // this.props.updateBatch({ nodes: [{ id, style: { width, height } }] });
   };
 
   onClose = id => e => {
@@ -80,13 +98,24 @@ class PortalContainer extends React.Component<
                   id={frame.id}
                   {...{ left, top, width, height }}
                   onTransforming={this.onTransforming}
-                  //   onTransformEnd={this.onTransformEnd}
+                  onTransformEnd={this.onTransformEnd}
                   isSelected={false}
                   dragHandle={<TopBar onClose={this.onClose(frame.id)} />}
                   // dragHandle={<DragHandle/>}
                 >
-                  todo svgpage will check/make stuff and send over an id in the frame
-                  need to render right
+                  <div
+                    key={frame.id}
+                    style={{ flex: 1 }}
+                    // onMouseEnter={e => this.setState({ editingId: node.id })}
+                  >
+                    <TextEditor
+                      key={frame.id}
+                      width={frame.width - 13}
+                      height={frame.height - 23}
+                      id={frame.id}
+                      // readOnly={this.state.editingId !== node.id}
+                    />
+                  </div>
                 </ResizableFrame>
               );
             })}
@@ -111,8 +140,8 @@ const DragHandle = styled.div`
   }
 `;
 
-const TopBar = (props) => {
-  const {onClose, ...rest} = props
+const TopBar = props => {
+  const { onClose, ...rest } = props;
   return (
     <DragHandle {...rest}>
       <b
@@ -121,8 +150,8 @@ const TopBar = (props) => {
           fontSize: "10px",
           marginRight: 3,
           cursor: "pointer",
-          display: 'inline-block',
-          backgroundColor: 'lightgrey'
+          display: "inline-block",
+          backgroundColor: "lightgrey"
         }}
         {...props}
         onClick={e => onClose()}

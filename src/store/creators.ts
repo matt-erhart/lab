@@ -67,7 +67,9 @@ export const makePdfSegmentViewbox = (
   const now = Date.now();
   const id = uuidv1();
   console.log({ ...ViewboxDataDefault, ...viewbox });
-
+  const {width, height} = viewbox
+  
+  
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
@@ -76,8 +78,8 @@ export const makePdfSegmentViewbox = (
       type: "circle",
       left: Math.random() * 200 + 20,
       top: Math.random() * 200 + 20,
-      width: 200,
-      height: 200,
+      width: width ? width+116: 200,
+      height: height? height+120: 200,
       fill: "blue",
       draggabled: true,
       radius: 5,
@@ -176,8 +178,8 @@ const UserHtmlDefaults = {
   style: {
     left: 0,
     top: 0,
-    width: 200,
-    height: 220
+    width: 300,
+    height: 110
   }
 };
 export type UserHtml = typeof UserHtmlDefaults;

@@ -65,7 +65,7 @@ const ResizableFrameDefaults = {
     onTransformEnd: undefined as onTrans,
     onTransforming: undefined as onTrans,
     children: <div /> as React.ReactNode,
-    dragHandle: <div/> as React.ReactElement
+    dragHandle: <div /> as React.ReactElement
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo
@@ -159,6 +159,8 @@ export class ResizableFrame extends React.Component<
   // todo this actually would make a good hook
   sub: Subscription;
   onMouseDownResize = e => {
+    if (e.target.id !== 'frame') return null;
+
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
       switch (mData.type) {
@@ -172,7 +174,7 @@ export class ResizableFrame extends React.Component<
     });
   };
 
-  onMouseDownMove = e => {
+  onMouseDownMove = e => {    
     e.stopPropagation();
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
@@ -207,6 +209,7 @@ export class ResizableFrame extends React.Component<
 
     return (
       <div
+        id="frame"
         style={{
           position: "absolute",
           left,
@@ -235,7 +238,7 @@ export class ResizableFrame extends React.Component<
         {React.cloneElement(this.props.dragHandle, {
           ...this.props.dragHandle.props,
           draggable: false,
-          onMouseDown: this.onMouseDownMove,
+          onMouseDown: this.onMouseDownMove
         })}
         <div
           draggable={false}
@@ -253,7 +256,6 @@ export class ResizableFrame extends React.Component<
     );
   }
 }
-
 
 type loc =
   | "left"

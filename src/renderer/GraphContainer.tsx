@@ -22,7 +22,7 @@ import {
 } from "../store/creators";
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
-
+import { FileIcon } from "./Icons";
 // import console = require("console");
 
 // window container for...
@@ -102,6 +102,8 @@ export class GraphContainer extends React.Component<
 
   onTransformEnd = (transProps: frame) => {
     const { id, left, top, width, height } = transProps;
+    console.log('trans end')
+    
     this.props.updateBatch({
       nodes: [{ id, style: { left, top, width, height } }]
     });
@@ -204,6 +206,8 @@ export class GraphContainer extends React.Component<
 
   onMouseSelect = frame => e => {
     e.stopPropagation();
+    console.log('mouse select')
+    
     const isSelected = this.isSelected(frame.id);
     if (typeof frame.id === "string") {
       if (!isSelected && !e.shiftKey) {
@@ -221,7 +225,7 @@ export class GraphContainer extends React.Component<
   };
 
   deselectAll = e => {
-    if (!e.shiftKey)
+    if (!e.shiftKey && e.target.id === 'SvgLayer')
       this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
   };
 
@@ -231,7 +235,7 @@ export class GraphContainer extends React.Component<
     const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
     if (allowId) {
       const userHtml = makeUserHtml({
-        data: { html: "", text: "" },
+        data: { html: "<p></p>", text: "" },
         style: { left: clientX - left, top: clientY - top }
       });
       this.props.addBatch({ nodes: [userHtml] });
@@ -282,11 +286,18 @@ export class GraphContainer extends React.Component<
             style={{
               backgroundColor: "white",
               padding: 5,
-              border: this.isSelected(frame.id) ? "1px solid blue" : "none"
+              color: "black",
+              fontWeight: "bold"
             }}
             draggable={false}
           >
-            {node.data.pdfDir.replace("-", " ")}
+            <span>
+              <FileIcon
+                stroke={"#CD594A"}
+                style={{ marginBottom: 0, marginTop: 10 }}
+              />{" "}
+              {node.data.pdfDir.replace(/-/g, " ")}
+            </span>
           </div>
         );
       case "userHtml":
@@ -355,7 +366,6 @@ export class GraphContainer extends React.Component<
         <MapContainer
           id="GraphMapContainer"
           ref={this.mapRef}
-          onClick={this.deselectAll}
         >
           {width && height && (
             <svg
@@ -365,6 +375,8 @@ export class GraphContainer extends React.Component<
               height={height}
               style={{ position: "absolute", left: 0, top: 0 }}
               onDoubleClick={this.makeUserHtmlNode}
+              onClick={this.deselectAll}
+
               //todo  onContextMenu={}
             >
               {this.state.links.length > 0 &&

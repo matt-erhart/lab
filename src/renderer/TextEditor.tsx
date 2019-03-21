@@ -47,7 +47,8 @@ const mapState = (state: iRootState) => ({
   pdfDir: state.app.current.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
-  links: state.graph.links
+  links: state.graph.links,
+  patches: state.graph.patches
 });
 
 const mapDispatch = ({
@@ -94,6 +95,20 @@ class TextEditor extends React.Component<
       if (this.props.id === "")
         this.setState({ editorValue: Plain.deserialize("") });
     }
+    const { id } = this.props;
+    if (prevProps.patches !== this.props.patches) {
+      const relevantPatch = this.props.patches.find(p => p.path.includes(id));
+      if (!!relevantPatch) {
+        // this.initHtml()
+        const newHtml = oc(relevantPatch).value.data.html("");
+        const { html } = this.serialize(this.state.editorValue);
+
+        if (newHtml !== html) {
+          const editorValue = htmlSerializer.deserialize(newHtml);
+          this.setState({ editorValue });
+        }
+      }
+    }
   }
 
   getCurrentWord = editor => {
@@ -123,7 +138,7 @@ class TextEditor extends React.Component<
     const graphInlines = this.editor.value.document.getInlinesByType("graph");
     const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
     const serialized = this.serialize(this.state.editorValue);
-    if (serialized.text.length === 0) return;
+    // if (serialized.text.length === 0) return;
     let currentNode;
 
     if (this.props.id.length === 0) {
@@ -151,7 +166,7 @@ class TextEditor extends React.Component<
       });
 
       if (ix === -1) {
-        const newLink = makeLink(this.props.nodes[sourceId], currentNode, {
+        const newLink = makeLink(sourceId, currentNode.id, {
           type: "partOf"
         });
         newLinks.push(newLink);
@@ -171,8 +186,6 @@ class TextEditor extends React.Component<
       });
     }
   };
-
- 
 
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
@@ -357,7 +370,7 @@ class TextEditor extends React.Component<
   };
 
   onFocus = e => {
-    const allowId = oc(e).currentTarget.id("") === "container"; //todo unmagic string
+    const allowId = oc(e).currentTarget.id("") === "slate-container"; //todo unmagic string
     if (allowId) {
       this.getPortalStyle(e);
     }
@@ -402,7 +415,7 @@ class TextEditor extends React.Component<
           return (
             // <div>
             <div
-              id={"container"}
+              id={"slate-container"}
               ref={this.containerRef}
               onScroll={e => e.stopPropagation()}
               style={{
@@ -417,6 +430,7 @@ class TextEditor extends React.Component<
               onMouseDown={this.onFocus}
             >
               <Editor
+                id={"slate-" + this.props.id}
                 readOnly={this.props.readOnly}
                 ref={this.ref as any}
                 spellCheck={false}

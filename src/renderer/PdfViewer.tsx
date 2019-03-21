@@ -171,10 +171,20 @@ class PdfViewer extends React.Component<
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
+
           if (patch.value.data.type === "pdf.segment.viewbox") {
+            console.log("remove?", patch.op);
             if (patch.op === "add") draft.push(patch.value);
-            if (patch.op === "remove") draft.filter(vb => vb.id !== id);
-            if (patch.op === "replace") draft[id] = patch.value;
+            if (patch.op === "remove") {
+              draft.splice(draft.findIndex(v => v.id === id), 1);
+            }
+            if (patch.op === "replace") {
+              const ix = state.viewboxes.findIndex(v => v.id === id);
+
+              if (ix > -1 && !equal(state.viewboxes[ix], patch.value)) {
+                draft[ix] = patch.value;
+              }
+            }
           }
         });
         return draft;
@@ -330,7 +340,7 @@ class PdfViewer extends React.Component<
       style
     );
 
-    const linkToPdf = makeLink(source, vb, { type: "more" });
+    const linkToPdf = makeLink(source.id, vb.id, { type: "more" });
 
     //10ms update with just a div
     this.props.addBatch({ nodes: [vb], links: [linkToPdf] });
