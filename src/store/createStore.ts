@@ -36,6 +36,14 @@ let defaultApp = {
       scale: 2,
       scrollToPageNumber: 0,
       pdfDir: ''
+    },
+    graphContainer: {
+        // todo should be scrollto
+        left: 0,
+        top: 0,
+        width: "50vw",
+        height: "100%",
+        scale: 1
     }
   },
   portals: [] as frame[]
@@ -73,6 +81,15 @@ export const app = createModel({
       return produce(state, draft => {
         draft.panels.mainPdfReader = {
           ...draft.panels.mainPdfReader,
+          ...payload
+        };
+      });
+    },
+    setGraphContainer(state, payload: Partial<typeof defaultApp.panels.graphContainer>) {
+      // todo one set* function
+      return produce(state, draft => {
+        draft.panels.graphContainer = {
+          ...draft.panels.graphContainer,
           ...payload
         };
       });

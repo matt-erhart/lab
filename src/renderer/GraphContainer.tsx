@@ -24,7 +24,6 @@ import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
 
-
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -51,18 +50,19 @@ const mapState = (state: iRootState) => ({
   selectedLinks: state.graph.selectedLinks,
   patches: state.graph.patches,
   pdfRootDir: state.app.current.pdfRootDir,
-  pdfDir: state.app.current.pdfDir
+  pdfDir: state.app.current.pdfDir,
+  graphPanel: state.app.panels.graphContainer
 });
 
 const mapDispatch = ({
   graph: { addBatch, removeBatch, updateBatch, toggleSelections },
-  app: {setCurrent}
+  app: { setMainPdfReader }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   updateBatch,
   toggleSelections,
-  setCurrent
+  setMainPdfReader
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -99,8 +99,6 @@ export class GraphContainer extends React.Component<
 
   onTransformEnd = (transProps: frame) => {
     const { id, left, top, width, height } = transProps;
-    console.log("trans end");
-
     this.props.updateBatch({
       nodes: [{ id, style: { left, top, width, height } }]
     });
@@ -115,6 +113,12 @@ export class GraphContainer extends React.Component<
         Object.values(this.props.links).length
     ) {
       this.getFramesInView(this.state.containerBounds);
+    }
+
+    if (prevProps.graphPanel !== this.props.graphPanel) {
+      const {left, top} = this.props.graphPanel
+      this.scrollRef.current.scrollTo(left, top)
+      
     }
   }
 
@@ -203,7 +207,6 @@ export class GraphContainer extends React.Component<
 
   onMouseSelect = frame => e => {
     e.stopPropagation();
-    console.log("mouse select");
 
     const isSelected = this.isSelected(frame.id);
     if (typeof frame.id === "string") {
@@ -294,7 +297,6 @@ export class GraphContainer extends React.Component<
     if (!node) return null;
     switch (node.data.type as NodeDataTypes) {
       case "pdf.publication":
-      console.log(node.data.pdfDir, this.props.pdfDir)
         return (
           <div
             key={node.id}
@@ -309,8 +311,15 @@ export class GraphContainer extends React.Component<
             <span>
               <FileIcon
                 stroke={"#CD594A"}
-                style={{ marginBottom: 0, marginTop: 10, cursor: 'alias' }}
-                onClick={e => this.props.setCurrent({pdfDir: node.data.pdfDir})}
+                style={{ marginBottom: 0, marginTop: 10, cursor: "alias" }}
+                onClick={e =>
+                  this.props.setMainPdfReader({
+                    pdfDir: node.data.pdfDir,
+                    top: 0,
+                    left: 0,
+                    scrollToPageNumber: 0
+                  })
+                }
               />{" "}
               {node.data.pdfDir.replace(/-/g, " ")}
             </span>

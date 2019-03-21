@@ -1,16 +1,14 @@
-- SCROLL TO
+- SCROLL TO Graph (maybe just scroll both or do isMain)
 
 - select/edit links
+- resizable main layout
+
 - some links nodes should be immutable
 - move many
 - zoom/pan
 - delete segment in pdf viewer
-
-
-
 - html-to-image for zoom out
 - prevent pdf renders
-- resizable main layout
 - 'a' things
 - autocomplete segment text
 - use attributes like id/ data- to prevent overlay events

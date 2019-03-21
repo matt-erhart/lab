@@ -201,6 +201,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         <MainContainer>
           {pdfDir.length > 0 && (
             <PdfViewer
+            tabIndex={0}
               isMainReader={true}
               key={pdfDir}
               pageNumbersToLoad={[]}

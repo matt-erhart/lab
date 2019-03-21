@@ -90,7 +90,8 @@ const PdfViewerDefaults = {
     width: "100%" as number | string | undefined,
     height: "100%" as number | string | undefined,
     scale: 1,
-    showLineBoxes: false
+    showLineBoxes: false,
+    isMainReader: false
   },
   state: {
     scale: 2, // todo scale
@@ -150,12 +151,8 @@ class PdfViewer extends React.Component<
     scale: oc(this.props).scale(1)
   };
   scrollRef = React.createRef<HTMLDivElement>();
-  scroll = React.createRef<{left: number, top: number}>()
   onScroll = e => {
     e.stopPropagation()
-    this.scroll.current.left = e.nativeEvent.target.scrollLeft;
-    this.scroll.current.top = e.nativeEvent.target.scrollTop;
-
   }
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
@@ -424,6 +421,7 @@ class PdfViewer extends React.Component<
 
           <PageSvg
             // scale={this.state.scale}
+            isMainReader={this.props.isMainReader}
             key={"svg-" + page.pageNumber}
             svgWidth={width}
             svgHeight={height}

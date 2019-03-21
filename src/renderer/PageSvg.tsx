@@ -35,7 +35,8 @@ const PageSvgDefaults = {
     height2color: {} as any,
     fontNames2color: {} as any,
     onAddViewbox: viewbox => {},
-    viewboxes: [] as PdfSegmentViewbox[]
+    viewboxes: [] as PdfSegmentViewbox[],
+    isMainReader: false
   },
   state: {
     selectionRect: { height: 0, width: 0, left: 0, x1: 0, top: 0, y1: 0 },
@@ -65,7 +66,8 @@ const mapDispatch = ({
     removePortals,
     updatePortals,
     setMainPdfReader,
-    setCurrent
+    setCurrent,
+    setGraphContainer
   }
 }: iDispatch) => ({
   addBatch,
@@ -74,6 +76,7 @@ const mapDispatch = ({
   removePortals,
   updatePortals,
   setMainPdfReader,
+  setGraphContainer,
   setCurrent
 });
 
@@ -592,15 +595,20 @@ class PageSvg extends React.Component<
                   }}
                   onClick={this.openTextPortal(vb.id)}
                   onContextMenu={e => {
-                    console.log('viewbox', vb)
-                    
-                    e.preventDefault();
-                    this.props.setMainPdfReader({
-                      scrollToPageNumber: vb.data.pageNumber,
-                      left,
-                      top: top + Math.random(), // update everytime
-                      pdfDir: vb.data.pdfDir
-                    });
+                    if (!this.props.isMainReader) {
+                      e.preventDefault();
+                      this.props.setMainPdfReader({
+                        scrollToPageNumber: vb.data.pageNumber,
+                        left,
+                        top: top + Math.random(), // update everytime
+                        pdfDir: vb.data.pdfDir
+                      });
+                    } else {
+                      this.props.setGraphContainer({
+                        left: vb.style.left,
+                        top: vb.style.top
+                      });
+                    }
                   }}
                 />
               );

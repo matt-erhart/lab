@@ -389,9 +389,6 @@ class TextEditor extends React.Component<
   render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
-    console.log(wordAtCursor);
-
-    // const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
 
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
