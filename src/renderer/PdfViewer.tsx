@@ -82,6 +82,7 @@ import styled from "styled-components";
 const PdfViewerDefaults = {
   props: {
     pageNumbersToLoad: [] as number[],
+    scrollToPageNumber: 0,
     pdfDir: "",
     pdfRootDir: "",
     top: 110,
@@ -103,7 +104,8 @@ const PdfViewerDefaults = {
     },
     outline: [] as PDFTreeNode[],
     viewboxes: [] as PdfSegmentViewbox[],
-    patches: []
+    patches: [],
+
   }
 };
 
@@ -148,7 +150,13 @@ class PdfViewer extends React.Component<
     scale: oc(this.props).scale(1)
   };
   scrollRef = React.createRef<HTMLDivElement>();
+  scroll = React.createRef<{left: number, top: number}>()
+  onScroll = e => {
+    e.stopPropagation()
+    this.scroll.current.left = e.nativeEvent.target.scrollLeft;
+    this.scroll.current.top = e.nativeEvent.target.scrollTop;
 
+  }
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
@@ -195,10 +203,20 @@ class PdfViewer extends React.Component<
     return null;
   }
 
+  getPageOffset = () => {
+    return this.state.pages.reduce((sum, page) => {
+      if (page.pageNumber < this.props.scrollToPageNumber) {
+        sum += page.viewport.height;
+      }
+      return sum;
+    }, 0);
+  };
+
   async componentDidMount() {
     await this.loadFiles();
     const { left, top } = this.props;
-    this.scrollRef.current.scrollTo(left, top);
+    const pagesOffset = this.getPageOffset();
+    this.scrollRef.current.scrollTo(left, top + pagesOffset);
   }
 
   loadFiles = async () => {
@@ -286,14 +304,24 @@ class PdfViewer extends React.Component<
       !equal(nextProps, this.props) ||
       this.state.pages.length !== nextState.pages.length ||
       this.state.scale !== nextState.scale ||
-      !equal(this.state.viewboxes, this.state.viewboxes)
+      !equal(this.state.viewboxes, nextState.viewboxes)
     );
   }
 
-  async componentDidUpdate(prevProps: typeof PdfViewerDefaults.props) {
+   componentDidUpdate = async (prevProps: typeof PdfViewerDefaults.props) => {
     if (prevProps.pdfDir !== this.props.pdfDir) {
       await this.loadFiles();
       this.setState({ viewboxes: [] });
+    }
+    
+    if (
+      prevProps.scrollToPageNumber !== this.props.scrollToPageNumber ||
+      prevProps.top !== this.props.top
+    ) {
+
+      const pageOffset = this.getPageOffset();
+      const { left, top } = this.props;
+      this.scrollRef.current.scrollTo(left, top + pageOffset);
     }
   }
 
@@ -357,11 +385,13 @@ class PdfViewer extends React.Component<
         return {
           ...vb,
           data: {
+            ...vb.data,
+            id: vb.id,
             left: (left / scaleAtCapture) * this.state.scale,
             top: (top / scaleAtCapture) * this.state.scale,
             width: (width / scaleAtCapture) * this.state.scale,
             height: (height / scaleAtCapture) * this.state.scale,
-            scale: scaleAtCapture
+            scale: scaleAtCapture,
           }
         };
       });
@@ -426,7 +456,7 @@ class PdfViewer extends React.Component<
             boxSizing: "border-box",
             overflow: "scroll"
           }}
-          onScroll={e => e.stopPropagation()}
+          onScroll={this.onScroll}
         >
           {this.renderPages()}
         </div>

@@ -1,11 +1,10 @@
-- select links
-- crUD links
-- move many
-- delete segment in pdf viewer
+- SCROLL TO
 
-- create link
-  - right click stage link to new html node
-- write after segment 
+- select/edit links
+- some links nodes should be immutable
+- move many
+- zoom/pan
+- delete segment in pdf viewer
 
 
 

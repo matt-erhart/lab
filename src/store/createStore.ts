@@ -17,7 +17,6 @@ const pdfRootDir = settings.get("pdfRootDir");
 let defaultApp = {
   current: {
     userId: "",
-    pdfDir: "",
     pdfRootDir: pdfRootDir
   },
   settings: {
@@ -26,6 +25,18 @@ let defaultApp = {
       panels: {}
     },
     keyboardShortcuts: {}
+  },
+  panels: {
+    mainPdfReader: {
+      // todo should be scrollto
+      left: 0,
+      top: 0,
+      width: "50vw",
+      height: "100%",
+      scale: 2,
+      scrollToPageNumber: 0,
+      pdfDir: ''
+    }
   },
   portals: [] as frame[]
 };
@@ -58,6 +69,14 @@ export const app = createModel({
         draft.current = { ...draft.current, ...payload };
       });
     },
+    setMainPdfReader(state, payload: Partial<typeof defaultApp.panels.mainPdfReader>) {
+      return produce(state, draft => {
+        draft.panels.mainPdfReader = {
+          ...draft.panels.mainPdfReader,
+          ...payload
+        };
+      });
+    },
     addPortals(state, payload: frame[]) {
       return produce(state, draft => {
         draft.portals.push(...payload);
@@ -74,8 +93,8 @@ export const app = createModel({
       return produce(state, draft => {
         frames.forEach(frame => {
           const ix = draft.portals.findIndex(p => p.id === frame.id);
-          if (ix === -1){ 
-            draft.portals.push(frame)
+          if (ix === -1) {
+            draft.portals.push(frame);
           } else {
             draft.portals[ix] = { ...draft.portals[ix], ...frame };
           }
@@ -214,7 +233,6 @@ export const graph = createModel({
                 value: draft.nodes[id]
               });
             }
-              
           }
         }
       });

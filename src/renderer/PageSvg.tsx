@@ -60,13 +60,21 @@ const mapState = (state: iRootState, props) => {
 
 const mapDispatch = ({
   graph: { addBatch, removeBatch },
-  app: { addPortals, removePortals, updatePortals }
+  app: {
+    addPortals,
+    removePortals,
+    updatePortals,
+    setMainPdfReader,
+    setCurrent
+  }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   addPortals,
   removePortals,
-  updatePortals
+  updatePortals,
+  setMainPdfReader,
+  setCurrent
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -583,6 +591,17 @@ class PageSvg extends React.Component<
                     backgroundColor: "transparent"
                   }}
                   onClick={this.openTextPortal(vb.id)}
+                  onContextMenu={e => {
+                    console.log('viewbox', vb)
+                    
+                    e.preventDefault();
+                    this.props.setMainPdfReader({
+                      scrollToPageNumber: vb.data.pageNumber,
+                      left,
+                      top: top + Math.random(), // update everytime
+                      pdfDir: vb.data.pdfDir
+                    });
+                  }}
                 />
               );
             })}

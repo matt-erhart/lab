@@ -23,12 +23,7 @@ import {
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
-// import console = require("console");
 
-// window container for...
-// portal
-// main layout
-// virtualized map with svg layer
 
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
@@ -60,12 +55,14 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch, updateBatch, toggleSelections }
+  graph: { addBatch, removeBatch, updateBatch, toggleSelections },
+  app: {setCurrent}
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   updateBatch,
-  toggleSelections
+  toggleSelections,
+  setCurrent
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -297,6 +294,7 @@ export class GraphContainer extends React.Component<
     if (!node) return null;
     switch (node.data.type as NodeDataTypes) {
       case "pdf.publication":
+      console.log(node.data.pdfDir, this.props.pdfDir)
         return (
           <div
             key={node.id}
@@ -311,7 +309,8 @@ export class GraphContainer extends React.Component<
             <span>
               <FileIcon
                 stroke={"#CD594A"}
-                style={{ marginBottom: 0, marginTop: 10 }}
+                style={{ marginBottom: 0, marginTop: 10, cursor: 'alias' }}
+                onClick={e => this.props.setCurrent({pdfDir: node.data.pdfDir})}
               />{" "}
               {node.data.pdfDir.replace(/-/g, " ")}
             </span>

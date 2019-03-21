@@ -93,13 +93,14 @@ const AppDefaults = {
 const mapState = (state: iRootState) => ({
   pdfDir: state.app.current.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
-  nodes: state.graph.nodes
+  nodes: state.graph.nodes,
+  mainPdfReader: state.app.panels.mainPdfReader
 });
 
 const mapDispatch = ({
   graph: { addBatch },
-  app: { setCurrent }
-}: iDispatch) => ({ addBatch, setCurrent });
+  app: { setMainPdfReader }
+}: iDispatch) => ({ addBatch, setMainPdfReader });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -138,7 +139,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     if (newPubs.length > 0) {
       this.props.addBatch({ nodes: newPubs });
       if (this.props.pdfDir === "")
-        this.props.setCurrent({ pdfDir: newPubs[0].id });
+        this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
   }
 
@@ -170,7 +171,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    this.props.setCurrent({ pdfDir: opt.label });
+    this.props.setMainPdfReader({ pdfDir: opt.label });
   };
 
   pageNum = [2]; // prevent rerender from array creation
@@ -200,15 +201,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         <MainContainer>
           {pdfDir.length > 0 && (
             <PdfViewer
+              isMainReader={true}
+              key={pdfDir}
               pageNumbersToLoad={[]}
               {...{
                 pdfRootDir,
-                pdfDir,
-                left: 107.148 - 20,
-                top: 490.84180000000083 - 20,
-                width: "50vw",
-                height: "100%",
-                scale: 2
+                ...this.props.mainPdfReader
               }}
             />
           )}
