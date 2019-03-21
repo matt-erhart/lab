@@ -138,6 +138,7 @@ class TextEditor extends React.Component<
     const graphInlines = this.editor.value.document.getInlinesByType("graph");
     const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
     const serialized = this.serialize(this.state.editorValue);
+
     // if (serialized.text.length === 0) return;
     let currentNode;
 
@@ -155,23 +156,25 @@ class TextEditor extends React.Component<
     }
 
     // have the links been created?
-    let newLinks = [];
-    for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
-      const ix = Object.values(this.props.links).findIndex(link => {
-        return (
-          link.source === sourceId &&
-          link.target === currentNode.id &&
-          link.data.type === "partOf"
-        );
-      });
+    // let newLinks = [];
 
-      if (ix === -1) {
-        const newLink = makeLink(sourceId, currentNode.id, {
-          type: "partOf"
-        });
-        newLinks.push(newLink);
-      }
-    }
+    // for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
+    //   const ix = Object.values(this.props.links).findIndex(link => {
+    //     return (
+    //       link.source === sourceId &&
+    //       link.target === currentNode.id &&
+    //       link.data.type === "partOf"
+    //     );
+    //   });
+    //   console.log(idsToLink, ix);
+
+    //   if (ix === -1) {
+    //     const newLink = makeLink(sourceId, currentNode.id, {
+    //       type: "partOf"
+    //     });
+    //     newLinks.push(newLink);
+    //   }
+    // }
 
     if (this.props.id.length === 0) {
       this.props.addBatch({ nodes: [currentNode], links: newLinks });
@@ -184,6 +187,7 @@ class TextEditor extends React.Component<
       this.props.updateBatch({
         nodes: [{ id: currentNode.id, data: { ...serialized } }]
       });
+      // this.props.addBatch({ links: newLinks });
     }
   };
 
@@ -191,53 +195,6 @@ class TextEditor extends React.Component<
     event.ctrlKey, event.key;
     if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
       this.save();
-      // console.log("make a new node");
-      // const graphInlines = this.editor.value.document.getInlinesByType("graph");
-      // const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
-      // const serialized = this.serialize(this.state.editorValue);
-      // let currentNode;
-
-      // if (this.props.id.length === 0) {
-      //   currentNode = makeUserHtml(serialized, {
-      //     // todo use scroll position in boxmap
-      //     x: 200 + Math.random() * 200,
-      //     y: 200 + Math.random() * 200
-      //   });
-      // } else {
-      //   currentNode = this.props.nodes[this.props.id];
-      // }
-
-      // // have the links been created?
-      // let newLinks = [];
-      // for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
-      //   const ix = Object.values(this.props.links).findIndex(link => {
-      //     return (
-      //       link.source === sourceId &&
-      //       link.target === currentNode.id &&
-      //       link.data.type === "partOf"
-      //     );
-      //   });
-
-      //   if (ix === -1) {
-      //     const newLink = makeLink(this.props.nodes[sourceId], currentNode, {
-      //       type: "partOf"
-      //     });
-      //     newLinks.push(newLink);
-      //   }
-      // }
-
-      // if (this.props.id.length === 0) {
-      //   this.props.addBatch({ nodes: [currentNode], links: newLinks });
-      //   this.editor
-      //     .moveToRangeOfDocument()
-      //     .insertBlock("")
-      //     .deleteBackward(1);
-      //   this.setState({ editorValue: this.editor.value });
-      // } else {
-      //   this.props.updateBatch({
-      //     nodes: [{ id: currentNode.id, data: { ...serialized } }]
-      //   });
-      // }
     }
 
     const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
@@ -305,6 +262,24 @@ class TextEditor extends React.Component<
           })
           .moveAnchorForward(text.length)
           .focus();
+          
+        const ix = Object.values(this.props.links).findIndex(link => {
+          return (
+            link.source === id &&
+            link.target === this.props.id &&
+            link.data.html === "<p>compress</p>"
+          );
+        });
+
+        if (ix === -1) {
+          const newLink = makeLink(id, this.props.id, {
+            html: "<p>compress</p>"
+          });
+          console.log('TODO on delete inserted link')
+          
+          this.props.addBatch({ links: [newLink] });
+        }
+
         this.setState({ editorValue: this.editor.value });
       }
     } catch (err) {
@@ -404,11 +379,13 @@ class TextEditor extends React.Component<
           }
         }}
         inputValue={wordAtCursor}
-        onSelect={() => {
-          if (autocompleteList.length === 1) {
-            this.wrapWithGraphNode(autocompleteList[0]);
-          }
-        }}
+        // todo insert same option multiple times
+        // onSelect={() => {
+          // this will call wrapWithGraphNode twice
+        //   if (autocompleteList.length === 1) {
+        //     this.wrapWithGraphNode(autocompleteList[0]);
+        //   }
+        // }}
       >
         {downshift => {
           // if (!downshift.isOpen) return null
@@ -439,7 +416,7 @@ class TextEditor extends React.Component<
                 //   renderNode={renderNode({ userId, pubId })}
                 onKeyDown={this.onKeyDown(downshift.getInputProps)}
                 // onFocus={this.onFocus}
-                //   onBlur={this.hideAutocomplete}
+                // onBlur={e => this.save()}
                 style={{
                   margin: 5,
                   height: "95%",
