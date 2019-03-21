@@ -3,7 +3,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Plain from "slate-plain-serializer";
 import Downshift from "downshift";
-import { getSelectionRange } from "./utils";
+import { getSelectionRange, inFirstNotSecondArray } from "./utils";
 import { getWordAtCursor, onSlash } from "./TextEditorUtils";
 import { oc } from "ts-optchain";
 import { iDispatch, iRootState } from "../store/createStore";
@@ -40,7 +40,9 @@ const TextEditorDefaults = {
     editorValue: Plain.deserialize("") as Editor["value"],
     wordAtCursor: "",
     hasError: false,
-    portalStyle: { left: -1, top: -1, width: -1, height: -1 }
+    portalStyle: { left: -1, top: -1, width: -1, height: -1 },
+    showAutoComplete: false,
+    htmlNodes: []
   }
 };
 const mapState = (state: iRootState) => ({
@@ -52,9 +54,15 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = ({
-  graph: { addBatch, toggleSelections, updateBatch },
+  graph: { addBatch, toggleSelections, updateBatch, removeBatch },
   app: { setCurrent }
-}: iDispatch) => ({ addBatch, setCurrent, toggleSelections, updateBatch });
+}: iDispatch) => ({
+  addBatch,
+  setCurrent,
+  toggleSelections,
+  updateBatch,
+  removeBatch
+});
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -85,9 +93,21 @@ class TextEditor extends React.Component<
     this.initHtml();
   }
 
-  // componentWillUnmount() {
-  //   this.save();
-  // }
+  static getDerivedStateFromProps(props, state) {
+    // todo perf patch
+    let userHtml: UserHtml[];
+    if (props.nodes) {
+      userHtml = Object.values(props.nodes).filter(
+        node =>
+          node.data.type === ("userHtml" as NodeDataTypes) &&
+          node.id !== props.id
+      );
+      userHtml.filter(t => t.data.text.includes(state.wordAtCursor));
+    }
+    const showAutoComplete =
+      state.wordAtCursor.length > 1 && !props.readOnly && userHtml.length > 0;
+    return { htmlNodes: userHtml, showAutoComplete };
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.id !== this.props.id) {
@@ -137,6 +157,26 @@ class TextEditor extends React.Component<
   save = () => {
     const graphInlines = this.editor.value.document.getInlinesByType("graph");
     const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
+
+    //
+    const linksBetween = Object.values(this.props.links).filter(link => {
+      return (
+        link.target === this.props.id && link.data.html === "<p>usedIn</p>"
+      );
+    });
+
+    const staleNodeIds = inFirstNotSecondArray([
+      linksBetween.map(link => link.source),
+      // so source should be a node id
+      idsToLink
+    ]);
+
+    const linksToDel = linksBetween
+      .filter(link => staleNodeIds.includes(link.source))
+      .map(link => link.id);
+
+    this.props.removeBatch({ links: linksToDel });
+
     const serialized = this.serialize(this.state.editorValue);
 
     // if (serialized.text.length === 0) return;
@@ -155,29 +195,8 @@ class TextEditor extends React.Component<
       currentNode = this.props.nodes[this.props.id];
     }
 
-    // have the links been created?
-    // let newLinks = [];
-
-    // for (let sourceId of idsToLink.filter(x => x !== currentNode.id)) {
-    //   const ix = Object.values(this.props.links).findIndex(link => {
-    //     return (
-    //       link.source === sourceId &&
-    //       link.target === currentNode.id &&
-    //       link.data.type === "partOf"
-    //     );
-    //   });
-    //   console.log(idsToLink, ix);
-
-    //   if (ix === -1) {
-    //     const newLink = makeLink(sourceId, currentNode.id, {
-    //       type: "partOf"
-    //     });
-    //     newLinks.push(newLink);
-    //   }
-    // }
-
     if (this.props.id.length === 0) {
-      this.props.addBatch({ nodes: [currentNode], links: newLinks });
+      this.props.addBatch({ nodes: [currentNode] });
       this.editor
         .moveToRangeOfDocument()
         .insertBlock("")
@@ -193,15 +212,29 @@ class TextEditor extends React.Component<
 
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
-    if (event.key !== "Control" && event.ctrlKey && event.key === "Enter") {
-      this.save();
-    }
+    const isCrtlEnter =
+      event.key !== "Control" && event.ctrlKey && event.key === "Enter";
 
     const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
       event.key
     );
 
-    if (isAutoCompleteCmd) {
+    // if (event.key === "Backspace" || event.key === "Delete") {
+    //   console.log("delete links");
+    // }
+
+    if (event.key === "Tab") {
+      event.preventDefault();
+      editor.insertText("\t");
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.setState({ wordAtCursor: "" });
+    }
+
+    if (isAutoCompleteCmd && this.state.showAutoComplete) {
+      // todo maybe use this to portal
       const { onKeyDown } = getInputProps();
       event.preventDefault();
       onKeyDown(event);
@@ -218,8 +251,6 @@ class TextEditor extends React.Component<
         const isSlashCmd = onSlash(event, editor, next);
         console.log("is slash cmd", isSlashCmd);
         return next();
-      case "return":
-        console.log("enter");
 
       default:
         return next();
@@ -262,21 +293,22 @@ class TextEditor extends React.Component<
           })
           .moveAnchorForward(text.length)
           .focus();
-          
+
         const ix = Object.values(this.props.links).findIndex(link => {
           return (
             link.source === id &&
             link.target === this.props.id &&
-            link.data.html === "<p>compress</p>"
+            link.data.html === "<p>usedIn</p>"
           );
         });
 
         if (ix === -1) {
           const newLink = makeLink(id, this.props.id, {
-            html: "<p>compress</p>"
+            // todo put "<p>usedIn</p>" in creators
+            html: "<p>usedIn</p>"
           });
-          console.log('TODO on delete inserted link')
-          
+          console.log("TODO on delete inserted link");
+
           this.props.addBatch({ links: [newLink] });
         }
 
@@ -289,7 +321,11 @@ class TextEditor extends React.Component<
 
   onMouseOut = e => {
     this.save();
-    this.setState({ portalStyle: TextEditorDefaults.state.portalStyle });
+    this.setState({
+      portalStyle: TextEditorDefaults.state.portalStyle,
+      wordAtCursor: "",
+      showAutoComplete: false
+    });
   };
 
   static getDerivedStateFromError(error) {
@@ -353,20 +389,19 @@ class TextEditor extends React.Component<
   render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
-    const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
+
+    // const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
 
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
     return (
       <Downshift
         itemToString={item => (item ? item.data.text : "")}
-        isOpen={
-          wordAtCursor.length > 1 &&
-          !this.props.readOnly &&
-          autocompleteList.length > 0
-        }
+        isOpen={this.state.showAutoComplete}
         onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
-          const { id } = autocompleteList[highlightedIndex] || { id: false };
+          const { id } = this.state.htmlNodes[highlightedIndex] || {
+            id: false
+          };
           if (id) {
             this.props.toggleSelections({
               selectedNodes: [id],
@@ -381,7 +416,7 @@ class TextEditor extends React.Component<
         inputValue={wordAtCursor}
         // todo insert same option multiple times
         // onSelect={() => {
-          // this will call wrapWithGraphNode twice
+        // this will call wrapWithGraphNode twice
         //   if (autocompleteList.length === 1) {
         //     this.wrapWithGraphNode(autocompleteList[0]);
         //   }
@@ -420,15 +455,13 @@ class TextEditor extends React.Component<
                 style={{
                   margin: 5,
                   height: "95%",
-                  cursor: "text",
-                  border: "1px solid grey"
+                  cursor: "text"
                 }}
                 renderNode={renderSlateNodes}
                 schema={schema}
               />
-              {this.state.portalStyle.left > -1 &&
-                this.state.wordAtCursor.length > 1 &&
-                autocompleteList.length > 0 && (
+              {this.state.showAutoComplete &&
+                this.state.portalStyle.width > -1 && (
                   <Portal>
                     <div
                       style={{
@@ -449,28 +482,27 @@ class TextEditor extends React.Component<
                       onMouseDown={e => e.stopPropagation()}
                     >
                       {" "}
-                      {downshift.isOpen &&
-                        autocompleteList.map((item, index) => (
-                          <Button1
-                            {...downshift.getItemProps({
-                              key: item.id,
-                              index,
-                              item,
-                              style: {
-                                backgroundColor:
-                                  downshift.highlightedIndex === index
-                                    ? "lightgreen"
-                                    : null,
-                                fontWeight:
-                                  downshift.selectedItem === item
-                                    ? "bold"
-                                    : "normal"
-                              }
-                            })}
-                          >
-                            {item.data.text}
-                          </Button1>
-                        ))}{" "}
+                      {this.state.htmlNodes.map((item, index) => (
+                        <Button1
+                          {...downshift.getItemProps({
+                            key: item.id,
+                            index,
+                            item,
+                            style: {
+                              backgroundColor:
+                                downshift.highlightedIndex === index
+                                  ? "lightgreen"
+                                  : null,
+                              fontWeight:
+                                downshift.selectedItem === item
+                                  ? "bold"
+                                  : "normal"
+                            }
+                          })}
+                        >
+                          {item.data.text}
+                        </Button1>
+                      ))}{" "}
                     </div>
                   </Portal>
                 )}

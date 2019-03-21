@@ -16,6 +16,13 @@ export const brewer12 = [
   "#b15928"
 ];
 
+export const inFirstNotSecondArray = (twoArrays: any[][]) =>
+  twoArrays.reduce(function(a, b) {
+    return a.filter(function(value) {
+      return !b.includes(value);
+    });
+  });
+
 export const logPropChanges = (prevProps, props) => {
   Object.keys(props).forEach(key => {
     if (props[key] !== prevProps[key]) {
@@ -175,7 +182,7 @@ export const isBoxPartlyInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
   const minYOk = smallBox.minY <= bigBox.maxY && smallBox.minY >= bigBox.minY;
   const maxYOk = smallBox.maxY >= bigBox.minY && smallBox.maxY <= bigBox.maxY;
 
-  return (minXOk || maxXOk) && (minYOk || maxYOk)
+  return (minXOk || maxXOk) && (minYOk || maxYOk);
 };
 
 export const getRectEdges = (

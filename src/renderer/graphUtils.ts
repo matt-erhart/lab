@@ -31,5 +31,9 @@ export const getNeighborhood = (
   return res;
 };
 
+export const linksBetween = (nodeId1, nodeId2, nodes, links) => {
+  
+}
+
 // const res = getNeighborhood(["c"], nodes, links);
 // console.log(res);
