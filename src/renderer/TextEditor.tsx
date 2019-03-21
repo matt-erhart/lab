@@ -102,8 +102,9 @@ class TextEditor extends React.Component<
           node.data.type === ("userHtml" as NodeDataTypes) &&
           node.id !== props.id
       );
-      userHtml.filter(t => t.data.text.includes(state.wordAtCursor));
+      userHtml = userHtml.filter(t => t.data.text.includes(state.wordAtCursor));
     }
+
     const showAutoComplete =
       state.wordAtCursor.length > 1 && !props.readOnly && userHtml.length > 0;
     return { htmlNodes: userHtml, showAutoComplete };
@@ -175,7 +176,7 @@ class TextEditor extends React.Component<
       .filter(link => staleNodeIds.includes(link.source))
       .map(link => link.id);
 
-    this.props.removeBatch({ links: linksToDel });
+    if (linksToDel.length > 0) this.props.removeBatch({ links: linksToDel });
 
     const serialized = this.serialize(this.state.editorValue);
 
@@ -307,7 +308,6 @@ class TextEditor extends React.Component<
             // todo put "<p>usedIn</p>" in creators
             html: "<p>usedIn</p>"
           });
-          console.log("TODO on delete inserted link");
 
           this.props.addBatch({ links: [newLink] });
         }
@@ -389,6 +389,7 @@ class TextEditor extends React.Component<
   render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
+    console.log(wordAtCursor);
 
     // const autocompleteList = this.getTextNodes(this.state.wordAtCursor);
 
@@ -396,9 +397,13 @@ class TextEditor extends React.Component<
     // todo autocomplete for segment text
     return (
       <Downshift
+        key="downshift"
         itemToString={item => (item ? item.data.text : "")}
         isOpen={this.state.showAutoComplete}
-        onStateChange={({ selectedItem, highlightedIndex }, { setState }) => {
+        onStateChange={(
+          { selectedItem, highlightedIndex },
+          { setState, clearSelection }
+        ) => {
           const { id } = this.state.htmlNodes[highlightedIndex] || {
             id: false
           };
@@ -411,6 +416,7 @@ class TextEditor extends React.Component<
 
           if (!!selectedItem) {
             this.wrapWithGraphNode(selectedItem);
+            clearSelection();
           }
         }}
         inputValue={wordAtCursor}

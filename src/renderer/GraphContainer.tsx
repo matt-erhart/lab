@@ -102,8 +102,8 @@ export class GraphContainer extends React.Component<
 
   onTransformEnd = (transProps: frame) => {
     const { id, left, top, width, height } = transProps;
-    console.log('trans end')
-    
+    console.log("trans end");
+
     this.props.updateBatch({
       nodes: [{ id, style: { left, top, width, height } }]
     });
@@ -206,8 +206,8 @@ export class GraphContainer extends React.Component<
 
   onMouseSelect = frame => e => {
     e.stopPropagation();
-    console.log('mouse select')
-    
+    console.log("mouse select");
+
     const isSelected = this.isSelected(frame.id);
     if (typeof frame.id === "string") {
       if (!isSelected && !e.shiftKey) {
@@ -225,8 +225,23 @@ export class GraphContainer extends React.Component<
   };
 
   deselectAll = e => {
-    if (!e.shiftKey && e.target.id === 'SvgLayer')
+    if (!e.shiftKey && e.target.id === "SvgLayer")
       this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+  };
+
+  makeNodeAndLinkIt = e => {
+    if (!e.shiftKey && e.target.id === "SvgLayer") {
+      const targetId = this.makeUserHtmlNode(e);
+      if (targetId.length > 0) {
+        const newLinks = this.linkSelectedToNode(
+          this.props.nodes,
+          this.props.links,
+          this.props.selectedNodes,
+          targetId
+        );
+        this.props.addBatch({ links: newLinks });
+      }
+    }
   };
 
   makeUserHtmlNode = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
@@ -239,7 +254,9 @@ export class GraphContainer extends React.Component<
         style: { left: clientX - left, top: clientY - top }
       });
       this.props.addBatch({ nodes: [userHtml] });
+      return userHtml.id;
     }
+    return "";
   };
 
   rightClickNodeToLink = targetId => e => {
@@ -363,10 +380,7 @@ export class GraphContainer extends React.Component<
         tabIndex={0}
         onClick={this.deselectAll}
       >
-        <MapContainer
-          id="GraphMapContainer"
-          ref={this.mapRef}
-        >
+        <MapContainer id="GraphMapContainer" ref={this.mapRef}>
           {width && height && (
             <svg
               id="SvgLayer"
@@ -376,8 +390,7 @@ export class GraphContainer extends React.Component<
               style={{ position: "absolute", left: 0, top: 0 }}
               onDoubleClick={this.makeUserHtmlNode}
               onClick={this.deselectAll}
-
-              //todo  onContextMenu={}
+              onContextMenu={this.makeNodeAndLinkIt}
             >
               {this.state.links.length > 0 &&
                 this.state.links.map(link => {
