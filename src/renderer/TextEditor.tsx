@@ -46,7 +46,7 @@ const TextEditorDefaults = {
   }
 };
 const mapState = (state: iRootState) => ({
-  pdfDir: state.app.current.pdfDir,
+  pdfDir: state.app.panels.mainPdfReader.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
   links: state.graph.links,
@@ -83,6 +83,7 @@ class TextEditor extends React.Component<
   initHtml = () => {
     const { id, nodesOrLinks } = this.props;
     if (this.props.id.length > 0) {
+      //@ts-ignore
       const html = oc(this.props)[nodesOrLinks][id].data.html("<p></p>");
       const editorValue = htmlSerializer.deserialize(html);
       this.setState({ editorValue });
@@ -97,7 +98,8 @@ class TextEditor extends React.Component<
     // todo perf patch
     let userHtml: UserHtml[];
     if (props.nodes) {
-      userHtml = Object.values(props.nodes).filter(
+      //@ts-ignore
+      userHtml = (Object.values(props.nodes) as aNode).filter(
         node =>
           node.data.type === ("userHtml" as NodeDataTypes) &&
           node.id !== props.id
@@ -120,7 +122,7 @@ class TextEditor extends React.Component<
     if (prevProps.patches !== this.props.patches) {
       const relevantPatch = this.props.patches.find(p => p.path.includes(id));
       if (!!relevantPatch) {
-        // this.initHtml()
+        // @ts-ignore
         const newHtml = oc(relevantPatch).value.data.html("");
         const { html } = this.serialize(this.state.editorValue);
 
@@ -134,6 +136,7 @@ class TextEditor extends React.Component<
 
   getCurrentWord = editor => {
     const anchorOffset = editor.value.selection.getIn(["anchor", "offset"]);
+    //@ts-ignore
     const anchorText = oc(editor.value.anchorText).text("");
     const { text, isAfterSpace, isEndOfWord } = getWordAtCursor(
       anchorText,
@@ -157,6 +160,7 @@ class TextEditor extends React.Component<
 
   save = () => {
     const graphInlines = this.editor.value.document.getInlinesByType("graph");
+    //@ts-ignore
     const idsToLink = graphInlines.toJS().map(n => oc(n).data.id());
 
     //
@@ -203,7 +207,10 @@ class TextEditor extends React.Component<
         .insertBlock("")
         .deleteBackward(1);
       this.setState({ editorValue: this.editor.value });
-    } else if (this.props.nodes[currentNode.id].data.html !== serialized.html) {
+    } else if (
+      (this.props.nodes[currentNode.id] as UserHtml).data.html !==
+      serialized.html
+    ) {
       this.props.updateBatch({
         nodes: [{ id: currentNode.id, data: { ...serialized } }]
       });
@@ -262,6 +269,7 @@ class TextEditor extends React.Component<
 
   getTextNodes = (inputText = "") => {
     if (this.props.nodes) {
+      //@ts-ignore
       const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
         node => node.data.type === ("userHtml" as NodeDataTypes)
       );
@@ -296,10 +304,7 @@ class TextEditor extends React.Component<
           .focus();
 
         const ix = Object.values(this.props.links).findIndex(link => {
-          return (
-            link.source === id &&
-            link.target === this.props.id
-          );
+          return link.source === id && link.target === this.props.id;
         });
 
         if (ix === -1) {
@@ -380,6 +385,7 @@ class TextEditor extends React.Component<
   };
 
   onFocus = e => {
+    //@ts-ignore
     const allowId = oc(e).currentTarget.id("") === "slate-container"; //todo unmagic string
     if (allowId) {
       this.getPortalStyle(e);
@@ -444,7 +450,7 @@ class TextEditor extends React.Component<
               onMouseDown={this.onFocus}
             >
               <Editor
-                id={"slate-" + this.props.id}
+                // id={"slate-" + this.props.id}
                 readOnly={this.props.readOnly}
                 ref={this.ref as any}
                 spellCheck={false}

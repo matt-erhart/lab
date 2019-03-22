@@ -223,7 +223,7 @@ export const graph = createModel({
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
-            const { id, data, style, source, target, undirected } = nodeOrLink;
+            const { id, data, style, source, target, isDirected } = nodeOrLink;
             draft[payloadKey][id].meta.timeUpdated = Date.now();
 
             for (let keyToUpdate of Object.keys(data || {})) {
@@ -234,8 +234,8 @@ export const graph = createModel({
             }
             if (source) draft.links[id].source = source;
             if (target) draft.links[id].target = target;
-            if (undirected !== undefined)
-              draft.links[id].undirected = undirected;
+            if (isDirected !== undefined)
+              draft.links[id].isDirected = isDirected;
 
             if (source) {
               draft.patches.push({

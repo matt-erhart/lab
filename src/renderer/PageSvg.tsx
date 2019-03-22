@@ -13,7 +13,6 @@ import { connect } from "react-redux";
 import {
   makePdfSegmentViewbox,
   PdfSegmentViewbox,
-  makeUserMediaText,
   makeLink,
   makeUserHtml
 } from "../store/creators";
@@ -227,43 +226,43 @@ class PageSvg extends React.Component<
     return newSelect;
 
     // todo get text from viewbox from bellow
-    if (
-      bbox.left === Infinity ||
-      bbox.top === Infinity ||
-      bbox.width < 3 ||
-      bbox.height < 3
-    ) {
-      return;
-    }
+    // if (
+    //   bbox.left === Infinity ||
+    //   bbox.top === Infinity ||
+    //   bbox.width < 3 ||
+    //   bbox.height < 3
+    // ) {
+    //   return;
+    // }
 
-    this.props.onAddViewbox(newSelect);
-    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+    // this.props.onAddViewbox(newSelect);
+    // this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
 
-    const text = selectedLines.map(sl => {
-      return sl.textIds.map(id => {
-        const {
-          fontHeight,
-          str,
-          style: { fontFamily },
-          top
-        } = this.props.pageOfText.text.find(x => x.id === id);
+    // const text = selectedLines.map(sl => {
+    //   return sl.textIds.map(id => {
+    //     const {
+    //       fontHeight,
+    //       str,
+    //       style: { fontFamily },
+    //       top
+    //     } = this.props.pageOfText.text.find(x => x.id === id);
 
-        return { fontHeight, fontFamily, str, top };
-      });
-    });
+    //     return { fontHeight, fontFamily, str, top };
+    //   });
+    // });
 
-    const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
-    const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
-    const extractedText = (flatten(text).reduce((res, t) => {
-      return res + (t as any).str.replace(/-$/, ""); // end with dash
-    }, "") as string).replace(/\s+/g, " ");
+    // const fontSize = mode(flatten(text).map<any>(t => (t as any).fontHeight));
+    // const fontFamily = mode(flatten(text).map<any>(t => (t as any).fontFamily));
+    // const extractedText = (flatten(text).reduce((res, t) => {
+    //   return res + (t as any).str.replace(/-$/, ""); // end with dash
+    // }, "") as string).replace(/\s+/g, " ");
 
-    //@ts-ignore
-    this.setState({
-      div: { text: extractedText, style: { fontFamily, fontSize } },
-      showText: true,
-      value: ""
-    });
+    // //@ts-ignore
+    // this.setState({
+    //   div: { text: extractedText, style: { fontFamily, fontSize } },
+    //   showText: true,
+    //   value: ""
+    // });
 
     // // adapt styles here
     // const elements = flatten(text).reduce<

@@ -240,10 +240,10 @@ const ConnectedApp = connect(
 )(_App);
 
 // import { D3Force } from "./testD3Force";
-import KonvaTest from "./KonvaTest";
+// import KonvaTest from "./KonvaTest";
 import { Tooltip } from "./Tooltip";
 // import { TextEditor } from "./TextEditor";/
-import { Resizer } from "./Resizer";
+// import { Resizer } from "./Resizer";
 class App extends React.Component {
   render() {
     return (

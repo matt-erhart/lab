@@ -18,7 +18,8 @@ import {
   makeLink,
   aLink,
   Links,
-  Nodes
+  Nodes,
+  PdfPublication
 } from "../store/creators";
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
@@ -50,7 +51,7 @@ const mapState = (state: iRootState) => ({
   selectedLinks: state.graph.selectedLinks,
   patches: state.graph.patches,
   pdfRootDir: state.app.current.pdfRootDir,
-  pdfDir: state.app.current.pdfDir,
+  pdfDir: state.app.panels.mainPdfReader.pdfDir,
   graphPanel: state.app.panels.graphContainer
 });
 
@@ -91,6 +92,7 @@ export class GraphContainer extends React.Component<
   onTransforming = (transProps: frame) => {
     // todo here is where svg lines could be updated
     const updatedWindows = updateOneFrame(this.state.frames)(transProps);
+    //@ts-ignore
     this.setState(state => {
       const updatedWindows = updateOneFrame(state.frames)(transProps);
       return { frames: updatedWindows };
@@ -316,7 +318,7 @@ export class GraphContainer extends React.Component<
   };
 
   renderGraphNodes = (frame: frame) => {
-    const node = this.props.nodes[frame.id];
+    const node = this.props.nodes[frame.id] as aNode
     if (!node) return null;
     switch (node.data.type as NodeDataTypes) {
       case "pdf.publication":
@@ -337,14 +339,14 @@ export class GraphContainer extends React.Component<
                 style={{ marginBottom: 0, marginTop: 10, cursor: "alias" }}
                 onClick={e =>
                   this.props.setMainPdfReader({
-                    pdfDir: node.data.pdfDir,
+                    pdfDir: (node as PdfPublication).data.pdfDir,
                     top: 0,
                     left: 0,
                     scrollToPageNumber: 0
                   })
                 }
               />{" "}
-              {node.data.pdfDir.replace(/-/g, " ")}
+              {(node as PdfPublication).data.pdfDir.replace(/-/g, " ")}
             </span>
           </div>
         );
@@ -486,7 +488,7 @@ const LinkLineDefaults = {
   state: {}
 };
 export class LinkLine extends React.PureComponent<
-  typeof LinkLineDefaults.props,
+  typeof LinkLineDefaults.props & any,
   typeof LinkLineDefaults.state
 > {
   static defaultProps = LinkLineDefaults.props;

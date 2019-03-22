@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { Subscription } from "rxjs";
-import { dndContainer, dragData , mData} from "./rx";
+import { dndContainer, dragData, mData } from "./rx";
 import * as Rx from "rxjs";
 
 const Divider = styled.div`
@@ -43,7 +43,7 @@ export class ResizeDivider extends React.Component<
   };
 
   componentWillUnmount() {
-    this.sub.unsubscribe();
+    if (this.sub) this.sub.unsubscribe();
   }
 
   render() {

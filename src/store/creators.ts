@@ -194,7 +194,7 @@ export const makeUserHtml = (props = { data: {}, style: {} }) => {
   };
 };
 
-export type aNode = PdfSegmentViewbox | Empty | UserHtml;
+export type aNode = PdfSegmentViewbox | Empty | UserHtml | PdfPublication;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

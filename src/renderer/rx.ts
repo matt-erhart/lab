@@ -97,11 +97,11 @@ export const dragData = (mouseDownEvent: MouseEvent) => {
 
   const mousemove = fromEvent(document, "mousemove").pipe(
     map(mMap as any)
-  ) as Observable<mouseData>; // could happen anywhere
+  ) as Observable<mData>; // could happen anywhere
 
   const mouseup = fromEvent(document, "mouseup").pipe(
     map(mMap as any)
-  ) as Observable<mouseData>; // could happen anywhere
+  ) as Observable<mData>; // could happen anywhere
 
   return merge(mousemove, mouseup).pipe(
     startWith(down),
