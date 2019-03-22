@@ -194,6 +194,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     return (
+      
       <ViewPortContainer>
         <NavBar>
           <div style={{ flex: 1 }}>

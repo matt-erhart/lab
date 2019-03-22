@@ -1,5 +1,9 @@
 {
+
   "compilerOptions": {
+    "inlineSources": true,
+    "sourceMap": true,
+
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
@@ -9,8 +13,6 @@
     "noImplicitReturns": true,
     "removeComments": true,
     "strictFunctionTypes": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
     "target": "ES2015",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -21,14 +23,10 @@
     "checkJs": false,
     "jsx": "react",
     "esModuleInterop": true,
-
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-
     "forceConsistentCasingInFileNames": true,
-
     "allowSyntheticDefaultImports": true,
-
     "lib": [
       "es2015",
       "dom",
