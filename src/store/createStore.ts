@@ -10,7 +10,7 @@ import path = require("path");
 import { oc } from "ts-optchain";
 import { frame } from "../renderer/ResizableFrame";
 const settings = require("electron-settings");
-
+const {clientWidth} = document.documentElement
 // stored in user/data.
 // todo add userId?
 const pdfRootDir = settings.get("pdfRootDir");
@@ -31,7 +31,7 @@ let defaultApp = {
       // todo should be scrollto
       left: 0,
       top: 0,
-      width: "50vw",
+      width: clientWidth /2 ,
       height: "100%",
       scale: 2,
       scrollToPageNumber: 0,
@@ -41,7 +41,7 @@ let defaultApp = {
         // todo should be scrollto
         left: 0,
         top: 0,
-        width: "50vw",
+        width: '50vw' ,
         height: "100%",
         scale: 1
     }

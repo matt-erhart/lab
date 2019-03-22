@@ -248,7 +248,11 @@ export class GraphContainer extends React.Component<
   };
 
   makeNodeAndLinkIt = e => {
-    if (!e.shiftKey && e.target.id === "SvgLayer") {
+    if (
+      !e.shiftKey &&
+      e.target.id === "SvgLayer" &&
+      this.props.selectedNodes.length > 0
+    ) {
       const targetId = this.makeUserHtmlNode(e);
       if (targetId.length > 0) {
         const newLinks = this.linkSelectedToNode(
@@ -278,6 +282,7 @@ export class GraphContainer extends React.Component<
   };
 
   rightClickNodeToLink = targetId => e => {
+    
     const { nodes, links, selectedNodes } = this.props;
     const newLinks = this.linkSelectedToNode(
       nodes,
@@ -372,8 +377,7 @@ export class GraphContainer extends React.Component<
         } = node.data as ViewboxData;
 
         const pagenum = [pageNumber];
-        console.log('before graph pdfview', node)
-        
+
         return (
           <PdfViewer
             key={node.id}
@@ -522,18 +526,22 @@ export default connect(
 
 const ScrollContainer = styled.div`
   --padding: 20px;
-  --margin: 3px;
-  --height: calc(100vh - 5px - var(--margin) - var(--padding) * 2);
+  --margin: 0px;
+  --height: calc(100vh - 150px - var(--margin) - var(--padding) * 2);
   margin: var(--margin);
   padding: var(--padding);
-  height: var(--height);
+  height: auto;
   border: 1px solid lightgrey;
   border-radius: 5px;
   font-size: 30px;
   overflow: none;
   overflow: auto;
-  max-width: calc(50vw - 22px);
   font-size: 25px;
+  box-sizing: border-box;
+  margin-left: 5px;
+  border: 4px solid grey;
+  border-radius: 5px;
+  width: "auto";
 `;
 
 const MapContainer = styled.div`

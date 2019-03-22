@@ -26,7 +26,7 @@ import {
 import TextEditor from "./TextEditor";
 // import BoxMap from "./BoxMap";
 import GraphContainer from "./GraphContainer";
-
+import { ResizeDivider } from "./ResizeDivider";
 const NavBar = styled.div`
   background-color: #23629f;
   font-size: 30px;
@@ -91,7 +91,7 @@ const AppDefaults = {
 };
 
 const mapState = (state: iRootState) => ({
-  pdfDir: state.app.current.pdfDir,
+  pdfDir: state.app.panels.mainPdfReader.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
   mainPdfReader: state.app.panels.mainPdfReader
@@ -174,6 +174,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     this.props.setMainPdfReader({ pdfDir: opt.label });
   };
 
+  onResizeDivider = (mouseData: mData) => {
+    const { width } = this.props.mainPdfReader;
+    // todo
+    this.props.setMainPdfReader({ width: mouseData.screenX - 50 });
+  };
+
   pageNum = [2]; // prevent rerender from array creation
   render() {
     const { pdfRootDir, pdfDir } = this.props;
@@ -200,18 +206,27 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         </NavBar>
         <MainContainer>
           {pdfDir.length > 0 && (
-            <PdfViewer
-            tabIndex={0}
-              isMainReader={true}
-              key={pdfDir}
-              pageNumbersToLoad={[]}
-              {...{
-                pdfRootDir,
-                ...this.props.mainPdfReader
+            <div
+              style={{
+                border: "4px solid grey",
+                borderRadius: 5,
+                padding: 3,
+                minWidth: this.props.mainPdfReader.width + 3
               }}
-            />
+            >
+              <PdfViewer
+                tabIndex={0}
+                isMainReader={true}
+                key={pdfDir}
+                pageNumbersToLoad={[]}
+                {...{
+                  pdfRootDir,
+                  ...this.props.mainPdfReader
+                }}
+              />
+            </div>
           )}
-
+          <ResizeDivider onTransforming={this.onResizeDivider} />
           <GraphContainer />
         </MainContainer>
         <PortalContainer />
@@ -253,5 +268,7 @@ export const render = (Component: typeof App) =>
 
 import { hot } from "react-hot-loader/root";
 import PortalContainer from "./PortalContainer";
+import { mData } from "./rx";
+import { oc } from "ts-optchain";
 
 hot(render(App));

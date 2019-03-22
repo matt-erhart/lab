@@ -91,7 +91,7 @@ const mMap = (e: MouseEvent) => {
     shiftKey: e.shiftKey
   };
 };
-type mData = ReturnType<typeof mMap>;
+export type mData = ReturnType<typeof mMap>;
 export const dragData = (mouseDownEvent: MouseEvent) => {
   const down = mMap(mouseDownEvent); // start with clicked element
 
@@ -111,5 +111,5 @@ export const dragData = (mouseDownEvent: MouseEvent) => {
       dy: current.screenY - down.screenY
     })),
     takeWhile(current => current.type !== "mouseup", true)
-  ) as Observable<mouseData>;
+  ) as Observable<mData>;
 };

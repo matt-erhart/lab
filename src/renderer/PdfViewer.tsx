@@ -176,7 +176,8 @@ class PdfViewer extends React.Component<
           const id = patch.value.id;
           
           if (
-            patch.value.data.type === "pdf.segment.viewbox"
+            patch.value.data.type === "pdf.segment.viewbox",
+            patch.value.data.pdfDir === props.pdfDir
           ) {
             console.log("remove?", patch.op);
             if (patch.op === "add") draft.push(patch.value);
@@ -397,14 +398,14 @@ class PdfViewer extends React.Component<
     const { pages } = this.state;
     const { pdfDir, pdfRootDir } = this.props;
     const havePages = pages.length > 0;
-    if (!havePages) return null;
+    if (!havePages) null
     return pages.map((page, pageIx) => {
       const { width, height } = page.viewport;
       return (
         <div
           key={page.pageNumber}
           onWheel={this.zoom}
-          style={{ width, height, position: "relative" }}
+          style={{ width, minWidth: width, height, position: "relative" }}
         >
           <PageCanvas
             key={"canvas-" + page.pageNumber}

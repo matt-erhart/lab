@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { Subscription } from "rxjs";
-import { dndContainer, dragData } from "./rx";
+import { dndContainer, dragData , mData} from "./rx";
 import * as Rx from "rxjs";
 
 const Divider = styled.div`
@@ -16,8 +16,13 @@ const Divider = styled.div`
 /**
  * @class **ResizeDivider**
  */
+
 const ResizeDividerDefaults = {
-  props: { vertical: true, containerRef: undefined as React.RefObject<any> },
+  props: {
+    vertical: true,
+    containerRef: undefined as React.RefObject<any>,
+    onTransforming: (mouseData: mData) => {}
+  },
   state: {}
 };
 export class ResizeDivider extends React.Component<
@@ -29,13 +34,13 @@ export class ResizeDivider extends React.Component<
   dividerRef = React.createRef<HTMLDivElement>();
   sub: Subscription;
 
-  componentDidMount() {
-
-    this.sub = dragData(this.dividerRef.current).subscribe(data => {
-      console.log(data)
-      // todo dragToTransform 
-    })
-  }
+  onMouseDown = e => {
+    e.stopPropagation();
+    this.sub = dragData(e).subscribe(data => {
+      this.props.onTransforming(data);
+      // todo dragToTransform
+    });
+  };
 
   componentWillUnmount() {
     this.sub.unsubscribe();
@@ -46,22 +51,8 @@ export class ResizeDivider extends React.Component<
       <Divider
         ref={this.dividerRef}
         style={{ cursor: this.props.vertical ? "col-resize" : "row-resize" }}
-        // onMouseDown={e => {e.stopPropagation(); this.subject.next('mousedown')}}
-        // onMouseMove={e => {e.stopPropagation(); this.subject.next('mousedown')}}
-        // onMouseUp={e => {e.stopPropagation(); this.subject.next('mousedown')}}
+        onMouseDown={this.onMouseDown}
       />
     );
   }
-}
-{
-  /* <VerticalDragBar
-  onDrag={e => {
-    if (e.clientX > 0) {
-      var rect = this.containerRef.current.getBoundingClientRect();
-      var x = e.clientX - rect.left; //x position within the element.
-      var y = e.clientY - rect.top; //y position within the element.
-      this.setState({ width: x - 3 });
-    }
-  }}
-/>; */
 }

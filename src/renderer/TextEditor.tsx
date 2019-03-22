@@ -298,8 +298,7 @@ class TextEditor extends React.Component<
         const ix = Object.values(this.props.links).findIndex(link => {
           return (
             link.source === id &&
-            link.target === this.props.id &&
-            link.data.html === "<p>usedIn</p>"
+            link.target === this.props.id
           );
         });
 

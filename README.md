@@ -1,5 +1,7 @@
-- delete a link and a viewbox at the same time
 - resizable main layout
+- break
+- build
+- delete a link and a viewbox at the same time
 
 - some links nodes should be immutable
 - move many
