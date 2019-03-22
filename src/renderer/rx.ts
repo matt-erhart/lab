@@ -85,6 +85,8 @@ const mMap = (e: MouseEvent) => {
     type: e.type as "mousedown" | "mousemove" | "mouseup",
     screenX: e.screenX,
     screenY: e.screenY,
+    clientX: e.clientX,
+    clientY: e.clientY,
     dx: 0,
     dy: 0,
     ctrlKey: e.ctrlKey,

@@ -176,8 +176,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   onResizeDivider = (mouseData: mData) => {
     const { width } = this.props.mainPdfReader;
-    // todo
-    this.props.setMainPdfReader({ width: mouseData.screenX - 50 });
+    // todo use bounding box on ref instead of '50'
+    this.props.setMainPdfReader({ width: mouseData.clientX - 50 });
   };
 
   pageNum = [2]; // prevent rerender from array creation

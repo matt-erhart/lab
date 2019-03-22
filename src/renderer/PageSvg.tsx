@@ -309,7 +309,7 @@ class PageSvg extends React.Component<
   };
 
   componentWillUnmount() {
-    this.sub.unsubscribe();
+    if(this.sub) this.sub.unsubscribe();
   }
 
   onTextChange = e => {
@@ -509,7 +509,7 @@ class PageSvg extends React.Component<
               );
             })}
 
-          {this.props.columnLefts && (
+          {this.props.columnLefts && false && (
             <>
               {this.props.columnLefts.map((left, i) => {
                 return (
