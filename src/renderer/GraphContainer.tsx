@@ -36,7 +36,7 @@ const GraphContainerDefaults = {
   props: {},
   state: {
     frames: frames,
-    links: [] as { source: ""; target: "" }[],
+    links: [] as { source: ""; target: ""; id: "" }[],
     containerBounds: {} as ClientRect | DOMRect,
     scrollLeft: 0,
     scrollTop: 0,
@@ -116,9 +116,8 @@ export class GraphContainer extends React.Component<
     }
 
     if (prevProps.graphPanel !== this.props.graphPanel) {
-      const {left, top} = this.props.graphPanel
-      this.scrollRef.current.scrollTo(left, top)
-      
+      const { left, top } = this.props.graphPanel;
+      this.scrollRef.current.scrollTo(left, top);
     }
   }
 
@@ -164,7 +163,7 @@ export class GraphContainer extends React.Component<
         source: "",
         target: ""
       };
-      return { source, target };
+      return { source, target, id };
     });
 
     this.setState(state => {
@@ -192,9 +191,19 @@ export class GraphContainer extends React.Component<
   onKey = e => {
     switch (e.key) {
       case "Delete":
-        if (this.props.selectedNodes.length > 0) {
-          this.props.removeBatch({ nodes: this.props.selectedNodes });
-          this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+        if (
+          this.props.selectedNodes.length > 0 ||
+          this.props.selectedLinks.length > 0
+        ) {
+          this.props.removeBatch({
+            nodes: this.props.selectedNodes,
+            links: this.props.selectedLinks
+          });
+          this.props.toggleSelections({
+            selectedNodes: [],
+            selectedLinks: [],
+            clearFirst: true
+          });
         }
       default:
         return null;
@@ -202,23 +211,28 @@ export class GraphContainer extends React.Component<
   };
 
   isSelected = id => {
-    return this.props.selectedNodes.includes(id);
+    return (
+      this.props.selectedNodes.includes(id) ||
+      this.props.selectedLinks.includes(id)
+    );
   };
 
-  onMouseSelect = frame => e => {
+  onMouseSelect = (id, nodesOrLinks: "Nodes" | "Links") => e => {
     e.stopPropagation();
 
-    const isSelected = this.isSelected(frame.id);
-    if (typeof frame.id === "string") {
+    const isSelected = this.isSelected(id);
+    if (typeof id === "string") {
       if (!isSelected && !e.shiftKey) {
         this.props.toggleSelections({
-          selectedNodes: [frame.id],
+          selectedNodes: [],
+          selectedLinks: [],
+          [`selected${nodesOrLinks}`]: [id],
           clearFirst: true
         });
       }
 
       if (e.shiftKey) {
-        this.props.toggleSelections({ selectedNodes: [frame.id] });
+        this.props.toggleSelections({ [`selected${nodesOrLinks}`]: [id] });
       }
     }
     // this.getFramesInView(this.state.containerBounds);
@@ -226,7 +240,11 @@ export class GraphContainer extends React.Component<
 
   deselectAll = e => {
     if (!e.shiftKey && e.target.id === "SvgLayer")
-      this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+      this.props.toggleSelections({
+        selectedNodes: [],
+        selectedLinks: [],
+        clearFirst: true
+      });
   };
 
   makeNodeAndLinkIt = e => {
@@ -354,6 +372,8 @@ export class GraphContainer extends React.Component<
         } = node.data as ViewboxData;
 
         const pagenum = [pageNumber];
+        console.log('before graph pdfview', node)
+        
         return (
           <PdfViewer
             key={node.id}
@@ -410,9 +430,11 @@ export class GraphContainer extends React.Component<
                   );
                   return (
                     <LinkLine
+                      isSelected={this.isSelected(link.id)}
                       key={link.source + link.target}
                       targetFrame={targetFrame}
                       sourceFrame={sourceFrame}
+                      onClick={this.onMouseSelect(link.id, "Links")}
                     />
                   );
                 })}
@@ -433,7 +455,7 @@ export class GraphContainer extends React.Component<
                 dragHandle={
                   <DragHandle
                     isSelected={isSelected}
-                    onClick={this.onMouseSelect(frame)}
+                    onClick={this.onMouseSelect(frame.id, "Nodes")}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                   />
                 }
@@ -452,7 +474,11 @@ export class GraphContainer extends React.Component<
  * @class **LinkLine**
  */
 const LinkLineDefaults = {
-  props: { sourceFrame: undefined as frame, targetFrame: undefined as frame },
+  props: {
+    sourceFrame: undefined as frame,
+    targetFrame: undefined as frame,
+    isSelected: false
+  },
   state: {}
 };
 export class LinkLine extends React.PureComponent<
@@ -462,17 +488,18 @@ export class LinkLine extends React.PureComponent<
   static defaultProps = LinkLineDefaults.props;
   state = LinkLineDefaults.state;
   render() {
-    const { sourceFrame, targetFrame } = this.props;
+    const { sourceFrame, targetFrame, isSelected, ...rest } = this.props;
     if (!!sourceFrame && !!targetFrame) {
       return (
-        <line
+        <HoverLine
           key="1"
           x1={sourceFrame.left + sourceFrame.width / 2}
           y1={sourceFrame.top + sourceFrame.height / 2}
           x2={targetFrame.left + targetFrame.width / 2}
           y2={targetFrame.top + targetFrame.height / 2}
-          stroke="lightgrey"
+          stroke={isSelected ? "lightblue" : "lightgrey"}
           strokeWidth={3}
+          {...rest}
         />
       );
     } else {
@@ -480,6 +507,13 @@ export class LinkLine extends React.PureComponent<
     }
   }
 }
+
+const HoverLine = styled.line`
+  stroke-width: 5;
+  &:hover {
+    stroke-width: 10;
+  }
+`;
 
 export default connect(
   mapState,

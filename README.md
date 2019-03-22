@@ -1,6 +1,4 @@
-- SCROLL TO Graph (maybe just scroll both or do isMain)
-
-- select/edit links
+- delete a link and a viewbox at the same time
 - resizable main layout
 
 - some links nodes should be immutable

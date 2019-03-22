@@ -76,7 +76,7 @@ import styled from "styled-components";
 
 /**
  * @class **PdfViewer**
- * todo zoom + viewbox adjust
+ * todo
  */
 
 const PdfViewerDefaults = {
@@ -105,8 +105,7 @@ const PdfViewerDefaults = {
     },
     outline: [] as PDFTreeNode[],
     viewboxes: [] as PdfSegmentViewbox[],
-    patches: [],
-
+    patches: []
   }
 };
 
@@ -124,7 +123,6 @@ const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
     nodes: state.graph.nodes,
     links: state.graph.links,
     selectedNodes: state.graph.selectedNodes,
-    selectedLinks: state.graph.selectedLinks,
     patches: state.graph.patches
   };
 };
@@ -152,8 +150,8 @@ class PdfViewer extends React.Component<
   };
   scrollRef = React.createRef<HTMLDivElement>();
   onScroll = e => {
-    e.stopPropagation()
-  }
+    e.stopPropagation();
+  };
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
@@ -176,8 +174,10 @@ class PdfViewer extends React.Component<
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
-
-          if (patch.value.data.type === "pdf.segment.viewbox") {
+          
+          if (
+            patch.value.data.type === "pdf.segment.viewbox"
+          ) {
             console.log("remove?", patch.op);
             if (patch.op === "add") draft.push(patch.value);
             if (patch.op === "remove") {
@@ -305,22 +305,21 @@ class PdfViewer extends React.Component<
     );
   }
 
-   componentDidUpdate = async (prevProps: typeof PdfViewerDefaults.props) => {
+  componentDidUpdate = async (prevProps: typeof PdfViewerDefaults.props) => {
     if (prevProps.pdfDir !== this.props.pdfDir) {
       await this.loadFiles();
       this.setState({ viewboxes: [] });
     }
-    
+
     if (
       prevProps.scrollToPageNumber !== this.props.scrollToPageNumber ||
       prevProps.top !== this.props.top
     ) {
-
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
       this.scrollRef.current.scrollTo(left, top + pageOffset);
     }
-  }
+  };
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
     if (e.ctrlKey) {
@@ -388,7 +387,7 @@ class PdfViewer extends React.Component<
             top: (top / scaleAtCapture) * this.state.scale,
             width: (width / scaleAtCapture) * this.state.scale,
             height: (height / scaleAtCapture) * this.state.scale,
-            scale: scaleAtCapture,
+            scale: scaleAtCapture
           }
         };
       });
