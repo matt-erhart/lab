@@ -53,7 +53,6 @@ class PortalContainer extends React.Component<
 
   componentDidUpdate(prevProps, prevState) {
     // console.log(this.props.portals.length, prevProps.portals.length)
-    
     // if (this.props.portals.length > prevProps.portals.length) {
     //   let rects = this.props.portals.map(w => {
     //     const { left, top, width, height } = w;
@@ -101,11 +100,21 @@ class PortalContainer extends React.Component<
                   onTransformEnd={this.onTransformEnd}
                   isSelected={false}
                   dragHandle={<TopBar onClose={this.onClose(frame.id)} />}
+
                   // dragHandle={<DragHandle/>}
                 >
                   <div
                     key={frame.id}
                     style={{ flex: 1 }}
+                    tabIndex={1}
+                    onKeyDown={e => {
+                      if (e.key === "Escape") {
+                        console.log('close?')
+                        
+                        this.onClose(frame.id)(e)
+                      }
+                    }}
+
                     // onMouseEnter={e => this.setState({ editingId: node.id })}
                   >
                     <TextEditor

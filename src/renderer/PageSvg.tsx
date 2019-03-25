@@ -33,9 +33,11 @@ const PageSvgDefaults = {
     images: [] as Image[],
     height2color: {} as any,
     fontNames2color: {} as any,
-    onAddViewbox: viewbox => {},
+    // onAddViewbox: viewbox => {},
     viewboxes: [] as PdfSegmentViewbox[],
-    isMainReader: false
+    isMainReader: false,
+    scale: 1,
+    pageNumber: 1
   },
   state: {
     selectionRect: { height: 0, width: 0, left: 0, x1: 0, top: 0, y1: 0 },
@@ -54,12 +56,13 @@ const mapState = (state: iRootState, props) => {
     selectedNodes: state.graph.selectedNodes,
     nodes: state.graph.nodes,
     links: state.graph.links,
-    portals: state.app.portals
+    portals: state.app.portals,
+    pdfDir: state.app.panels.mainPdfReader.pdfDir
   };
 };
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch },
+  graph: { addBatch, removeBatch, toggleSelections },
   app: {
     addPortals,
     removePortals,
@@ -76,7 +79,8 @@ const mapDispatch = ({
   updatePortals,
   setMainPdfReader,
   setGraphContainer,
-  setCurrent
+  setCurrent,
+  toggleSelections
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -96,7 +100,52 @@ class PageSvg extends React.Component<
   //   console.log(this.props )
 
   // }
+  onAddViewbox = (viewboxCoords: { left; top; width; height }) => {
+    // each svg page gets this func with pagenum/scale
+    // each page calls it on mouseup with the coords
+    // this adds the node to redux, which gets passed in as props to svg
+    const { left, top, width, height } = viewboxCoords;
+    if ([left, top, width, height].includes(Infinity)) {
+      this.setState({ selectionRect: PageSvgDefaults.state.selectionRect });
+      return null;
+    }
+    const source = this.props.nodes[this.props.pdfDir];
+    let {
+      left: gLeft,
+      top: gTop,
+      width: gWidth,
+      height: gHeight
+    } = source.style as any;
+    const style = {
+      left: gLeft + Math.random() * 60,
+      top: gTop + gHeight + Math.random() * 60
+    };
 
+    // note we save with scale = 1
+    const vb = makePdfSegmentViewbox(
+      {
+        left: left,
+        top: top,
+        width: width,
+        height: height,
+        scale: this.props.scale,
+        pageNumber: this.props.pageNumber,
+        pdfDir: this.props.pdfDir
+      },
+      style
+    );
+
+    const linkToPdf = makeLink(source.id, vb.id, { type: "more" });
+
+    //10ms update with just a div
+    this.props.addBatch({ nodes: [vb], links: [linkToPdf] });
+    this.props.toggleSelections({ selectedNodes: [vb.id], clearFirst: true });
+    return vb;
+  };
+  isShift = false;
+  isCtrl = false;
+  clientX = 0;
+  clientY = 0;
   async componentDidMount() {
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
@@ -111,6 +160,10 @@ class PageSvg extends React.Component<
 
       switch (mouse.type) {
         case "mousedown":
+          this.isShift = mouse.shiftKey;
+          this.isCtrl = mouse.ctrlKey;
+          this.clientX = mouse.x;
+          this.clientY = mouse.y;
           this.setState({
             duration: 0,
             div: { ...this.state.div, text: "" },
@@ -123,6 +176,8 @@ class PageSvg extends React.Component<
           });
           break;
         case "mousemove":
+          this.clientX = mouse.x;
+          this.clientY = mouse.y;
           this.setState(state => {
             const width = mx - state.selectionRect.x1;
             const height = my - state.selectionRect.y1;
@@ -150,7 +205,16 @@ class PageSvg extends React.Component<
 
         case "mouseup":
           const { width, height } = this.state.selectionRect;
-          if (height > 2 || width > 2) {
+
+          if ((this.isCtrl, this.isShift)) {
+            this.makeSegmentAndComment(
+              this.state.selectionRect,
+              this.clientX,
+              this.clientY
+            );
+            break;
+          }
+          if (height > 30 || width > 30) {
             if (!mouse.ctrlKey) {
               this.inferMakeViewbox(this.state.selectionRect);
             } else {
@@ -167,14 +231,14 @@ class PageSvg extends React.Component<
     });
   }
 
-  makeViewbox = selectionRect => {
-    this.props.onAddViewbox(selectionRect);
-    this.setState({ selectionRect: { ...selectionRect, x1: 0, y1: 0 } });
-  };
-
   inferMakeViewbox = selectionRect => {
     const newSelect = this.snapToColumn(selectionRect);
     this.makeViewbox(newSelect);
+  };
+
+  makeViewbox = selectionRect => {
+    this.onAddViewbox(selectionRect);
+    this.setState({ selectionRect: { ...selectionRect, x1: 0, y1: 0 } });
   };
 
   snap = (selectionRect: typeof PageSvgDefaults.state.selectionRect) => {
@@ -309,7 +373,7 @@ class PageSvg extends React.Component<
   };
 
   componentWillUnmount() {
-    if(this.sub) this.sub.unsubscribe();
+    if (this.sub) this.sub.unsubscribe();
   }
 
   onTextChange = e => {
@@ -341,6 +405,33 @@ class PageSvg extends React.Component<
     this.setState({ value: e.target.value });
   };
 
+  makeSegmentAndComment = (selectionRect, mouseX, mouseY) => {
+    const newSelect = this.snapToColumn(selectionRect);
+    const viewbox = this.onAddViewbox(newSelect);
+    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+
+    const segStyle = this.props.nodes[viewbox.id].style;
+    const newTextStyle = {
+      left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
+      top: 20 + segStyle.top + segStyle.height
+    };
+    const htmlNode = makeUserHtml({ data: {}, style: newTextStyle });
+    const newLink = makeLink(viewbox.id, htmlNode.id, {
+      text: "compress",
+      html: "<p>compress</p>"
+    });
+    this.props.addBatch({ nodes: [htmlNode], links: [newLink] });
+    this.props.addPortals([
+      {
+        id: htmlNode.id,
+        left: mouseX + 15,
+        top: mouseY + 15,
+        width: 300,
+        height: 100
+      }
+    ]);
+  };
+
   openTextPortal = segmentId => (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -352,7 +443,13 @@ class PageSvg extends React.Component<
 
     let htmlNodes = nodes.filter(node => node.data.type === "userHtml");
     if (htmlNodes.length === 0) {
-      htmlNodes.push(makeUserHtml());
+      const segStyle = this.props.nodes[segmentId].style;
+      const newTextStyle = {
+        left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
+        top: 20 + segStyle.top + segStyle.height
+      };
+
+      htmlNodes.push(makeUserHtml({ data: {}, style: newTextStyle }));
       const newLink = makeLink(segmentId, htmlNodes[0].id, {
         text: "compress",
         html: "<p>compress</p>"
@@ -445,8 +542,6 @@ class PageSvg extends React.Component<
 
       frames.push(frame);
     });
-    console.log("FRAMES", frames);
-
     this.props.updatePortals(frames);
   };
 

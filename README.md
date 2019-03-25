@@ -1,34 +1,61 @@
-- resizable main layout
-- break
-- build
-- delete a link and a viewbox at the same time
-
-- some links nodes should be immutable
-- move many
-- zoom/pan
-- delete segment in pdf viewer
-- html-to-image for zoom out
-- prevent pdf renders
-- 'a' things
-- autocomplete segment text
-- use attributes like id/ data- to prevent overlay events
+1. spawn location
+4. ctrl-shift give me a textbox
+2. focus green text box?
+3. close green on click elseware -> 
 
 
 
-Automatic, yet easily dismissible
-efficiency, correctness, and consideration of alternate possibilities
-showing various completions, the recommendations suggest refinements
-“elegant coupling of automated services with
-direct manipulation” are articulated in Eric Horvitz’s Principles of
-Mixed-Initiative User Interfaces (11)—required 
-predictive interaction (15)
+cancel selection mid way
+graph viewbox  container resize
+
+So if in graph view, just focus the text 
+if you autocomplete and then go in front of it and delete text there.
+then a text node dispears
+right click does stuff it shouldn't
+
+- Pdf Text
+  - highlight
+  - autocomplete comments
+
+- Links
+  - make two links
+  - delete a link and a viewbox at the same time
+  - edit link text
+  - render link text at center
+  - some links nodes should be immutable
+
+- Nodes
+  - move many
+
+- Viewbox
+  - delete segment in pdf viewer
+
+- Zoom
+  - html-to-image
+  
+- Slate
+  - 'a' things
+  - outline + link creation
+
+- Perf
+  - prevent pdf renders
+  - add in a pdf with 37 pages and it's more like 200ms per dispatch, so
+    need to prevent rerender of other svg pages
+
+- Refactor
+  - use attributes like id/ data- to prevent overlay events
 
 
-# render perf notes
-redux update is ~5ms per dispatch with just a div button + graph
-add in a pdf with 37 pages and it's more like 200ms per dispatch, so
-need to prevent rerender of other svg pages
-diy popper that minimizes overlap of ref, mouse, and boundary
+
+# Design 
+- Predictive Interactions
+  - easily dismissible, correctness, alternate possibilities, refinements
+  - Read Eric Horvitz Principles of Mixed-Initiative User Interfaces
+
+# CMD
+ngrok http 3000 -host-header="localhost:3000"
+
+
 
 # tours
 https://reactour.js.org
@@ -38,14 +65,10 @@ https://github.com/levelgraph/levelgraph 1200 # easy save to disk 3x slower than
 https://github.com/graphology/graphology#readme 200 # 3x faster than levelgraph for neighbors
 http://js.cytoscape.org/
 
-https://github.com/cape-io/redux-graph
-https://www.npmjs.com/package/hexadb 5 stars
-
 # graph layouts
-import ForceGraph2D from 'react-force-graph-2d';
-
 https://ialab.it.monash.edu/webcola/index.html
 http://sigmajs.org/ dedicated to graph drawing.
+https://github.com/d3/d3-force
 
 # electron perf notes
 https://www.infoq.com/presentations/electron-pitfalls
@@ -71,20 +94,6 @@ https://mostcore.readthedocs.io/en/latest/api.html # fastest
 https://github.com/ReactiveX/rxjs
 
 
-# td
-scale
-
-# semantic layout
-better columns & lines
-reading order
-
-# manual 
-drag corners/edges
-drag columns
-
-# improve text overlay
-see snippet bellow
-
 # formalism
 level of detail/precision/specificity + attrs (esp. causality + utility)
 broadcasting, static docs, cognitive tutors
@@ -98,55 +107,6 @@ how confident should I be in statement X
 # fast static kdtree: not sorted by distance?
 https://github.com/mourner/kdbush#readme
 
-ngrok http 3000 -host-header="localhost:3000"
-
-
-# another way to render text: https://gist.github.com/hubgit/600ec0c224481e910d2a0f883a7b98e3
-```js
-page.getTextContent({ normalizeWhitespace: true }).then(function (textContent) {
-        textContent.items.forEach(function (textItem) {
-          var tx = PDFJS.Util.transform(
-            PDFJS.Util.transform(viewport.transform, textItem.transform),
-            [1, 0, 0, -1, 0, 0]
-          );
-          var style = textContent.styles[textItem.fontName];
-          
-          // adjust for font ascent/descent
-          var fontSize = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
-          if (style.ascent) {
-            tx[5] -= fontSize * style.ascent;
-          } else if (style.descent) {
-            tx[5] -= fontSize * (1 + style.descent);
-          } else {
-            tx[5] -= fontSize / 2;
-          }
-          
-          // adjust for rendered width
-          if (textItem.width > 0) {
-            ctx.font = tx[0] + 'px ' + style.fontFamily;
-            
-            var width = ctx.measureText(textItem.str).width;
-            if (width > 0) {
-              //tx[0] *= (textItem.width * viewport.scale) / width;
-              tx[0] = (textItem.width * viewport.scale) / width;
-            }
-          }
-          // var item = document.createElementNS('http://www.w3.org/2000/svg', 'svg:text');
-          // item.textContent = textItem.str;
-          // item.setAttribute('font-family', style.fontFamily);
-          // item.setAttribute('transform', 'matrix(' + tx.join(' ') + ')');
-          var item = document.createElement('span');
-          item.textContent = textItem.str;
-          item.style.fontFamily = style.fontFamily;
-          //item.style.transform = 'matrix(' + tx.join(',') + ')';
-          item.style.fontSize = fontSize + 'px';
-          item.style.transform = 'scaleX(' + tx[0] + ')';
-          item.style.left = tx[4] + 'px';
-          item.style.top = tx[5] + 'px';
-          pageContainer.appendChild(item);
-        });
-      });
-      ```
 
 # DIY graph db
 http://nodejsconfit.levelgraph.io/#17

@@ -123,17 +123,20 @@ const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
     nodes: state.graph.nodes,
     links: state.graph.links,
     selectedNodes: state.graph.selectedNodes,
-    patches: state.graph.patches
+    patches: state.graph.patches,
+    portals: state.app.portals
   };
 };
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch, toggleSelections, updateBatch }
+  graph: { addBatch, removeBatch, toggleSelections, updateBatch },
+  app: {setPortals}
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   toggleSelections,
-  updateBatch
+  updateBatch,
+  setPortals
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -151,6 +154,7 @@ class PdfViewer extends React.Component<
   scrollRef = React.createRef<HTMLDivElement>();
   onScroll = e => {
     e.stopPropagation();
+    
   };
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
@@ -174,12 +178,12 @@ class PdfViewer extends React.Component<
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches.forEach(patch => {
           const id = patch.value.id;
-          
+
           if (
-            patch.value.data.type === "pdf.segment.viewbox",
-            patch.value.data.pdfDir === props.pdfDir
+            (patch.value.data.type === "pdf.segment.viewbox",
+            patch.value.data.pdfDir === props.pdfDir)
           ) {
-            console.log("remove?", patch.op);
+
             if (patch.op === "add") draft.push(patch.value);
             if (patch.op === "remove") {
               draft.splice(draft.findIndex(v => v.id === id), 1);
@@ -345,11 +349,15 @@ class PdfViewer extends React.Component<
     // this adds the node to redux, which gets passed in as props to svg
     const { left, top, width, height } = viewboxCoords;
     const source = this.props.nodes[this.props.pdfDir];
-    let { x, y } = source.style as any;
-    const shiftedX = x + Math.random() * 60 - 40;
+    let {
+      left: gLeft,
+      top: gTop,
+      width: gWidth,
+      height: gHeight
+    } = source.style as any;
     const style = {
-      x: shiftedX < 20 ? x + 20 + Math.random() * 60 : shiftedX,
-      y: y + Math.random() * 60 + 40
+      left: gLeft + Math.random() * 60,
+      top: gTop + gHeight + Math.random() * 60
     };
     // note we save with scale = 1
     const vb = makePdfSegmentViewbox(
@@ -398,7 +406,7 @@ class PdfViewer extends React.Component<
     const { pages } = this.state;
     const { pdfDir, pdfRootDir } = this.props;
     const havePages = pages.length > 0;
-    if (!havePages) null
+    if (!havePages) null;
     return pages.map((page, pageIx) => {
       const { width, height } = page.viewport;
       return (
@@ -432,8 +440,10 @@ class PdfViewer extends React.Component<
             // height2color={this.state.height2color}
             // fontNames2color={this.state.fontNames2color}
             pdfPathInfo={{ pdfDir, pdfRootDir }}
-            onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
+            // onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
             viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
+            scale={this.state.scale}
+            pageNumber={page.pageNumber}
           />
         </div>
       );
@@ -447,6 +457,7 @@ class PdfViewer extends React.Component<
     return (
       <>
         <div
+        id="MainPdfReader"
           ref={this.scrollRef}
           style={{
             maxWidth: width,
@@ -455,6 +466,7 @@ class PdfViewer extends React.Component<
             overflow: "scroll"
           }}
           onScroll={this.onScroll}
+          // onClick={e => {e.stopPropagation(); this.props.setPortals([])}}
         >
           {this.renderPages()}
         </div>

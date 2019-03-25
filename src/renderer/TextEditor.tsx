@@ -91,6 +91,7 @@ class TextEditor extends React.Component<
   };
 
   componentDidMount() {
+    setTimeout(()=> {this.editor.focus()}, 50) // thanks random github user
     this.initHtml();
   }
 
@@ -391,6 +392,10 @@ class TextEditor extends React.Component<
       this.getPortalStyle(e);
     }
   };
+
+  componentWillUnmount(){
+    this.save()
+  }
   render() {
     if (this.state.hasError) debugger;
     const { wordAtCursor } = this.state;
@@ -450,6 +455,7 @@ class TextEditor extends React.Component<
               onMouseDown={this.onFocus}
             >
               <Editor
+                autoFocus
                 // id={"slate-" + this.props.id}
                 readOnly={this.props.readOnly}
                 ref={this.ref as any}

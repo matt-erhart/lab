@@ -41,7 +41,8 @@ const GraphContainerDefaults = {
     containerBounds: {} as ClientRect | DOMRect,
     scrollLeft: 0,
     scrollTop: 0,
-    editingId: ""
+    editingId: "",
+    zoom: 2
   }
 };
 const mapState = (state: iRootState) => ({
@@ -90,8 +91,9 @@ export class GraphContainer extends React.Component<
   };
 
   onTransforming = (transProps: frame) => {
-    // todo here is where svg lines could be updated
-    const updatedWindows = updateOneFrame(this.state.frames)(transProps);
+    // todo if zoom
+    // const zoomed = { ...transProps, top: transProps.top / this.state.zoom };
+    // const updatedWindows = updateOneFrame(this.state.frames)(zoomed);
     //@ts-ignore
     this.setState(state => {
       const updatedWindows = updateOneFrame(state.frames)(transProps);
@@ -135,12 +137,12 @@ export class GraphContainer extends React.Component<
 
   getFramesInView = containerBounds => {
     const { width, height } = containerBounds;
-    const pad = 0;
+    const pad = 200;
     const view = getBoxEdges(
       this.state.scrollLeft - pad,
       this.state.scrollTop - pad,
-      width + pad,
-      height + pad
+      (width + pad) / this.state.zoom,
+      (height + pad) / this.state.zoom
     );
 
     const isInView = isBoxPartlyInBox(view);
@@ -154,6 +156,7 @@ export class GraphContainer extends React.Component<
       }
       return all;
     }, []);
+    //1234
 
     const linkIds = framesInView.reduce((all, frame) => {
       const linkIds = this.getLinksIdsOnNode(frame.id, this.props.links);
@@ -176,6 +179,7 @@ export class GraphContainer extends React.Component<
   onScroll = e => {
     var scrollLeft = e.nativeEvent.target.scrollLeft;
     var scrollTop = e.nativeEvent.target.scrollTop;
+
     this.setState({ scrollLeft, scrollTop });
     this.getFramesInView(this.state.containerBounds);
   };
@@ -284,7 +288,6 @@ export class GraphContainer extends React.Component<
   };
 
   rightClickNodeToLink = targetId => e => {
-    
     const { nodes, links, selectedNodes } = this.props;
     const newLinks = this.linkSelectedToNode(
       nodes,
@@ -318,7 +321,7 @@ export class GraphContainer extends React.Component<
   };
 
   renderGraphNodes = (frame: frame) => {
-    const node = this.props.nodes[frame.id] as aNode
+    const node = this.props.nodes[frame.id] as aNode;
     if (!node) return null;
     switch (node.data.type as NodeDataTypes) {
       case "pdf.publication":
@@ -400,6 +403,23 @@ export class GraphContainer extends React.Component<
     }
   };
 
+  onWheel = e => {
+    // const bbox = e.target.getBoundingClientRect()
+    // console.log(e.clientX - bbox.left)
+
+    e.persist();
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const wheelDefault = 120;
+      this.setState(state => {
+        const newZoom =
+          state.zoom + (e.nativeEvent.wheelDelta / wheelDefault) * 0.2;
+        return { zoom: newZoom > 0 ? newZoom : state.zoom };
+      });
+      this.getFramesInView(this.state.containerBounds);
+    }
+  };
+
   render() {
     const { width, height } = this.state.containerBounds;
     const f1 = this.state.frames[0];
@@ -413,15 +433,29 @@ export class GraphContainer extends React.Component<
         onKeyUp={this.onKey}
         tabIndex={0}
         onClick={this.deselectAll}
+        onWheel={this.onWheel}
       >
-        <MapContainer id="GraphMapContainer" ref={this.mapRef}>
+        <MapContainer
+          id="GraphMapContainer"
+          ref={this.mapRef}
+          zoom={this.state.zoom}
+          height={4000}
+          width={4000}
+        >
           {width && height && (
             <svg
               id="SvgLayer"
-              viewBox={`0 0 ${width} ${height}`}
-              width={width}
-              height={height}
-              style={{ position: "absolute", left: 0, top: 0 }}
+              viewBox={`0 0 ${4000} ${4000}`}
+              width={4000}
+              height={4000}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                height: "100%",
+                width: "100%",
+                outline: "1px solid blue"
+              }}
               onDoubleClick={this.makeUserHtmlNode}
               onClick={this.deselectAll}
               onContextMenu={this.makeNodeAndLinkIt}
@@ -458,6 +492,7 @@ export class GraphContainer extends React.Component<
                 onTransforming={this.onTransforming}
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
+                zoom={this.state.zoom}
                 dragHandle={
                   <DragHandle
                     isSelected={isSelected}
@@ -545,13 +580,16 @@ const ScrollContainer = styled.div`
   border-radius: 5px;
   width: "auto";
 `;
-
-const MapContainer = styled.div`
-  width: 30000px;
-  height: 30000px;
+const ZoomDiv = styled.div<{ zoom: number; width?: number; height?: number }>``;
+const MapContainer = styled(ZoomDiv)`
+  width: ${p => (p.width ? p.width : 4000)}px;
+  height: ${p => (p.height ? p.height : 4000)}px;
   position: relative;
+  transform-origin: top left;
+  transform: scale(${p => p.zoom});
 `;
-
+// calc(var(--width) / var(--zoom)),
+// calc(var(--height) / var(--zoom))
 const DragHandle = styled.div<{ isSelected: boolean }>`
   min-height: 10px;
   background-color: ${props => (props.isSelected ? "lightblue" : "grey")};

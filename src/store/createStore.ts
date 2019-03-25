@@ -117,6 +117,9 @@ export const app = createModel({
           }
         });
       });
+    },
+    setPortals(state, payload = []) {
+      return {...state, portals: payload}
     }
   }
 });

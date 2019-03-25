@@ -25,7 +25,6 @@ export const updateOneFrame = (frames: frame[]) => (
   } as frame
 ): frame[] => {
   const { id, left, top, width, height } = newDims;
-
   const updatedFrames = produce(frames, draft => {
     const ix = draft.findIndex(w => w.id === id);
     draft[ix].height = height > -1 ? height : draft[ix].height;
@@ -65,7 +64,9 @@ const ResizableFrameDefaults = {
     onTransformEnd: undefined as onTrans,
     onTransforming: undefined as onTrans,
     children: <div /> as React.ReactNode,
-    dragHandle: <div /> as React.ReactElement
+    dragHandle: <div /> as React.ReactElement,
+    zoom: 1, // i.e. applies to all
+    scale: 1 // todo sometimes we want one node to scale up/down
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo
@@ -78,7 +79,7 @@ export class ResizableFrame extends React.Component<
   static defaultProps = ResizableFrameDefaults.props;
   state = ResizableFrameDefaults.state;
   isMouseDown = false;
-  cache = { left: 0, top: 0, width: 0, height: 0, dx: 0, dy: 0 };
+  cache = { left: 0, top: 0, width: 0, height: 0 };
 
   shouldComponentUpdate(props, state) {
     for (let dim of ["left", "top", "width", "height", "isSelected"]) {
@@ -108,12 +109,22 @@ export class ResizableFrame extends React.Component<
     }
   };
 
+  // applyZoom = (box: { left?; top?; width?; height? }) => {
+  //   return Object.keys(box).reduce((all, key) => {
+  //     all = { ...all, [key]: box[key] * this.props.zoom };
+  //     return all;
+  //   }, {});
+  // };
+
   resize = (dx, dy) => {
+    const zoomDx = dx / this.props.zoom;
+    const zoomDy = dy / this.props.zoom;
+
     const updateSides = {
-      right: { width: this.cache.width + dx },
-      bottom: { height: this.cache.height + dy },
-      top: { top: this.cache.top + dy, height: this.cache.height - dy },
-      left: { left: this.cache.left + dx, width: this.cache.width - dx }
+      right: { width: this.cache.width + zoomDx },
+      bottom: { height: this.cache.height + zoomDy },
+      top: { top: this.cache.top + zoomDy, height: this.cache.height - zoomDy },
+      left: { left: this.cache.left + zoomDx, width: this.cache.width - zoomDx }
     };
 
     const update = {
@@ -123,6 +134,11 @@ export class ResizableFrame extends React.Component<
       bottomRight: { ...updateSides.bottom, ...updateSides.right },
       bottomLeft: { ...updateSides.bottom, ...updateSides.left }
     };
+
+    // console.log(
+    //   update[this.state.resizeInfo.location],
+    //   this.applyZoom(update[this.state.resizeInfo.location])
+    // );
 
     if (this.props.onTransforming) {
       this.props.onTransforming({
@@ -159,7 +175,7 @@ export class ResizableFrame extends React.Component<
   // todo this actually would make a good hook
   sub: Subscription;
   onMouseDownResize = e => {
-    if (e.target.id !== 'frame') return null;
+    if (e.target.id !== "frame") return null;
 
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
@@ -174,15 +190,16 @@ export class ResizableFrame extends React.Component<
     });
   };
 
-  onMouseDownMove = e => {    
+  onMouseDownMove = e => {
     e.stopPropagation();
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
+      const { zoom } = this.props;
       switch (mData.type) {
         case "mousemove":
           const update = {
-            top: this.cache.top + mData.dy,
-            left: this.cache.left + mData.dx
+            top: this.cache.top + mData.dy / this.props.zoom,
+            left: this.cache.left + mData.dx / this.props.zoom
           };
           if (this.props.onTransforming) {
             // controlled
