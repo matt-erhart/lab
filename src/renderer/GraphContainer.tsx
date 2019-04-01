@@ -149,7 +149,7 @@ export class GraphContainer extends React.Component<
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
       const edges = getBoxEdges(left, top, width, height);
-      const inView = isInView(edges);
+      const inView = true || isInView(edges);
       if (inView) {
         const isSelected = this.props.selectedNodes.includes(node.id);
         all.push({ id: node.id, left, top, width, height, isSelected });
@@ -195,6 +195,7 @@ export class GraphContainer extends React.Component<
   };
 
   onKey = e => {
+    if (e.target.id !== 'GraphScrollContainer') return null
     switch (e.key) {
       case "Delete":
         if (
@@ -279,7 +280,10 @@ export class GraphContainer extends React.Component<
     if (allowId) {
       const userHtml = makeUserHtml({
         data: { html: "<p></p>", text: "" },
-        style: { left: clientX - left, top: clientY - top }
+        style: {
+          left: (clientX - left) / this.state.zoom,
+          top: (clientY - top) / this.state.zoom
+        }
       });
       this.props.addBatch({ nodes: [userHtml] });
       return userHtml.id;
@@ -406,9 +410,8 @@ export class GraphContainer extends React.Component<
   onWheel = e => {
     // const bbox = e.target.getBoundingClientRect()
     // console.log(e.clientX - bbox.left)
-
     e.persist();
-    if (e.ctrlKey) {
+    if (e.ctrlKey && "SvgLayer" === e.target.id) {
       e.preventDefault();
       const wheelDefault = 120;
       this.setState(state => {
@@ -453,8 +456,7 @@ export class GraphContainer extends React.Component<
                 left: 0,
                 top: 0,
                 height: "100%",
-                width: "100%",
-                outline: "1px solid blue"
+                width: "100%"
               }}
               onDoubleClick={this.makeUserHtmlNode}
               onClick={this.deselectAll}

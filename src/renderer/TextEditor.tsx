@@ -209,6 +209,7 @@ class TextEditor extends React.Component<
         .deleteBackward(1);
       this.setState({ editorValue: this.editor.value });
     } else if (
+      !!currentNode && !!currentNode.id &&
       (this.props.nodes[currentNode.id] as UserHtml).data.html !==
       serialized.html
     ) {

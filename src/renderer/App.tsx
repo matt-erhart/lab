@@ -219,7 +219,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
-                pageNumbersToLoad={[1]}
+                pageNumbersToLoad={[]}
                 {...{
                   pdfRootDir,
                   ...this.props.mainPdfReader

@@ -1,12 +1,7 @@
-1. spawn location
-4. ctrl-shift give me a textbox
-2. focus green text box?
-3. close green on click elseware -> 
 
-
+graph viewbox  container resize
 
 cancel selection mid way
-graph viewbox  container resize
 
 So if in graph view, just focus the text 
 if you autocomplete and then go in front of it and delete text there.
@@ -38,6 +33,7 @@ right click does stuff it shouldn't
   - outline + link creation
 
 - Perf
+  - react spring + transform + opacity
   - prevent pdf renders
   - add in a pdf with 37 pages and it's more like 200ms per dispatch, so
     need to prevent rerender of other svg pages
