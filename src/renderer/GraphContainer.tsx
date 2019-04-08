@@ -42,7 +42,7 @@ const GraphContainerDefaults = {
     scrollLeft: 0,
     scrollTop: 0,
     editingId: "",
-    zoom: 2
+    zoom: .65
   }
 };
 const mapState = (state: iRootState) => ({
@@ -563,7 +563,7 @@ export default connect(
   mapDispatch
 )(GraphContainer);
 
-const ScrollContainer = styled.div`
+export const ScrollContainer = styled.div`
   --padding: 20px;
   --margin: 0px;
   --height: calc(100vh - 150px - var(--margin) - var(--padding) * 2);

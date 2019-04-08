@@ -13,10 +13,11 @@ import styled from "styled-components";
 import { getPersistor } from "@rematch/persist";
 import { PersistGate } from "redux-persist/lib/integration/react";
 const persistor = getPersistor(); //prevents initial redux state from takin over
-import store, { iRootState, iDispatch } from "../store/createStore";
+import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import { Provider, connect } from "react-redux";
 // import PdfNodes from "./PdfNodes";
 import { setupDirFromPdfs } from "./io";
+import ListView from "./ListView";
 import {
   makePdfPublication,
   NodeDataTypes,
@@ -94,13 +95,14 @@ const mapState = (state: iRootState) => ({
   pdfDir: state.app.panels.mainPdfReader.pdfDir,
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
-  mainPdfReader: state.app.panels.mainPdfReader
+  mainPdfReader: state.app.panels.mainPdfReader,
+  rightPanel: state.app.panels.rightPanel
 });
 
 const mapDispatch = ({
   graph: { addBatch },
-  app: { setMainPdfReader }
-}: iDispatch) => ({ addBatch, setMainPdfReader });
+  app: { setMainPdfReader, setRightPanel }
+}: iDispatch) => ({ addBatch, setMainPdfReader, setRightPanel });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -126,10 +128,19 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
   return newPubs;
 };
 
+type rightPanelName = typeof defaultApp.panels.rightPanel;
 // todo rename _App
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
-
+  keyback = (e: KeyboardEvent) => {
+    const altAndKeyToCmd = {
+      "1": "graphContainer" as rightPanelName,
+      "2": "listview" as rightPanelName
+    };
+    if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
+      this.props.setRightPanel(altAndKeyToCmd[e.key]);
+    }
+  };
   async componentDidMount() {
     const newPubs = await processNewPdfs(
       this.props.pdfRootDir,
@@ -141,6 +152,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
+    window.addEventListener("keyup", this.keyback);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.keyback);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -181,6 +197,19 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   };
 
   pageNum = [2]; // prevent rerender from array creation
+
+  renderRightPanel = (panelName: rightPanelName) => {
+
+    switch (panelName) {
+      case "graphContainer":
+        return <GraphContainer />;
+      case "listview":
+        return <ListView />;
+      default:
+        return <div>alt-1 | alt-2</div>;
+    }
+  };
+
   render() {
     const { pdfRootDir, pdfDir } = this.props;
     const { pdfNodes } = this.state;
@@ -194,7 +223,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     return (
-      
       <ViewPortContainer>
         <NavBar>
           <div style={{ flex: 1 }}>
@@ -228,7 +256,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             </div>
           )}
           <ResizeDivider onTransforming={this.onResizeDivider} />
-          <GraphContainer />
+          {/* {this.props.rightPanel === "graphContainer" && <GraphContainer />} */}
+          {this.renderRightPanel(this.props.rightPanel)}
         </MainContainer>
         <PortalContainer />
       </ViewPortContainer>

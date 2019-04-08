@@ -10,11 +10,11 @@ import path = require("path");
 import { oc } from "ts-optchain";
 import { frame } from "../renderer/ResizableFrame";
 const settings = require("electron-settings");
-const {clientWidth} = document.documentElement
+const { clientWidth } = document.documentElement;
 // stored in user/data.
 // todo add userId?
 const pdfRootDir = settings.get("pdfRootDir");
-let defaultApp = {
+export let defaultApp = {
   current: {
     userId: "",
     pdfRootDir: pdfRootDir
@@ -31,20 +31,21 @@ let defaultApp = {
       // todo should be scrollto
       left: 0,
       top: 0,
-      width: clientWidth /2 ,
+      width: clientWidth / 2,
       height: "100%",
       scale: 2,
       scrollToPageNumber: 0,
-      pdfDir: ''
+      pdfDir: ""
     },
     graphContainer: {
-        // todo should be scrollto
-        left: 0,
-        top: 0,
-        width: '50vw' ,
-        height: "100%",
-        scale: 1
-    }
+      // todo should be scrollto
+      left: 0,
+      top: 0,
+      width: "50vw",
+      height: "100%",
+      scale: 1
+    },
+    rightPanel: "graphContainer" as "graphContainer" | "listview"
   },
   portals: [] as frame[]
 };
@@ -69,6 +70,11 @@ try {
 export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
   reducers: {
+    setRightPanel(state, panelName: typeof defaultApp.panels.rightPanel) {
+      console.log('redux', panelName)
+      
+      return { ...state, panels: { ...state.panels, rightPanel: panelName } };
+    },
     setCurrent(
       state,
       payload: { userId?: string; pdfDir?: string; pdfRootDir?: string }
@@ -77,7 +83,10 @@ export const app = createModel({
         draft.current = { ...draft.current, ...payload };
       });
     },
-    setMainPdfReader(state, payload: Partial<typeof defaultApp.panels.mainPdfReader>) {
+    setMainPdfReader(
+      state,
+      payload: Partial<typeof defaultApp.panels.mainPdfReader>
+    ) {
       return produce(state, draft => {
         draft.panels.mainPdfReader = {
           ...draft.panels.mainPdfReader,
@@ -85,7 +94,10 @@ export const app = createModel({
         };
       });
     },
-    setGraphContainer(state, payload: Partial<typeof defaultApp.panels.graphContainer>) {
+    setGraphContainer(
+      state,
+      payload: Partial<typeof defaultApp.panels.graphContainer>
+    ) {
       // todo one set* function
       return produce(state, draft => {
         draft.panels.graphContainer = {
@@ -119,7 +131,7 @@ export const app = createModel({
       });
     },
     setPortals(state, payload = []) {
-      return {...state, portals: payload}
+      return { ...state, portals: payload };
     }
   }
 });
