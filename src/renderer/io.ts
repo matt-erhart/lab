@@ -137,7 +137,9 @@ export const preprocessPdfs = (
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
     let pdf;
     try {
-      pdf = await pdfjs.getDocument(pdfPath);
+      var data = new Uint8Array(fs.readFileSync(pdfPath));
+      pdf = await pdfjs.getDocument({data});
+      // pdf = await pdfjs.getDocument(pdfPath);
     } catch (err) {
       console.log(err);
       debugger;
