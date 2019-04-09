@@ -6,6 +6,7 @@ import PdfViewer from "./PdfViewer";
 import { ScrollContainer } from "./GraphContainer";
 import styled from "styled-components";
 import { aNode } from "../store/creators";
+import console = require("console");
 /**
  * @class **ListView**
  */
@@ -43,7 +44,7 @@ export class ListView extends React.Component<
       (Object.values(props.nodes) as aNode[]).filter(node => {
         return (
           node.data.type === "pdf.segment.viewbox" &&
-          node.data.pdfDir === props.pdfDir
+          ("pdfDir" in node.data ? node.data.pdfDir === props.pdfDir : false)
         );
       }) || [];
 
