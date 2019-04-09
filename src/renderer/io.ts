@@ -97,7 +97,7 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
     await fs.ensureDir(path.join(pdfRootDir, neededDir));
     await fs.move(
       info.fullFilePath,
-      path.join(path.join(pdfRootDir, neededDir), "./" + neededDir + ".pdf")
+      path.join(pdfRootDir, neededDir,  neededDir + ".pdf")
     );
   }
 
@@ -479,20 +479,11 @@ export const loadPdfPages = async (
   pageNumbersToLoad: number[] = [],
   scale = 1
 ) => {
-  const pdf = await pdfjs.getDocument(path);
-  // const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
-  // const willLoadAllPages = pageNumbersToLoad.length === 0;
-  // const pageNumPropsOk =
-  //   !willLoadAllPages &&
-  //   Math.min(...pageNumbersToLoad) >= 0 &&
-  //   Math.max(...pageNumbersToLoad) <= Math.max(...allPageNumbers);
+    // note this way doesn't work with osx+pdfjs+electron 
+  //          const pdf = await pdfjs.getDocument(path);
+  var data = new Uint8Array(fs.readFileSync(path));
+  const  pdf = await pdfjs.getDocument({data});
 
-  // let pageNumbers;
-  // if (willLoadAllPages) {
-  //   pageNumbers = allPageNumbers;
-  // } else {
-  //   pageNumbers = pageNumPropsOk ? pageNumbersToLoad : allPageNumbers;
-  // }
   const pageNumbers = checkGetPageNumsToLoad(pdf.numPages, pageNumbersToLoad);
   let pages = [] as _pdfjs.PDFPageProxy[];
   for (const pageNumber of pageNumbers) {
