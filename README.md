@@ -1,5 +1,11 @@
+just hide some stuff in graph container unless click
+giant editor
 
+text editor id can be undefined
+auto-complete doesn't always work
 graph viewbox  container resize
+view states
+
 
 cancel selection mid way
 

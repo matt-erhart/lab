@@ -3,6 +3,8 @@ import * as pdfjs from "pdfjs-dist";
 import styled from "styled-components";
 import { TextItemToDisplay, PageOfText } from "./io";
 
+// todo id can be undefined
+
 const PageTextContainer = styled("div")<{ height: number; width: number }>`
   position: absolute;
   height: ${props => props.height + "px"};

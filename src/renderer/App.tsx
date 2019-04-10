@@ -1,75 +1,42 @@
+// css
+import "./global.css";
+
+// libs
 import * as React from "react";
-import PdfViewer from "./PdfViewer";
-import { AppContainer } from "react-hot-loader";
 import * as ReactDOM from "react-dom";
-import fs = require("fs");
-import os = require("os");
-import path = require("path");
-import { ls, listDirs } from "./io";
-import Select from "react-select";
-import { Portal } from "./Portal";
-import styled from "styled-components";
-// import { graph } from "./graph";
-import { getPersistor } from "@rematch/persist";
-import { PersistGate } from "redux-persist/lib/integration/react";
-const persistor = getPersistor(); //prevents initial redux state from takin over
-import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import { Provider, connect } from "react-redux";
-// import PdfNodes from "./PdfNodes";
+import styled from "styled-components";
+import path = require("path");
+import { hot } from "react-hot-loader/root";
+import Select from "react-select";
+
+// custom
+import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
+import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
-import {
-  makePdfPublication,
-  NodeDataTypes,
-  aNode,
-  PdfPublication
-} from "../store/creators";
-import TextEditor from "./TextEditor";
-// import BoxMap from "./BoxMap";
+import { makePdfPublication, aNode, PdfPublication } from "../store/creators";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
+import PortalContainer from "./PortalContainer";
+import { mData } from "./rx";
+
 const NavBar = styled.div`
-  background-color: #23629f;
   font-size: 30px;
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
   flex-flow: row;
-  width: 100%;
+  width: 100vw;
   flex: 0;
   min-height: 50px;
+  margin: 1px;
 `;
-
-const NavItem = styled.a`
-  margin-right: 40px;
-  text-align: center;
-  vertical-align: middle;
-  padding: 8px;
-  &:hover {
-    background-color: slategray;
-    cursor: pointer;
-  }
-`;
-
-// const ViewPortContainer = styled.div`
-//   max-height: 100vh;
-//   width: 100vw;
-//   background-color: grey;
-//   box-sizing: border-box;
-//   overflow: hidden;
-//   padding: 8px;
-//   flex-flow: column;
-//   display: flex;
-// `;
 
 const ViewPortContainer = styled.div`
-  --padding: 20px;
-  --margin: 3px;
-  --height: calc(100vh - 5px - var(--margin) - var(--padding) * 2);
-  margin: var(--margin);
-  padding: var(--padding);
-  height: var(--height);
-  border: 1px solid lightgrey;
+  --border-size: 1;
+  max-height: 100vh;
+  border: var(--border-size) solid lightgrey;
   border-radius: 5px;
   font-size: 30px;
   overflow: none;
@@ -78,7 +45,6 @@ const ViewPortContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-  margin-top: 9px;
   flex: 1;
   background-color: white;
   overflow: none;
@@ -181,25 +147,22 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   }
 
-  //todo delete
   styleFn(provided, state) {
-    return { ...provided, minWidth: "200px" };
+    return { ...provided, minWidth: "100%" };
   }
 
   setPathInfo = opt => {
     this.props.setMainPdfReader({ pdfDir: opt.label });
   };
 
+  //todo mdata
   onResizeDivider = (mouseData: mData) => {
     const { width } = this.props.mainPdfReader;
-    // todo use bounding box on ref instead of '50'
-    this.props.setMainPdfReader({ width: mouseData.clientX - 50 });
+    // todo use bounding box on ref instead of '15'
+    this.props.setMainPdfReader({ width: mouseData.clientX - 15 });
   };
 
-  pageNum = [2]; // prevent rerender from array creation
-
   renderRightPanel = (panelName: rightPanelName) => {
-
     switch (panelName) {
       case "graphContainer":
         return <GraphContainer />;
@@ -225,7 +188,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     return (
       <ViewPortContainer>
         <NavBar>
-          <div style={{ flex: 1 }}>
+          <div style={{flex: 1, padding: 5, height: 50}}>
             <Select
               style={this.styleFn}
               options={fileOptions}
@@ -239,7 +202,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               style={{
                 border: "4px solid grey",
                 borderRadius: 5,
-                padding: 3,
+                // padding: 3,
                 minWidth: this.props.mainPdfReader.width + 3
               }}
             >
@@ -247,16 +210,16 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
-                pageNumbersToLoad={[]}
+                pageNumbersToLoad={[1]}
                 {...{
                   pdfRootDir,
-                  ...this.props.mainPdfReader
+                  ...this.props.mainPdfReader,
+                  height: "100%"
                 }}
               />
             </div>
           )}
           <ResizeDivider onTransforming={this.onResizeDivider} />
-          {/* {this.props.rightPanel === "graphContainer" && <GraphContainer />} */}
           {this.renderRightPanel(this.props.rightPanel)}
         </MainContainer>
         <PortalContainer />
@@ -269,36 +232,18 @@ const ConnectedApp = connect(
   mapDispatch
 )(_App);
 
-// import { D3Force } from "./testD3Force";
-// import KonvaTest from "./KonvaTest";
-import { Tooltip } from "./Tooltip";
-// import { TextEditor } from "./TextEditor";/
-// import { Resizer } from "./Resizer";
 class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
         <ConnectedApp />
-        {/* <BoxMap /> */}
-        {/* <Resizer /> */}
-        {/* <GraphContainer /> */}
       </Provider>
     );
   }
 }
 
-document.body.style.margin = "0px";
-document.body.style.padding = "0px";
-document.body.style.boxSizing = "border-box";
-document.body.style.overflow = "hidden";
-document.body.style.fontFamily = "Arial";
 const rootEl = document.getElementById("app");
 export const render = (Component: typeof App) =>
   ReactDOM.render(<Component />, rootEl);
-
-import { hot } from "react-hot-loader/root";
-import PortalContainer from "./PortalContainer";
-import { mData } from "./rx";
-import { oc } from "ts-optchain";
 
 hot(render(App));
