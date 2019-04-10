@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Plain from "slate-plain-serializer";
 import Downshift from "downshift";
 import { getSelectionRange, inFirstNotSecondArray } from "./utils";
-import { getWordAtCursor, onSlash } from "./TextEditorUtils";
+import { getWordAtCursor, onSlash } from "./EditorUtils";
 import { oc } from "ts-optchain";
 import { iDispatch, iRootState } from "../store/createStore";
 import { connect } from "react-redux";

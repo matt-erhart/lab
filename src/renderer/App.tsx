@@ -20,6 +20,7 @@ import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
+import DocEditor from "./DocEditor";
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -185,10 +186,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       return <h2>Add some pdfs to your selected folder and view->reload</h2>;
     }
 
+    return <DocEditor />;
+
     return (
       <ViewPortContainer>
         <NavBar>
-          <div style={{flex: 1, padding: 5, height: 50}}>
+          <div style={{ flex: 1, padding: 5, height: 50 }}>
             <Select
               style={this.styleFn}
               options={fileOptions}
