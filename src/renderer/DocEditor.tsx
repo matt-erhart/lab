@@ -12,23 +12,71 @@ import Keymap from "@convertkit/slate-keymap";
 import {
   MdFormatBold,
   MdFormatItalic,
-  MdFormatUnderlined
+  MdFormatUnderlined,
+  MdLooksOne,
+  MdLooksTwo,
+  MdLooks3,
+  MdFormatListNumbered,
+  MdFormatListBulleted
 } from "react-icons/md";
+import Slate from "slate";
+
 // custom
 import { getWordAtCursor } from "./EditorUtils";
 
+type SlateTypes =
+  | "bold"
+  | "italics"
+  | "underline"
+  | "ordered-list"
+  | "unordered-list"
+  | "list-item-child"
+  | "list-item"
+  | "paragraph";
+const defaultNode = "paragraph" as SlateTypes;
+
 const marks = {
-  bold: { type: "bold", cmd: "ctrl+b" },
-  italic: { type: "italics", cmd: "ctrl+i" },
-  underline: { type: "underline", cmd: "ctrl+u" }
+  bold: { type: "bold" as SlateTypes, cmd: "ctrl+b" },
+  italic: { type: "italics" as SlateTypes, cmd: "ctrl+i" },
+  underline: { type: "underline" as SlateTypes, cmd: "ctrl+u" }
+};
+
+// todo util
+const checkListType = (editor, type: "ordered-list" | "unordered-list") => {
+  if (!editor) return { isList: false, isType: false };
+  const isList = editor.value.blocks.some(
+    node => node.type === ("list-item-child" as SlateTypes)
+  );
+
+  const isType = editor.value.blocks.some(block => {
+    return !!editor.value.document.getClosest(
+      block.key,
+      parent => parent.type === type
+    );
+  });
+  return { isList, isType };
+};
+
+const toggleList = (editor, type: "ordered-list" | "unordered-list") => {
+  const { isList, isType } = checkListType(editor, type);
+  if (!isList) {
+    editor.wrapList({ type });
+  } else {
+    editor.unwrapList();
+    if (!isType) {
+      editor.wrapList({
+        type: type === "ordered-list" ? "ordered-list" : "unordered-list"
+      });
+    }
+  }
 };
 
 const plugins = [
   Lists({
     blocks: {
-      ordered_list: "ordered-list",
-      unordered_list: "unordered-list",
-      list_item: "list-item"
+      ordered_list: "ordered-list" as SlateTypes,
+      unordered_list: "unordered-list" as SlateTypes,
+      list_item: "list-item" as SlateTypes
     },
     classNames: {
       ordered_list: "ordered-list",
@@ -43,7 +91,8 @@ const plugins = [
       editor.toggleMark(marks.underline.type),
     // You can also pass a string and it will call the command with that name
     "shift+enter": "softBreak",
-    "ctrl+l": (event, editor) => editor.wrapList({ type: "unordered-list" })
+    "mod+l": (event, editor: Editor) => toggleList(editor, "unordered-list"),
+    "mod+o": (event, editor: Editor) => toggleList(editor, "ordered-list")
   })
 ];
 
@@ -56,7 +105,8 @@ const DocEditorDefaults = {
   },
   state: {
     editorValue: Plain.deserialize("some text") as Editor["value"],
-    wordAtCursor: ""
+    wordAtCursor: "",
+    fontSize: 16
   }
 };
 export default class DocEditor extends React.Component<
@@ -69,6 +119,8 @@ export default class DocEditor extends React.Component<
   ref = editor => {
     this.editor = editor;
   };
+
+  componentDidMount() {}
 
   onChange = change => {
     this.setState({ editorValue: change.value });
@@ -137,8 +189,6 @@ export default class DocEditor extends React.Component<
       case "ordered-list":
         return <ol {...attributes}>{children}</ol>;
       case "unordered-list":
-      
-      console.log(node.toJS())
         return <ul {...attributes}>{children}</ul>;
 
       default:
@@ -146,13 +196,14 @@ export default class DocEditor extends React.Component<
     }
   };
 
-  renderMarkButton = (type: string, Icon: React.ReactNode) => {
+  renderMarkButton = (type: SlateTypes, Icon: React.ReactNode, title = "") => {
     const isActive = this.state.editorValue.activeMarks.some(
       mark => mark.type === type
     );
 
     return (
       <Button
+        title={title}
         isActive={isActive}
         onMouseDown={event => this.onClickMark(event, type)}
       >
@@ -161,33 +212,74 @@ export default class DocEditor extends React.Component<
     );
   };
 
-  iconProps = { size: "25px", style: { verticalAlign: "middle" } };
+  renderBlockButton = (type: string, Icon: React.ReactNode, title = "") => {
+    const { isList, isType } = checkListType(this.editor, type);
+    return (
+      <Button
+        title={title}
+        isActive={isType}
+        onMouseDown={event => toggleList(this.editor, type)}
+      >
+        {Icon}
+      </Button>
+    );
+  };
+
+  MakeButtons = () => {
+    const iconProps = { size: "25px", style: { verticalAlign: "middle" } };
+    return [
+      this.renderMarkButton(marks.bold.type, <MdFormatBold {...iconProps} />, marks.bold.cmd),
+      this.renderMarkButton(
+        marks.italic.type,
+        <MdFormatItalic {...iconProps} />,
+        marks.italic.cmd
+      ),
+      this.renderMarkButton(
+        marks.underline.type,
+        <MdFormatUnderlined {...iconProps} />,
+        marks.underline.cmd
+      ),
+      this.renderBlockButton(
+        "ordered-list" as SlateTypes,
+        <MdFormatListNumbered {...iconProps} />,
+        'ctrl-o'
+      ),
+      this.renderBlockButton(
+        "unordered-list" as SlateTypes,
+        <MdFormatListBulleted {...iconProps} />,
+        'ctrl-l'
+      )
+    ];
+  };
+
+  changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ fontSize: e.target.value });
+  };
+
   onKeyDown = (event, editor, next) => {
     if (event.key === "Tab") {
       event.preventDefault();
       // editor.insertText("\t");
     }
     return next();
-  }
+  };
   render() {
     return (
       <OuterContainer>
         <Toolbar>
-          {this.renderMarkButton(
-            marks.bold.type,
-            <MdFormatBold {...this.iconProps} />
-          )}
-          {this.renderMarkButton(
-            marks.italic.type,
-            <MdFormatItalic {...this.iconProps} />
-          )}
-          {this.renderMarkButton(
-            marks.underline.type,
-            <MdFormatUnderlined {...this.iconProps} />
-          )}
+          {" "}
+          {this.MakeButtons()}{" "}
+          <FontSizeInput
+            type="number"
+            min={2}
+            max={48}
+            value={this.state.fontSize}
+            onChange={this.changeFontSize}
+            title="Base Font Size"
+          />
         </Toolbar>
 
-        <EditorContainer>
+        <EditorContainer fontSize={this.state.fontSize}>
           <Editor
             autoFocus
             readOnly={this.props.readOnly}
@@ -227,8 +319,21 @@ const OuterContainer = styled.div`
   margin: 0px 12px;
 `;
 
-const EditorContainer = styled.div`
+const FontSizeInput = styled.input`
+  width: 1.8em;
+  height: 1.8em;
+  font-size: 1.3em;
+  appearance: textfield;
+  text-align: center;
+  font-weight: bold;
+  color: darkgrey;
+  border: none;
+`;
+
+const _EditorContainer = styled.div<{ fontSize: number }>``;
+const EditorContainer = styled(_EditorContainer)`
   border: 1px solid lightgrey;
   padding: 5px;
   height: 50vh;
+  font-size: ${p => p.fontSize}px;
 `;
