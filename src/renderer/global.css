@@ -9,9 +9,14 @@ html {
 *:after {
   box-sizing: inherit;
   font-family: inherit;
-  margin: inherit;
-  padding: inherit;
 }
+
 body {
   overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+.react-icons {
+  vertical-align: middle;
 }

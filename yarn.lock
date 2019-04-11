@@ -561,6 +561,18 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@convertkit/slate-keymap@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@convertkit/slate-keymap/-/slate-keymap-0.1.8.tgz#a99fe0923c78c69166480a124a750b3342e49250"
+  dependencies:
+    is-hotkey "^0.1.4"
+
+"@convertkit/slate-lists@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@convertkit/slate-lists/-/slate-lists-0.2.2.tgz#4e656a31ca2e504cfdbf7161bd2b23fb1ef28014"
+  dependencies:
+    "@convertkit/slate-keymap" "^0.1.8"
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.10.tgz#83dbf3dfa933fae9fc566e54fbb45f14674c6ccc"
@@ -4575,7 +4587,7 @@ is-glob@^4.0.0:
   dependencies:
     is-extglob "^2.1.1"
 
-is-hotkey@0.1.4:
+is-hotkey@0.1.4, is-hotkey@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/is-hotkey/-/is-hotkey-0.1.4.tgz#c34d2c85d6ec8d09a871dcf71931c8067a824c7d"
 
@@ -7092,6 +7104,10 @@ react-html-parser@^2.0.2:
   resolved "https://registry.yarnpkg.com/react-html-parser/-/react-html-parser-2.0.2.tgz#6dbe1ddd2cebc1b34ca15215158021db5fc5685e"
   dependencies:
     htmlparser2 "^3.9.0"
+
+react-icons@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.5.0.tgz#a6135480e3bcbc63f5dd045193ef2a814263d8d1"
 
 react-immutable-proptypes@^2.1.0:
   version "2.1.0"
