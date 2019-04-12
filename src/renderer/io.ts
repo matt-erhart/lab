@@ -28,6 +28,7 @@ import {
 } from "./utils";
 
 import { histogram, mean, median, deviation } from "d3-array";
+import console = require("console");
 
 interface FileInfo {
   fullFilePath: string;
@@ -97,7 +98,7 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
     await fs.ensureDir(path.join(pdfRootDir, neededDir));
     await fs.move(
       info.fullFilePath,
-      path.join(pdfRootDir, neededDir,  neededDir + ".pdf")
+      path.join(pdfRootDir, neededDir, neededDir + ".pdf")
     );
   }
 
@@ -123,6 +124,31 @@ export const existsElseMake = async (
   }
 };
 
+export const createAutoGrabInfo = async (
+  pages:any[], // textToDisplay Pages
+  path: string,
+  pdf: any,  // to be deleted, not necessary 
+  overwrite = false
+) => {
+  // TODO (Xin): here we grab info for the pdf from calling python service
+
+  console.log("Inside createAutoGrabInfo, reading current state.json as below");
+  // const obj = JSON.parse(fs.readFileSync("file", "utf8"));
+  // console.log(obj);
+
+  const emptyJSON = {}; // TODO 
+  const fileExists = await fs.pathExists(path);
+
+  if (!fileExists || overwrite) {
+    console.log("making ", path);
+    // const data = await promise;
+    await jsonfile.writeFile(path, emptyJSON);
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const preprocessPdfs = (
   pdfDirs: string[],
   overwrite = false
@@ -138,7 +164,7 @@ export const preprocessPdfs = (
     let pdf;
     try {
       var data = new Uint8Array(fs.readFileSync(pdfPath));
-      pdf = await pdfjs.getDocument({data});
+      pdf = await pdfjs.getDocument({ data });
       // pdf = await pdfjs.getDocument(pdfPath);
     } catch (err) {
       console.log(err);
@@ -148,7 +174,7 @@ export const preprocessPdfs = (
 
     await existsElseMake(
       path.join(dir, "meta.json"),
-      pdf.getMetadata(),
+      pdf.getMetadata(), // API defined in https://github.com/mozilla/pdf.js/blob/2a9d195a4350d75e01fafb2c19194b7d02d0a0a5/src/display/api.js#L737
       overwrite
     );
 
@@ -221,6 +247,18 @@ export const preprocessPdfs = (
     });
 
     let pagesOfText = await loadPageJson(dir, "textToDisplay");
+
+    // TODO (Xin): after parsing per-page textToDisplay from PDF pages, 
+    // auto-grab info from the pdf, including two steps: 
+    // 1) API communication to python 
+    // and 2) write to "metadataToHighlight.json"
+    await createAutoGrabInfo(
+      pagesOfText,
+      path.join(dir, "metadataToHighlight.json"),
+      pdf,
+      overwrite
+    );
+
     const columnLefts = getLeftEdgeOfColumns(pagesOfText);
     await existsElseMake(path.join(dir, `columnLefts.json`), columnLefts);
 
@@ -481,10 +519,10 @@ export const loadPdfPages = async (
   pageNumbersToLoad: number[] = [],
   scale = 1
 ) => {
-    // note this way doesn't work with osx+pdfjs+electron 
+  // note this way doesn't work with osx+pdfjs+electron
   //          const pdf = await pdfjs.getDocument(path);
   var data = new Uint8Array(fs.readFileSync(path));
-  const  pdf = await pdfjs.getDocument({data});
+  const pdf = await pdfjs.getDocument({ data });
 
   const pageNumbers = checkGetPageNumsToLoad(pdf.numPages, pageNumbersToLoad);
   let pages = [] as _pdfjs.PDFPageProxy[];
