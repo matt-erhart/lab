@@ -45,7 +45,9 @@ export let defaultApp = {
       height: "100%",
       scale: 1
     },
-    rightPanel: "graphContainer" as "graphContainer" | "listview"
+    rightPanel: "graphContainer" as "graphContainer" | "listview" | "synthesisOutlineEditor"
+    //that means rightPanel can only be that two strings ..
+    // | "integrationview" 
   },
   portals: [] as frame[]
 };

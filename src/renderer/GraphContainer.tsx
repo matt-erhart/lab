@@ -194,13 +194,16 @@ export class GraphContainer extends React.Component<
     this.setState({ containerBounds: bounds });
   };
 
-  onKey = e => {
-    if (e.target.id !== 'GraphScrollContainer') return null
+  onKey = e => {  //key shortcut trick 
+    if (e.target.id !== 'GraphScrollContainer') return null  
+    //Wrapper around div. Inside is a Slate component?
+    //Huge pain: event bubbling?? ID trick to prevent 
+    console.log(e.key) // Delete 
     switch (e.key) {
       case "Delete":
         if (
           this.props.selectedNodes.length > 0 ||
-          this.props.selectedLinks.length > 0
+          this.props.selectedLinks.length > 0 
         ) {
           this.props.removeBatch({
             nodes: this.props.selectedNodes,
@@ -518,20 +521,21 @@ export class GraphContainer extends React.Component<
  */
 const LinkLineDefaults = {
   props: {
-    sourceFrame: undefined as frame,
+    sourceFrame: undefined as frame,  // get to know when it is defined or undefined still ? means optional type
     targetFrame: undefined as frame,
     isSelected: false
   },
   state: {}
 };
 export class LinkLine extends React.PureComponent<
-  typeof LinkLineDefaults.props & any,
+  typeof LinkLineDefaults.props & any, // help initialize props/state, otherwise warning pops up 
   typeof LinkLineDefaults.state
 > {
   static defaultProps = LinkLineDefaults.props;
   state = LinkLineDefaults.state;
   render() {
-    const { sourceFrame, targetFrame, isSelected, ...rest } = this.props;
+    const { sourceFrame, targetFrame, isSelected, ...rest } = this.props; 
+    // ...rest any other stuff in props 
     if (!!sourceFrame && !!targetFrame) {
       return (
         <HoverLine

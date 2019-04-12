@@ -57,15 +57,16 @@ const AppDefaults = {
   props: {},
   state: { pdfNodes: [] as PdfPublication[] }
 };
-
+//mapState is a convention in Redux
 const mapState = (state: iRootState) => ({
-  pdfDir: state.app.panels.mainPdfReader.pdfDir,
+  pdfDir: state.app.panels.mainPdfReader.pdfDir, //more or less an alias
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
   mainPdfReader: state.app.panels.mainPdfReader,
   rightPanel: state.app.panels.rightPanel
 });
 
+// set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
   graph: { addBatch },
   app: { setMainPdfReader, setRightPanel }
@@ -102,7 +103,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   keyback = (e: KeyboardEvent) => {
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
-      "2": "listview" as rightPanelName
+      "2": "listview" as rightPanelName,
+      "3": "synthesisOutlineEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
@@ -169,6 +171,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         return <GraphContainer />;
       case "listview":
         return <ListView />;
+      case "synthesisOutlineEditor":
+        return <DocEditor />;
       default:
         return <div>alt-1 | alt-2</div>;
     }
@@ -186,7 +190,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       return <h2>Add some pdfs to your selected folder and view->reload</h2>;
     }
 
-    return <DocEditor />;
+    // return <DocEditor />;
 
     return (
       <ViewPortContainer>
