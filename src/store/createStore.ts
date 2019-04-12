@@ -45,7 +45,7 @@ export let defaultApp = {
       height: "100%",
       scale: 1
     },
-    rightPanel: "graphContainer" as "graphContainer" | "listview"
+    rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
   },
   portals: [] as frame[]
 };
@@ -71,8 +71,8 @@ export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
   reducers: {
     setRightPanel(state, panelName: typeof defaultApp.panels.rightPanel) {
-      console.log('redux', panelName)
-      
+      console.log("redux", panelName);
+
       return { ...state, panels: { ...state.panels, rightPanel: panelName } };
     },
     setCurrent(

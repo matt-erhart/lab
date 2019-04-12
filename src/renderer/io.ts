@@ -9,6 +9,8 @@ var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
 if (typeof window !== "undefined" && "Worker" in window) {
   (_pdfjs as any).GlobalWorkerOptions.workerPort = new PdfjsWorker();
 }
+console.log('+++++++++++++++++++++++++++++++++++++++')
+
 import {
   PDFJSStatic,
   PDFDocumentProxy,

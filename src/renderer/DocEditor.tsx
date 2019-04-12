@@ -17,7 +17,11 @@ import {
   MdLooksTwo,
   MdLooks3,
   MdFormatListNumbered,
-  MdFormatListBulleted
+  MdFormatListBulleted,
+  MdSave,
+  MdNoteAdd,
+  MdDeleteForever,
+  MdSettings
 } from "react-icons/md";
 import Slate from "slate";
 
@@ -32,7 +36,10 @@ type SlateTypes =
   | "unordered-list"
   | "list-item-child"
   | "list-item"
-  | "paragraph";
+  | "paragraph"
+  | "heading-one"
+  | "heading-two"
+  | "heading-three";
 const defaultNode = "paragraph" as SlateTypes;
 
 const marks = {
@@ -42,7 +49,8 @@ const marks = {
 };
 
 // todo util
-const checkListType = (editor, type: "ordered-list" | "unordered-list") => {
+type listTypes = "ordered-list" | "unordered-list";
+const checkListType = (editor, type: listTypes) => {
   if (!editor) return { isList: false, isType: false };
   const isList = editor.value.blocks.some(
     node => node.type === ("list-item-child" as SlateTypes)
@@ -57,7 +65,7 @@ const checkListType = (editor, type: "ordered-list" | "unordered-list") => {
   return { isList, isType };
 };
 
-const toggleList = (editor, type: "ordered-list" | "unordered-list") => {
+const toggleList = (editor, type: listTypes) => {
   const { isList, isType } = checkListType(editor, type);
   if (!isList) {
     editor.wrapList({ type });
@@ -68,6 +76,33 @@ const toggleList = (editor, type: "ordered-list" | "unordered-list") => {
         type: type === "ordered-list" ? "ordered-list" : "unordered-list"
       });
     }
+  }
+};
+
+const toggleBlock = (editor, type: SlateTypes): void => {
+  const isActive = editor.value.blocks.some(node => node.type === type);
+  const isType = editor.value.blocks.some(block => {
+    return !!editor.value.document.getClosest(
+      block.key,
+      parent => parent.type === type
+    );
+  });
+  const outerType = editor.value.blocks.map(block => {
+    const closest = editor.value.document.getClosest(block.key, parent => true);
+    return  !!closest ? closest.toJS().type: ""
+  });
+
+  const isList = editor.value.blocks.some(
+    node => node.type === ("list-item-child" as SlateTypes)
+  );
+
+  
+  
+  if (isList) return null;
+  if (isType) {
+    editor.unwrapBlock(type);
+  } else {
+    editor.wrapBlock(type);
   }
 };
 
@@ -92,7 +127,16 @@ const plugins = [
     // You can also pass a string and it will call the command with that name
     "shift+enter": "softBreak",
     "mod+l": (event, editor: Editor) => toggleList(editor, "unordered-list"),
-    "mod+o": (event, editor: Editor) => toggleList(editor, "ordered-list")
+    "mod+o": (event, editor: Editor) => toggleList(editor, "ordered-list"),
+    "mod+1": (event, editor: Editor) => toggleBlock(editor, "heading-one"),
+    "mod+2": (event, editor: Editor) => toggleBlock(editor, "heading-two"),
+    "mod+3": (event, editor: Editor) => toggleBlock(editor, "heading-three"),
+    "mod+/": (event, editor: Editor) => {
+      console.log(
+        editor.value.blocks.toJS().map(x => x.type),
+        editor.value.inlines.toJS().map(x => x.type)
+      );
+    }
   })
 ];
 
@@ -184,13 +228,16 @@ export default class DocEditor extends React.Component<
         return <h1 {...attributes}>{children}</h1>;
       case "heading-two":
         return <h2 {...attributes}>{children}</h2>;
+      case "heading-three":
+        return <h3 {...attributes}>{children}</h3>;
       case "list-item":
         return <li {...attributes}>{children}</li>;
       case "ordered-list":
         return <ol {...attributes}>{children}</ol>;
       case "unordered-list":
         return <ul {...attributes}>{children}</ul>;
-
+      case "paragraph":
+        return <div {...attributes}>{children}</div>;
       default:
         return next();
     }
@@ -203,6 +250,7 @@ export default class DocEditor extends React.Component<
 
     return (
       <Button
+        key={title}
         title={title}
         isActive={isActive}
         onMouseDown={event => this.onClickMark(event, type)}
@@ -212,10 +260,20 @@ export default class DocEditor extends React.Component<
     );
   };
 
-  renderBlockButton = (type: string, Icon: React.ReactNode, title = "") => {
+  onClickBlock = (event, type) => {
+    event.preventDefault();
+
+    const { editor } = this;
+    const { value } = editor;
+    const { document } = value;
+    editor.wrapBlock("heading-one");
+  };
+
+  renderListButton = (type: listTypes, Icon: React.ReactNode, title = "") => {
     const { isList, isType } = checkListType(this.editor, type);
     return (
       <Button
+        key={title}
         title={title}
         isActive={isType}
         onMouseDown={event => toggleList(this.editor, type)}
@@ -228,32 +286,36 @@ export default class DocEditor extends React.Component<
   MakeButtons = () => {
     const iconProps = { size: "25px", style: { verticalAlign: "middle" } };
     return [
-      this.renderMarkButton(marks.bold.type, <MdFormatBold {...iconProps} />, marks.bold.cmd),
       this.renderMarkButton(
-        marks.italic.type,
+        "bold",
+        <MdFormatBold {...iconProps} />,
+        marks.bold.cmd
+      ),
+      this.renderMarkButton(
+        "italics",
         <MdFormatItalic {...iconProps} />,
         marks.italic.cmd
       ),
       this.renderMarkButton(
-        marks.underline.type,
+        "underline",
         <MdFormatUnderlined {...iconProps} />,
         marks.underline.cmd
       ),
-      this.renderBlockButton(
-        "ordered-list" as SlateTypes,
+      this.renderListButton(
+        "ordered-list",
         <MdFormatListNumbered {...iconProps} />,
-        'ctrl-o'
+        "ctrl-o"
       ),
-      this.renderBlockButton(
-        "unordered-list" as SlateTypes,
+      this.renderListButton(
+        "unordered-list",
         <MdFormatListBulleted {...iconProps} />,
-        'ctrl-l'
+        "ctrl-l"
       )
     ];
   };
 
   changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ fontSize: e.target.value });
+    this.setState({ fontSize: parseInt(e.target.value) });
   };
 
   onKeyDown = (event, editor, next) => {
@@ -263,7 +325,12 @@ export default class DocEditor extends React.Component<
     }
     return next();
   };
+
   render() {
+    // console.log(
+    //   this.state.editorValue.blocks.toJS().map(x => x.type),
+    //   this.state.editorValue.inlines.toJS().map(x => x.type)
+    // );
     return (
       <OuterContainer>
         <Toolbar>
@@ -308,32 +375,43 @@ export const Button = styled(_Button)`
 `;
 
 export const Toolbar = styled.div`
+  flex: 0;
   border: 1px solid lightgrey;
   display: flex;
   align-items: center;
   border-bottom: none;
   padding: 10px;
+  min-height: 50px;
 `;
 
 const OuterContainer = styled.div`
-  margin: 0px 12px;
+  margin: 0px 0px;
+  flex: 1;
+  border: 4px solid darkgrey;
+  height: auto;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const FontSizeInput = styled.input`
   width: 1.8em;
   height: 1.8em;
-  font-size: 1.3em;
+  font-size: 20px;
   appearance: textfield;
   text-align: center;
   font-weight: bold;
   color: darkgrey;
   border: none;
+  transform: translateY(2px);
 `;
 
 const _EditorContainer = styled.div<{ fontSize: number }>``;
 const EditorContainer = styled(_EditorContainer)`
   border: 1px solid lightgrey;
   padding: 5px;
-  height: 50vh;
   font-size: ${p => p.fontSize}px;
+  height: 100%;
+  overflow: scroll;
+  flex: 1;
 `;

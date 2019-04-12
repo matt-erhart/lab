@@ -16,6 +16,7 @@ import {
   makeLink
 } from "../store/creators";
 
+
 import { Portal } from "./Portal";
 const schema = {
   inlines: {
