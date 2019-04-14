@@ -570,7 +570,6 @@ export default connect(
 export const ScrollContainer = styled.div`
   --padding: 20px;
   --margin: 0px;
-  --height: calc(100vh - 150px - var(--margin) - var(--padding) * 2);
   margin: var(--margin);
   padding: var(--padding);
   height: auto;

@@ -28,9 +28,8 @@ const NavBar = styled.div`
   justify-content: flex-start;
   align-items: stretch;
   flex-flow: row;
-  width: 100vw;
+  
   flex: 0;
-  min-height: 50px;
   margin: 1px;
 `;
 
@@ -46,11 +45,12 @@ const ViewPortContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-  flex: 1;
+  flex: 1 2;
   background-color: white;
   overflow: none;
   position: relative;
   display: flex;
+  margin: 15px;
 `;
 
 const AppDefaults = {
@@ -104,7 +104,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
+<<<<<<< HEAD
       "3": "synthesisOutlineEditor" as rightPanelName
+=======
+      "3": "docEditor" as rightPanelName
+>>>>>>> upstream/master
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
@@ -151,7 +155,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   styleFn(provided, state) {
-    return { ...provided, minWidth: "100%" };
+    return { ...provided, minWidth: "5%", height: 5 };
   }
 
   setPathInfo = opt => {
@@ -172,9 +176,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "listview":
         return <ListView />;
       case "synthesisOutlineEditor":
+//         case "docEditor":
         return <DocEditor />;
       default:
-        return <div>alt-1 | alt-2</div>;
+        return <div>alt-1 | alt-2 | alt-3</div>;
     }
   };
 
@@ -194,15 +199,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     return (
       <ViewPortContainer>
-        <NavBar>
-          <div style={{ flex: 1, padding: 5, height: 50 }}>
+          <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
             <Select
-              style={this.styleFn}
+              // style={this.styleFn}
               options={fileOptions}
               onChange={this.setPathInfo}
             />
           </div>
-        </NavBar>
         <MainContainer>
           {pdfDir.length > 0 && (
             <div
@@ -217,7 +220,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
-                pageNumbersToLoad={[1]}
+                pageNumbersToLoad={[]}
                 {...{
                   pdfRootDir,
                   ...this.props.mainPdfReader,

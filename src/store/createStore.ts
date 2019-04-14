@@ -46,8 +46,8 @@ export let defaultApp = {
       scale: 1
     },
     rightPanel: "graphContainer" as "graphContainer" | "listview" | "synthesisOutlineEditor"
-    //that means rightPanel can only be that two strings ..
-    // | "integrationview" 
+    // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
+
   },
   portals: [] as frame[]
 };
@@ -73,8 +73,8 @@ export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
   reducers: {
     setRightPanel(state, panelName: typeof defaultApp.panels.rightPanel) {
-      console.log('redux', panelName)
-      
+      console.log("redux", panelName);
+
       return { ...state, panels: { ...state.panels, rightPanel: panelName } };
     },
     setCurrent(
