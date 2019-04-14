@@ -48,6 +48,7 @@
     "@convertkit/slate-keymap": "^0.1.8",
     "@convertkit/slate-lists": "^0.2.2",
     "app-root-path": "^2.1.0",
+    "axios": "^0.18.0",
     "benchmark": "^2.1.4",
     "d3": "^5.9.1",
     "d3-array": "^2.0.3",
