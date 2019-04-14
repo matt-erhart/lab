@@ -104,11 +104,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
-<<<<<<< HEAD
       "3": "synthesisOutlineEditor" as rightPanelName
-=======
-      "3": "docEditor" as rightPanelName
->>>>>>> upstream/master
+      // "3": "docEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
