@@ -15,12 +15,18 @@ import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
-import { makePdfPublication, aNode, PdfPublication } from "../store/creators";
+import {
+  makePdfPublication,
+  makeAutograbNode,
+  aNode,
+  PdfPublication
+} from "../store/creators";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
+import console = require("console");
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -28,7 +34,7 @@ const NavBar = styled.div`
   justify-content: flex-start;
   align-items: stretch;
   flex-flow: row;
-  
+
   flex: 0;
   margin: 1px;
 `;
@@ -91,9 +97,20 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
     );
   });
 
+  const autograbNodes = pdfDirs.map((dir, ix) => {
+    return makeAutograbNode(
+      dir,
+      { dir },
+      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+    );
+  });
+
   const allNodeIds = Object.keys(nodes);
-  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id));
-  return newPubs;
+  
+  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
+  // const newAutograbs = autograbNodes.filter(autograbNode => !allNodeIds.includes(autograbNode.id)); //filter out nodes that exists
+  // const newNodes = newPubs + autograbNodes
+  return newPubs.concat(autograbNodes);
 };
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
@@ -122,6 +139,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
+
     window.addEventListener("keyup", this.keyback);
   }
 
@@ -173,7 +191,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "listview":
         return <ListView />;
       case "synthesisOutlineEditor":
-//         case "docEditor":
+        //         case "docEditor":
         return <DocEditor />;
       default:
         return <div>alt-1 | alt-2 | alt-3</div>;
@@ -196,13 +214,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     return (
       <ViewPortContainer>
-          <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
-            <Select
-              // style={this.styleFn}
-              options={fileOptions}
-              onChange={this.setPathInfo}
-            />
-          </div>
+        <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
+          <Select
+            // style={this.styleFn}
+            options={fileOptions}
+            onChange={this.setPathInfo}
+          />
+        </div>
         <MainContainer>
           {pdfDir.length > 0 && (
             <div
