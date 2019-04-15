@@ -19,7 +19,8 @@ import {
   aLink,
   Links,
   Nodes,
-  PdfPublication
+  PdfPublication,
+  AutoGrab
 } from "../store/creators";
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
@@ -42,7 +43,7 @@ const GraphContainerDefaults = {
     scrollLeft: 0,
     scrollTop: 0,
     editingId: "",
-    zoom: .65
+    zoom: 0.65
   }
 };
 const mapState = (state: iRootState) => ({
@@ -69,7 +70,9 @@ const mapDispatch = ({
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
+
 type props = typeof GraphContainerDefaults.props & connectedProps;
+
 export class GraphContainer extends React.Component<
   props,
   typeof GraphContainerDefaults.state
@@ -135,7 +138,8 @@ export class GraphContainer extends React.Component<
     return linksOnNode;
   };
 
-  getFramesInView = containerBounds => {
+  // this function transforms the component inherited Redux state.nodes into the many frames
+  getFramesInView = containerBounds => { 
     const { width, height } = containerBounds;
     const pad = 200;
     const view = getBoxEdges(
@@ -194,16 +198,17 @@ export class GraphContainer extends React.Component<
     this.setState({ containerBounds: bounds });
   };
 
-  onKey = e => {  //key shortcut trick 
-    if (e.target.id !== 'GraphScrollContainer') return null  
+  onKey = e => {
+    //key shortcut trick
+    if (e.target.id !== "GraphScrollContainer") return null;
     //Wrapper around div. Inside is a Slate component?
-    //Huge pain: event bubbling?? ID trick to prevent 
-    console.log(e.key) // Delete 
+    //Huge pain: event bubbling?? ID trick to prevent
+    console.log(e.key); // Delete
     switch (e.key) {
       case "Delete":
         if (
           this.props.selectedNodes.length > 0 ||
-          this.props.selectedLinks.length > 0 
+          this.props.selectedLinks.length > 0
         ) {
           this.props.removeBatch({
             nodes: this.props.selectedNodes,
@@ -376,6 +381,38 @@ export class GraphContainer extends React.Component<
             />
           </div>
         );
+      case "autograb":
+        return (
+          <div
+            key={node.id}
+            style={{
+              backgroundColor: "orange",
+              padding: 5,
+              color: "black",
+              fontWeight: "bold",
+              // height: "10px",
+              // width: "10px"
+            }}
+            draggable={false}
+          >
+            <span style={{ fontSize: "12px" }}>
+              {/* <FileIcon
+                stroke={"#CD594A"}
+                style={{ marginBottom: 0, marginTop: 10, cursor: "alias" }}
+                onClick={e =>
+                  this.props.setMainPdfReader({
+                    pdfDir: (node as PdfPublication).data.pdfDir,
+                    top: 0,
+                    left: 0,
+                    scrollToPageNumber: 0
+                  })
+                }
+              />{" "} */}
+              "Auto-grab participant_detail (huge TODO in styling)"
+              {JSON.stringify((node as AutoGrab).data["participant_detail"])}
+            </span>
+          </div>
+        );
       case "pdf.segment.viewbox":
         const { pdfRootDir } = this.props;
         const {
@@ -521,21 +558,21 @@ export class GraphContainer extends React.Component<
  */
 const LinkLineDefaults = {
   props: {
-    sourceFrame: undefined as frame,  // get to know when it is defined or undefined still ? means optional type
+    sourceFrame: undefined as frame, // get to know when it is defined or undefined still ? means optional type
     targetFrame: undefined as frame,
     isSelected: false
   },
   state: {}
 };
 export class LinkLine extends React.PureComponent<
-  typeof LinkLineDefaults.props & any, // help initialize props/state, otherwise warning pops up 
+  typeof LinkLineDefaults.props & any, // help initialize props/state, otherwise warning pops up
   typeof LinkLineDefaults.state
 > {
   static defaultProps = LinkLineDefaults.props;
   state = LinkLineDefaults.state;
   render() {
-    const { sourceFrame, targetFrame, isSelected, ...rest } = this.props; 
-    // ...rest any other stuff in props 
+    const { sourceFrame, targetFrame, isSelected, ...rest } = this.props;
+    // ...rest any other stuff in props
     if (!!sourceFrame && !!targetFrame) {
       return (
         <HoverLine
