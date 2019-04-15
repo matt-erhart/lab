@@ -15,12 +15,19 @@ import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
-import { makePdfPublication, aNode, PdfPublication } from "../store/creators";
+import {
+  makePdfPublication,
+  makeAutograbNode,
+  aNode,
+  PdfPublication,
+  makeLink
+} from "../store/creators";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
+import console = require("console");
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -28,7 +35,7 @@ const NavBar = styled.div`
   justify-content: flex-start;
   align-items: stretch;
   flex-flow: row;
-  
+
   flex: 0;
   margin: 1px;
 `;
@@ -57,15 +64,16 @@ const AppDefaults = {
   props: {},
   state: { pdfNodes: [] as PdfPublication[] }
 };
-
+//mapState is a convention in Redux
 const mapState = (state: iRootState) => ({
-  pdfDir: state.app.panels.mainPdfReader.pdfDir,
+  pdfDir: state.app.panels.mainPdfReader.pdfDir, //more or less an alias
   pdfRootDir: state.app.current.pdfRootDir,
   nodes: state.graph.nodes,
   mainPdfReader: state.app.panels.mainPdfReader,
   rightPanel: state.app.panels.rightPanel
 });
 
+// set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
   graph: { addBatch },
   app: { setMainPdfReader, setRightPanel }
@@ -90,9 +98,36 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
     );
   });
 
+  const autograbNodes = pdfDirs.map((dir, ix) => {
+    return makeAutograbNode(
+      dir,
+      { dir },
+      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+    );
+  });
+
   const allNodeIds = Object.keys(nodes);
-  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id));
-  return newPubs;
+  
+  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
+  const newAutograbs = autograbNodes.filter(autograbNode => !allNodeIds.includes(autograbNode.id)); //filter out nodes that exists
+
+  // add links btw nodes of type auto-grab and nodes of pdf.publication
+  let newLinks=[]
+  for (let i=0;i<newPubs.length;i++){
+    const linkToPdf = makeLink(newPubs[i].id, newAutograbs[i].id, { type: "more" });
+    newLinks.push(linkToPdf)
+    // assert each paper corresponds to one autograb node and idx are the same(for now)
+  }
+
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes=[] as aNode[];
+  const nodesArray=newPubs.concat(autograbNodes)
+  for (let i=0;i<nodesArray.length;i++){
+    newNodes.push(nodesArray[i])
+  }
+
+  // return new nodes and links batch to be added in Redux
+  return {newNodes: newNodes, newLinks: newLinks};
 };
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
@@ -103,23 +138,25 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
-      "3": "docEditor" as rightPanelName
+      "3": "synthesisOutlineEditor" as rightPanelName
+      // "3": "docEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
     }
   };
   async componentDidMount() {
-    const newPubs = await processNewPdfs(
+    const {newNodes, newLinks} = await processNewPdfs( // Destructuring assignment
       this.props.pdfRootDir,
       this.props.nodes
     );
 
-    if (newPubs.length > 0) {
-      this.props.addBatch({ nodes: newPubs });
+    if (newNodes.length > 0) {
+      this.props.addBatch({ nodes: newNodes,links:newLinks });
       if (this.props.pdfDir === "")
-        this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
+        this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
     }
+
     window.addEventListener("keyup", this.keyback);
   }
 
@@ -170,7 +207,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         return <GraphContainer />;
       case "listview":
         return <ListView />;
-        case "docEditor":
+      case "synthesisOutlineEditor":
+        //         case "docEditor":
         return <DocEditor />;
       default:
         return <div>alt-1 | alt-2 | alt-3</div>;
@@ -193,13 +231,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     return (
       <ViewPortContainer>
-          <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
-            <Select
-              // style={this.styleFn}
-              options={fileOptions}
-              onChange={this.setPathInfo}
-            />
-          </div>
+        <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
+          <Select
+            // style={this.styleFn}
+            options={fileOptions}
+            onChange={this.setPathInfo}
+          />
+        </div>
         <MainContainer>
           {pdfDir.length > 0 && (
             <div

@@ -45,7 +45,9 @@ export let defaultApp = {
       height: "100%",
       scale: 1
     },
-    rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
+    rightPanel: "graphContainer" as "graphContainer" | "listview" | "synthesisOutlineEditor"
+    // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
+
   },
   portals: [] as frame[]
 };

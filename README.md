@@ -1,3 +1,39 @@
+Electron-ActiveScienceReader
+=========
+
+Electron-ActiveScienceReader — is [definition here]
+
+Table of contents
+=================
+
+<!--ts-->
+   * [Electron-ActiveScienceReader](#Electron-ActiveScienceReader)
+   * [Table of contents](#table-of-contents)
+   * [Dictionary](#dictionary)
+   * [Installation](#installation)
+      * [Using Yarn](#using-yarn)
+   * [Dev-Reference](#dev-reference)
+<!--te-->
+
+
+
+Dictionary
+============
+
+* **Auto-grab**: the feature that automatically grabs detailed information from the text content of the pdf. 
+
+Installation
+============
+
+Using Yarn 
+------------
+
+`git clone [HTTP-project-url]`
+`yarn` then `yarn dev`
+
+Dev-Reference
+============
+
 just hide some stuff in graph container unless click
 giant editor
 

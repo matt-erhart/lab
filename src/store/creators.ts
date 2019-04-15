@@ -1,7 +1,8 @@
 import { mergeDefaults } from "../renderer/utils";
 import { number } from "prop-types";
 import uuidv1 = require("uuid/v1");
-
+import fs = require("fs-extra");
+import path = require("path");
 // todo! nodes are now frames
 // viewbox left/top should be scrollLeft/scrollTop
 
@@ -15,7 +16,8 @@ export type NodeDataTypes =
   | "person"
   | "venue"
   | "query" // queries have style overrides, combine subqueries to reuse, ooo
-  | "projection/map/affinity/dimension/coordinates matter";
+  | "projection/map/affinity/dimension/coordinates matter"
+  | "autograb";
 
 export interface NodeMeta {
   createdBy: string;
@@ -60,6 +62,8 @@ export interface PdfSegmentViewbox extends NodeBase {
   data: ViewboxData;
 }
 import { CircleConfig, LineConfig } from "konva";
+import console = require("console");
+import { fstat } from "fs-extra";
 export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
   style = {}
@@ -67,9 +71,8 @@ export const makePdfSegmentViewbox = (
   const now = Date.now();
   const id = uuidv1();
   console.log({ ...ViewboxDataDefault, ...viewbox });
-  const {width, height} = viewbox
-  
-  
+  const { width, height } = viewbox;
+
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
@@ -78,8 +81,8 @@ export const makePdfSegmentViewbox = (
       type: "circle",
       left: Math.random() * 200 + 20,
       top: Math.random() * 200 + 20,
-      width: width ? width+116: 200,
-      height: height? height+120: 200,
+      width: width ? width + 116 : 200,
+      height: height ? height + 120 : 200,
       fill: "blue",
       draggabled: true,
       radius: 5,
@@ -145,6 +148,46 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
   };
 };
 
+
+const AutoGrabDefaults = {
+  id: "",
+  data: {
+    type: "autograb" as NodeDataTypes,
+  },
+  style: {
+    id: "",
+    left: Math.random() * 200 + 20,
+    top: Math.random() * 200 + 20,
+    width: 200,
+    height: 200,
+    fill: "grey",
+    stroke: "red"
+  },
+  meta: makeNodeMeta()
+};
+
+
+export type AutoGrab = typeof AutoGrabDefaults;
+
+export const makeAutograbNode = (fulldirName: string, data = {}, style = {}) => {
+  // console.log("inside makeAutoGrabNode " + fulldirName);
+  const metadataToHighlight = JSON.parse(
+    fs.readFileSync(fulldirName + "metadataToHighlight.json").toString()
+  );
+
+  const normDir = path.normalize(fulldirName);
+  const pathParts = normDir.split(path.sep);
+  const fileName = pathParts[pathParts.length - 1];
+  const pdfDir = fileName === "" ? pathParts[pathParts.length - 2] : fileName;
+
+  return {
+    ...AutoGrabDefaults,
+    id: pdfDir + "-autograb",
+    data: { ...AutoGrabDefaults.data, ...metadataToHighlight }, // deserialize metadataToHighlight data
+    style: { ...AutoGrabDefaults.style, ...style, id: pdfDir + "-autograb" }
+  };
+};
+
 const LinkDefaults = {
   id: "",
   data: { text: "", html: "" },
@@ -194,7 +237,7 @@ export const makeUserHtml = (props = { data: {}, style: {} }) => {
   };
 };
 
-export type aNode = PdfSegmentViewbox | Empty | UserHtml | PdfPublication;
+export type aNode = PdfSegmentViewbox | Empty | UserHtml | PdfPublication | AutoGrab;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

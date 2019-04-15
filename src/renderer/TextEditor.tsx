@@ -221,6 +221,7 @@ class TextEditor extends React.Component<
     }
   };
 
+  // Double function / curryin
   onKeyDown = getInputProps => (event, editor, next) => {
     event.ctrlKey, event.key;
     const isCrtlEnter =
@@ -247,7 +248,7 @@ class TextEditor extends React.Component<
     if (isAutoCompleteCmd && this.state.showAutoComplete) {
       // todo maybe use this to portal
       const { onKeyDown } = getInputProps();
-      event.preventDefault();
+      event.preventDefault();  //inter-tab can do weird things 
       onKeyDown(event);
       return null; // prevents return/tab happening. other keys dont need
     }
@@ -405,7 +406,8 @@ class TextEditor extends React.Component<
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
     return (
-      <Downshift
+      <Downshift  // "React render prop" - pattern  https://github.com/downshift-js/downshift
+      // manages the pop-up, that comes up for auto-complete 
         key="downshift"
         itemToString={item => (item ? item.data.text : "")}
         isOpen={this.state.showAutoComplete}
@@ -437,7 +439,7 @@ class TextEditor extends React.Component<
         //   }
         // }}
       >
-        {downshift => {
+        {downshift => {  // a variable to toggle. A child of a component Downshift managing variables, 
           // if (!downshift.isOpen) return null
           return (
             // <div>
