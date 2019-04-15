@@ -270,16 +270,16 @@ class TextEditor extends React.Component<
     return next();
   };
 
-  getTextNodes = (inputText = "") => {
-    if (this.props.nodes) {
-      //@ts-ignore
-      const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
-        node => node.data.type === ("userHtml" as NodeDataTypes)
-      );
-      return userHtml.filter(t => t.data.text.includes(inputText));
-    }
-    return [];
-  };
+  // getTextNodes = (inputText = "") => {
+  //   if (this.props.nodes) {
+  //     //@ts-ignore
+  //     const userHtml: UserHtml[] = Object.values(this.props.nodes).filter(
+  //       node => node.data.type === ("userHtml" as NodeDataTypes)
+  //     );
+  //     return userHtml.filter(t => t.data.text.includes(inputText));
+  //   }
+  //   return [];
+  // };
 
   onChange = change => {
     this.setState({ editorValue: change.value });
