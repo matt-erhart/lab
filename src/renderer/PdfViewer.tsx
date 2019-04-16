@@ -91,7 +91,8 @@ const PdfViewerDefaults = {
     height: "100%" as number | string | undefined,
     scale: 1,
     showLineBoxes: false,
-    isMainReader: false
+    isMainReader: false,
+    scrollAfterClick: false
   },
   state: {
     scale: 2, // todo scale
@@ -105,7 +106,8 @@ const PdfViewerDefaults = {
     },
     outline: [] as PDFTreeNode[],
     viewboxes: [] as PdfSegmentViewbox[],
-    patches: []
+    patches: [],
+    activateScroll: false
   }
 };
 
@@ -304,7 +306,8 @@ class PdfViewer extends React.Component<
       !equal(nextProps, this.props) ||
       this.state.pages.length !== nextState.pages.length ||
       this.state.scale !== nextState.scale ||
-      !equal(this.state.viewboxes, nextState.viewboxes)
+      !equal(this.state.viewboxes, nextState.viewboxes) ||
+      nextState.activateScroll !== this.state.activateScroll
     );
   }
 
@@ -410,11 +413,18 @@ class PdfViewer extends React.Component<
       const { width, height } = page.viewport;
       return (
         <div
+          id="pdf-viewer"
           key={page.pageNumber}
           onWheel={this.zoom}
-          style={{ width, minWidth: width, height, position: "relative" }}
+          style={{
+            width,
+            minWidth: width,
+            height,
+            position: "relative"
+          }}
         >
           <PageCanvas
+            id={"canvas-" + page.pageNumber}
             key={"canvas-" + page.pageNumber}
             page={page.page}
             viewport={page.viewport}
@@ -427,6 +437,7 @@ class PdfViewer extends React.Component<
                 /> */}
 
           <PageSvg
+            id={"svg-" + page.pageNumber}
             // scale={this.state.scale}
             isMainReader={this.props.isMainReader}
             key={"svg-" + page.pageNumber}
@@ -452,6 +463,18 @@ class PdfViewer extends React.Component<
   render() {
     console.log("pdf render");
     const { width, height } = this.props;
+    let overflow;
+    if (this.props.scrollAfterClick) {
+      overflow =
+      this.props.scrollAfterClick && this.state.activateScroll
+        ? "scroll"
+        : "hidden";
+    } else {
+      overflow= 'scroll'
+    }
+      
+    console.log(this.props.scrollAfterClick, this.state.activateScroll);
+
     // todo: set height and width and then scrollto
     return (
       <>
@@ -462,11 +485,35 @@ class PdfViewer extends React.Component<
             maxWidth: width,
             maxHeight: height,
             boxSizing: "border-box",
-            overflow: "scroll"
+            overflow
           }}
           onScroll={this.onScroll}
+          onClick={e => {
+            if (this.props.scrollAfterClick && !this.state.activateScroll) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+
+            this.setState({ activateScroll: true });
+          }}
+          onMouseLeave={e => this.setState({ activateScroll: false })}
           // onClick={e => {e.stopPropagation(); this.props.setPortals([])}}
         >
+          {this.props.scrollAfterClick && !this.state.activateScroll && (
+            <div
+              style={{
+                background: "blue",
+                position: "absolute",
+                zIndex: 2,
+                width,
+                height,
+                opacity: 0,
+                cursor: "pointer"
+              }}
+            >
+              {" "}
+            </div>
+          )}
           {this.renderPages()}
         </div>
       </>

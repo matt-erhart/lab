@@ -221,6 +221,12 @@ export class GraphContainer extends React.Component<
             clearFirst: true
           });
         }
+        case 'h':
+        console.log('key cmd')
+        
+          if (e.ctrlKey) this.setState(state => {
+            return {hideViewboxes: !state.hideViewboxes}
+          })
       default:
         return null;
     }
@@ -340,6 +346,7 @@ export class GraphContainer extends React.Component<
       case "pdf.publication":
         return (
           <div
+            id="pub-node"
             key={node.id}
             style={{
               backgroundColor: "white",
@@ -430,8 +437,10 @@ export class GraphContainer extends React.Component<
 
         return (
           <PdfViewer
+            id="pdf.segment.viewbox"
             key={node.id}
             pageNumbersToLoad={pagenum}
+            scrollAfterClick
             {...{
               pdfRootDir,
               pdfDir,
@@ -449,12 +458,15 @@ export class GraphContainer extends React.Component<
   };
 
   onWheel = e => {
+    const wheelDefault = 120;
+
     // const bbox = e.target.getBoundingClientRect()
     // console.log(e.clientX - bbox.left)
+    // this.scrollRef.current.scrollTop += e.nativeEvent.wheelDelta
+
     e.persist();
-    if (e.ctrlKey && "SvgLayer" === e.target.id) {
+    if (e.ctrlKey && ["SvgLayer"].includes(e.target.id)) {
       e.preventDefault();
-      const wheelDefault = 120;
       this.setState(state => {
         const newZoom =
           state.zoom + (e.nativeEvent.wheelDelta / wheelDefault) * 0.2;
@@ -528,12 +540,10 @@ export class GraphContainer extends React.Component<
             const { left, top, width, height } = frame;
             const isSelected = this.isSelected(frame.id);
             const node = this.props.nodes[frame.id] as aNode;
-            // if (
-            //   this.state.hideViewboxes &&
-            //   oc(node).data.type() === "pdf.segment.viewbox"
-            // ) {
-            //   return null;
-            // }
+            const hide =
+              this.state.hideViewboxes &&
+              oc(node).data.type() === "pdf.segment.viewbox";
+
             return (
               <ResizableFrame
                 key={frame.id}
@@ -543,7 +553,7 @@ export class GraphContainer extends React.Component<
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
                 zoom={this.state.zoom}
-                hide={false}
+                hide={hide}
                 dragHandle={
                   <DragHandle
                     isSelected={isSelected}

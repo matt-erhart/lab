@@ -84,7 +84,7 @@ export class ResizableFrame extends React.Component<
   cache = { left: 0, top: 0, width: 0, height: 0 };
 
   shouldComponentUpdate(props, state) {
-    for (let dim of ["left", "top", "width", "height", "isSelected"]) {
+    for (let dim of ["left", "top", "width", "height", "isSelected", "hide"]) {
       if (this.props[dim] !== props[dim]) {
         return true;
       }
@@ -228,14 +228,22 @@ export class ResizableFrame extends React.Component<
 
     return (
       <OuterContainer
-        id="frame"
-        {...{ left, top, width, height }}
+        id={"frame"}
         cursor={this.state.resizeInfo.cursor}
         hide={this.props.hide}
-        style={this.props.style}
+        style={{
+          transform: `translate(${left}px, ${top}px)`,
+          width,
+          height,
+          ...this.props.style
+        }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
-        onScroll={e => e.stopPropagation()}
+        onScroll={e => {
+            e.stopPropagation();
+        }}
+        onWheel={e => {
+        }}
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
@@ -244,6 +252,7 @@ export class ResizableFrame extends React.Component<
           onMouseDown: this.onMouseDownMove
         })}
         <div
+        id='inner-frame'
           draggable={false}
           style={{
             userSelect: "text",
@@ -261,10 +270,6 @@ export class ResizableFrame extends React.Component<
 }
 interface Outer {
   cursor: string;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
   hide: boolean;
 }
 const _outer = styled.div<Outer>``;
@@ -273,8 +278,6 @@ const OuterContainer = styled(_outer)`
   background-color: #fff;
   left: 0px;
   top: 0px;
-  width: ${p => p.width}px;
-  height: ${p => p.height}px;
   padding: 5px;
   cursor: ${p => p.cursor};
   user-select: none;
@@ -282,15 +285,14 @@ const OuterContainer = styled(_outer)`
   flex-direction: column;
   margin: 0px;
   box-sizing: border-box;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  border-radius: 2px,
-  overflow: auto
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 2px;
+  overflow: hidden;
   transition: opacity 300ms;
-  transform: translate(${p => p.left}px, ${p => p.top}px);
-  opacity: ${p => (p.hide ? 0 : 1)};
+   opacity: ${(p: Outer) => (p.hide ? 0 : 1)};
   &:hover {
     opacity: 1;
-  }        
+  }
 `;
 
 type loc =
