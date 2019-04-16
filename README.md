@@ -8,6 +8,15 @@
   <!--te-->
 
 # Roadmap
+- only text has coordinates
+   - everything else is popup
+- auto complete
+
+---
+big editor + side bar
+
+
+-------
 - document editor
    - more reliable autocomplete without giant stuff in it
    - insert one doc in another
@@ -44,6 +53,7 @@
       - show links in gutters?
 
 - pdf viewer
+   - manually fix autograb
    - good ole' fashion text highlighting
    - text highlighting from auto-grab
    - delete segment in pdf viewer
