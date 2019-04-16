@@ -29,10 +29,11 @@ export function getWordAtCursor(text: string, cursorLocInText: number) {
   const isAfterSpace = (text[cursorLocInText - 1] || " ") === " ";
   const isEndOfWord = (text[cursorLocInText] || " ") === " " && !isAfterSpace;
 
+  const firstWord = leftSpaceIx === rightSpaceIx;
   return {
     isEndOfWord,
     isAfterSpace,
-    text: text.slice(leftSpaceIx, rightSpaceIx).trim()
+    text: text.slice(firstWord ? 0 : leftSpaceIx, rightSpaceIx).trim()
   };
 }
 
@@ -42,12 +43,26 @@ export const onSlash = (event, editor, next) => {
   if (selection.isExpanded) return next();
   const { startBlock } = value;
   const { start } = selection;
-  const charBeforeSlash = startBlock.text[start.offset-1] || ' '
-  if ([' ', '/'].includes(charBeforeSlash)) {
-      return true
+  const charBeforeSlash = startBlock.text[start.offset - 1] || " ";
+  if ([" ", "/"].includes(charBeforeSlash)) {
+    return true;
   } else {
-      return false
+    return false;
   }
-  return next()
-  
+  return next();
 };
+
+function fuzzyMatch(text, abstractions) {
+  var results = fuzzy.filter(text.toLowerCase(), abstractions as any[], {
+    pre: "<b>",
+    post: "</b>",
+    extract: function(el) {
+      return el.text;
+    }
+  });
+  const toShow = results.map(el => ({
+    html: el.string,
+    ...el.original
+  }));
+  return toShow;
+}

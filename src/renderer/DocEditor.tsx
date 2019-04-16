@@ -218,7 +218,8 @@ const DocEditorDefaults = {
   props: {
     readOnly: false,
     id: "",
-    nodesOrLinks: "nodes"
+    nodesOrLinks: "nodes",
+    autoCompThresh: 140 // n chars
   },
   state: {
     editorValue: Plain.deserialize("") as Editor["value"],
@@ -315,7 +316,7 @@ export class DocEditor extends React.Component<
     const docFeatures = this.getDocFeatures(change);
     const useTextForAutocomplete =
       docFeatures.nChars > 0 &&
-      docFeatures.nChars <= 40 &&
+      docFeatures.nChars <= this.props.autoCompThresh &&
       !docFeatures.hasList;
 
     this.setState({
@@ -327,14 +328,19 @@ export class DocEditor extends React.Component<
   };
 
   getCurrentWord = editor => {
+    console.log('get word')
+
     const anchorOffset = editor.value.selection.getIn(["anchor", "offset"]);
     //@ts-ignore
     const anchorText = oc(editor.value.anchorText).text("");
     const { text, isAfterSpace, isEndOfWord } = getWordAtCursor(
       anchorText,
       anchorOffset
-    );
+    );     
+      console.log('end', isEndOfWord, 'after space', isAfterSpace, 'text', text)
+      
     if (!isEndOfWord) {
+      
       this.setState({ wordAtCursor: "" });
     } else {
       this.setState({ wordAtCursor: text });
@@ -477,11 +483,14 @@ export class DocEditor extends React.Component<
 
   AutocompleteButton = () => {
     const { useTextForAutocomplete, docFeatures } = this.state;
-    const chars = docFeatures.nChars > 40 ? "> 40 characters." : "";
+    const thresh = this.props.autoCompThresh;
+    const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
     const list = docFeatures.hasList ? "Has list." : "";
 
     const title = `${
-      useTextForAutocomplete ? "Under 40 chars. No lists. Will" : "Will not"
+      useTextForAutocomplete
+        ? `Under ${thresh} chars. No lists. Will`
+        : "Will not"
     } be used for autocomplete. ${chars} ${list}`;
 
     return (
@@ -590,14 +599,34 @@ export class DocEditor extends React.Component<
             renderNode={this.renderSlateNodes}
             onKeyDown={this.onKeyDown}
           />
-
         </EditorContainer>
-        {this.state.autoCompDocs.map(doc => {
-          return <span key={doc.id} style={{fontSize: 16}}>{doc.data.text}</span>
-        })}
+        {this.state.wordAtCursor}
+        {/* {this.state.autoCompDocs.map(doc => {
+          return (
+            <span key={doc.id} style={{ fontSize: 16 }}>
+              {doc.data.text}
+            </span>
+          );
+        })} */}
       </OuterContainer>
     );
   }
+}
+import * as fuzzy from 'fuzzy';
+
+function fuzzyMatch(textToMatch, nodesWithText) {
+  var results = fuzzy.filter(textToMatch.toLowerCase(), nodesWithText as any[], {
+    pre: '<b>',
+    post: '</b>',
+    extract: function(el) {
+      return el.data.text;
+    }
+  });
+  const toShow = results.map((el) => ({
+    html: el.string,
+    ...el.original
+  }));
+  return toShow;
 }
 
 export default connect(
