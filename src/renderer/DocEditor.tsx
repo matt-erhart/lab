@@ -21,40 +21,36 @@ import {
   MdSave,
   MdNoteAdd,
   MdDeleteForever,
-  MdSettings
+  MdSettings,
+  MdArrowUpward
 } from "react-icons/md";
 import Downshift from "downshift";
 import { connect } from "react-redux";
+import convertBase64 from "slate-base64-serializer";
 
 // custom
 import { getWordAtCursor } from "./EditorUtils";
 import { getSelectionRange, inFirstNotSecondArray } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
 import { htmlSerializer } from "./htmlSerializer";
-import {
-  NodeDataTypes,
-  UserHtml,
-  makeUserHtml,
-  makeLink,
-
-} from "../store/creators";
+import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 
 // todo
 /**
  * ?scenarios
  * --------
  *
+ *
+ *  * insert simple html (serve as thumbnails)
+ *    - no lists
+ *    - 40 char width (like vscode)
+ *    - sentences of 8 words (~40 char) or less very easy to read; 11 words,
+ *      easy; 14 words fairly easy; 17 words standard; 21 words fairly difficult; 25 words difficult and 29 words or more, very difficult.”
+ *    - average tweet checked in below 50 characters.
+ *
  *  * insert complex html
  *     - if any white space after 40 char # could link to alias
  *
- *
- *  * insert simple html (serve as thumbnails)
- *    - standard autocomplete
- *    - no lists
- *    - 40 char width (like vscode)
- *    - sentences of 8 words (~40 char) or less very easy to read; 11 words, 
- *      easy; 14 words fairly easy; 17 words standard; 21 words fairly difficult; 25 words difficult and 29 words or more, very difficult.”
- *    - average tweet checked in below 50 characters.
  *
  *  *make a new node from within the editor
  *  - select text, hit button or key cmd
@@ -195,18 +191,45 @@ const plugins = [
 /**
  * @class **DocEditor**
  */
+
+const mapState = (state: iRootState) => ({
+  pdfDir: state.app.panels.mainPdfReader.pdfDir,
+  pdfRootDir: state.app.current.pdfRootDir,
+  nodes: state.graph.nodes,
+  links: state.graph.links,
+  patches: state.graph.patches
+});
+
+const mapDispatch = ({
+  graph: { addBatch, toggleSelections, updateBatch, removeBatch },
+  app: { setCurrent }
+}: iDispatch) => ({
+  addBatch,
+  setCurrent,
+  toggleSelections,
+  updateBatch,
+  removeBatch
+});
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
 const DocEditorDefaults = {
   props: {
-    readOnly: false
+    readOnly: false,
+    id: "",
+    nodesOrLinks: "nodes"
   },
   state: {
-    editorValue: Plain.deserialize("some text") as Editor["value"],
+    editorValue: Plain.deserialize("") as Editor["value"],
     wordAtCursor: "",
-    fontSize: 16
+    fontSize: 16,
+    useTextForAutocomplete: true,
+    docFeatures: { hasList: false, nChars: 0 }
   }
 };
-export default class DocEditor extends React.Component<
-  typeof DocEditorDefaults.props,
+export class DocEditor extends React.Component<
+  typeof DocEditorDefaults.props & connectedProps,
   typeof DocEditorDefaults.state
 > {
   static defaultProps = DocEditorDefaults.props;
@@ -216,10 +239,59 @@ export default class DocEditor extends React.Component<
     this.editor = editor;
   };
 
-  componentDidMount() {}
+  getCurrentBase64 = () => {
+    const { id, nodesOrLinks } = this.props;
+    return oc(this.props)[nodesOrLinks][id].data.base64();
+  };
+
+  initBase64 = () => {
+    if (this.props.id.length > 0) {
+      //@ts-ignore
+      const base64 = this.getCurrentBase64();
+      if (!!base64) {
+        console.log("init----------");
+        const editorValue = convertBase64.deserialize(base64);
+        this.setState({ editorValue });
+      }
+    }
+  };
+
+  componentDidMount() {
+    // setTimeout(() => {
+    //   this.editor.focus();
+    // }, 50); // thanks random github user
+    this.initBase64();
+  }
+
+  serialize = editorValue => {
+    const base64 = convertBase64.serialize(editorValue);
+    const text = Plain.serialize(editorValue);
+    return { base64, text };
+  };
+
+  getDocFeatures = (editor): { nChars; hasList } => {
+    return editor.value.document.getBlocks().reduce(
+      (all, b) => {
+        all.nChars += b.text.trim().length;
+        if (!all.hasList) all.hasList = b.type === "list-item-child";
+        return all;
+      },
+      { nChars: 0, hasList: false }
+    );
+  };
 
   onChange = change => {
-    this.setState({ editorValue: change.value });
+    const docFeatures = this.getDocFeatures(change);
+    const useTextForAutocomplete =
+      docFeatures.nChars > 0 &&
+      docFeatures.nChars <= 40 &&
+      !docFeatures.hasList;
+
+    this.setState({
+      editorValue: change.value,
+      useTextForAutocomplete,
+      docFeatures
+    });
     this.getCurrentWord(change);
   };
 
@@ -238,9 +310,8 @@ export default class DocEditor extends React.Component<
     }
   };
 
-  wrapWithGraphNode = (node: UserHtml) => {
+  wrapWithGraphNode = (node: UserDoc) => {
     const text = oc(node).data.text();
-
     const { id } = node;
 
     this.editor
@@ -371,35 +442,55 @@ export default class DocEditor extends React.Component<
       </Button>
     );
   };
+  iconProps = { size: "25px", style: { verticalAlign: "middle" } };
+
+  AutocompleteButton = () => {
+    const { useTextForAutocomplete, docFeatures } = this.state;
+    const chars = docFeatures.nChars > 40 ? "> 40 characters." : "";
+    const list = docFeatures.hasList ? "Has list." : "";
+
+    const title = `${
+      useTextForAutocomplete ? "Under 40 chars. No lists. Will" : "Will not"
+    } be used for autocomplete. ${chars} ${list}`;
+
+    return (
+      <Button key={"Will Auto"} title={title} isActive={useTextForAutocomplete}>
+        <MdArrowUpward
+          size={"25px"}
+          style={{ verticalAlign: "middle", cursor: "help" }}
+        />
+      </Button>
+    );
+  };
 
   MakeButtons = () => {
-    const iconProps = { size: "25px", style: { verticalAlign: "middle" } };
     return [
       this.renderMarkButton(
         "bold",
-        <MdFormatBold {...iconProps} />,
+        <MdFormatBold {...this.iconProps} />,
         marks.bold.cmd
       ),
       this.renderMarkButton(
         "italics",
-        <MdFormatItalic {...iconProps} />,
+        <MdFormatItalic {...this.iconProps} />,
         marks.italic.cmd
       ),
       this.renderMarkButton(
         "underline",
-        <MdFormatUnderlined {...iconProps} />,
+        <MdFormatUnderlined {...this.iconProps} />,
         marks.underline.cmd
       ),
       this.renderListButton(
         "ordered-list",
-        <MdFormatListNumbered {...iconProps} />,
+        <MdFormatListNumbered {...this.iconProps} />,
         "ctrl-o"
       ),
       this.renderListButton(
         "unordered-list",
-        <MdFormatListBulleted {...iconProps} />,
+        <MdFormatListBulleted {...this.iconProps} />,
         "ctrl-l"
-      )
+      ),
+      this.AutocompleteButton()
     ];
   };
 
@@ -413,6 +504,25 @@ export default class DocEditor extends React.Component<
       // editor.insertText("\t");
     }
     return next();
+  };
+
+  save = e => {
+    if (e.target.id !== "EditorContainer") return null;
+
+    const serialized = this.serialize(this.state.editorValue);
+    if (serialized.base64 === this.getCurrentBase64()) return null;
+
+    this.props.updateBatch({
+      nodes: [
+        {
+          id: this.props.id,
+          data: {
+            ...serialized,
+            useTextForAutocomplete: this.state.useTextForAutocomplete
+          }
+        }
+      ]
+    });
   };
 
   render() {
@@ -435,7 +545,11 @@ export default class DocEditor extends React.Component<
           />
         </Toolbar>
 
-        <EditorContainer fontSize={this.state.fontSize}>
+        <EditorContainer
+          id="EditorContainer"
+          fontSize={this.state.fontSize}
+          onMouseOut={this.save}
+        >
           <Editor
             autoFocus
             readOnly={this.props.readOnly}
@@ -455,7 +569,12 @@ export default class DocEditor extends React.Component<
   }
 }
 
-const _Button = styled.span<{ isActive: boolean; onMouseDown }>``;
+export default connect(
+  mapState,
+  mapDispatch
+)(DocEditor);
+
+const _Button = styled.span<{ isActive: boolean; onMouseDown? }>``;
 export const Button = styled(_Button)`
   cursor: pointer;
   margin: 0px 5px;

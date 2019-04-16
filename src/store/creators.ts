@@ -3,12 +3,15 @@ import { number } from "prop-types";
 import uuidv1 = require("uuid/v1");
 import fs = require("fs-extra");
 import path = require("path");
+import Plain from "slate-plain-serializer";
+import convertBase64 from "slate-base64-serializer";
+
 // todo! nodes are now frames
 // viewbox left/top should be scrollLeft/scrollTop
 
 export type NodeDataTypes =
   | "empty"
-  | "userHtml" // html made by user after writing
+  | "userDoc" // document made by user after writing
   | "pdf.segment.viewbox" //
   | "pdf.segment.text"
   | "pdf.publication" //
@@ -64,6 +67,7 @@ export interface PdfSegmentViewbox extends NodeBase {
 import { CircleConfig, LineConfig } from "konva";
 import console = require("console");
 import { fstat } from "fs-extra";
+import { Editor } from "slate-react";
 export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
   style = {}
@@ -148,11 +152,10 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
   };
 };
 
-
 const AutoGrabDefaults = {
   id: "",
   data: {
-    type: "autograb" as NodeDataTypes,
+    type: "autograb" as NodeDataTypes
   },
   style: {
     id: "",
@@ -166,10 +169,13 @@ const AutoGrabDefaults = {
   meta: makeNodeMeta()
 };
 
-
 export type AutoGrab = typeof AutoGrabDefaults;
 
-export const makeAutograbNode = (fulldirName: string, data = {}, style = {}) => {
+export const makeAutograbNode = (
+  fulldirName: string,
+  data = {},
+  style = {}
+) => {
   // console.log("inside makeAutoGrabNode " + fulldirName);
   const metadataToHighlight = JSON.parse(
     fs.readFileSync(fulldirName + "metadataToHighlight.json").toString()
@@ -214,30 +220,40 @@ export const makeLink = (sourceId: string, targetId: string, data = {}) => {
   };
 };
 
-const UserHtmlDefaults = {
+const UserDocDefaults = {
   id: "",
-  data: { type: "userHtml" as NodeDataTypes, html: "", text: "" },
+  data: {
+    type: "userDoc" as NodeDataTypes,
+    base64: convertBase64.serialize(Plain.deserialize("")),
+    text: "",
+    useTextForAutocomplete: true
+  },
   meta: makeNodeMeta(),
   style: {
     left: 0,
     top: 0,
     width: 300,
-    height: 110
+    height: 110,
+    fontSize: 16
   }
 };
-export type UserHtml = typeof UserHtmlDefaults;
-export const makeUserHtml = (props = { data: {}, style: {} }) => {
-  const data = { html: "", text: "", ...props.data };
+export type UserDoc = typeof UserDocDefaults;
+export const makeUserDoc = (props = { data: {}, style: {} }) => {
+  const data = { base64: "", text: "", ...props.data };
   const id = uuidv1();
   return {
-    ...UserHtmlDefaults,
+    ...UserDocDefaults,
     id,
-    data: { ...UserHtmlDefaults.data, ...data },
-    style: { ...UserHtmlDefaults.style, ...props.style }
+    data: { ...UserDocDefaults.data, ...data },
+    style: { ...UserDocDefaults.style, ...props.style }
   };
 };
 
-export type aNode = PdfSegmentViewbox | Empty | UserHtml | PdfPublication | AutoGrab;
+export type aNode =
+  | PdfSegmentViewbox
+  | Empty
+  | PdfPublication
+  | AutoGrab;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

@@ -73,8 +73,6 @@ export const app = createModel({
   state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
   reducers: {
     setRightPanel(state, panelName: typeof defaultApp.panels.rightPanel) {
-      console.log("redux", panelName);
-
       return { ...state, panels: { ...state.panels, rightPanel: panelName } };
     },
     setCurrent(

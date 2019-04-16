@@ -130,7 +130,7 @@ const mapState = (state: iRootState, props: typeof PdfViewerDefaults) => {
 
 const mapDispatch = ({
   graph: { addBatch, removeBatch, toggleSelections, updateBatch },
-  app: {setPortals}
+  app: { setPortals }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
@@ -154,7 +154,6 @@ class PdfViewer extends React.Component<
   scrollRef = React.createRef<HTMLDivElement>();
   onScroll = e => {
     e.stopPropagation();
-    
   };
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
@@ -183,7 +182,6 @@ class PdfViewer extends React.Component<
             (patch.value.data.type === "pdf.segment.viewbox",
             patch.value.data.pdfDir === props.pdfDir)
           ) {
-
             if (patch.op === "add") draft.push(patch.value);
             if (patch.op === "remove") {
               draft.splice(draft.findIndex(v => v.id === id), 1);
@@ -322,7 +320,8 @@ class PdfViewer extends React.Component<
     ) {
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
-      this.scrollRef.current.scrollTo(left, top + pageOffset);
+      if (this.scrollRef.current)
+        this.scrollRef.current.scrollTo(left, top + pageOffset);
     }
   };
 
@@ -457,7 +456,7 @@ class PdfViewer extends React.Component<
     return (
       <>
         <div
-        id="MainPdfReader"
+          id="MainPdfReader"
           ref={this.scrollRef}
           style={{
             maxWidth: width,

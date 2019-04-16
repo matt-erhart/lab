@@ -15,8 +15,6 @@ Table of contents
    * [Dev-Reference](#dev-reference)
 <!--te-->
 
-
-
 Dictionary
 ============
 

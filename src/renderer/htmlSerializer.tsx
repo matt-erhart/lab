@@ -151,6 +151,9 @@ const rules = [
           default:
             return <span>{children}</span>;
         }
+      } else if (obj.object === 'mark') {
+        
+
       }
       return null;
     }

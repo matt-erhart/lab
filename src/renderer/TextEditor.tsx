@@ -16,7 +16,6 @@ import {
   makeLink
 } from "../store/creators";
 
-
 import { Portal } from "./Portal";
 const schema = {
   inlines: {
@@ -92,7 +91,9 @@ class TextEditor extends React.Component<
   };
 
   componentDidMount() {
-    setTimeout(()=> {this.editor.focus()}, 50) // thanks random github user
+    setTimeout(() => {
+      this.editor.focus();
+    }, 50); // thanks random github user
     this.initHtml();
   }
 
@@ -210,9 +211,10 @@ class TextEditor extends React.Component<
         .deleteBackward(1);
       this.setState({ editorValue: this.editor.value });
     } else if (
-      !!currentNode && !!currentNode.id &&
+      !!currentNode &&
+      !!currentNode.id &&
       (this.props.nodes[currentNode.id] as UserHtml).data.html !==
-      serialized.html
+        serialized.html
     ) {
       this.props.updateBatch({
         nodes: [{ id: currentNode.id, data: { ...serialized } }]
@@ -248,7 +250,7 @@ class TextEditor extends React.Component<
     if (isAutoCompleteCmd && this.state.showAutoComplete) {
       // todo maybe use this to portal
       const { onKeyDown } = getInputProps();
-      event.preventDefault();  //inter-tab can do weird things 
+      event.preventDefault(); //inter-tab can do weird things
       onKeyDown(event);
       return null; // prevents return/tab happening. other keys dont need
     }
@@ -396,8 +398,8 @@ class TextEditor extends React.Component<
     }
   };
 
-  componentWillUnmount(){
-    this.save()
+  componentWillUnmount() {
+    this.save();
   }
   render() {
     if (this.state.hasError) debugger;
@@ -406,8 +408,8 @@ class TextEditor extends React.Component<
     // todo redux -> nodes text+titles -> filter + scroll to
     // todo autocomplete for segment text
     return (
-      <Downshift  // "React render prop" - pattern  https://github.com/downshift-js/downshift
-      // manages the pop-up, that comes up for auto-complete 
+      <Downshift // "React render prop" - pattern  https://github.com/downshift-js/downshift
+        // manages the pop-up, that comes up for auto-complete
         key="downshift"
         itemToString={item => (item ? item.data.text : "")}
         isOpen={this.state.showAutoComplete}
@@ -439,7 +441,8 @@ class TextEditor extends React.Component<
         //   }
         // }}
       >
-        {downshift => {  // a variable to toggle. A child of a component Downshift managing variables, 
+        {downshift => {
+          // a variable to toggle. A child of a component Downshift managing variables,
           // if (!downshift.isOpen) return null
           return (
             // <div>

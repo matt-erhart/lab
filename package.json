@@ -97,6 +97,7 @@
     "redux": "^4.0.1",
     "rxjs": "^6.4.0",
     "slate": "^0.44.10",
+    "slate-base64-serializer": "^0.2.99",
     "slate-html-serializer": "^0.7.36",
     "slate-hyperprint": "^2.3.0",
     "slate-react": "^0.21.16",
