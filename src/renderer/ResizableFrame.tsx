@@ -66,7 +66,9 @@ const ResizableFrameDefaults = {
     children: <div /> as React.ReactNode,
     dragHandle: <div /> as React.ReactElement,
     zoom: 1, // i.e. applies to all
-    scale: 1 // todo sometimes we want one node to scale up/down
+    scale: 1, // todo sometimes we want one node to scale up/down
+    style: {} as React.CSSProperties,
+    hide: false
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo
@@ -225,28 +227,12 @@ export class ResizableFrame extends React.Component<
     const { left, top, width, height } = this.props;
 
     return (
-      <div
+      <OuterContainer
         id="frame"
-        style={{
-          position: "absolute",
-          left,
-          top,
-          width,
-          height,
-          //   border: "1px solid black",
-          backgroundColor: "#fff",
-          padding: 5,
-          cursor: this.state.resizeInfo.cursor,
-          userSelect: "none",
-          display: "flex",
-          flexDirection: "column",
-          margin: 0,
-          boxSizing: "border-box",
-          //   outline: "1px solid black",
-          boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-          borderRadius: 2,
-          overflow: "auto"
-        }}
+        {...{ left, top, width, height }}
+        cursor={this.state.resizeInfo.cursor}
+        hide={this.props.hide}
+        style={this.props.style}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         onScroll={e => e.stopPropagation()}
@@ -269,10 +255,43 @@ export class ResizableFrame extends React.Component<
         >
           {this.props.children}
         </div>
-      </div>
+      </OuterContainer>
     );
   }
 }
+interface Outer {
+  cursor: string;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  hide: boolean;
+}
+const _outer = styled.div<Outer>``;
+const OuterContainer = styled(_outer)`
+  position: absolute;
+  background-color: #fff;
+  left: 0px;
+  top: 0px;
+  width: ${p => p.width}px;
+  height: ${p => p.height}px;
+  padding: 5px;
+  cursor: ${p => p.cursor};
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  box-sizing: border-box;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-radius: 2px,
+  overflow: auto
+  transition: opacity 300ms;
+  transform: translate(${p => p.left}px, ${p => p.top}px);
+  opacity: ${p => (p.hide ? 0 : 1)};
+  &:hover {
+    opacity: 1;
+  }        
+`;
 
 type loc =
   | "left"

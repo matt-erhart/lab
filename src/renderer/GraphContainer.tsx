@@ -43,7 +43,8 @@ const GraphContainerDefaults = {
     scrollLeft: 0,
     scrollTop: 0,
     editingId: "",
-    zoom: 0.65
+    zoom: 0.65,
+    hideViewboxes: true
   }
 };
 const mapState = (state: iRootState) => ({
@@ -139,7 +140,7 @@ export class GraphContainer extends React.Component<
   };
 
   // this function transforms the component inherited Redux state.nodes into the many frames
-  getFramesInView = containerBounds => { 
+  getFramesInView = containerBounds => {
     const { width, height } = containerBounds;
     const pad = 200;
     const view = getBoxEdges(
@@ -389,7 +390,7 @@ export class GraphContainer extends React.Component<
               backgroundColor: "orange",
               padding: 5,
               color: "black",
-              fontWeight: "bold",
+              fontWeight: "bold"
               // height: "10px",
               // width: "10px"
             }}
@@ -526,6 +527,13 @@ export class GraphContainer extends React.Component<
           {this.state.frames.map(frame => {
             const { left, top, width, height } = frame;
             const isSelected = this.isSelected(frame.id);
+            const node = this.props.nodes[frame.id] as aNode;
+            // if (
+            //   this.state.hideViewboxes &&
+            //   oc(node).data.type() === "pdf.segment.viewbox"
+            // ) {
+            //   return null;
+            // }
             return (
               <ResizableFrame
                 key={frame.id}
@@ -535,6 +543,7 @@ export class GraphContainer extends React.Component<
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
                 zoom={this.state.zoom}
+                hide={false}
                 dragHandle={
                   <DragHandle
                     isSelected={isSelected}
