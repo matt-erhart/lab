@@ -27,11 +27,11 @@ import {
 import Downshift from "downshift";
 import { connect } from "react-redux";
 import convertBase64 from "slate-base64-serializer";
-
 // custom
 import { getWordAtCursor } from "./EditorUtils";
 import { getSelectionRange, inFirstNotSecondArray } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
+import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 
@@ -225,7 +225,8 @@ const DocEditorDefaults = {
     wordAtCursor: "",
     fontSize: 16,
     useTextForAutocomplete: true,
-    docFeatures: { hasList: false, nChars: 0 }
+    docFeatures: { hasList: false, nChars: 0 },
+    autoCompDoc: [] as UserDoc[]
   }
 };
 export class DocEditor extends React.Component<
@@ -238,6 +239,36 @@ export class DocEditor extends React.Component<
   ref = editor => {
     this.editor = editor;
   };
+
+  static getDerivedStateFromProps(props, state) {
+    // todo perf patch
+    let autoCompDocs: UserDoc[];
+    if (props.nodes) {
+      //@ts-ignore
+      autoCompDocs = (Object.values(props.nodes) as aNode).filter(
+        node =>
+          node.data.type === ("userDoc" as NodeDataTypes) &&
+          node.id !== props.id &&
+          node.data.useTextForAutocomplete
+      );
+      autoCompDocs = autoCompDocs.filter(t =>
+        t.data.text.includes(state.wordAtCursor)
+      );
+    }
+
+    const showAutoComplete =
+      state.wordAtCursor.length > 1 &&
+      !props.readOnly &&
+      autoCompDocs.length > 0;
+    if (
+      autoCompDocs.length !== state.autoCompDoc.length ||
+      showAutoComplete !== state.showAutoComplete
+    ) {
+      return { autoCompDocs, showAutoComplete };
+    } else {
+      return null;
+    }
+  }
 
   getCurrentBase64 = () => {
     const { id, nodesOrLinks } = this.props;
@@ -526,10 +557,8 @@ export class DocEditor extends React.Component<
   };
 
   render() {
-    // console.log(
-    //   this.state.editorValue.blocks.toJS().map(x => x.type),
-    //   this.state.editorValue.inlines.toJS().map(x => x.type)
-    // );
+    const { wordAtCursor } = this.state;
+
     return (
       <OuterContainer>
         <Toolbar>
@@ -544,14 +573,12 @@ export class DocEditor extends React.Component<
             title="Base Font Size"
           />
         </Toolbar>
-
         <EditorContainer
           id="EditorContainer"
-          fontSize={this.state.fontSize}
+          fontSize={this.state.fontSize} //todo save
           onMouseOut={this.save}
         >
           <Editor
-            autoFocus
             readOnly={this.props.readOnly}
             ref={this.ref as any}
             spellCheck={false}
@@ -563,7 +590,11 @@ export class DocEditor extends React.Component<
             renderNode={this.renderSlateNodes}
             onKeyDown={this.onKeyDown}
           />
+
         </EditorContainer>
+        {this.state.autoCompDocs.map(doc => {
+          return <span key={doc.id} style={{fontSize: 16}}>{doc.data.text}</span>
+        })}
       </OuterContainer>
     );
   }

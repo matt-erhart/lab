@@ -31,8 +31,6 @@ Using Yarn
 
 Dev-Reference
 ============
-
-just hide some stuff in graph container unless click
 giant editor
 
 text editor id can be undefined
