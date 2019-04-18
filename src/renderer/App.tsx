@@ -17,7 +17,6 @@ import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
-  makeAutograbNode,
   aNode,
   PdfPublication,
   makeLink
@@ -99,40 +98,41 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
     );
   });
 
-  const autograbNodes = pdfDirs.map((dir, ix) => {
-    return makeAutograbNode(
-      dir,
-      { dir },
-      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-    );
-  });
+  // const autograbNodes = pdfDirs.map((dir, ix) => {
+  //   return makeAutograbNode(
+  //     dir,
+  //     { dir },
+  //     { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+  //   );
+  // });
 
   const allNodeIds = Object.keys(nodes);
 
   const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
-  const newAutograbs = autograbNodes.filter(
-    autograbNode => !allNodeIds.includes(autograbNode.id)
-  ); //filter out nodes that exists
+  // const newAutograbs = autograbNodes.filter(
+  //   autograbNode => !allNodeIds.includes(autograbNode.id)
+  // ); //filter out nodes that exists
 
-  // add links btw nodes of type auto-grab and nodes of pdf.publication
-  let newLinks = [];
-  for (let i = 0; i < newPubs.length; i++) {
-    const linkToPdf = makeLink(newPubs[i].id, newAutograbs[i].id, {
-      type: "more"
-    });
-    newLinks.push(linkToPdf);
-    // assert each paper corresponds to one autograb node and idx are the same(for now)
-  }
+  // // add links btw nodes of type auto-grab and nodes of pdf.publication
+  // let newLinks = [];
+  // for (let i = 0; i < newPubs.length; i++) {
+  //   const linkToPdf = makeLink(newPubs[i].id, newAutograbs[i].id, {
+  //     type: "more"
+  //   });
+  //   newLinks.push(linkToPdf);
+  //   // assert each paper corresponds to one autograb node and idx are the same(for now)
+  // }
 
   // concatenate nodes of type auto-grab and nodes of pdf.publication
-  let newNodes = [] as aNode[];
-  const nodesArray = newPubs.concat(autograbNodes);
-  for (let i = 0; i < nodesArray.length; i++) {
-    newNodes.push(nodesArray[i]);
-  }
+  // let newNodes = [] as aNode[];
+  // const nodesArray = newPubs.concat(autograbNodes);
+  // for (let i = 0; i < nodesArray.length; i++) {
+  //   newNodes.push(nodesArray[i]);
+  // }
 
   // return new nodes and links batch to be added in Redux
-  return { newNodes: newNodes, newLinks: newLinks };
+  // return { newNodes: newNodes };
+  return newPubs
 };
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
@@ -151,17 +151,18 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
-    const { newNodes, newLinks } = await processNewPdfs(
-      // Destructuring assignment
-      this.props.pdfRootDir,
-      this.props.nodes
-    );
+      const newNodes = await processNewPdfs(
+        // Destructuring assignment
+        this.props.pdfRootDir,
+        this.props.nodes
+      );
 
-    if (newNodes.length > 0) {
-      this.props.addBatch({ nodes: newNodes, links: newLinks });
-      if (this.props.pdfDir === "")
-        this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
-    }
+      if (newNodes.length > 0) {
+        this.props.addBatch({ nodes: newNodes });
+        if (this.props.pdfDir === "")
+          this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
+      }
+    
 
     window.addEventListener("keyup", this.keyback);
   }

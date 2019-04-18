@@ -8,9 +8,8 @@
   <!--te-->
 
 # Roadmap
-- only text has coordinates
-   - everything else is popup
-- auto complete
+- auto complete + put editor everywhere
+- pack/dock + move neighbors
 
 ---
 big editor + side bar

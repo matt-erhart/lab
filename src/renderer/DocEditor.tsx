@@ -29,7 +29,7 @@ import { connect } from "react-redux";
 import convertBase64 from "slate-base64-serializer";
 // custom
 import { getWordAtCursor } from "./EditorUtils";
-import { getSelectionRange, inFirstNotSecondArray } from "./utils";
+import { getSelectionRange, inFirstNotSecondArray, } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
 import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
@@ -252,9 +252,17 @@ export class DocEditor extends React.Component<
           node.id !== props.id &&
           node.data.useTextForAutocomplete
       );
-      autoCompDocs = autoCompDocs.filter(t =>
-        t.data.text.includes(state.wordAtCursor)
-      );
+      if (state.wordAtCursor !== "") {
+        // todo could do fuzzy matching here
+        autoCompDocs = autoCompDocs.filter(t => {
+          return (
+            t.data.text.includes(state.wordAtCursor) &&
+            t.data.text.trim() !== state.wordAtCursor.trim()
+          );
+        });
+      } else {
+        autoCompDocs = [];
+      }
     }
 
     const showAutoComplete =
@@ -281,7 +289,6 @@ export class DocEditor extends React.Component<
       //@ts-ignore
       const base64 = this.getCurrentBase64();
       if (!!base64) {
-        console.log("init----------");
         const editorValue = convertBase64.deserialize(base64);
         this.setState({ editorValue });
       }
@@ -328,19 +335,15 @@ export class DocEditor extends React.Component<
   };
 
   getCurrentWord = editor => {
-    console.log('get word')
-
     const anchorOffset = editor.value.selection.getIn(["anchor", "offset"]);
     //@ts-ignore
     const anchorText = oc(editor.value.anchorText).text("");
     const { text, isAfterSpace, isEndOfWord } = getWordAtCursor(
       anchorText,
       anchorOffset
-    );     
-      console.log('end', isEndOfWord, 'after space', isAfterSpace, 'text', text)
-      
+    );
+
     if (!isEndOfWord) {
-      
       this.setState({ wordAtCursor: "" });
     } else {
       this.setState({ wordAtCursor: text });
@@ -601,28 +604,32 @@ export class DocEditor extends React.Component<
           />
         </EditorContainer>
         {this.state.wordAtCursor}
-        {/* {this.state.autoCompDocs.map(doc => {
+        {this.state.autoCompDocs.map(doc => {
           return (
             <span key={doc.id} style={{ fontSize: 16 }}>
               {doc.data.text}
             </span>
           );
-        })} */}
+        })}
       </OuterContainer>
     );
   }
 }
-import * as fuzzy from 'fuzzy';
+import * as fuzzy from "fuzzy";
 
 function fuzzyMatch(textToMatch, nodesWithText) {
-  var results = fuzzy.filter(textToMatch.toLowerCase(), nodesWithText as any[], {
-    pre: '<b>',
-    post: '</b>',
-    extract: function(el) {
-      return el.data.text;
+  var results = fuzzy.filter(
+    textToMatch.toLowerCase(),
+    nodesWithText as any[],
+    {
+      pre: "<b>",
+      post: "</b>",
+      extract: function(el) {
+        return el.data.text;
+      }
     }
-  });
-  const toShow = results.map((el) => ({
+  );
+  const toShow = results.map(el => ({
     html: el.string,
     ...el.original
   }));

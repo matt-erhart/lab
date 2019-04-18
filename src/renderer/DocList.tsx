@@ -1,7 +1,7 @@
 // lib
 import * as React from "react";
 import DocEditor from "./DocEditor";
-import { connect } from "react-redux";
+import { connect  } from "react-redux";
 import { oc } from "ts-optchain";
 import styled from "styled-components";
 import { iDispatch, iRootState } from "../store/createStore";
@@ -30,6 +30,7 @@ const mapDispatch = ({
   //   updateBatch,
   //   removeBatch
 });
+
 //todo list userdocs, show ids
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -64,8 +65,6 @@ export class DocList extends React.Component<
     const newDoc = makeUserDoc();
     this.props.addBatch({ nodes: [newDoc] });
   };
-
-
 
   render() {
     return (
