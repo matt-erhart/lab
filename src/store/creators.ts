@@ -68,6 +68,7 @@ import { CircleConfig, LineConfig } from "konva";
 import console = require("console");
 import { fstat } from "fs-extra";
 import { Editor } from "slate-react";
+import { initKeySafeSlate } from "../renderer/EditorUtils";
 export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
   style = {}
@@ -224,7 +225,7 @@ const UserDocDefaults = {
   id: "",
   data: {
     type: "userDoc" as NodeDataTypes,
-    base64: convertBase64.serialize(Plain.deserialize("")),
+    base64: convertBase64.serialize(initKeySafeSlate()),
     text: "",
     useTextForAutocomplete: true
   },
@@ -239,7 +240,7 @@ const UserDocDefaults = {
 };
 export type UserDoc = typeof UserDocDefaults;
 export const makeUserDoc = (props = { data: {}, style: {} }) => {
-  const data = { base64: "", text: "", ...props.data };
+  const data = { ...props.data };
   const id = uuidv1();
   return {
     ...UserDocDefaults,

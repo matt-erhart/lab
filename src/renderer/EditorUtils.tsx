@@ -1,5 +1,28 @@
 import { getRegexIndexes } from "./utils";
 import { oc } from "ts-optchain";
+import uuidv1 from "uuid/v1";
+import { Value } from "slate";
+
+export const initKeySafeSlate = () => {
+  const val = Value.fromJSON({
+    document: {
+      key: uuidv1(), // prevent conflicts with multiple instances of slate
+      nodes: [
+        {
+          object: "block",
+          type: "paragraph",
+          nodes: [
+            {
+              object: "text",
+              leaves: [{ text: "" }]
+            }
+          ]
+        }
+      ]
+    }
+  });
+  return val;
+};
 
 // todo use this
 function getCmd(value, regex = /@(\S*)$/) {

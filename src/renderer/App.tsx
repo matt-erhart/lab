@@ -10,6 +10,7 @@ import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
 
+
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
@@ -132,7 +133,7 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 
   // return new nodes and links batch to be added in Redux
   // return { newNodes: newNodes };
-  return newPubs
+  return newPubs;
 };
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
@@ -151,18 +152,17 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
-      const newNodes = await processNewPdfs(
-        // Destructuring assignment
-        this.props.pdfRootDir,
-        this.props.nodes
-      );
+    const newNodes = await processNewPdfs(
+      // Destructuring assignment
+      this.props.pdfRootDir,
+      this.props.nodes
+    );
 
-      if (newNodes.length > 0) {
-        this.props.addBatch({ nodes: newNodes });
-        if (this.props.pdfDir === "")
-          this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
-      }
-    
+    if (newNodes.length > 0) {
+      this.props.addBatch({ nodes: newNodes });
+      if (this.props.pdfDir === "")
+        this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
+    }
 
     window.addEventListener("keyup", this.keyback);
   }

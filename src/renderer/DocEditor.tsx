@@ -27,50 +27,34 @@ import {
 import Downshift from "downshift";
 import { connect } from "react-redux";
 import convertBase64 from "slate-base64-serializer";
+
 // custom
-import { getWordAtCursor } from "./EditorUtils";
-import { getSelectionRange, inFirstNotSecondArray, } from "./utils";
+import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
+import { getSelectionRange, inFirstNotSecondArray } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
 import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 
+
+
 // todo
 /**
  * ?scenarios
  * --------
- *
- *
- *  * insert simple html (serve as thumbnails)
- *    - no lists
- *    - 40 char width (like vscode)
- *    - sentences of 8 words (~40 char) or less very easy to read; 11 words,
- *      easy; 14 words fairly easy; 17 words standard; 21 words fairly difficult; 25 words difficult and 29 words or more, very difficult.”
- *    - average tweet checked in below 50 characters.
- *
- *  * insert complex html
- *     - if any white space after 40 char # could link to alias
- *
- *
+ *  
+ * * autocomplete + link
+ * 
+ * 
+ * * links from heirarchy changes
+ *  - capture list operations
+ *  
+ * 
  *  *make a new node from within the editor
  *  - select text, hit button or key cmd
  *  - create node and link to current editor node
  *  - each listen becomes a node if not already
- *
- *  *typing quickly and maybe want autocomplete
- *  - show a subtle badge with auto complete summary, e.g. number of matches
- *  - ctrl-space to show matches
- *  - button to always show / show on cmd
- *
- * *autocomplete a node into an outline, and edit it's text for the first time:
- *  - create a copy that's a paraphrase
- *  - edit original and propagate changes, i.e. transpilation
- * edit again:
- *  - if copied edit the copy, else original. propagate.
- *
- * *edit outline heirarches quickly
- *  -  heirarchy aware updates with tab/tab-shift
- *
+ * 
  * ?code quality
  * ------------
  * *one place for all this related slate stuff
@@ -222,7 +206,7 @@ const DocEditorDefaults = {
     autoCompThresh: 140 // n chars
   },
   state: {
-    editorValue: Plain.deserialize("") as Editor["value"],
+    editorValue: initKeySafeSlate(),
     wordAtCursor: "",
     fontSize: 16,
     useTextForAutocomplete: true,
@@ -289,16 +273,17 @@ export class DocEditor extends React.Component<
       //@ts-ignore
       const base64 = this.getCurrentBase64();
       if (!!base64) {
-        const editorValue = convertBase64.deserialize(base64);
+        const editorValue = convertBase64.deserialize(base64);        
+        editorValue.document
         this.setState({ editorValue });
       }
     }
   };
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.editor.focus();
-    // }, 50); // thanks random github user
+    setTimeout(() => {
+      this.editor.focus();
+    }, 100); // thanks random github user
     this.initBase64();
   }
 
@@ -567,6 +552,11 @@ export class DocEditor extends React.Component<
       ]
     });
   };
+  onFocus = () => {
+  };
+  onBlur = () => {
+      const {text, base64} = this.serialize(this.editor.value)
+  };
 
   render() {
     const { wordAtCursor } = this.state;
@@ -601,6 +591,8 @@ export class DocEditor extends React.Component<
             renderMark={this.renderMark}
             renderNode={this.renderSlateNodes}
             onKeyDown={this.onKeyDown}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
           />
         </EditorContainer>
         {this.state.wordAtCursor}

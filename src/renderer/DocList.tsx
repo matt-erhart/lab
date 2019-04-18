@@ -1,12 +1,14 @@
 // lib
 import * as React from "react";
-import DocEditor from "./DocEditor";
-import { connect  } from "react-redux";
+import { connect } from "react-redux";
 import { oc } from "ts-optchain";
 import styled from "styled-components";
-import { iDispatch, iRootState } from "../store/createStore";
+import { KeyUtils } from "slate";
+
 
 // custom
+import DocEditor from "./DocEditor";
+import { iDispatch, iRootState } from "../store/createStore";
 import { makeUserDoc, UserDoc, NodeDataTypes } from "../store/creators";
 
 /**
@@ -59,10 +61,13 @@ export class DocList extends React.Component<
     }
     return null;
   }
-  componentDidMount() {}
+  componentDidMount() {
+    // KeyUtils.resetGenerator()
+  }
 
   makeUserDoc = () => {
     const newDoc = makeUserDoc();
+    
     this.props.addBatch({ nodes: [newDoc] });
   };
 
@@ -71,15 +76,11 @@ export class DocList extends React.Component<
       <OuterContainer>
         <button onClick={this.makeUserDoc}>make</button>
         {this.state.userDocs.length > 0 && (
-          <>
+          <div>
             {this.state.userDocs.map(doc => {
-              return (
-                <div key={doc.id}>
-                  <DocEditor key={doc.id} id={doc.id} />
-                </div>
-              );
+              return <DocEditor key={doc.id} id={doc.id} />;
             })}
-          </>
+          </div>
         )}
       </OuterContainer>
     );

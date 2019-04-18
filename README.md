@@ -5,6 +5,7 @@
 - [Installation](#installation)
   - [Using Yarn](#using-yarn)
 - [Dev-Reference](#dev-reference)
+- [Slate-TroubleShooting](#Slate-TroubleShooting)
   <!--te-->
 
 # Roadmap
@@ -75,6 +76,14 @@ big editor + side bar
    - text editor id can be undefined
    - auto-complete doesn't always work
    - graph viewbox container should resize -> see multi-instance customizable layouts
+
+
+# Slate-TroubleShooting
+** Can't focus multiple instances of slate editors, e.g. in a list: **
+Cause: conflicting keys uses to find editor in the dom
+Solution: 
+editorUtils/initKeySafeSlate()
+
 
 # Dictionary
 
