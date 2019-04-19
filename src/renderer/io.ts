@@ -30,8 +30,10 @@ import {
 } from "./utils";
 
 import { histogram, mean, median, deviation } from "d3-array";
+import { createAutoGrabInfo } from "./AutoGrab";
 import console = require("console");
-import axios from "axios";
+// const FormData = require('form-data');
+import FormData, { getHeaders } from "form-data";
 
 interface FileInfo {
   fullFilePath: string;
@@ -127,59 +129,6 @@ export const existsElseMake = async (
   }
 };
 
-// export const createAutoGrabInfo = async (
-//   pages: any[], // textToDisplay Pages
-//   path: string,
-//   pdf: any, // to be deleted, not necessary
-//   overwrite = false
-// ) => {
-//   // TODO (Xin): here we grab info for the pdf from calling python service
-//   console.log("Inside createAutoGrabInfo, reading pages[0] in below");
-//   // const obj = JSON.parse(fs.readFileSync("file", "utf8"));
-//   // console.log(obj);
-
-//   // Sending and grabbing data from python Flask API, using axios
-//   // https://www.andreasreiterer.at/connect-react-app-rest-api/
-//   // test API as this one: https://jsonplaceholder.typicode.com/users
-
-//   // (test code, to delete later) Post PDF data to local or remote python service
-
-//   // Auto-grab from local python Flask service, code in ../../python-service/hello.py
-
-
-//   // Test visiting an arbitrary existing web service ...
-//   // axios
-//   //   .get('https://jsonplaceholder.typicode.com/users')
-//   //   .then(response => {
-//   //     // create an array of contacts only with relevant data
-//   //     const newContacts = response.data.map(c => {
-//   //       return {
-//   //         id: c.id,
-//   //         name: c.name
-//   //       };
-//   //     });
-//   //     // create a new "State" object without mutating
-//   //     // the original State object.
-//   //     console.log("Reading jsonplaceholder.typicode.com/users: newContacts")
-//   //     console.log(newContacts)
-//   //     // store the new state object in the component's state
-//   //     // this.setState(newState);
-//   //   })
-//   //   .catch(error => console.log(error));
-
-//   // console.log(pages[0])
-//   // const emptyJSON = {"hello":"world"}; // TODO
-//   const fileExists = await fs.pathExists(path);
-
-//   if (!fileExists || overwrite) {
-//     console.log("making ", path);
-//     // const data = await promise;
-//     await jsonfile.writeFile(path, autoGrabDetails);
-//     return true;
-//   } else {
-//     return false;
-//   }
-// };
 
 export const preprocessPdfs = (
   pdfDirs: string[],
@@ -280,16 +229,17 @@ export const preprocessPdfs = (
 
     let pagesOfText = await loadPageJson(dir, "textToDisplay");
 
-    // TODO (Xin): after parsing per-page textToDisplay from PDF pages,
+    // after parsing per-page textToDisplay from PDF pages,
     // auto-grab info from the pdf, including two steps:
     // 1) API communication to python
     // and 2) write to "metadataToHighlight.json"
-    // await createAutoGrabInfo(
-    //   pagesOfText,
-    //   path.join(dir, "metadataToHighlight.json"),
-    //   pdf,
-    //   true //TODO (Xin) later, change to variable overwrite
-    // );
+    await createAutoGrabInfo(
+      pagesOfText,
+      path.join(dir, "metadataToHighlight.json"),
+      pdf,
+      pdfPath,
+      true //Now it always overwrites. TODO (Xin) later, change to variable overwrite
+    );
 
     const columnLefts = getLeftEdgeOfColumns(pagesOfText);
     await existsElseMake(path.join(dir, `columnLefts.json`), columnLefts);
