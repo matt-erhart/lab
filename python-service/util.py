@@ -239,10 +239,10 @@ def inference(in_path):
 
     # with open(args.pdf_dir + "metadataToHighlight.json", "w") as fout:
     metadataToHighlight = dict()
-    metadataToHighlight['note'] = "Below are a list of (key, value) for metadata. \
-    Each key is the metadata type, the value is a list of \
-    top-scored sentences for that metadata type. \
-    These sentences were parsed and concatenated with an external tool (spacy). "
+    # metadataToHighlight['note'] = "Below are a list of (key, value) for metadata. \
+    # Each key is the metadata type, the value is a list of \
+    # top-scored sentences for that metadata type. \
+    # These sentences were parsed and concatenated with an external tool (spacy). "
     participant_detail = list()
     top_10_text = list()
     for idx, row in df.head(n=args.topn).iterrows():  # we take topn sentences for participant_detail

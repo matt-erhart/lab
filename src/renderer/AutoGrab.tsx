@@ -48,7 +48,8 @@ export const createAutoGrabInfo = async (
     const fileExists = await fs.pathExists(path);
   
     if (!fileExists || overwrite) {
-      console.log("making ", path);
+      console.log("autoGrabDetails")
+      console.log(autoGrabDetails);
       await jsonfile.writeFile(path, autoGrabDetails);
       return true;
     } else {
