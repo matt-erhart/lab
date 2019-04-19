@@ -30,31 +30,29 @@ import convertBase64 from "slate-base64-serializer";
 
 // custom
 import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
-import { getSelectionRange, inFirstNotSecondArray } from "./utils";
+import { getSelectionRange, inFirstNotSecondArray, get } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
 import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
-
-
-
+import { Portal } from "./Portal";
 // todo
 /**
  * ?scenarios
  * --------
- *  
+ *
  * * autocomplete + link
- * 
- * 
+ *
+ *
  * * links from heirarchy changes
  *  - capture list operations
- *  
- * 
+ *
+ *
  *  *make a new node from within the editor
  *  - select text, hit button or key cmd
  *  - create node and link to current editor node
  *  - each listen becomes a node if not already
- * 
+ *
  * ?code quality
  * ------------
  * *one place for all this related slate stuff
@@ -211,7 +209,15 @@ const DocEditorDefaults = {
     fontSize: 16,
     useTextForAutocomplete: true,
     docFeatures: { hasList: false, nChars: 0 },
-    autoCompDoc: [] as UserDoc[]
+    autoCompDoc: [] as UserDoc[],
+    selectionBbox: {
+      left: -1,
+      top: -1,
+      bottom: -1,
+      right: -1,
+      width: -1,
+      height: -1
+    }
   }
 };
 export class DocEditor extends React.Component<
@@ -253,10 +259,7 @@ export class DocEditor extends React.Component<
       state.wordAtCursor.length > 1 &&
       !props.readOnly &&
       autoCompDocs.length > 0;
-    if (
-      autoCompDocs.length !== state.autoCompDoc.length ||
-      showAutoComplete !== state.showAutoComplete
-    ) {
+    if (showAutoComplete !== state.showAutoComplete) {
       return { autoCompDocs, showAutoComplete };
     } else {
       return null;
@@ -273,8 +276,8 @@ export class DocEditor extends React.Component<
       //@ts-ignore
       const base64 = this.getCurrentBase64();
       if (!!base64) {
-        const editorValue = convertBase64.deserialize(base64);        
-        editorValue.document
+        const editorValue = convertBase64.deserialize(base64);
+        editorValue.document;
         this.setState({ editorValue });
       }
     }
@@ -286,6 +289,8 @@ export class DocEditor extends React.Component<
     }, 100); // thanks random github user
     this.initBase64();
   }
+
+  componentDidUpdate(prevProps, prevState) {}
 
   serialize = editorValue => {
     const base64 = convertBase64.serialize(editorValue);
@@ -304,6 +309,31 @@ export class DocEditor extends React.Component<
     );
   };
 
+  setSelectionBbox = () => {
+    const { left, top, bottom, width, height, right } =
+      get(window, win =>
+        win
+          .getSelection()
+          .getRangeAt(0)
+          .cloneRange()
+          .getBoundingClientRect()
+      ) || DocEditorDefaults.state.selectionBbox;
+    const selectionBbox = { left, top, bottom, width, height, right }
+    const prevSelectionBbox = this.state.selectionBbox;
+        
+    if (this.state.selectionBbox.left < 0) {
+      this.setState({
+        selectionBbox
+      });
+    } else if (
+      !deepEqual(selectionBbox, prevSelectionBbox)
+    ) {
+      this.setState({
+        selectionBbox
+      });
+    }
+  };
+
   onChange = change => {
     const docFeatures = this.getDocFeatures(change);
     const useTextForAutocomplete =
@@ -311,12 +341,14 @@ export class DocEditor extends React.Component<
       docFeatures.nChars <= this.props.autoCompThresh &&
       !docFeatures.hasList;
 
-    this.setState({
+    const { text, isAfterSpace, isEndOfWord } = this.getCurrentWord(change);
+
+    this.setState(state => ({
       editorValue: change.value,
       useTextForAutocomplete,
-      docFeatures
-    });
-    this.getCurrentWord(change);
+      docFeatures,
+      wordAtCursor: isEndOfWord ? text : ""
+    }));
   };
 
   getCurrentWord = editor => {
@@ -327,12 +359,7 @@ export class DocEditor extends React.Component<
       anchorText,
       anchorOffset
     );
-
-    if (!isEndOfWord) {
-      this.setState({ wordAtCursor: "" });
-    } else {
-      this.setState({ wordAtCursor: text });
-    }
+    return { text, isAfterSpace, isEndOfWord };
   };
 
   wrapWithGraphNode = (node: UserDoc) => {
@@ -447,7 +474,6 @@ export class DocEditor extends React.Component<
 
   onClickBlock = (event, type) => {
     event.preventDefault();
-
     const { editor } = this;
     const { value } = editor;
     const { document } = value;
@@ -467,9 +493,13 @@ export class DocEditor extends React.Component<
       </Button>
     );
   };
-  iconProps = { size: "25px", style: { verticalAlign: "middle" } };
+  iconProps = {
+    size: "25px",
+    style: { verticalAlign: "middle" }
+  };
 
   AutocompleteButton = () => {
+    // not a button but maybe it should be?
     const { useTextForAutocomplete, docFeatures } = this.state;
     const thresh = this.props.autoCompThresh;
     const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
@@ -518,8 +548,20 @@ export class DocEditor extends React.Component<
         <MdFormatListBulleted {...this.iconProps} />,
         "ctrl-l"
       ),
-      this.AutocompleteButton()
+      this.AutocompleteButton(),
+      <Button
+        key={"Delete: Double Click"}
+        title={"Delete: Double Click"}
+        isActive={false}
+        onDoubleClick={this.deleteNode}
+      >
+        <MdDeleteForever {...this.iconProps} />
+      </Button>
     ];
+  };
+
+  deleteNode = () => {
+    this.props.removeBatch({ nodes: [this.props.id] });
   };
 
   changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -534,12 +576,20 @@ export class DocEditor extends React.Component<
     return next();
   };
 
+  onKeyUp = () => {
+    this.setSelectionBbox();
+  };
+
+  onMouseUp = () => {
+    this.setSelectionBbox();
+  };
+
   save = e => {
     if (e.target.id !== "EditorContainer") return null;
 
     const serialized = this.serialize(this.state.editorValue);
     if (serialized.base64 === this.getCurrentBase64()) return null;
-
+    this.setState({ wordAtCursor: "" });
     this.props.updateBatch({
       nodes: [
         {
@@ -552,14 +602,13 @@ export class DocEditor extends React.Component<
       ]
     });
   };
-  onFocus = () => {
-  };
-  onBlur = () => {
-      const {text, base64} = this.serialize(this.editor.value)
-  };
+  onFocus = () => {};
+  onBlur = () => {};
 
   render() {
-    const { wordAtCursor } = this.state;
+    const { wordAtCursor, selectionBbox, showAutoComplete } = this.state;
+
+    // console.log("render", selectionBbox);
 
     return (
       <OuterContainer>
@@ -579,6 +628,8 @@ export class DocEditor extends React.Component<
           id="EditorContainer"
           fontSize={this.state.fontSize} //todo save
           onMouseOut={this.save}
+          onKeyUp={this.onKeyUp}
+          onMouseUp={this.onMouseUp}
         >
           <Editor
             readOnly={this.props.readOnly}
@@ -595,19 +646,42 @@ export class DocEditor extends React.Component<
             onBlur={this.onBlur}
           />
         </EditorContainer>
-        {this.state.wordAtCursor}
         {this.state.autoCompDocs.map(doc => {
           return (
-            <span key={doc.id} style={{ fontSize: 16 }}>
+            <span key={doc.id} style={{ fontSize: 20 }}>
               {doc.data.text}
             </span>
           );
         })}
+        {selectionBbox && (
+          <Portal>
+            <PortalDiv
+              style={{
+                transform: `translate(${selectionBbox.left}px, ${
+                  selectionBbox.bottom
+                }px)`
+              }}
+            >
+              {" "}
+              HEY{" "}
+            </PortalDiv>
+          </Portal>
+        )}
       </OuterContainer>
     );
   }
 }
+
+const PortalDiv = styled.div`
+  left: 0px;
+  top: 0px;
+  position: absolute;
+  background: green;
+  transition: transform 80ms;
+`;
+
 import * as fuzzy from "fuzzy";
+import deepEqual from "fast-deep-equal";
 
 function fuzzyMatch(textToMatch, nodesWithText) {
   var results = fuzzy.filter(
