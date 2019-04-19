@@ -31,6 +31,7 @@ import {
 
 import { histogram, mean, median, deviation } from "d3-array";
 import { createAutoGrabInfo } from "./AutoGrab";
+const { featureToggles } = require("../../featureToggle.json");
 import console = require("console");
 // const FormData = require('form-data');
 import FormData, { getHeaders } from "form-data";
@@ -233,13 +234,15 @@ export const preprocessPdfs = (
     // auto-grab info from the pdf, including two steps:
     // 1) API communication to python
     // and 2) write to "metadataToHighlight.json"
-    await createAutoGrabInfo(
-      pagesOfText,
-      path.join(dir, "metadataToHighlight.json"),
-      pdf,
-      pdfPath,
-      true //Now it always overwrites. TODO (Xin) later, change to variable overwrite
-    );
+    if (featureToggles.showAutoGrab) {
+      await createAutoGrabInfo(
+        pagesOfText,
+        path.join(dir, "metadataToHighlight.json"),
+        pdf,
+        pdfPath,
+        true //Now it always overwrites. TODO (Xin) later, change to variable overwrite
+      );
+    }
 
     const columnLefts = getLeftEdgeOfColumns(pagesOfText);
     await existsElseMake(path.join(dir, `columnLefts.json`), columnLefts);

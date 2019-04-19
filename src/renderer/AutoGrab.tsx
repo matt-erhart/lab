@@ -1,6 +1,11 @@
 import fs = require("fs-extra");
 import jsonfile = require("jsonfile");
 import axios from "axios";
+import {
+  makeAutograbNode, 
+  aNode,
+  makeLink
+} from "../store/creators";
 
 export const createAutoGrabInfo = async (
     pagesOfTextToDisplay: any[], // textToDisplay Pages
@@ -56,3 +61,39 @@ export const createAutoGrabInfo = async (
       return false;
     }
   };
+
+
+export const createAutoGrabNodesAndLinkToPublicationNodes=(pdfDirs:string[],allNodeIds:string[],newPubs:any[]) => {
+
+  const autograbNodes = pdfDirs.map((dir, ix) => {
+    return makeAutograbNode(
+      dir,
+      { dir },
+      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+    );
+  });
+
+  const newAutograbs = autograbNodes.filter(
+    autograbNode => !allNodeIds.includes(autograbNode.id)
+  ); //filter out nodes that exists
+
+  // add links from nodes of type auto-grab to nodes of pdf.publication
+  let newLinks = [];
+  for (let i = 0; i < newPubs.length; i++) {
+    const linkToPdf = makeLink(newPubs[i].id, newAutograbs[i].id, {
+      type: "more"
+    });
+    newLinks.push(linkToPdf);
+    // assert each paper corresponds to one autograb node and idx are the same(for now)
+  }
+
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes = [] as aNode[];
+  const nodesArray = newPubs.concat(autograbNodes);
+  for (let i = 0; i < nodesArray.length; i++) {
+    newNodes.push(nodesArray[i]);
+  }
+  // return new nodes and links batch to be added in Redux
+  return { newNodes: newNodes, newLinks: newLinks };
+
+}
