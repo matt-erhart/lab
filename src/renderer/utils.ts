@@ -16,6 +16,20 @@ export const brewer12 = [
   "#b15928"
 ];
 
+/**
+*
+* @param {T} obj
+* @param {(o: T) => R} getFn
+* @returns {any}
+*/
+export function has<T, R>(obj: T, getFn: (o: T) => R) {
+  try {
+      let result = getFn(obj);
+      return result !== undefined;
+  } catch (err) {
+      return false;
+  }
+}
 export const inFirstNotSecondArray = (twoArrays: any[][]) =>
   twoArrays.reduce(function(a, b) {
     return a.filter(function(value) {
