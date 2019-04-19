@@ -191,9 +191,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         return <GraphContainer />;
       case "listview":
         return <ListView />;
-      case "synthesisOutlineEditor" && featureToggles.showDocList:
-        //         case "docEditor":
-        return <DocList />;
+      case "synthesisOutlineEditor":
+        if (featureToggles.showDocList){
+          return <DocList />;
+        }else break;
       default:
         return <div>alt-1 | alt-2 | alt-3</div>;
     }
