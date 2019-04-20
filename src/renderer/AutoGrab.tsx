@@ -20,7 +20,7 @@ export const createAutoGrabInfo = async (
     // Auto-grab from local python Flask service, code in ../../python-service/hello.py
     let autoGrabDetails = {};
     await axios
-      .post("http://localhost:5000/autograb/pdfdata", {
+      .post("http://54.201.252.190/autograb/pdfdata", {
         pagesOfTextToDisplay: pagesOfTextToDisplay,
         path: path
       })

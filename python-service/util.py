@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 import json
 
 import re
 from spacy.lang.en import English
-import PyPDF2
-from spacy.lang.en import English
+# import PyPDF2
+# from spacy.lang.en import English
 from io import StringIO
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
+# from pdfminer.converter import TextConverter
+# from pdfminer.layout import LAParams
 import unicodedata
 import pandas as pd
 
@@ -175,8 +176,11 @@ def inference(in_path):
         pos_label_idx = vocab.get_token_index("2",
                                               "labels")
         pos_score = softmax[pos_label_idx]
+        # sents.append({"paperID": instance.fields['metadata']['sent_id'].split(delimiter)[0], "sent_pos": int(
+        #     instance.fields['metadata']['sent_id'].split(delimiter)[1]), "text": instance.fields['tokens'].get_text(),
+        #               "pos_score": float(pos_score)})
         sents.append({"paperID": instance.fields['metadata']['sent_id'].split(delimiter)[0], "sent_pos": int(
-            instance.fields['metadata']['sent_id'].split(delimiter)[1]), "text": instance.fields['tokens'].get_text(),
+            instance.fields['metadata']['sent_id'].split(delimiter)[1]), "text": instance.fields['metadata']['text'],
                       "pos_score": float(pos_score)})
 
     # write output into a .csv file. Takes about 2 mins
@@ -190,7 +194,7 @@ def inference(in_path):
     df = df.loc[mask]
 
     df.to_csv(csv_out_path)
-
+    print(df.head(10))
     '''
     
     Next, assemble the two JSON files to support *fuzzy string match,* and output in below format
