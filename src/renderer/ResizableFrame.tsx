@@ -259,7 +259,8 @@ export class ResizableFrame extends React.Component<
             // outline: "1px solid lightgrey",
             margin: 0,
             flex: 1,
-            backgroundColor: "white"
+            backgroundColor: "white",
+            display: 'flex'
           }}
         >
           {this.props.children}

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "inlineSources": true,
     "sourceMap": true,
-
+    "skipLibCheck": true,
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,

@@ -25,6 +25,7 @@ import {
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
+import DocEditor  from "./DocEditor";
 
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
@@ -374,21 +375,13 @@ export class GraphContainer extends React.Component<
             </span>
           </div>
         );
-      case "userHtml":
+      case "userDoc":
         return (
-          <div
-            key={node.id}
-            style={{ flex: 1 }}
-            // onMouseEnter={e => this.setState({ editingId: node.id })}
-          >
-            <TextEditor
+            <DocEditor
               key={node.id}
-              width={frame.width - 13}
-              height={frame.height - 23}
               id={node.id}
               // readOnly={this.state.editingId !== node.id}
             />
-          </div>
         );
       case "autograb":
         return (

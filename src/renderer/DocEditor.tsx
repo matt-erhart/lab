@@ -734,8 +734,6 @@ export class DocEditor extends React.Component<
               });
             }
             if (!!selectedItem) {
-              console.log(selectedItem);
-
               this.wrapWithGraphNode(selectedItem);
               clearSelection();
             }
@@ -744,7 +742,7 @@ export class DocEditor extends React.Component<
         >
           {downshift => {
             return (
-              <div>
+              <div style={{display: 'flex', flex: 1}}>
                 <EditorContainer
                   id="EditorContainer"
                   fontSize={this.state.fontSize} //todo save
@@ -761,8 +759,7 @@ export class DocEditor extends React.Component<
                     style={{
                       padding: 0,
                       margin: 0,
-                      width: "100%",
-                      height: "100%"
+                      flex: 1
                     }}
                     renderMark={this.renderMark}
                     renderNode={this.renderSlateNodes}
@@ -861,7 +858,7 @@ const AutoCompItem = styled(_AutoCompItem)`
   margin: 2px;
   border-radius: 2px;
   border: #eee;
-  padding: 2px;
+  padding: 3px;
   cursor: pointer;
 `;
 
@@ -910,7 +907,7 @@ const EditorContainer = styled(_EditorContainer)`
   border: 1px solid lightgrey;
   padding: 5px;
   font-size: ${p => p.fontSize}px;
-  height: 100%;
   overflow: scroll;
+  display: flex;
   flex: 1;
 `;
