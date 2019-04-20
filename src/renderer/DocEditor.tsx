@@ -70,7 +70,13 @@ import { Portal } from "./Portal";
  * wrap node functions + rendernodes + serialize + deserialize should go together
  *
  */
-
+const schema = {
+  inlines: {
+    graph: {
+      isVoid: true
+    }
+  }
+};
 type SlateTypes =
   | "bold"
   | "italics"
@@ -219,7 +225,7 @@ const DocEditorDefaults = {
     fontSize: 16,
     useTextForAutocomplete: true,
     docFeatures: { hasList: false, nChars: 0 },
-    autoCompDoc: [] as UserDoc[],
+    autoCompDocs: [] as UserDoc[],
     selectionBbox: {
       // todo remove
       left: -1,
@@ -316,7 +322,7 @@ export class DocEditor extends React.Component<
   componentDidUpdate(prevProps, prevState) {
     this.portalPosition();
 
-    // if there are two instances open, want the other to change 
+    // if there are two instances open, want the other to change
     const { id } = this.props;
     if (prevProps.patches !== this.props.patches) {
       const relevantPatch = this.props.patches.find(p => p.path.includes(id));
@@ -424,6 +430,7 @@ export class DocEditor extends React.Component<
   wrapWithGraphNode = (node: UserDoc) => {
     const text = oc(node).data.text();
     const { id } = node;
+    console.log("@cursor", this.state.wordAtCursor, "text");
 
     this.editor
       .moveAnchorBackward(this.state.wordAtCursor.length)
@@ -438,6 +445,8 @@ export class DocEditor extends React.Component<
       })
       .moveAnchorForward(text.length)
       .focus();
+
+    this.setState({ editorValue: this.editor.value });
   };
 
   hasMark = type => {
@@ -692,9 +701,11 @@ export class DocEditor extends React.Component<
             { selectedItem, highlightedIndex },
             { setState, clearSelection }
           ) => {
-            const { id } = this.state.autoCompDocs[highlightedIndex] || {
-              id: false
-            };
+            const id = get(
+              this.state.autoCompDocs,
+              docs => docs[highlightedIndex].id
+            );
+
             if (id) {
               this.props.toggleSelections({
                 selectedNodes: [id],
@@ -702,6 +713,8 @@ export class DocEditor extends React.Component<
               });
             }
             if (!!selectedItem) {
+              console.log(selectedItem);
+
               this.wrapWithGraphNode(selectedItem);
               clearSelection();
             }
@@ -733,6 +746,7 @@ export class DocEditor extends React.Component<
                     renderMark={this.renderMark}
                     renderNode={this.renderSlateNodes}
                     onKeyDown={this.onKeyDown}
+                    schema={schema}
                     // onBlur={this.save}
                   />
                   {showAutoComplete && (
