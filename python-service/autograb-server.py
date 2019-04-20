@@ -1,16 +1,18 @@
 '''
 -*- coding: utf-8 -*-
-Copyright (C) 2019/4/14
+Copyright (C) 2019/4/16
 Author: Xin Qian
 
-Starts a simple python Flask REST service.
-Follows tutorial from here https://dzone.com/articles/restful-web-services-with-python-flask
+Starts a python Flask REST service to auto-grab details in PDF, e.g. participant info, etc.
+Follows the skeleton from hello.py
+
 
 '''
-# import unicode
+import json
+
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
-import json
+from util import inference
 
 app = Flask(__name__)  # creates an app object from Flask.
 CORS(app)
@@ -62,66 +64,59 @@ def createEmp():
     return jsonify(dat)
 
 
-# curl -i -H "Content-type: application/json" -X POST -d "{}" http://localhost:5000/autograb/pdfdata2
-@app.route('/autograb/pdfdatareal', methods=['POST'])
-def parsePDFRealAndGetAutoGrab():
-    # To decode data received in a Flask request
-    # https://stackoverflow.com/questions/10434599/how-to-get-data-received-in-flask-request
-    print("[Sanity-check] inside realpdfdata data's keys like this ")
-    # print(request.json["pagesOfTextToDisplay"])
-    with open('tmp/pagesOfTextToDisplay.json', 'w') as outfile:
-        json.dump(request.json["pagesOfTextToDisplay"], outfile)
-
-    return jsonify({"note":"empty but perfect!!!!"})
-
-
 # The HTTP POST method is used to send user-generated data to the web server. For example, a POST method is used when a user comments on a forum or if they upload a profile picture.
 # curl -i -H "Content-type: application/json" -X POST -d "{}" http://localhost:5000/autograb/pdfdata
 @app.route('/autograb/pdfdata', methods=['POST'])
 def parsePDFAndGetAutoGrab():
     # TODO: put python code/process that takes parses pdf data from request.json, then auto-grab details
-    print("[Sanity-check] Get pages (textToDisplay) data's keys like this " + str(list(request.json.keys())))
+    # To decode data received in a Flask request
+    # https://stackoverflow.com/questions/10434599/how-to-get-data-received-in-flask-request
+    print("[Sanity-check] inside realpdfdata data's keys like this "+str(request.json["path"]))
+    # print(request.json["pagesOfTextToDisplay"])
+    filename='tmp/pagesOfTextToDisplay-'+request.json["path"].split("/")[-2].split(".pdf")[0]+'.json'
+    with open(filename, 'w') as outfile:
+        json.dump(request.json["pagesOfTextToDisplay"], outfile, indent=4)
 
+    metadataToHighlight=inference(filename)
     # fake metadataToHighlight for front-end rendering
-    metadataToHighlight = {
-        "note": "Below are a list of (key, value) for metadata.Each key is the metadata type, the value is a list of top-scored sentences for that metadata type. These sentences were parsed and concatenated with an external tool (spacy). ",
-        "participant_detail": [
-            {
-                "text": "We interviewed industry researchers with academic training, who shared how they have used academic research to inform their work.",
-                "score": 0.9181269407272339
-            },
-            {
-                "text": "In the second interview stage, we broadened recruiting criteria and interviewed 37 participants engaged in HCI-related research and practice fields.",
-                "score": 0.8893097639083862
-            },
-            {
-                "text": "We also interviewed science communicators and communication managers.",
-                "score": 0.710110604763031
-            },
-            {
-                "text": "We iterated on the model after each interview.",
-                "score": 0.6941357851028442
-            },
-            {
-                "text": "Second, we interviewed academic researchers, design practitioners and students, entrepreneurs, and science communicators.",
-                "score": 0.6827952265739441
-            },
-            {
-                "text": "We met with him and he prototyped a version that we had in mind.",
-                "score": 0.6094831824302673
-            },
-            {
-                "text": "See detailed participant information on Table 1, and in Supplementary materials.",
-                "score": 0.47279655933380127
-            },
-            {
-                "text": "Second, at the bottom, we show participant experience in the HCI field.",
-                "score": 0.37527304887771606
-            }
-        ]
-    }
+    # metadataToHighlight = {
+    #     "note": "Below are a list of (key, value) for metadata.Each key is the metadata type, the value is a list of top-scored sentences for that metadata type. These sentences were parsed and concatenated with an external tool (spacy). ",
+    #     "participant_detail": [
+    #         {
+    #             "text": "We interviewed industry researchers with academic training, who shared how they have used academic research to inform their work.",
+    #             "score": 0.9181269407272339
+    #         },
+    #         {
+    #             "text": "In the second interview stage, we broadened recruiting criteria and interviewed 37 participants engaged in HCI-related research and practice fields.",
+    #             "score": 0.8893097639083862
+    #         },
+    #         {
+    #             "text": "We also interviewed science communicators and communication managers.",
+    #             "score": 0.710110604763031
+    #         },
+    #         {
+    #             "text": "We iterated on the model after each interview.",
+    #             "score": 0.6941357851028442
+    #         },
+    #         {
+    #             "text": "Second, we interviewed academic researchers, design practitioners and students, entrepreneurs, and science communicators.",
+    #             "score": 0.6827952265739441
+    #         },
+    #         {
+    #             "text": "We met with him and he prototyped a version that we had in mind.",
+    #             "score": 0.6094831824302673
+    #         },
+    #         {
+    #             "text": "See detailed participant information on Table 1, and in Supplementary materials.",
+    #             "score": 0.47279655933380127
+    #         },
+    #         {
+    #             "text": "Second, at the bottom, we show participant experience in the HCI field.",
+    #             "score": 0.37527304887771606
+    #         }
+    #     ]
+    # }
     return jsonify(metadataToHighlight)
-
 
 # curl -i -X DELETE http://localhost:5000/empdb/employee/301
 @app.route('/empdb/employee/<empId>', methods=['DELETE'])

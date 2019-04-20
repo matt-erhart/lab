@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Electron + React + Parcel + Pdfjs",
   "scripts": {
-    "tsnode": "npx ts-node-dev --respawn --transpileOnly ./src/renderer/graphUtils.ts",
+    "tsnode": "npx ts-node-dev --respawn --transpileOnly ./src/renderer/playground.ts",
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",

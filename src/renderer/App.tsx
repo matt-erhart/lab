@@ -18,10 +18,12 @@ import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
+  makeAutograbNode, 
   aNode,
   PdfPublication,
   makeLink
 } from "../store/creators";
+import { createAutoGrabNodesAndLinkToPublicationNodes } from "./AutoGrab";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
@@ -29,6 +31,7 @@ import { mData } from "./rx";
 import DocEditor from "./DocEditor";
 import console = require("console");
 import DocList from "./DocList";
+const { featureToggles } = require("../../featureToggle.json");
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -99,41 +102,15 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
     );
   });
 
-  // const autograbNodes = pdfDirs.map((dir, ix) => {
-  //   return makeAutograbNode(
-  //     dir,
-  //     { dir },
-  //     { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-  //   );
-  // });
-
   const allNodeIds = Object.keys(nodes);
 
   const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
-  // const newAutograbs = autograbNodes.filter(
-  //   autograbNode => !allNodeIds.includes(autograbNode.id)
-  // ); //filter out nodes that exists
 
-  // // add links btw nodes of type auto-grab and nodes of pdf.publication
-  // let newLinks = [];
-  // for (let i = 0; i < newPubs.length; i++) {
-  //   const linkToPdf = makeLink(newPubs[i].id, newAutograbs[i].id, {
-  //     type: "more"
-  //   });
-  //   newLinks.push(linkToPdf);
-  //   // assert each paper corresponds to one autograb node and idx are the same(for now)
-  // }
-
-  // concatenate nodes of type auto-grab and nodes of pdf.publication
-  // let newNodes = [] as aNode[];
-  // const nodesArray = newPubs.concat(autograbNodes);
-  // for (let i = 0; i < nodesArray.length; i++) {
-  //   newNodes.push(nodesArray[i]);
-  // }
-
-  // return new nodes and links batch to be added in Redux
-  // return { newNodes: newNodes };
-  return newPubs;
+  if (!featureToggles.showAutoGrab) {  // do not show auto-grab, return directly
+    return newPubs;
+  } else {
+    return createAutoGrabNodesAndLinkToPublicationNodes(pdfDirs,allNodeIds,newPubs)
+  }
 };
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
@@ -215,8 +192,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "listview":
         return <ListView />;
       case "synthesisOutlineEditor":
-        //         case "docEditor":
-        return <DocList />;
+        if (featureToggles.showDocList){
+          return <DocList />;
+        }else break;
       default:
         return <div>alt-1 | alt-2 | alt-3</div>;
     }
