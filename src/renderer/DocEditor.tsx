@@ -214,12 +214,14 @@ const DocEditorDefaults = {
   state: {
     editorValue: initKeySafeSlate(),
     wordAtCursor: "",
+    isActive: false,
     showAutoComplete: false,
     fontSize: 16,
     useTextForAutocomplete: true,
     docFeatures: { hasList: false, nChars: 0 },
     autoCompDoc: [] as UserDoc[],
     selectionBbox: {
+      // todo remove
       left: -1,
       top: -1,
       bottom: -1,
@@ -248,13 +250,14 @@ export class DocEditor extends React.Component<
   ref = editor => {
     this.editor = editor;
   };
-  
+
   static getDerivedStateFromProps(props, state) {
-    
-    
     // todo perf patch
     let autoCompDocs: UserDoc[];
-    if (props.nodes) {
+    const checkForAutoCompDocs =
+      state.wordAtCursor.length > 1 && !props.readOnly && props.nodes;
+
+    if (checkForAutoCompDocs) {
       //@ts-ignore
       autoCompDocs = (Object.values(props.nodes) as aNode).filter(
         node =>
@@ -275,12 +278,12 @@ export class DocEditor extends React.Component<
       }
     }
 
-    const showAutoComplete =
-      state.wordAtCursor.length > 1 &&
-      !props.readOnly &&
-      autoCompDocs.length > 0;
-    if (showAutoComplete !== state.showAutoComplete) {
-      return { autoCompDocs, showAutoComplete };
+    const showAutoComplete = checkForAutoCompDocs && autoCompDocs.length > 0;
+
+    if (showAutoComplete && !state.showAutoComplete) {
+      return { autoCompDocs, showAutoComplete: true };
+    } else if (!showAutoComplete && state.showAutoComplete) {
+      return { showAutoComplete: false };
     } else {
       return null;
     }
@@ -311,8 +314,21 @@ export class DocEditor extends React.Component<
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.props.id)
     this.portalPosition();
+
+    // if there are two instances open, want the other to change 
+    const { id } = this.props;
+    if (prevProps.patches !== this.props.patches) {
+      const relevantPatch = this.props.patches.find(p => p.path.includes(id));
+      if (!!relevantPatch) {
+        const newDoc = get(relevantPatch, patch => patch.value.data.base64);
+        const base64State = this.serialize(this.state.editorValue);
+
+        if (base64State !== this.getCurrentBase64()) {
+          this.initBase64();
+        }
+      }
+    }
   }
 
   serialize = editorValue => {
@@ -336,7 +352,7 @@ export class DocEditor extends React.Component<
     const selectionEdges = getBoxEdges(this.getSelectionBbox());
     const clientBoxEdges = getBoxEdges(getClientBox());
     const diffs = getEdgeDiffs(clientBoxEdges)(selectionEdges);
-    const moreSpaceDown = !moreSpaceIs(diffs).down;
+    const moreSpaceDown = moreSpaceIs(diffs).down;
     const { width: portalWidth, height: portalHeight } = get(
       this.portalDiv.current,
       current => current.getBoundingClientRect()
@@ -364,6 +380,7 @@ export class DocEditor extends React.Component<
     });
   };
 
+  // todo move to utils
   getSelectionBbox = () => {
     const { left, top, bottom, width, height, right } =
       get(window, win =>
@@ -374,18 +391,6 @@ export class DocEditor extends React.Component<
           .getBoundingClientRect()
       ) || DocEditorDefaults.state.selectionBbox;
     return { left, top, bottom, width, height, right };
-    // const selectionBbox = { left, top, bottom, width, height, right };
-    // const prevSelectionBbox = this.state.selectionBbox;
-
-    // if (this.state.selectionBbox.left < 0) {
-    //   this.setState({
-    //     selectionBbox
-    //   });
-    // } else if (!deepEqual(selectionBbox, prevSelectionBbox)) {
-    //   this.setState({
-    //     selectionBbox
-    //   });
-    // }
   };
 
   onChange = change => {
@@ -401,7 +406,7 @@ export class DocEditor extends React.Component<
       editorValue: change.value,
       useTextForAutocomplete,
       docFeatures,
-      wordAtCursor: isEndOfWord ? text : ""
+      wordAtCursor: isEndOfWord && state.isActive ? text : ""
     }));
   };
 
@@ -631,37 +636,41 @@ export class DocEditor extends React.Component<
   };
 
   save = e => {
-    e.stopPropagation()
-
-    // this.setState({ wordAtCursor: "", showAutoComplete: false });
+    e.stopPropagation();
+    // this.setState({ isFocused: false });
+    this.setState({
+      wordAtCursor: "",
+      showAutoComplete: false,
+      isActive: false
+    });
     // if (e.target.id !== "EditorContainer") return null;
-    // const serialized = this.serialize(this.state.editorValue);
-    // if (serialized.base64 === this.getCurrentBase64()) return null;
-    // this.props.updateBatch({
-    //   nodes: [
-    //     {
-    //       id: this.props.id,
-    //       data: {
-    //         ...serialized,
-    //         useTextForAutocomplete: this.state.useTextForAutocomplete
-    //       }
-    //     }
-    //   ]
-    // });
+    const serialized = this.serialize(this.state.editorValue);
+    if (serialized.base64 === this.getCurrentBase64()) return null;
+    this.props.updateBatch({
+      nodes: [
+        {
+          id: this.props.id,
+          data: {
+            ...serialized,
+            useTextForAutocomplete: this.state.useTextForAutocomplete
+          }
+        }
+      ]
+    });
   };
-  onFocus = () => {};
-  onBlur = () => {};
+  onFocus = () => {
+    this.setState({ isActive: true });
+  };
 
   render() {
-    const { wordAtCursor, selectionBbox, showAutoComplete } = this.state;
-
-    // console.log("render", selectionBbox);
+    const { wordAtCursor, showAutoComplete } = this.state;
 
     return (
       <OuterContainer
         id="outer-doc"
         ref={this.outerContainer}
         onMouseLeave={this.save}
+        onMouseEnter={this.onFocus}
       >
         <Toolbar>
           {" "}
@@ -724,8 +733,9 @@ export class DocEditor extends React.Component<
                     renderMark={this.renderMark}
                     renderNode={this.renderSlateNodes}
                     onKeyDown={this.onKeyDown}
+                    // onBlur={this.save}
                   />
-                  {downshift.isOpen && (
+                  {showAutoComplete && (
                     <Portal id="portal-outer">
                       <PortalDiv
                         id="autocomplete-div"
