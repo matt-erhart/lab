@@ -143,17 +143,17 @@ export class GraphContainer extends React.Component<
   getFramesInView = containerBounds => {
     const { width, height } = containerBounds;
     const pad = 200;
-    const view = getBoxEdges(
-      this.state.scrollLeft - pad,
-      this.state.scrollTop - pad,
-      (width + pad) / this.state.zoom,
-      (height + pad) / this.state.zoom
-    );
+    const view = getBoxEdges({
+      left: this.state.scrollLeft - pad,
+      top: this.state.scrollTop - pad,
+      width: (width + pad) / this.state.zoom,
+      height: (height + pad) / this.state.zoom
+    });
 
     const isInView = isBoxPartlyInBox(view);
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
-      const edges = getBoxEdges(left, top, width, height);
+      const edges = getBoxEdges({left, top, width, height});
       const inView = true || isInView(edges);
       if (inView) {
         const isSelected = this.props.selectedNodes.includes(node.id);
@@ -221,12 +221,13 @@ export class GraphContainer extends React.Component<
             clearFirst: true
           });
         }
-        case 'h':
-        console.log('key cmd')
-        
-          if (e.ctrlKey) this.setState(state => {
-            return {hideViewboxes: !state.hideViewboxes}
-          })
+      case "h":
+        console.log("key cmd");
+
+        if (e.ctrlKey)
+          this.setState(state => {
+            return { hideViewboxes: !state.hideViewboxes };
+          });
       default:
         return null;
     }

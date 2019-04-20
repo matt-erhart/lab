@@ -330,6 +330,8 @@ class TextEditor extends React.Component<
   };
 
   onMouseOut = e => {
+    console.log(e.target.id)
+    
     this.save();
     this.setState({
       portalStyle: TextEditorDefaults.state.portalStyle,

@@ -30,12 +30,23 @@ import convertBase64 from "slate-base64-serializer";
 
 // custom
 import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
-import { getSelectionRange, inFirstNotSecondArray, get } from "./utils";
+import {
+  getSelectionRange,
+  inFirstNotSecondArray,
+  get,
+  getSpaceAround,
+  getBoxEdges,
+  getEdgeDiffs,
+  moreSpaceIs,
+  getClientBox,
+  getElementBox
+} from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
 import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 import { Portal } from "./Portal";
+
 // todo
 /**
  * ?scenarios
@@ -158,9 +169,6 @@ const plugins = [
     "shift+enter": "softBreak",
     "mod+l": (event, editor: Editor) => toggleList(editor, "unordered-list"),
     "mod+o": (event, editor: Editor) => toggleList(editor, "ordered-list"),
-    "mod+1": (event, editor: Editor) => toggleBlock(editor, "heading-one"),
-    "mod+2": (event, editor: Editor) => toggleBlock(editor, "heading-two"),
-    "mod+3": (event, editor: Editor) => toggleBlock(editor, "heading-three"),
     "mod+/": (event, editor: Editor) => {
       console.log(
         editor.value.blocks.toJS().map(x => x.type),
@@ -206,6 +214,7 @@ const DocEditorDefaults = {
   state: {
     editorValue: initKeySafeSlate(),
     wordAtCursor: "",
+    showAutoComplete: false,
     fontSize: 16,
     useTextForAutocomplete: true,
     docFeatures: { hasList: false, nChars: 0 },
@@ -217,6 +226,13 @@ const DocEditorDefaults = {
       right: -1,
       width: -1,
       height: -1
+    },
+    portalStyle: {
+      transform: `translate(0px, 0px)`,
+      width: "40ch",
+      maxHeight: 400,
+      padding: 5,
+      opacity: 1
     }
   }
 };
@@ -227,11 +243,15 @@ export class DocEditor extends React.Component<
   static defaultProps = DocEditorDefaults.props;
   state = DocEditorDefaults.state;
   editor: Editor;
+  outerContainer = React.createRef<HTMLElement>();
+  portalDiv = React.createRef<HTMLElement>();
   ref = editor => {
     this.editor = editor;
   };
-
+  
   static getDerivedStateFromProps(props, state) {
+    
+    
     // todo perf patch
     let autoCompDocs: UserDoc[];
     if (props.nodes) {
@@ -290,7 +310,10 @@ export class DocEditor extends React.Component<
     this.initBase64();
   }
 
-  componentDidUpdate(prevProps, prevState) {}
+  componentDidUpdate(prevProps, prevState) {
+    console.log(this.props.id)
+    this.portalPosition();
+  }
 
   serialize = editorValue => {
     const base64 = convertBase64.serialize(editorValue);
@@ -309,7 +332,39 @@ export class DocEditor extends React.Component<
     );
   };
 
-  setSelectionBbox = () => {
+  portalPosition = () => {
+    const selectionEdges = getBoxEdges(this.getSelectionBbox());
+    const clientBoxEdges = getBoxEdges(getClientBox());
+    const diffs = getEdgeDiffs(clientBoxEdges)(selectionEdges);
+    const moreSpaceDown = !moreSpaceIs(diffs).down;
+    const { width: portalWidth, height: portalHeight } = get(
+      this.portalDiv.current,
+      current => current.getBoundingClientRect()
+    ) || {
+      width: 0,
+      height: 0
+    };
+
+    const left =
+      diffs.maxX > portalWidth
+        ? selectionEdges.minX
+        : clientBoxEdges.maxX - portalWidth;
+
+    const top = moreSpaceDown
+      ? selectionEdges.maxY
+      : selectionEdges.minY - portalHeight - 3;
+
+    this.setState(state => {
+      const newTrans = `translate(${left}px,${top}px)`;
+      if (newTrans === state.portalStyle.transform) {
+        return null;
+      } else {
+        return { portalStyle: { ...state.portalStyle, transform: newTrans } };
+      }
+    });
+  };
+
+  getSelectionBbox = () => {
     const { left, top, bottom, width, height, right } =
       get(window, win =>
         win
@@ -318,20 +373,19 @@ export class DocEditor extends React.Component<
           .cloneRange()
           .getBoundingClientRect()
       ) || DocEditorDefaults.state.selectionBbox;
-    const selectionBbox = { left, top, bottom, width, height, right }
-    const prevSelectionBbox = this.state.selectionBbox;
-        
-    if (this.state.selectionBbox.left < 0) {
-      this.setState({
-        selectionBbox
-      });
-    } else if (
-      !deepEqual(selectionBbox, prevSelectionBbox)
-    ) {
-      this.setState({
-        selectionBbox
-      });
-    }
+    return { left, top, bottom, width, height, right };
+    // const selectionBbox = { left, top, bottom, width, height, right };
+    // const prevSelectionBbox = this.state.selectionBbox;
+
+    // if (this.state.selectionBbox.left < 0) {
+    //   this.setState({
+    //     selectionBbox
+    //   });
+    // } else if (!deepEqual(selectionBbox, prevSelectionBbox)) {
+    //   this.setState({
+    //     selectionBbox
+    //   });
+    // }
   };
 
   onChange = change => {
@@ -576,31 +630,24 @@ export class DocEditor extends React.Component<
     return next();
   };
 
-  onKeyUp = () => {
-    this.setSelectionBbox();
-  };
-
-  onMouseUp = () => {
-    this.setSelectionBbox();
-  };
-
   save = e => {
-    if (e.target.id !== "EditorContainer") return null;
+    e.stopPropagation()
 
-    const serialized = this.serialize(this.state.editorValue);
-    if (serialized.base64 === this.getCurrentBase64()) return null;
-    this.setState({ wordAtCursor: "" });
-    this.props.updateBatch({
-      nodes: [
-        {
-          id: this.props.id,
-          data: {
-            ...serialized,
-            useTextForAutocomplete: this.state.useTextForAutocomplete
-          }
-        }
-      ]
-    });
+    // this.setState({ wordAtCursor: "", showAutoComplete: false });
+    // if (e.target.id !== "EditorContainer") return null;
+    // const serialized = this.serialize(this.state.editorValue);
+    // if (serialized.base64 === this.getCurrentBase64()) return null;
+    // this.props.updateBatch({
+    //   nodes: [
+    //     {
+    //       id: this.props.id,
+    //       data: {
+    //         ...serialized,
+    //         useTextForAutocomplete: this.state.useTextForAutocomplete
+    //       }
+    //     }
+    //   ]
+    // });
   };
   onFocus = () => {};
   onBlur = () => {};
@@ -611,7 +658,11 @@ export class DocEditor extends React.Component<
     // console.log("render", selectionBbox);
 
     return (
-      <OuterContainer>
+      <OuterContainer
+        id="outer-doc"
+        ref={this.outerContainer}
+        onMouseLeave={this.save}
+      >
         <Toolbar>
           {" "}
           {this.MakeButtons()}{" "}
@@ -624,49 +675,96 @@ export class DocEditor extends React.Component<
             title="Base Font Size"
           />
         </Toolbar>
-        <EditorContainer
-          id="EditorContainer"
-          fontSize={this.state.fontSize} //todo save
-          onMouseOut={this.save}
-          onKeyUp={this.onKeyUp}
-          onMouseUp={this.onMouseUp}
+        <Downshift
+          key="downshift"
+          itemToString={item => (item ? item.data.text : "")}
+          isOpen={this.state.showAutoComplete}
+          onStateChange={(
+            { selectedItem, highlightedIndex },
+            { setState, clearSelection }
+          ) => {
+            const { id } = this.state.autoCompDocs[highlightedIndex] || {
+              id: false
+            };
+            if (id) {
+              this.props.toggleSelections({
+                selectedNodes: [id],
+                clearFirst: true
+              });
+            }
+            if (!!selectedItem) {
+              this.wrapWithGraphNode(selectedItem);
+              clearSelection();
+            }
+          }}
+          inputValue={wordAtCursor}
         >
-          <Editor
-            readOnly={this.props.readOnly}
-            ref={this.ref as any}
-            spellCheck={false}
-            onChange={this.onChange}
-            value={this.state.editorValue}
-            plugins={plugins}
-            style={{ padding: 0, margin: 0, width: "100%", height: "100%" }}
-            renderMark={this.renderMark}
-            renderNode={this.renderSlateNodes}
-            onKeyDown={this.onKeyDown}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-          />
-        </EditorContainer>
-        {this.state.autoCompDocs.map(doc => {
-          return (
-            <span key={doc.id} style={{ fontSize: 20 }}>
-              {doc.data.text}
-            </span>
-          );
-        })}
-        {selectionBbox && (
-          <Portal>
-            <PortalDiv
-              style={{
-                transform: `translate(${selectionBbox.left}px, ${
-                  selectionBbox.bottom
-                }px)`
-              }}
-            >
-              {" "}
-              HEY{" "}
-            </PortalDiv>
-          </Portal>
-        )}
+          {downshift => {
+            return (
+              <div>
+                <EditorContainer
+                  id="EditorContainer"
+                  fontSize={this.state.fontSize} //todo save
+                  // onKeyUp={this.onKeyUp}
+                  // onMouseUp={this.onMouseUp}
+                >
+                  <Editor
+                    readOnly={this.props.readOnly}
+                    ref={this.ref as any}
+                    spellCheck={false}
+                    onChange={this.onChange}
+                    value={this.state.editorValue}
+                    plugins={plugins}
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      width: "100%",
+                      height: "100%"
+                    }}
+                    renderMark={this.renderMark}
+                    renderNode={this.renderSlateNodes}
+                    onKeyDown={this.onKeyDown}
+                  />
+                  {downshift.isOpen && (
+                    <Portal id="portal-outer">
+                      <PortalDiv
+                        id="autocomplete-div"
+                        ref={this.portalDiv}
+                        style={this.state.portalStyle}
+                      >
+                        {this.state.autoCompDocs.map((doc, index) => {
+                          return (
+                            <AutoCompItem
+                              key={doc.id}
+                              style={{ fontSize: 20 }}
+                              {...downshift.getItemProps({
+                                key: doc.id,
+                                index,
+                                item: doc,
+                                style: {
+                                  backgroundColor:
+                                    downshift.highlightedIndex === index
+                                      ? "white"
+                                      : null,
+                                  fontWeight:
+                                    downshift.selectedItem === doc
+                                      ? "bold"
+                                      : "normal"
+                                }
+                              })}
+                            >
+                              {doc.data.text}
+                            </AutoCompItem>
+                          );
+                        })}
+                      </PortalDiv>
+                    </Portal>
+                  )}
+                </EditorContainer>
+              </div>
+            );
+          }}
+        </Downshift>
       </OuterContainer>
     );
   }
@@ -676,8 +774,12 @@ const PortalDiv = styled.div`
   left: 0px;
   top: 0px;
   position: absolute;
-  background: green;
-  transition: transform 80ms;
+  background: #fcfcfc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: box-shadow 100ms;
+  &:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
 `;
 
 import * as fuzzy from "fuzzy";
@@ -706,6 +808,9 @@ export default connect(
   mapState,
   mapDispatch
 )(DocEditor);
+
+const _AutoCompItem = styled.div``;
+const AutoCompItem = styled(_AutoCompItem)``;
 
 const _Button = styled.span<{ isActive: boolean; onMouseDown? }>``;
 export const Button = styled(_Button)`

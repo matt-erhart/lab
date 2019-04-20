@@ -17,17 +17,17 @@ export const brewer12 = [
 ];
 
 /**
-*
-* @param {T} obj
-* @param {(o: T) => R} getFn
-* @returns {any}
-*/
+ *
+ * @param {T} obj
+ * @param {(o: T) => R} getFn
+ * @returns {any}
+ */
 export function has<T, R>(obj: T, getFn: (o: T) => R) {
   try {
-      let result = getFn(obj);
-      return result !== undefined;
+    let result = getFn(obj);
+    return result !== undefined;
   } catch (err) {
-      return false;
+    return false;
   }
 }
 export const inFirstNotSecondArray = (twoArrays: any[][]) =>
@@ -163,12 +163,24 @@ export const dist = (x1: number, y1: number, x2: number, y2: number) => {
   return Math.hypot(x2 - x1, y2 - y1);
 };
 
-export const getBoxEdges = (
-  left: number,
-  top: number,
-  width: number,
-  height: number
-) => {
+export type Box = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  offsetX?: number;
+  offsetY?: number;
+};
+
+export type BoxEdges = {
+  minX: number; // left
+  minY: number; // top
+  maxX: number; // right
+  maxY: number; // bottom
+};
+
+export const getBoxEdges = (box: Box): BoxEdges => {
+  const { left, top, width, height } = box;
   return {
     minX: left,
     minY: top,
@@ -177,9 +189,7 @@ export const getBoxEdges = (
   };
 };
 
-export const isBoxInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
-  smallBox: ReturnType<typeof getBoxEdges>
-) => {
+export const isBoxInBox = (bigBox: BoxEdges) => (smallBox: BoxEdges) => {
   const minXOk = smallBox.minX >= bigBox.minX;
   const maxXOk = smallBox.maxX <= bigBox.maxX;
   const minYOk = smallBox.minY >= bigBox.minY;
@@ -187,9 +197,7 @@ export const isBoxInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
   return minXOk && maxXOk && minYOk && maxYOk;
 };
 
-export const isBoxPartlyInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
-  smallBox: ReturnType<typeof getBoxEdges>
-) => {
+export const isBoxPartlyInBox = (bigBox: BoxEdges) => (smallBox: BoxEdges) => {
   const minXOk = smallBox.minX <= bigBox.maxX && smallBox.minX >= bigBox.minX;
   const maxXOk = smallBox.maxX >= bigBox.minX && smallBox.maxX <= bigBox.maxX;
 
@@ -199,6 +207,91 @@ export const isBoxPartlyInBox = (bigBox: ReturnType<typeof getBoxEdges>) => (
   return (minXOk || maxXOk) && (minYOk || maxYOk);
 };
 
+// type BoxEdgesDiffs = { label: string; dist: number; diff: number }[];
+
+export const getEdgeDiffs = (box1: BoxEdges) => (box2: BoxEdges): BoxEdges => {
+  // box1 - box 2
+  const diffs = Object.entries(box1).reduce(
+    (all, edge) => {
+      const [key, val] = edge;
+      all = { ...all, [key]: val - box2[key]};
+      return all;
+    },
+    {} as BoxEdges
+  );
+  return diffs;
+};
+
+export const moreSpaceIs = (edgeDiffs: BoxEdges) => {
+  return {
+    down: Math.abs(edgeDiffs.minY) < edgeDiffs.maxY,
+    right: Math.abs(edgeDiffs.minX) < edgeDiffs.maxX
+  }
+}
+
+export const getElementBox = (el): Box => {
+  // e.g. from mouse event:   event.currentTarget
+  const { left, top, width, height } = el.getBoundingClientRect();
+  return {
+    left,
+    top,
+    width,
+    height
+  };
+};
+
+export const getClientBox = () => {
+  // entire area to render things. doesn't include scroll bars.
+  const { clientHeight, clientWidth } = document.documentElement;
+  return { left: 0, top: 0, height: clientHeight, width: clientWidth };
+};
+
+// export const getSpaceAround = (outerBox: BoxEdges) => (innerBox: BoxEdges) => {
+//   // box1 - box2
+//   const keys = ["minX", "maxX", "minY", "maxY"];
+//   const renameKeys = ["spaceLeft", "spaceRight", "spaceUp", "spaceDown"];
+//   const spaceAround = keys.reduce(
+//     (all, key, ix) => {
+//       const diff = outerBox[key] - innerBox[key];
+//       let validInner;
+//       if (["minX", "minY"].includes(key)) {
+//         validInner = diff < 0;
+//       } else {
+//         validInner = diff > 0;
+//       }
+//       all = {
+//         ...all,
+//         [renameKeys[ix]]: { dist: Math.abs(diff), diff, validInner },
+//         validInner: all.validInner && validInner
+//       };
+
+//       return all;
+//     },
+//     { validInner: true, spaceLeft: number, spaceRight: }
+//   );
+
+//   return spaceAround;
+
+//   // let differences = keys.map((key, ix) => {
+//   //   const diff = outerBox[key] - innerBox[key];
+//   //   return {
+//   //     label: renameKeys[ix],
+//   //     dist: Math.abs(diff),
+//   //     diff: diff
+//   //   };
+//   // });
+//   // differences = differences.sort((a, b) => {
+//   //   return b.dist - a.dist;
+//   // });
+
+//   // const asProperties = differences.reduce((all, )
+
+//   // return {sortedByDist: differences, moreSpaceup:};
+// };
+
+const constrainBox = (stayInside: BoxEdges) => {};
+
+// todo: refactor pagesvg to use box equivilents
 export const getRectEdges = (
   x: number,
   y: number,
