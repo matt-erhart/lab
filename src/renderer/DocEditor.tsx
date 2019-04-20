@@ -636,11 +636,32 @@ export class DocEditor extends React.Component<
     this.setState({ fontSize: parseInt(e.target.value) });
   };
 
-  onKeyDown = (event, editor, next) => {
+  onKeyDown = getInputProps => (event, editor, next) => {
+    const isCrtlEnter =
+      event.key !== "Control" && event.ctrlKey && event.key === "Enter";
+
+    const isAutoCompleteCmd = ["ArrowUp", "ArrowDown", "Enter"].includes(
+      event.key
+    );
+
     if (event.key === "Tab") {
       event.preventDefault();
-      // editor.insertText("\t");
+      editor.insertText("\t");
     }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.setState({ wordAtCursor: "" });
+    }
+
+    if (isAutoCompleteCmd && this.state.showAutoComplete) {
+      // todo maybe use this to portal
+      const { onKeyDown } = getInputProps();
+      event.preventDefault(); //inter-tab can do weird things
+      onKeyDown(event);
+      return null; // prevents return/tab happening. other keys dont need
+    }
+
     return next();
   };
 
@@ -745,7 +766,8 @@ export class DocEditor extends React.Component<
                     }}
                     renderMark={this.renderMark}
                     renderNode={this.renderSlateNodes}
-                    onKeyDown={this.onKeyDown}
+                    // getInputProps makes arrow keys work for autocomp
+                    onKeyDown={this.onKeyDown(downshift.getInputProps)}
                     schema={schema}
                     // onBlur={this.save}
                   />
@@ -768,8 +790,8 @@ export class DocEditor extends React.Component<
                                 style: {
                                   backgroundColor:
                                     downshift.highlightedIndex === index
-                                      ? "white"
-                                      : null,
+                                      ? "#e0e0e0"
+                                      : "white",
                                   fontWeight:
                                     downshift.selectedItem === doc
                                       ? "bold"
@@ -798,12 +820,13 @@ const PortalDiv = styled.div`
   left: 0px;
   top: 0px;
   position: absolute;
-  background: #fcfcfc;
+  background: #fafafa;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: box-shadow 100ms;
   &:hover {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
+  border-radius: 3px;
 `;
 
 import * as fuzzy from "fuzzy";
@@ -834,7 +857,13 @@ export default connect(
 )(DocEditor);
 
 const _AutoCompItem = styled.div``;
-const AutoCompItem = styled(_AutoCompItem)``;
+const AutoCompItem = styled(_AutoCompItem)`
+  margin: 2px;
+  border-radius: 2px;
+  border: #eee;
+  padding: 2px;
+  cursor: pointer;
+`;
 
 const _Button = styled.span<{ isActive: boolean; onMouseDown? }>``;
 export const Button = styled(_Button)`
