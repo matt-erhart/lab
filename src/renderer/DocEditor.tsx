@@ -222,7 +222,7 @@ const DocEditorDefaults = {
     wordAtCursor: "",
     isActive: false,
     showAutoComplete: false,
-    fontSize: 16,
+    fontSize: 26,
     useTextForAutocomplete: true,
     docFeatures: { hasList: false, nChars: 0 },
     autoCompDocs: [] as UserDoc[],
@@ -298,6 +298,12 @@ export class DocEditor extends React.Component<
   getCurrentBase64 = () => {
     const { id, nodesOrLinks } = this.props;
     return oc(this.props)[nodesOrLinks][id].data.base64();
+  };
+
+  getFontSize = () => {
+    const { id, nodesOrLinks } = this.props;
+    const fontSize = get(this.props, p => p[nodesOrLinks][id].style.fontSize);
+    return fontSize;
   };
 
   initBase64 = () => {
@@ -633,7 +639,17 @@ export class DocEditor extends React.Component<
   };
 
   changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ fontSize: parseInt(e.target.value) });
+    this.props.updateBatch({
+      nodes: [
+        {
+          id: this.props.id,
+          style: {
+            fontSize: parseInt(e.target.value)
+          }
+        }
+      ]
+    });
+    // this.setState({ fontSize: parseInt(e.target.value) });
   };
 
   onKeyDown = getInputProps => (event, editor, next) => {
@@ -709,7 +725,7 @@ export class DocEditor extends React.Component<
             type="number"
             min={2}
             max={48}
-            value={this.state.fontSize}
+            value={this.getFontSize()}
             onChange={this.changeFontSize}
             title="Base Font Size"
           />
@@ -742,10 +758,10 @@ export class DocEditor extends React.Component<
         >
           {downshift => {
             return (
-              <div style={{display: 'flex', flex: 1}}>
+              <div style={{ display: "flex", flex: 1 }}>
                 <EditorContainer
                   id="EditorContainer"
-                  fontSize={this.state.fontSize} //todo save
+                  fontSize={this.getFontSize()} //todo save
                   // onKeyUp={this.onKeyUp}
                   // onMouseUp={this.onMouseUp}
                 >
@@ -883,9 +899,7 @@ export const Toolbar = styled.div`
 const OuterContainer = styled.div`
   margin: 0px 0px;
   flex: 1;
-  border: 4px solid darkgrey;
   height: auto;
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
 `;
@@ -907,7 +921,7 @@ const EditorContainer = styled(_EditorContainer)`
   border: 1px solid lightgrey;
   padding: 5px;
   font-size: ${p => p.fontSize}px;
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex: 1;
 `;

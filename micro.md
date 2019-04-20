@@ -1,9 +1,6 @@
-- works in graph container 200
-    - flex <Docc>
-        - follow the heirarchy
-        - outercontainer -> graph cont -> resizableframe
-    - outline
-    - GraphContainer/case "userDoc
+- works in graph container
+    # GraphContainer/case "userDoc
+
     - hide menu
     - resizeable frame
         - check id to prevent wrong padding detection
@@ -15,10 +12,22 @@
 
 
 
-
-
-
 - make/delete links in editor
+    - copy paste code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - works after click liveslice
 - state.json converter
 - updates in all editor instances with same id

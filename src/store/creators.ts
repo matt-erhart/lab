@@ -235,7 +235,7 @@ const UserDocDefaults = {
     top: 0,
     width: 300,
     height: 110,
-    fontSize: 16
+    fontSize: 26
   }
 };
 export type UserDoc = typeof UserDocDefaults;
