@@ -10,7 +10,6 @@ import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
 
-
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
@@ -18,7 +17,7 @@ import { setupDirFromPdfs } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
-  makeAutograbNode, 
+  makeAutograbNode,
   aNode,
   PdfPublication,
   makeLink
@@ -31,7 +30,7 @@ import { mData } from "./rx";
 import DocEditor from "./DocEditor";
 import console = require("console");
 import DocList from "./DocList";
-const { featureToggles } = require("../../featureToggle.json");
+import { featureToggles } from "../store/featureToggle";
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -39,7 +38,6 @@ const NavBar = styled.div`
   justify-content: flex-start;
   align-items: stretch;
   flex-flow: row;
-
   flex: 0;
   margin: 1px;
 `;
@@ -106,10 +104,15 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 
   const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
 
-  if (!featureToggles.showAutoGrab) {  // do not show auto-grab, return directly
+  if (!featureToggles.showAutoGrab) {
+    // do not show auto-grab, return directly
     return newPubs;
   } else {
-    return createAutoGrabNodesAndLinkToPublicationNodes(pdfDirs,allNodeIds,newPubs)
+    return createAutoGrabNodesAndLinkToPublicationNodes(
+      pdfDirs,
+      allNodeIds,
+      newPubs
+    );
   }
 };
 
@@ -192,9 +195,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "listview":
         return <ListView />;
       case "synthesisOutlineEditor":
-        if (featureToggles.showDocList){
+        if (featureToggles.showDocList) {
           return <DocList />;
-        }else break;
+        } else {
+          break;
+        }
       default:
         return <div>alt-1 | alt-2 | alt-3</div>;
     }

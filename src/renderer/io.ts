@@ -31,8 +31,7 @@ import {
 
 import { histogram, mean, median, deviation } from "d3-array";
 import { createAutoGrabInfo } from "./AutoGrab";
-const { featureToggles } = require("../../featureToggle.json");
-import console = require("console");
+import { featureToggles } from "../store/featureToggle";
 // const FormData = require('form-data');
 import FormData, { getHeaders } from "form-data";
 
@@ -129,7 +128,6 @@ export const existsElseMake = async (
     return false;
   }
 };
-
 
 export const preprocessPdfs = (
   pdfDirs: string[],
