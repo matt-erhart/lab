@@ -221,6 +221,7 @@ const DocEditorDefaults = {
     editorValue: initKeySafeSlate(),
     wordAtCursor: "",
     isActive: false,
+    showMenu: false,
     showAutoComplete: false,
     fontSize: 26,
     useTextForAutocomplete: true,
@@ -241,6 +242,10 @@ const DocEditorDefaults = {
       maxHeight: 400,
       padding: 5,
       opacity: 1
+    },
+    menuStyle: {
+      transform: `translate(0px, 0px)`,
+      maxHeight: 50
     }
   }
 };
@@ -249,10 +254,12 @@ export class DocEditor extends React.Component<
   typeof DocEditorDefaults.state
 > {
   static defaultProps = DocEditorDefaults.props;
+
   state = DocEditorDefaults.state;
   editor: Editor;
   outerContainer = React.createRef<HTMLElement>();
   portalDiv = React.createRef<HTMLElement>();
+  menu = React.createRef<HTMLElement>();
   ref = editor => {
     this.editor = editor;
   };
@@ -300,12 +307,6 @@ export class DocEditor extends React.Component<
     return oc(this.props)[nodesOrLinks][id].data.base64();
   };
 
-  getFontSize = () => {
-    const { id, nodesOrLinks } = this.props;
-    const fontSize = get(this.props, p => p[nodesOrLinks][id].style.fontSize);
-    return fontSize;
-  };
-
   initBase64 = () => {
     if (this.props.id.length > 0) {
       //@ts-ignore
@@ -313,7 +314,7 @@ export class DocEditor extends React.Component<
       if (!!base64) {
         const editorValue = convertBase64.deserialize(base64);
         editorValue.document;
-        this.setState({ editorValue });
+        this.setState({ editorValue, fontSize: this.getFontSize() });
       }
     }
   };
@@ -326,7 +327,10 @@ export class DocEditor extends React.Component<
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.portalPosition();
+    if (prevProps.nodes === this.props.nodes) {
+      this.setAutoCompPosition();
+      this.setMenuPosition();
+    }
 
     // if there are two instances open, want the other to change
     const { id } = this.props;
@@ -360,14 +364,14 @@ export class DocEditor extends React.Component<
     );
   };
 
-  portalPosition = () => {
+  calcPosition = (element: HTMLElement) => {
     const selectionEdges = getBoxEdges(this.getSelectionBbox());
+
     const clientBoxEdges = getBoxEdges(getClientBox());
     const diffs = getEdgeDiffs(clientBoxEdges)(selectionEdges);
     const moreSpaceDown = moreSpaceIs(diffs).down;
-    const { width: portalWidth, height: portalHeight } = get(
-      this.portalDiv.current,
-      current => current.getBoundingClientRect()
+    const { width: portalWidth, height: portalHeight } = get(element, current =>
+      current.getBoundingClientRect()
     ) || {
       width: 0,
       height: 0
@@ -382,12 +386,31 @@ export class DocEditor extends React.Component<
       ? selectionEdges.maxY
       : selectionEdges.minY - portalHeight - 3;
 
+    return { left, top };
+  };
+
+  setAutoCompPosition = () => {
+    const { left, top } = this.calcPosition(this.portalDiv.current);
     this.setState(state => {
       const newTrans = `translate(${left}px,${top}px)`;
       if (newTrans === state.portalStyle.transform) {
         return null;
       } else {
         return { portalStyle: { ...state.portalStyle, transform: newTrans } };
+      }
+    });
+  };
+
+  setMenuPosition = () => {
+    const { left, top } = this.calcPosition(this.menu.current);
+    this.setState(state => {
+      const newTrans = `translate(${left}px,${top}px)`;
+      if (newTrans === state.menuStyle.transform) {
+        return null;
+      } else {
+        return {
+          menuStyle: { ...state.menuStyle, transform: newTrans }
+        };
       }
     });
   };
@@ -433,6 +456,7 @@ export class DocEditor extends React.Component<
     return { text, isAfterSpace, isEndOfWord };
   };
 
+  
   wrapWithGraphNode = (node: UserDoc) => {
     const text = oc(node).data.text();
     const { id } = node;
@@ -638,19 +662,22 @@ export class DocEditor extends React.Component<
     this.props.removeBatch({ nodes: [this.props.id] });
   };
 
-  changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.updateBatch({
-      nodes: [
-        {
-          id: this.props.id,
-          style: {
-            fontSize: parseInt(e.target.value)
-          }
-        }
-      ]
-    });
-    // this.setState({ fontSize: parseInt(e.target.value) });
-  };
+  // changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const newSize = parseInt(e.target.value);
+  //   if (newSize > 9) {
+  //     this.props.updateBatch({
+  //       nodes: [
+  //         {
+  //           id: this.props.id,
+  //           style: {
+  //             fontSize: parseInt(e.target.value)
+  //           }
+  //         }
+  //       ]
+  //     });
+  //   }
+  //   // this.setState({ fontSize: parseInt(e.target.value) });
+  // };
 
   onKeyDown = getInputProps => (event, editor, next) => {
     const isCrtlEnter =
@@ -662,12 +689,12 @@ export class DocEditor extends React.Component<
 
     if (event.key === "Tab") {
       event.preventDefault();
-      editor.insertText("\t");
+      // editor.insertText("\t");
     }
 
     if (event.key === "Escape") {
       event.preventDefault();
-      this.setState({ wordAtCursor: "" });
+      this.setState({ wordAtCursor: "", showMenu: false });
     }
 
     if (isAutoCompleteCmd && this.state.showAutoComplete) {
@@ -704,32 +731,63 @@ export class DocEditor extends React.Component<
       ]
     });
   };
-  onFocus = () => {
-    this.setState({ isActive: true });
+
+  onFocus = e => {
+    if (!this.state.isActive) {
+      this.setState({ isActive: true });
+    }
+  };
+  closeMenu = e => {
+    if (this.state.showMenu) {
+      this.setState({ showMenu: false });
+    }
+  };
+  getFontSize = () => {
+    const { id, nodesOrLinks } = this.props;
+    const fontSize = get(this.props, p => p[nodesOrLinks][id].style.fontSize);
+    return fontSize;
+  };
+
+
+  onWheel = e => {
+    const wheelDefault = 120;
+
+    e.persist();
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const inc = e.nativeEvent.wheelDelta / wheelDefault;
+      this.props.updateBatch({
+        nodes: [
+          {
+            id: this.props.id,
+            style: {
+              fontSize: this.getFontSize() + inc
+            },
+            data: {
+              ...this.serialize(this.state.editorValue)
+            }
+          }
+        ]
+      });
+    }
   };
 
   render() {
     const { wordAtCursor, showAutoComplete } = this.state;
+    console.log(this.state.menuStyle);
 
     return (
       <OuterContainer
         id="outer-doc"
         ref={this.outerContainer}
         onMouseLeave={this.save}
-        onMouseEnter={this.onFocus}
+        onMouseDown={this.onFocus}
+        onContextMenu={e => {
+          e.preventDefault();
+          this.setState({ showMenu: true });
+        }}
+        onWheel={this.onWheel}
       >
-        <Toolbar>
-          {" "}
-          {this.MakeButtons()}{" "}
-          <FontSizeInput
-            type="number"
-            min={2}
-            max={48}
-            value={this.getFontSize()}
-            onChange={this.changeFontSize}
-            title="Base Font Size"
-          />
-        </Toolbar>
         <Downshift
           key="downshift"
           itemToString={item => (item ? item.data.text : "")}
@@ -758,7 +816,7 @@ export class DocEditor extends React.Component<
         >
           {downshift => {
             return (
-              <div style={{ display: "flex", flex: 1 }}>
+              <div id="downshift-div" style={{ display: "flex", flex: 1 }}>
                 <EditorContainer
                   id="EditorContainer"
                   fontSize={this.getFontSize()} //todo save
@@ -766,6 +824,7 @@ export class DocEditor extends React.Component<
                   // onMouseUp={this.onMouseUp}
                 >
                   <Editor
+                    id="editor"
                     readOnly={this.props.readOnly}
                     ref={this.ref as any}
                     spellCheck={false}
@@ -775,7 +834,8 @@ export class DocEditor extends React.Component<
                     style={{
                       padding: 0,
                       margin: 0,
-                      flex: 1
+                      flex: 1,
+                      cursor: "text"
                     }}
                     renderMark={this.renderMark}
                     renderNode={this.renderSlateNodes}
@@ -817,6 +877,26 @@ export class DocEditor extends React.Component<
                           );
                         })}
                       </PortalDiv>
+                    </Portal>
+                  )}
+                  {this.state.showMenu && (
+                    <Portal id="portal-menu">
+                      <Toolbar
+                        style={this.state.menuStyle}
+                        ref={this.menu}
+                        onMouseLeave={this.closeMenu}
+                      >
+                        {" "}
+                        {this.MakeButtons()}{" "}
+                        {/* <FontSizeInput
+                          type="number"
+                          min={10}
+                          max={60}
+                          value={this.state.fontSize}
+                          onChange={this.changeFontSize}
+                          title="Base Font Size"
+                        /> */}
+                      </Toolbar>
                     </Portal>
                   )}
                 </EditorContainer>
@@ -886,14 +966,13 @@ export const Button = styled(_Button)`
   color: ${props => (props.isActive ? "black" : "darkgrey")};
 `;
 
-export const Toolbar = styled.div`
+export const Toolbar = styled(PortalDiv)`
   flex: 0;
-  border: 1px solid lightgrey;
   display: flex;
   align-items: center;
-  border-bottom: none;
-  padding: 10px;
-  min-height: 50px;
+  position: absolute;
+  background: white;
+  padding: 8px;
 `;
 
 const OuterContainer = styled.div`

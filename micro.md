@@ -1,10 +1,4 @@
 - works in graph container
-    # GraphContainer/case "userDoc
-
-    - hide menu
-    - resizeable frame
-        - check id to prevent wrong padding detection
-
 
 
 
@@ -45,4 +39,6 @@
         - collect colors into store
     - rename
         - viewbox -> liveslice
-        - 
+    - to utils
+        - doceditor/calcPosition
+        - onzoom / onfont size in graphcont, doceditor

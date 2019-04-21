@@ -4,7 +4,7 @@ import produce from "immer";
 var equal = require("fast-deep-equal");
 import { dragData } from "./rx";
 import { Subscription } from "rxjs";
-
+import { get } from "./utils";
 // example updateOneFrane which you could import and use
 
 export type frame = Partial<{
@@ -240,10 +240,9 @@ export class ResizableFrame extends React.Component<
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         onScroll={e => {
-            e.stopPropagation();
+          e.stopPropagation();
         }}
-        onWheel={e => {
-        }}
+        onWheel={e => {}}
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
@@ -252,7 +251,7 @@ export class ResizableFrame extends React.Component<
           onMouseDown: this.onMouseDownMove
         })}
         <div
-        id='inner-frame'
+          id="inner-frame"
           draggable={false}
           style={{
             userSelect: "text",
@@ -260,7 +259,7 @@ export class ResizableFrame extends React.Component<
             margin: 0,
             flex: 1,
             backgroundColor: "white",
-            display: 'flex'
+            display: "flex"
           }}
         >
           {this.props.children}
@@ -290,7 +289,7 @@ const OuterContainer = styled(_outer)`
   border-radius: 2px;
   overflow: hidden;
   transition: opacity 300ms;
-   opacity: ${(p: Outer) => (p.hide ? 0 : 1)};
+  opacity: ${(p: Outer) => (p.hide ? 0 : 1)};
   &:hover {
     opacity: 1;
   }
@@ -318,6 +317,9 @@ type hoverInfo = { location: loc; cursor: cursor };
 const getResizeInfo = (
   e: React.MouseEvent<HTMLDivElement, MouseEvent>
 ): hoverInfo => {
+  if (get(e, e => e.target.id) !== "frame")
+    return { location: "default", cursor: "default" };
+
   // edge or corner locations with matching cursors
   let element = e.nativeEvent.target as HTMLDivElement;
   var style = window.getComputedStyle(element, null);
