@@ -7,6 +7,7 @@ import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import TextEditor from "./TextEditor";
 import { Rectangle, removeOverlaps } from "webcola";
+import  DocEditor  from "./DocEditor";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -105,7 +106,7 @@ class PortalContainer extends React.Component<
                 >
                   <div
                     key={frame.id}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, display: 'flex' }}
                     tabIndex={1}
                     onKeyDown={e => {
                       if (e.key === "Escape") {
@@ -117,12 +118,9 @@ class PortalContainer extends React.Component<
 
                     // onMouseEnter={e => this.setState({ editingId: node.id })}
                   >
-                    <TextEditor
+                    <DocEditor
                       key={frame.id}
-                      width={frame.width - 13}
-                      height={frame.height - 23}
                       id={frame.id}
-                      // readOnly={this.state.editingId !== node.id}
                     />
                   </div>
                 </ResizableFrame>

@@ -20,12 +20,13 @@ import {
   Links,
   Nodes,
   PdfPublication,
-  AutoGrab
+  AutoGrab,
+  makeUserDoc
 } from "../store/creators";
 import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
-import DocEditor  from "./DocEditor";
+import DocEditor from "./DocEditor";
 
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
@@ -154,7 +155,7 @@ export class GraphContainer extends React.Component<
     const isInView = isBoxPartlyInBox(view);
     const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
       const { left, top, width, height } = node.style;
-      const edges = getBoxEdges({left, top, width, height});
+      const edges = getBoxEdges({ left, top, width, height });
       const inView = true || isInView(edges);
       if (inView) {
         const isSelected = this.props.selectedNodes.includes(node.id);
@@ -295,8 +296,7 @@ export class GraphContainer extends React.Component<
     const { left, top } = e.currentTarget.getBoundingClientRect();
     const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
     if (allowId) {
-      const userHtml = makeUserHtml({
-        data: { html: "<p></p>", text: "" },
+      const userHtml = makeUserDoc({
         style: {
           left: (clientX - left) / this.state.zoom,
           top: (clientY - top) / this.state.zoom
@@ -377,11 +377,11 @@ export class GraphContainer extends React.Component<
         );
       case "userDoc":
         return (
-            <DocEditor
-              key={node.id}
-              id={node.id}
-              // readOnly={this.state.editingId !== node.id}
-            />
+          <DocEditor
+            key={node.id}
+            id={node.id}
+            // readOnly={this.state.editingId !== node.id}
+          />
         );
       case "autograb":
         return (

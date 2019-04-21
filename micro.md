@@ -1,9 +1,14 @@
-- works after dbl click canvas 11:45
-    - 1133 
-
-
-
-- works after click liveslice
+- id rxjs get 12
+    - 1147 open rx.ts
+    - 1157 newselect undefined or infinit
+    - 1200 click again
+    - 1206 if greenbox open and delete node
+        - ondelete redux, close all portals
+            - needs to be effect
+            - could be useful for next tasks?
+        - 1212 list to patches?
+- 1219 learn middleware
+    - 1226 (max 1245)
 
 
 

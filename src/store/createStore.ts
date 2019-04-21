@@ -45,9 +45,11 @@ export let defaultApp = {
       height: "100%",
       scale: 1
     },
-    rightPanel: "graphContainer" as "graphContainer" | "listview" | "synthesisOutlineEditor"
+    rightPanel: "graphContainer" as
+      | "graphContainer"
+      | "listview"
+      | "synthesisOutlineEditor"
     // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
-
   },
   portals: [] as frame[]
 };
@@ -132,6 +134,10 @@ export const app = createModel({
     },
     setPortals(state, payload = []) {
       return { ...state, portals: payload };
+    },
+    "graph/removeBatch": (state, payload) => {
+      console.log("graph/removeBatch -> close open portals")
+      return { ...state, portals: [] };
     }
   }
 });
@@ -299,6 +305,19 @@ const models = {
   app,
   graph
 };
+
+// const actionChains = {
+//   middleware: (store: iStore) => next => action => {
+//     switch (action.type) {
+//       case "graph/removeBatch":
+//         console.log("graph/removeBatch -> close portals");
+//         store.dispatch.app.setPortals();
+//         break;
+//       default:
+//     }
+//     return next(action);
+//   }
+// };
 
 const logit = {
   middleware: store => next => action => {

@@ -14,7 +14,7 @@ import {
   makePdfSegmentViewbox,
   PdfSegmentViewbox,
   makeLink,
-  makeUserHtml
+  makeUserDoc
 } from "../store/creators";
 import PortalContainer from "./PortalContainer";
 // todo consistant CAPS
@@ -407,15 +407,22 @@ class PageSvg extends React.Component<
 
   makeSegmentAndComment = (selectionRect, mouseX, mouseY) => {
     const newSelect = this.snapToColumn(selectionRect);
-    const viewbox = this.onAddViewbox(newSelect);
-    this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+    const anyInfinite = Object.values(newSelect).some(x => x === Infinity);
+
+    let viewbox;
+    if (!!newSelect && !anyInfinite) {
+      viewbox = this.onAddViewbox(newSelect);
+      this.setState({ selectionRect: { ...newSelect, x1: 0, y1: 0 } });
+    } else {
+      viewbox = this.onAddViewbox(selectionRect);
+    }
 
     const segStyle = this.props.nodes[viewbox.id].style;
     const newTextStyle = {
       left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
       top: 20 + segStyle.top + segStyle.height
     };
-    const htmlNode = makeUserHtml({ data: {}, style: newTextStyle });
+    const htmlNode = makeUserDoc({ data: {}, style: newTextStyle });
     const newLink = makeLink(viewbox.id, htmlNode.id, {
       text: "compress",
       html: "<p>compress</p>"
@@ -441,7 +448,7 @@ class PageSvg extends React.Component<
       this.props.links
     );
 
-    let htmlNodes = nodes.filter(node => node.data.type === "userHtml");
+    let htmlNodes = nodes.filter(node => node.data.type === "userDoc");
     if (htmlNodes.length === 0) {
       const segStyle = this.props.nodes[segmentId].style;
       const newTextStyle = {
@@ -449,7 +456,7 @@ class PageSvg extends React.Component<
         top: 20 + segStyle.top + segStyle.height
       };
 
-      htmlNodes.push(makeUserHtml({ data: {}, style: newTextStyle }));
+      htmlNodes.push(makeUserDoc({ data: {}, style: newTextStyle }));
       const newLink = makeLink(segmentId, htmlNodes[0].id, {
         text: "compress",
         html: "<p>compress</p>"
