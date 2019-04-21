@@ -476,7 +476,44 @@ export class DocEditor extends React.Component<
       .moveAnchorForward(text.length)
       .focus();
 
+    const ix = Object.values(this.props.links).findIndex(link => {
+      return link.source === id && link.target === this.props.id;
+    });
+
+    if (ix === -1) {
+      const newLink = makeLink(id, this.props.id, {
+        // todo put "<p>usedIn</p>" in creators
+        html: "<p>usedIn</p>"
+      });
+
+      this.props.addBatch({ links: [newLink] });
+    }
+
     this.setState({ editorValue: this.editor.value });
+  };
+
+  cleanLinks = () => {
+    // todo remove magic strings, "graph" is a node autocompleted
+    const graphInlines = this.editor.value.document.getInlinesByType("graph");
+    const idsToLink = graphInlines.toJS().map(n => get(n, n => n.data.id));
+
+    const linksBetween = Object.values(this.props.links).filter(link => {
+      return (
+        link.target === this.props.id && link.data.html === "<p>usedIn</p>"
+      );
+    });
+
+    const staleNodeIds = inFirstNotSecondArray([
+      linksBetween.map(link => link.source),
+      // so source should be a node id
+      idsToLink
+    ]);
+
+    const linksToDel = linksBetween
+      .filter(link => staleNodeIds.includes(link.source))
+      .map(link => link.id);
+
+    if (linksToDel.length > 0) this.props.removeBatch({ links: linksToDel });
   };
 
   hasMark = type => {
@@ -719,6 +756,7 @@ export class DocEditor extends React.Component<
     // if (e.target.id !== "EditorContainer") return null;
     const serialized = this.serialize(this.state.editorValue);
     if (serialized.base64 === this.getCurrentBase64()) return null;
+    this.cleanLinks()
     this.props.updateBatch({
       nodes: [
         {
