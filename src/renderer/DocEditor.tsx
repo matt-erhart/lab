@@ -378,9 +378,10 @@ export class DocEditor extends React.Component<
     };
 
     const left =
-      diffs.maxX > portalWidth
+      clientBoxEdges.maxX - selectionEdges.minX > portalWidth
         ? selectionEdges.minX
         : clientBoxEdges.maxX - portalWidth;
+    console.log("left", diffs.maxX > portalWidth, element);
 
     const top = moreSpaceDown
       ? selectionEdges.maxY
@@ -456,7 +457,6 @@ export class DocEditor extends React.Component<
     return { text, isAfterSpace, isEndOfWord };
   };
 
-  
   wrapWithGraphNode = (node: UserDoc) => {
     const text = oc(node).data.text();
     const { id } = node;
@@ -747,7 +747,6 @@ export class DocEditor extends React.Component<
     const fontSize = get(this.props, p => p[nodesOrLinks][id].style.fontSize);
     return fontSize;
   };
-
 
   onWheel = e => {
     const wheelDefault = 120;

@@ -1,5 +1,5 @@
-- works in graph container
-
+- select many lines x align
+    - check minx
 
 
 
