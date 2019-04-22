@@ -4,7 +4,7 @@ export const featureToggles = {
   devlog: true
 };
 
-export const devlog = (str: string, show=true) => {
+export const devlog = (str: any, show=true) => {
   if (featureToggles.devlog && show) {
     console.log(str)
   }

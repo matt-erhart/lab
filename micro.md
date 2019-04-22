@@ -1,4 +1,7 @@
 - select on mouse down
+    - remove hack at 845
+    - find it mouseselect
+      
 
 
 

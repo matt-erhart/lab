@@ -92,9 +92,8 @@ export class GraphContainer extends React.Component<
     window.addEventListener("resize", this.setSize);
   }
 
-  onTransformStart = (transProps: frame) => {
-    const { id } = transProps;
-    //todo select with redux
+  onTransformStart = ({event, id}) => {
+    this.onMouseSelect(id, 'Nodes')(event)
   };
 
   onTransforming = (transProps: any) => {
@@ -272,6 +271,7 @@ export class GraphContainer extends React.Component<
   };
 
   onMouseSelect = (id, nodesOrLinks: "Nodes" | "Links") => e => {
+    devlog('onmousedown')
     e.stopPropagation();
 
     const isSelected = this.isSelected(id);
@@ -585,6 +585,7 @@ export class GraphContainer extends React.Component<
                 key={frame.id}
                 id={frame.id}
                 {...{ left, top, width, height }}
+                onTransformStart={this.onTransformStart}
                 onTransforming={this.onTransforming}
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
@@ -593,7 +594,6 @@ export class GraphContainer extends React.Component<
                 dragHandle={
                   <DragHandle
                     isSelected={isSelected}
-                    onClick={this.onMouseSelect(frame.id, "Nodes")}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                   />
                 }

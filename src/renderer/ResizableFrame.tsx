@@ -52,6 +52,7 @@ const mouseDownDefault = {
   id: ""
 };
 type onTrans = (newDims: frame) => void;
+type transStart = (info: {id: string, event: MouseEvent}) => void
 const ResizableFrameDefaults = {
   props: {
     left: 0,
@@ -60,7 +61,7 @@ const ResizableFrameDefaults = {
     height: 0,
     id: "",
     isSelected: false,
-    onTransformStart: undefined as onTrans,
+    onTransformStart: undefined as transStart,
     onTransformEnd: undefined as onTrans,
     onTransforming: undefined as onTrans,
     children: <div /> as React.ReactNode,
@@ -194,6 +195,7 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
+    this.props.onTransformStart({event: e, id: this.props.id})
     e.stopPropagation();
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
