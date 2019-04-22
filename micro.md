@@ -1,8 +1,19 @@
-- select on mouse down
-    - remove hack at 845
-    - find it mouseselect
-      
+- min/max frame
+    - style: {max: {}, min: {}, modes: [min, max], modeIx: 0}
+        - get style func
+        - toggle through modes
+        - button to toggle
+            - where should the button go?
+                - 
 
+  
+    - on cmd, what happens
+        - change content
+        - resize frame to size of content
+    - 1106 where is frame size stored? -> node.style
+    - 1110 how to store multiple styles? 
+            - onmove?
+                - mousemove + max & min left/top
 
 
 
@@ -66,3 +77,4 @@
     - search for "" for magic strings
     - replace oc with get
     - typescript for rx->ontransforming in graphcontainer
+    - pdfview minhw with flex chain
