@@ -145,7 +145,8 @@ export class ResizableFrame extends React.Component<
     if (this.props.onTransforming) {
       this.props.onTransforming({
         id: this.props.id,
-        ...update[this.state.resizeInfo.location]
+        ...update[this.state.resizeInfo.location],
+        type: "resize"
       });
     }
 
@@ -207,7 +208,11 @@ export class ResizableFrame extends React.Component<
           };
           if (this.props.onTransforming) {
             // controlled
-            this.props.onTransforming({ id: this.props.id, ...update });
+            this.props.onTransforming({
+              id: this.props.id,
+              ...update,
+              type: "move"
+            });
           }
           //   else {
           //     this.setState(update);

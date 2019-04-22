@@ -1,6 +1,4 @@
-- move all selected 557
-    - select on hover
-    - remove isSelected
+- select on mouse down
 
 
 
@@ -17,28 +15,12 @@
 
 
 - lock links btw selection
-- 
-
-- 120 brainstorm
-    - if move linked
-        - all/all links
-    - if move group links
-        - all to one
-        - multiple groups, move one group?
-            - ven diagram, convex hull
-    
-    
-    - group node / box?
-    - 1ls, 2 notes
-        - move any, move all
-
 
     - move together
         - neighbors
         - selected
         - grouped 
-    - onCreate liveslice
-        - 
+    
     - render link thing
     - style
     - refactor link types
@@ -80,3 +62,4 @@
             - refactor with state.json converter
     - search for "" for magic strings
     - replace oc with get
+    - typescript for rx->ontransforming in graphcontainer

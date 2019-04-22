@@ -97,38 +97,47 @@ export class GraphContainer extends React.Component<
     //todo select with redux
   };
 
-  onTransforming = (transProps: frame | mData) => {
-    // todo if zoom
+  onTransforming = (transProps: any) => {
+    // todo ts
     // const zoomed = { ...transProps, top: transProps.top / this.state.zoom };
     // const updatedWindows = updateOneFrame(this.state.frames)(zoomed);
     //@ts-ignore
     const { movementX, movementY } = transProps;
+    // const
+    const idsToMove = this.props.selectedNodes.includes(transProps.id)
+      ? this.props.selectedNodes
+      : [...this.props.selectedNodes, transProps.id];
 
     this.setState(state => {
-      const updatedFrames = this.props.selectedNodes.reduce((frames, id) => {
-        const ix = frames.findIndex(w => w.id === id);
-        const { left, top } = frames[ix];
-        frames[ix] = {
-          ...frames[ix],
-          left: left + movementX / this.state.zoom,
-          top: top + movementY / this.state.zoom
-        };
-        return frames;
-      }, state.frames);
-      // const updatedFrames = updateOneFrame(state.frames)(transProps);
+      let updatedFrames;
+      if (transProps.type === "move") {
+        updatedFrames = produce(state.frames, frames => {
+          idsToMove.forEach(id => {
+            const ix = frames.findIndex(w => w.id === id);
+            const { left, top } = frames[ix];
+            frames[ix] = {
+              ...frames[ix],
+              left: left + movementX / this.state.zoom,
+              top: top + movementY / this.state.zoom
+            };
+          });
+        });
+      } else {
+        updatedFrames = updateOneFrame(state.frames)(transProps);
+      }
       return { frames: updatedFrames };
     });
   };
 
   onTransformEnd = (transProps: frame) => {
     // const { id, left, top, width, height } = transProps;
-    const selected = this.state.frames.filter(frame =>
-      this.props.selectedNodes.includes(frame.id)
-    ).map(x => {
-      const {isSelected, id, ...style} = x
-      return {id, style}
-    })
-    
+    const selected = this.state.frames
+      .filter(frame => this.props.selectedNodes.includes(frame.id))
+      .map(x => {
+        const { isSelected, id, ...style } = x;
+        return { id, style };
+      });
+
     this.props.updateBatch({
       nodes: selected
     });
