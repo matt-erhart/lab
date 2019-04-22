@@ -201,7 +201,9 @@ export class ResizableFrame extends React.Component<
         case "mousemove":
           const update = {
             top: this.cache.top + mData.dy / this.props.zoom,
-            left: this.cache.left + mData.dx / this.props.zoom
+            left: this.cache.left + mData.dx / this.props.zoom,
+            movementY: mData.movementY,
+            movementX: mData.movementX
           };
           if (this.props.onTransforming) {
             // controlled

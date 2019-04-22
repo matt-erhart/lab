@@ -9,6 +9,7 @@ import { NestedPartial } from "../renderer/utils";
 import path = require("path");
 import { oc } from "ts-optchain";
 import { frame } from "../renderer/ResizableFrame";
+import { devlog } from "./featureToggle";
 const settings = require("electron-settings");
 const { clientWidth } = document.documentElement;
 // stored in user/data.
@@ -136,6 +137,7 @@ export const app = createModel({
       return { ...state, portals: payload };
     },
     "graph/removeBatch": (state, payload) => {
+      // how to communicate across models
       console.log("graph/removeBatch -> close open portals")
       return { ...state, portals: [] };
     }

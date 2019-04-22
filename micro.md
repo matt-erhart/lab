@@ -1,40 +1,67 @@
-- id rxjs get 12
-    - 1147 open rx.ts
-    - 1157 newselect undefined or infinit
-    - 1200 click again
-    - 1206 if greenbox open and delete node
-        - ondelete redux, close all portals
-            - needs to be effect
-            - could be useful for next tasks?
-        - 1212 list to patches?
-- 1219 learn middleware
-    - 1226 (max 1245)
+- move all selected 557
+    - select on hover
+    - remove isSelected
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- lock links btw selection
+- 
+
+- 120 brainstorm
+    - if move linked
+        - all/all links
+    - if move group links
+        - all to one
+        - multiple groups, move one group?
+            - ven diagram, convex hull
+    
+    
+    - group node / box?
+    - 1ls, 2 notes
+        - move any, move all
+
+
+    - move together
+        - neighbors
+        - selected
+        - grouped 
+    - onCreate liveslice
+        - 
+    - render link thing
+    - style
+    - refactor link types
+    - move together
+    - select one, select others
+    - on create live slice
+    - listen to dispatch
+    - middleware
+    - on click link
+    - move neighbors, 
+
+
 
 
 
 - refactor creators/makeLink
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - state.json converter
-- updates in all editor instances with same id
 - mouse out but be able to type
     - add version numbers to datatypes
-    - good time to rename things
-    - make a state.json converter
 - right click menu w/ copy/paste
+
 - code quality
+    - dnd should use movementXY
     - slate editor
         - renderSlateNodes/marks reduce, move to new file
         - don't need data-graph-* in graph node

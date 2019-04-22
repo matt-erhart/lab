@@ -60,7 +60,9 @@ const mMap = (e: MouseEvent) => {
     dx: 0,
     dy: 0,
     ctrlKey: e.ctrlKey,
-    shiftKey: e.shiftKey
+    shiftKey: e.shiftKey,
+    movementX: e.movementX,
+    movementY: e.movementY
   };
 };
 export type mData = ReturnType<typeof mMap>;

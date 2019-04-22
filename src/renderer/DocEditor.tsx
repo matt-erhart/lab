@@ -381,7 +381,6 @@ export class DocEditor extends React.Component<
       clientBoxEdges.maxX - selectionEdges.minX > portalWidth
         ? selectionEdges.minX
         : clientBoxEdges.maxX - portalWidth;
-    console.log("left", diffs.maxX > portalWidth, element);
 
     const top = moreSpaceDown
       ? selectionEdges.maxY
@@ -460,7 +459,6 @@ export class DocEditor extends React.Component<
   wrapWithGraphNode = (node: UserDoc) => {
     const text = oc(node).data.text();
     const { id } = node;
-    console.log("@cursor", this.state.wordAtCursor, "text");
 
     this.editor
       .moveAnchorBackward(this.state.wordAtCursor.length)
@@ -811,7 +809,6 @@ export class DocEditor extends React.Component<
 
   render() {
     const { wordAtCursor, showAutoComplete } = this.state;
-    console.log(this.state.menuStyle);
 
     return (
       <OuterContainer

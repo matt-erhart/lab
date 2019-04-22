@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import produce from "immer";
 var equal = require("fast-deep-equal");
-import { dragData } from "./rx";
+import { dragData, mData } from "./rx";
 import { Subscription } from "rxjs";
 import { Rectangle, removeOverlaps } from "webcola";
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
@@ -27,6 +27,7 @@ import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
 import DocEditor from "./DocEditor";
+import { devlog } from "../store/featureToggle";
 
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
@@ -46,7 +47,7 @@ const GraphContainerDefaults = {
     scrollTop: 0,
     editingId: "",
     zoom: 0.65,
-    hideViewboxes: true
+    hideViewboxes: false
   }
 };
 const mapState = (state: iRootState) => ({
@@ -96,21 +97,40 @@ export class GraphContainer extends React.Component<
     //todo select with redux
   };
 
-  onTransforming = (transProps: frame) => {
+  onTransforming = (transProps: frame | mData) => {
     // todo if zoom
     // const zoomed = { ...transProps, top: transProps.top / this.state.zoom };
     // const updatedWindows = updateOneFrame(this.state.frames)(zoomed);
     //@ts-ignore
+    const { movementX, movementY } = transProps;
+
     this.setState(state => {
-      const updatedWindows = updateOneFrame(state.frames)(transProps);
-      return { frames: updatedWindows };
+      const updatedFrames = this.props.selectedNodes.reduce((frames, id) => {
+        const ix = frames.findIndex(w => w.id === id);
+        const { left, top } = frames[ix];
+        frames[ix] = {
+          ...frames[ix],
+          left: left + movementX / this.state.zoom,
+          top: top + movementY / this.state.zoom
+        };
+        return frames;
+      }, state.frames);
+      // const updatedFrames = updateOneFrame(state.frames)(transProps);
+      return { frames: updatedFrames };
     });
   };
 
   onTransformEnd = (transProps: frame) => {
-    const { id, left, top, width, height } = transProps;
+    // const { id, left, top, width, height } = transProps;
+    const selected = this.state.frames.filter(frame =>
+      this.props.selectedNodes.includes(frame.id)
+    ).map(x => {
+      const {isSelected, id, ...style} = x
+      return {id, style}
+    })
+    
     this.props.updateBatch({
-      nodes: [{ id, style: { left, top, width, height } }]
+      nodes: selected
     });
   };
 
@@ -531,6 +551,19 @@ export class GraphContainer extends React.Component<
             </svg>
           )}
           {this.state.frames.map(frame => {
+            // let dockedStyle = {};
+            // const isDocked =
+            //   frame.id === "09dee610-6468-11e9-892e-2530020548cf";
+            // if (isDocked) {
+            //   dockedStyle = this.props.nodes[
+            //     "51ec70d0-6472-11e9-a866-c13e6a44da9a"
+            //   ].style;
+            //   dockedStyle = {
+            //     ...dockedStyle,
+            //     top: dockedStyle.top + dockedStyle.height
+            //   };
+            // }
+
             const { left, top, width, height } = frame;
             const isSelected = this.isSelected(frame.id);
             const node = this.props.nodes[frame.id] as aNode;
@@ -654,3 +687,5 @@ const DragHandle = styled.div<{ isSelected: boolean }>`
     cursor: all-scroll;
   }
 `;
+
+const minViewboxNode = styled.div``;

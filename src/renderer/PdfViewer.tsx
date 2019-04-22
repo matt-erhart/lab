@@ -473,8 +473,6 @@ class PdfViewer extends React.Component<
       overflow= 'scroll'
     }
       
-    console.log(this.props.scrollAfterClick, this.state.activateScroll);
-
     // todo: set height and width and then scrollto
     return (
       <>

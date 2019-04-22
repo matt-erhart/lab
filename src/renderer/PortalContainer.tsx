@@ -110,8 +110,6 @@ class PortalContainer extends React.Component<
                     tabIndex={1}
                     onKeyDown={e => {
                       if (e.key === "Escape") {
-                        console.log('close?')
-                        
                         this.onClose(frame.id)(e)
                       }
                     }}
