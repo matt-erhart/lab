@@ -263,6 +263,9 @@ export class DocEditor extends React.Component<
   ref = editor => {
     this.editor = editor;
   };
+  componentWillUnmount() {
+    this.save();
+  }
 
   static getDerivedStateFromProps(props, state) {
     // todo perf patch
@@ -744,7 +747,7 @@ export class DocEditor extends React.Component<
   };
 
   save = e => {
-    e.stopPropagation();
+    !!e && e.stopPropagation();
     // this.setState({ isFocused: false });
     this.setState({
       wordAtCursor: "",
@@ -754,7 +757,7 @@ export class DocEditor extends React.Component<
     // if (e.target.id !== "EditorContainer") return null;
     const serialized = this.serialize(this.state.editorValue);
     if (serialized.base64 === this.getCurrentBase64()) return null;
-    this.cleanLinks()
+    this.cleanLinks();
     this.props.updateBatch({
       nodes: [
         {

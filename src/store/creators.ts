@@ -27,12 +27,18 @@ export interface NodeMeta {
 }
 
 import { Box } from "../renderer/utils";
-type corners = "nw" | "ne" | "sw" | "se"
-type modes = 'min' | 'max'
+type corners = "nw" | "ne" | "sw" | "se";
+type modes = "min" | "max";
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: { min: Box; max: Box; modes: modes[], modeIx: 0, lockedCorner: corners };
+  style: {
+    min: Box;
+    max: Box;
+    modes: modes[];
+    modeIx: 0;
+    lockedCorner: corners;
+  };
   meta: NodeMeta;
 }
 
@@ -83,16 +89,16 @@ export const makePdfSegmentViewbox = (
     width: width ? width + 116 : 200,
     height: height ? height + 120 : 200,
     ...style
-  }
+  };
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
       min: _style,
       max: _style,
-      modes: ['max', 'min'],
+      modes: ["max", "min"],
       modeIx: 0,
-      lockedCorner: 'nw'
+      lockedCorner: "nw"
     },
     meta: makeNodeMeta()
   } as PdfSegmentViewbox;
@@ -220,6 +226,12 @@ export const makeLink = (sourceId: string, targetId: string, data = {}) => {
   };
 };
 
+const defaultUserDocBox = {
+  left: 0,
+  top: 0,
+  width: 300,
+  height: 110
+};
 const UserDocDefaults = {
   id: "",
   data: {
@@ -230,22 +242,29 @@ const UserDocDefaults = {
   },
   meta: makeNodeMeta(),
   style: {
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 110,
+    min: { ...defaultUserDocBox, width: 300, height: 110 },
+    max: defaultUserDocBox,
+    modes: ["max", "min"],
+    modeIx: 0,
+    lockedCorner: "nw",
     fontSize: 26
   }
 };
 export type UserDoc = typeof UserDocDefaults;
-export const makeUserDoc = (props = { data: {}, style: {} }) => {
+export const makeUserDoc = (
+  props = { data: {}, style: { min: {}, max: {} } }
+) => {
   const data = { ...props.data };
   const id = uuidv1();
   return {
     ...UserDocDefaults,
     id,
     data: { ...UserDocDefaults.data, ...data },
-    style: { ...UserDocDefaults.style, ...props.style }
+    style: {
+      ...UserDocDefaults.style,
+      min: { ...UserDocDefaults.style.min, ...props.style.min },
+      max: { ...UserDocDefaults.style.max, ...props.style.max }
+    }
   };
 };
 

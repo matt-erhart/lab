@@ -415,12 +415,18 @@ class PageSvg extends React.Component<
       viewbox = this.onAddViewbox(selectionRect);
     }
 
-    const segStyle = this.props.nodes[viewbox.id].style;
+    const segStyle = this.props.nodes[viewbox.id].style.min;
+    const tHeight = 200;
     const newTextStyle = {
-      left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
-      top: 20 + segStyle.top + segStyle.height
+      left: segStyle.left,
+      top: segStyle.top - tHeight,
+      height: tHeight,
+      width: 200
     };
-    const htmlNode = makeUserDoc({ data: {}, style: newTextStyle });
+    const htmlNode = makeUserDoc({
+      data: {},
+      style: { min: newTextStyle, max: newTextStyle }
+    });
     const newLink = makeLink(viewbox.id, htmlNode.id, {
       text: "compress",
       html: "<p>compress</p>"
@@ -448,13 +454,21 @@ class PageSvg extends React.Component<
 
     let htmlNodes = nodes.filter(node => node.data.type === "userDoc");
     if (htmlNodes.length === 0) {
-      const segStyle = this.props.nodes[segmentId].style;
+      const segStyle = this.props.nodes[segmentId].style.min;
+      const tHeight = 200;
       const newTextStyle = {
-        left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
-        top: 20 + segStyle.top + segStyle.height
+        left: segStyle.left,
+        top: segStyle.top - tHeight,
+        height: tHeight,
+        width: segStyle.width
       };
 
-      htmlNodes.push(makeUserDoc({ data: {}, style: newTextStyle }));
+      htmlNodes.push(
+        makeUserDoc({
+          data: {},
+          style: { min: newTextStyle, max: newTextStyle }
+        })
+      );
       const newLink = makeLink(segmentId, htmlNodes[0].id, {
         text: "compress",
         html: "<p>compress</p>"
@@ -495,8 +509,8 @@ class PageSvg extends React.Component<
     const spaceRight = clientWidth - bounding.right;
 
     const isOneNode = htmlNodes.length === 1;
-    const defaultWidth = isOneNode ? htmlNodes[0].style.width : 300;
-    const defaultHeight = isOneNode ? htmlNodes[0].style.height : 100;
+    const defaultWidth = isOneNode ? htmlNodes[0].style.max.width : 300;
+    const defaultHeight = isOneNode ? htmlNodes[0].style.max.height : 100;
 
     let frames = [];
     let shift = 0;

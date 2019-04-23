@@ -3,7 +3,14 @@ import styled from "styled-components";
 import produce from "immer";
 
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
-import { getBoxEdges, isBoxInBox, isBoxPartlyInBox, unique, get } from "./utils";
+import {
+  getBoxEdges,
+  isBoxInBox,
+  isBoxPartlyInBox,
+  unique,
+  get,
+  collision
+} from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import PdfViewer from "./PdfViewer";
@@ -24,6 +31,7 @@ import { FileIcon } from "./Icons";
 import DocEditor from "./DocEditor";
 import { devlog } from "../store/featureToggle";
 import { MdZoomOutMap } from "react-icons/md";
+import { dragData } from "./rx";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -41,8 +49,9 @@ const GraphContainerDefaults = {
     scrollLeft: 0,
     scrollTop: 0,
     editingId: "",
-    zoom: 0.65,
-    hideViewboxes: false
+    zoom: 1,
+    hideViewboxes: false,
+    dragCoords: { x1: NaN, x2: NaN, y1: NaN, y2: NaN }
   }
 };
 const mapState = (state: iRootState) => ({
@@ -95,7 +104,9 @@ export class GraphContainer extends React.Component<
   }
 
   onTransformStart = ({ event, id }) => {
-    this.onMouseSelect(id, "Nodes")(event);
+    if (event.button === 0) {
+      this.onMouseSelect(id, "Nodes")(event);
+    }
   };
 
   onTransforming = (transProps: any) => {
@@ -124,15 +135,15 @@ export class GraphContainer extends React.Component<
           });
         });
       } else {
-        console.log(state.frames[0], transProps)
-        
+        console.log(state.frames[0], transProps);
+
         updatedFrames = updateOneFrame(state.frames)(transProps);
       }
       return { frames: updatedFrames };
     });
   };
 
-  onTransformEnd = (transProps: frame) => {    
+  onTransformEnd = (transProps: frame) => {
     // const { id, left, top, width, height } = transProps;
     const selected = this.state.frames
       .filter(frame => this.props.selectedNodes.includes(frame.id))
@@ -150,14 +161,13 @@ export class GraphContainer extends React.Component<
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const relevantPatch =
-      this.props.patches !== prevProps.patches &&
-      this.props.patches[0].path.includes('modeIx')
-      // !!get(this.props.patches, p => p[0].value.modeIx)
-    console.log(relevantPatch,  this.props.patches)
+    const hasModeIx = get(this.props.patches, p =>
+      p[0].path.includes("modeIx")
+    );
+    const relevantPatch = this.props.patches !== prevProps.patches && hasModeIx;
 
     // todo perf. use patches
-    if (  
+    if (
       Object.values(prevProps.nodes).length !==
         Object.values(this.props.nodes).length ||
       Object.values(prevProps.links).length !==
@@ -195,15 +205,15 @@ export class GraphContainer extends React.Component<
     });
 
     const isInView = isBoxPartlyInBox(view);
-    const nodesFiltered = Object.values(this.props.nodes).filter(
-      n => n.data.type === "pdf.segment.viewbox"
+    const nodesFiltered = Object.values(this.props.nodes).filter(n =>
+      ["pdf.segment.viewbox", "userDoc"].includes(n.data.type)
     );
 
     const framesInView = nodesFiltered.reduce((all, node) => {
       const mode = node.style.modes[node.style.modeIx];
-      
+
       const { left, top, width, height } = node.style[mode];
-      console.log('MODE ' , mode, left, top, width, height)
+      console.log("MODE ", mode, left, top, width, height);
 
       const edges = getBoxEdges({ left, top, width, height });
       const inView = true || isInView(edges);
@@ -315,7 +325,11 @@ export class GraphContainer extends React.Component<
   };
 
   deselectAll = e => {
-    if (!e.shiftKey && e.target.id === "SvgLayer")
+    if (
+      !e.shiftKey &&
+      e.target.id === "SvgLayer" &&
+      !!this.dragCoordsToRect(this.state.dragCoords, this.state.zoom)
+    )
       this.props.toggleSelections({
         selectedNodes: [],
         selectedLinks: [],
@@ -347,10 +361,14 @@ export class GraphContainer extends React.Component<
     const { left, top } = e.currentTarget.getBoundingClientRect();
     const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
     if (allowId) {
+      const xy = {
+        left: (clientX - left) / this.state.zoom,
+        top: (clientY - top) / this.state.zoom
+      };
       const userHtml = makeUserDoc({
         style: {
-          left: (clientX - left) / this.state.zoom,
-          top: (clientY - top) / this.state.zoom
+          min: xy,
+          max: xy
         }
       });
       this.props.addBatch({ nodes: [userHtml] });
@@ -478,7 +496,13 @@ export class GraphContainer extends React.Component<
           pageNumber
         } = node.data as ViewboxData;
 
+        const { modeIx, modes } = node.style;
+        const isMin = modes[modeIx] === "min";
+
         const pagenum = [pageNumber];
+        if (isMin) {
+          return <div>{pdfDir}</div>;
+        }
 
         return (
           <PdfViewer
@@ -521,8 +545,96 @@ export class GraphContainer extends React.Component<
     }
   };
 
+  startSelect = e => {
+    if (e.target.id !== "SvgLayer") return null;
+    const {
+      left: bbLeft,
+      top: bbTop
+    } = this.mapRef.current.getBoundingClientRect();
+
+    dragData(e).subscribe(data => {
+      const x = data.clientX - bbLeft;
+      const y = data.clientY - bbTop;
+      switch (data.type) {
+        case "mousedown":
+          this.setState(state => ({
+            dragCoords: {
+              x1: x / state.zoom,
+              y1: y / state.zoom,
+              x2: NaN,
+              y2: NaN
+            }
+          }));
+          break;
+        case "mousemove":
+          this.setState(state => ({
+            dragCoords: {
+              ...state.dragCoords,
+              x2: x / state.zoom,
+              y2: y / state.zoom
+            }
+          }));
+          break;
+        case "mouseup":
+          const { x: left, y: top, width, height } = this.dragCoordsToRect(
+            this.state.dragCoords,
+            this.state.zoom
+          ) || { x: 0, y: 0, width: 0, height: 0 };
+          const selection = getBoxEdges({ left, top, width, height });
+          const isInSelection = collision(selection);
+          console.log("selection", selection);
+
+          const selectedIds = this.state.frames.reduce((all, frame) => {
+            const frameEdges = getBoxEdges(frame);
+            if (isInSelection(frameEdges)) {
+              all.push(frame.id);
+            }
+            return all;
+          }, []);
+          console.log("selectedIds", selectedIds);
+
+          if (selectedIds.length > 0) {
+            this.props.toggleSelections({
+              selectedNodes: selectedIds,
+              clearFirst: true
+            });
+          } else {
+            this.props.toggleSelections({
+              selectedNodes: [],
+              selectedLinks: [],
+              clearFirst: true
+            });
+          }
+
+          this.setState({
+            dragCoords: GraphContainerDefaults.state.dragCoords
+          });
+          break;
+      }
+    });
+  };
+
+  dragCoordsToRect = (
+    dragCoords: typeof GraphContainerDefaults.state.dragCoords,
+    zoom: number
+  ) => {
+    const x = Math.min(dragCoords.x1, dragCoords.x2);
+    const y = Math.min(dragCoords.y1, dragCoords.y2);
+    const width = Math.abs(dragCoords.x1 - dragCoords.x2);
+    const height = Math.abs(dragCoords.y1 - dragCoords.y2);
+    console.log(x, y, width, height, [x, y, width, height].includes(NaN));
+    if ([x, y, width, height].includes(NaN)) {
+      return undefined;
+    }
+    return { x, y, width, height };
+  };
+
   render() {
     const { width, height } = this.state.containerBounds;
+    const rectCoords = this.dragCoordsToRect(
+      this.state.dragCoords,
+      this.state.zoom
+    );
 
     return (
       <ScrollContainer
@@ -533,6 +645,7 @@ export class GraphContainer extends React.Component<
         tabIndex={0}
         onClick={this.deselectAll}
         onWheel={this.onWheel}
+        style={{ userSelect: "none" }}
       >
         <MapContainer
           id="GraphMapContainer"
@@ -540,6 +653,7 @@ export class GraphContainer extends React.Component<
           zoom={this.state.zoom}
           height={4000}
           width={4000}
+          onMouseDown={this.startSelect}
         >
           {width && height && (
             <svg
@@ -558,6 +672,9 @@ export class GraphContainer extends React.Component<
               onClick={this.deselectAll}
               onContextMenu={this.makeNodeAndLinkIt}
             >
+              {rectCoords && (
+                <rect {...rectCoords} stroke="black" fill="none" />
+              )}
               {this.state.links.length > 0 &&
                 this.state.links.map(link => {
                   const sourceFrame = this.state.frames.find(
@@ -611,17 +728,22 @@ export class GraphContainer extends React.Component<
                 isSelected={isSelected}
                 zoom={this.state.zoom}
                 hide={hide}
+                mode={get(node, n => n.style.modes[n.style.modeIx])}
                 dragHandle={
                   <DragHandle
-                    id='drag-handle'
+                    id="drag-handle"
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                   >
                     <DragHandleButton
-                    id='drag-handle-button'
+                      id="drag-handle-button"
                       onClick={e => {
                         e.stopPropagation();
-                        if (e.target.id === 'drag-handle-button') {
+                        if (e.target.id === "drag-handle-button") {
+                          this.props.toggleSelections({
+                            selectedNodes: [frame.id],
+                            clearFirst: true
+                          });
                           this.props.toggleStyleMode({ id: frame.id });
                         }
                       }}
