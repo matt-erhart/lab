@@ -52,7 +52,7 @@ const mouseDownDefault = {
   id: ""
 };
 type onTrans = (newDims: frame) => void;
-type transStart = (info: {id: string, event: MouseEvent}) => void
+type transStart = (info: { id: string; event: MouseEvent }) => void;
 const ResizableFrameDefaults = {
   props: {
     left: 0,
@@ -180,7 +180,9 @@ export class ResizableFrame extends React.Component<
   sub: Subscription;
   onMouseDownResize = e => {
     if (e.target.id !== "frame") return null;
-
+    const { left, top, width, height } = this.props;
+    this.cache = { ...this.cache, left, top, width, height };
+    
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
       switch (mData.type) {
@@ -195,8 +197,8 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
-    if (e.target.id !== 'drag-handle') return null;    
-    this.props.onTransformStart({event: e, id: this.props.id})
+    if (e.target.id !== "drag-handle") return null;
+    this.props.onTransformStart({ event: e, id: this.props.id });
     e.stopPropagation();
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
@@ -256,7 +258,7 @@ export class ResizableFrame extends React.Component<
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
-          id: 'drag-handle',
+          id: "drag-handle",
           ...this.props.dragHandle.props,
           draggable: false,
           onMouseDown: this.onMouseDownMove

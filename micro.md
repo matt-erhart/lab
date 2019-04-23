@@ -1,5 +1,7 @@
 - min/max frame
-    - resizable frame cache gets out of sync
+    - resizable frame cache gets out of sync 712-730
+    - 725 ltwh
+
     
 follow types        
             
