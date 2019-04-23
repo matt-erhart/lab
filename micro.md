@@ -1,28 +1,6 @@
 - min/max frame
-    - style: {max: {}, min: {}, modes: [min, max], modeIx: 0}
-        - get style func
-        - toggle through modes
-        - button to toggle
-            - where should the button go?
-    - 1134 add style modes 2pm  
-        - if min and move and then max
-            - max/min width/height
-            - min and move
-                - update its left/top
-                - update other left/top on toggle mode
-        - filter to viewboxes 
-        - change make viewboxes
-        - on save to redux box
-        - switch modes
-            - where does it matter
-                - redux
-        - onclick dragbar
-        - onClick bar button
-        - call props.togg
-        - modeix not changing , just not in dev tool
-        - why not changing size, bubbling
-        - why not rendering on switch
-
+    - resizable frame cache gets out of sync
+    
 follow types        
             
         

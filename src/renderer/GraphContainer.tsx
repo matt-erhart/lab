@@ -124,6 +124,8 @@ export class GraphContainer extends React.Component<
           });
         });
       } else {
+        console.log(state.frames[0], transProps)
+        
         updatedFrames = updateOneFrame(state.frames)(transProps);
       }
       return { frames: updatedFrames };
@@ -149,8 +151,10 @@ export class GraphContainer extends React.Component<
 
   componentDidUpdate(prevProps, prevState) {
     const relevantPatch =
-      this.props.patches !== prevProps.patches 
-    console.log(relevantPatch, get(this.props.patches, p => p[0].value.style.modeIx))
+      this.props.patches !== prevProps.patches &&
+      this.props.patches[0].path.includes('modeIx')
+      // !!get(this.props.patches, p => p[0].value.modeIx)
+    console.log(relevantPatch,  this.props.patches)
 
     // todo perf. use patches
     if (  
@@ -614,9 +618,12 @@ export class GraphContainer extends React.Component<
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                   >
                     <DragHandleButton
+                    id='drag-handle-button'
                       onClick={e => {
                         e.stopPropagation();
-                        this.props.toggleStyleMode({ id: frame.id });
+                        if (e.target.id === 'drag-handle-button') {
+                          this.props.toggleStyleMode({ id: frame.id });
+                        }
                       }}
                     >
                       min/max
