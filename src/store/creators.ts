@@ -6,9 +6,6 @@ import path = require("path");
 import Plain from "slate-plain-serializer";
 import convertBase64 from "slate-base64-serializer";
 
-// todo! nodes are now frames
-// viewbox left/top should be scrollLeft/scrollTop
-
 export type NodeDataTypes =
   | "empty"
   | "userDoc" // document made by user after writing
@@ -29,10 +26,13 @@ export interface NodeMeta {
   editors?: string[];
 }
 
+import { Box } from "../renderer/utils";
+type corners = "nw" | "ne" | "sw" | "se"
+type modes = 'min' | 'max'
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: { left: number; top: number; width: number; height: number };
+  style: { min: Box; max: Box; modes: modes[], modeIx: 0, lockedCorner: corners };
   meta: NodeMeta;
 }
 
@@ -75,25 +75,24 @@ export const makePdfSegmentViewbox = (
 ) => {
   const now = Date.now();
   const id = uuidv1();
-  console.log({ ...ViewboxDataDefault, ...viewbox });
   const { width, height } = viewbox;
-
+  const _style = {
+    id: id,
+    left: Math.random() * 200 + 20,
+    top: Math.random() * 200 + 20,
+    width: width ? width + 116 : 200,
+    height: height ? height + 120 : 200,
+    ...style
+  }
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
-      id: id,
-      type: "circle",
-      left: Math.random() * 200 + 20,
-      top: Math.random() * 200 + 20,
-      width: width ? width + 116 : 200,
-      height: height ? height + 120 : 200,
-      fill: "blue",
-      draggabled: true,
-      radius: 5,
-      stroke: "blue",
-      strokeWidth: 4,
-      ...style
+      min: _style,
+      max: _style,
+      modes: ['max', 'min'],
+      modeIx: 0,
+      lockedCorner: 'nw'
     },
     meta: makeNodeMeta()
   } as PdfSegmentViewbox;
@@ -250,11 +249,7 @@ export const makeUserDoc = (props = { data: {}, style: {} }) => {
   };
 };
 
-export type aNode =
-  | PdfSegmentViewbox
-  | Empty
-  | PdfPublication
-  | AutoGrab;
+export type aNode = PdfSegmentViewbox | Empty | PdfPublication | AutoGrab;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

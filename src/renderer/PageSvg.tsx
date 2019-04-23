@@ -6,7 +6,6 @@ import { PageOfText } from "./io";
 import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
-import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
@@ -16,7 +15,6 @@ import {
   makeLink,
   makeUserDoc
 } from "../store/creators";
-import PortalContainer from "./PortalContainer";
 // todo consistant CAPS
 import { getNeighborhood } from "./graphUtils";
 /**

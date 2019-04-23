@@ -1,12 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 import produce from "immer";
-var equal = require("fast-deep-equal");
-import { dragData, mData } from "./rx";
-import { Subscription } from "rxjs";
-import { Rectangle, removeOverlaps } from "webcola";
+
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
-import { getBoxEdges, isBoxInBox, isBoxPartlyInBox, unique } from "./utils";
+import { getBoxEdges, isBoxInBox, isBoxPartlyInBox, unique, get } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import PdfViewer from "./PdfViewer";
@@ -14,7 +11,6 @@ import {
   ViewboxData,
   NodeDataTypes,
   aNode,
-  makeUserHtml,
   makeLink,
   aLink,
   Links,
@@ -23,12 +19,11 @@ import {
   AutoGrab,
   makeUserDoc
 } from "../store/creators";
-import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
 import DocEditor from "./DocEditor";
 import { devlog } from "../store/featureToggle";
-
+import { MdZoomOutMap } from "react-icons/md";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -62,14 +57,21 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch, updateBatch, toggleSelections },
+  graph: {
+    addBatch,
+    removeBatch,
+    updateBatch,
+    toggleSelections,
+    toggleStyleMode
+  },
   app: { setMainPdfReader }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   updateBatch,
   toggleSelections,
-  setMainPdfReader
+  setMainPdfReader,
+  toggleStyleMode
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -92,8 +94,8 @@ export class GraphContainer extends React.Component<
     window.addEventListener("resize", this.setSize);
   }
 
-  onTransformStart = ({event, id}) => {
-    this.onMouseSelect(id, 'Nodes')(event)
+  onTransformStart = ({ event, id }) => {
+    this.onMouseSelect(id, "Nodes")(event);
   };
 
   onTransforming = (transProps: any) => {
@@ -128,13 +130,16 @@ export class GraphContainer extends React.Component<
     });
   };
 
-  onTransformEnd = (transProps: frame) => {
+  onTransformEnd = (transProps: frame) => {    
     // const { id, left, top, width, height } = transProps;
     const selected = this.state.frames
       .filter(frame => this.props.selectedNodes.includes(frame.id))
       .map(x => {
         const { isSelected, id, ...style } = x;
-        return { id, style };
+        const nodeStyle = this.props.nodes[id].style;
+        const mode = nodeStyle.modes[nodeStyle.modeIx];
+
+        return { id, style: { ...nodeStyle, [mode]: style } };
       });
 
     this.props.updateBatch({
@@ -143,12 +148,17 @@ export class GraphContainer extends React.Component<
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const relevantPatch =
+      this.props.patches !== prevProps.patches 
+    console.log(relevantPatch, get(this.props.patches, p => p[0].value.style.modeIx))
+
     // todo perf. use patches
-    if (
+    if (  
       Object.values(prevProps.nodes).length !==
         Object.values(this.props.nodes).length ||
       Object.values(prevProps.links).length !==
-        Object.values(this.props.links).length
+        Object.values(this.props.links).length ||
+      relevantPatch
     ) {
       this.getFramesInView(this.state.containerBounds);
     }
@@ -181,8 +191,16 @@ export class GraphContainer extends React.Component<
     });
 
     const isInView = isBoxPartlyInBox(view);
-    const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
-      const { left, top, width, height } = node.style;
+    const nodesFiltered = Object.values(this.props.nodes).filter(
+      n => n.data.type === "pdf.segment.viewbox"
+    );
+
+    const framesInView = nodesFiltered.reduce((all, node) => {
+      const mode = node.style.modes[node.style.modeIx];
+      
+      const { left, top, width, height } = node.style[mode];
+      console.log('MODE ' , mode, left, top, width, height)
+
       const edges = getBoxEdges({ left, top, width, height });
       const inView = true || isInView(edges);
       if (inView) {
@@ -271,7 +289,7 @@ export class GraphContainer extends React.Component<
   };
 
   onMouseSelect = (id, nodesOrLinks: "Nodes" | "Links") => e => {
-    devlog('onmousedown')
+    devlog("onmousedown");
     e.stopPropagation();
 
     const isSelected = this.isSelected(id);
@@ -307,7 +325,7 @@ export class GraphContainer extends React.Component<
       e.target.id === "SvgLayer" &&
       this.props.selectedNodes.length > 0
     ) {
-      const targetId = this.makeUserHtmlNode(e);
+      const targetId = this.makeUserHtmlNode(e); //!todo
       if (targetId.length > 0) {
         const newLinks = this.linkSelectedToNode(
           this.props.nodes,
@@ -501,8 +519,6 @@ export class GraphContainer extends React.Component<
 
   render() {
     const { width, height } = this.state.containerBounds;
-    const f1 = this.state.frames[0];
-    const f2 = this.state.frames[1];
 
     return (
       <ScrollContainer
@@ -593,9 +609,19 @@ export class GraphContainer extends React.Component<
                 hide={hide}
                 dragHandle={
                   <DragHandle
+                    id='drag-handle'
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
-                  />
+                  >
+                    <DragHandleButton
+                      onClick={e => {
+                        e.stopPropagation();
+                        this.props.toggleStyleMode({ id: frame.id });
+                      }}
+                    >
+                      min/max
+                    </DragHandleButton>
+                  </DragHandle>
                 }
               >
                 {this.renderGraphNodes(frame)}
@@ -685,10 +711,10 @@ const MapContainer = styled(ZoomDiv)`
   transform-origin: top left;
   transform: scale(${p => p.zoom});
 `;
-// calc(var(--width) / var(--zoom)),
-// calc(var(--height) / var(--zoom))
+
 const DragHandle = styled.div<{ isSelected: boolean }>`
-  min-height: 10px;
+  min-height: 16px;
+  font-size: 12px;
   background-color: ${props => (props.isSelected ? "lightblue" : "grey")};
   flex: 0;
   user-select: none;
@@ -697,4 +723,11 @@ const DragHandle = styled.div<{ isSelected: boolean }>`
   }
 `;
 
-const minViewboxNode = styled.div``;
+const DragHandleButton = styled.span`
+  outline: 1px solid black;
+  background: white;
+  cursor: pointer;
+  vertical-align: middle;
+  margin: 3px;
+  margin-top: 1px;
+`;

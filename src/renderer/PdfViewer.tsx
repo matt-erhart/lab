@@ -177,7 +177,7 @@ class PdfViewer extends React.Component<
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
       const viewboxes = produce(state.viewboxes, draft => {
-        props.patches.forEach(patch => {
+        props.patches.filter(p => !!p.value.data).forEach(patch => {
           const id = patch.value.id;
 
           if (

@@ -195,6 +195,7 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
+    if (e.target.id !== 'drag-handle') return null;    
     this.props.onTransformStart({event: e, id: this.props.id})
     e.stopPropagation();
     this.isMouseDown = true;
@@ -255,6 +256,7 @@ export class ResizableFrame extends React.Component<
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
+          id: 'drag-handle',
           ...this.props.dragHandle.props,
           draggable: false,
           onMouseDown: this.onMouseDownMove

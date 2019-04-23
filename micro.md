@@ -4,17 +4,28 @@
         - toggle through modes
         - button to toggle
             - where should the button go?
-                - 
+    - 1134 add style modes 2pm  
+        - if min and move and then max
+            - max/min width/height
+            - min and move
+                - update its left/top
+                - update other left/top on toggle mode
+        - filter to viewboxes 
+        - change make viewboxes
+        - on save to redux box
+        - switch modes
+            - where does it matter
+                - redux
+        - onclick dragbar
+        - onClick bar button
+        - call props.togg
+        - modeix not changing , just not in dev tool
+        - why not changing size, bubbling
+        - why not rendering on switch
 
-  
-    - on cmd, what happens
-        - change content
-        - resize frame to size of content
-    - 1106 where is frame size stored? -> node.style
-    - 1110 how to store multiple styles? 
-            - onmove?
-                - mousemove + max & min left/top
-
+follow types        
+            
+        
 
 
 
