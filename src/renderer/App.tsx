@@ -106,7 +106,7 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 
   if (!featureToggles.showAutoGrab) {
     // do not show auto-grab, return directly
-    return newPubs;
+    return {newNodes:newPubs,newLinks:[]}
   } else {
     return createAutoGrabNodesAndLinkToPublicationNodes(
       pdfDirs,
@@ -132,14 +132,14 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
-    const newNodes = await processNewPdfs(
+    const {newNodes,newLinks} = await processNewPdfs(
       // Destructuring assignment
       this.props.pdfRootDir,
       this.props.nodes
     );
 
     if (newNodes.length > 0) {
-      this.props.addBatch({ nodes: newNodes });
+      this.props.addBatch({ nodes: newNodes,links:newLinks });
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
     }
