@@ -9,7 +9,8 @@ import {
   isBoxPartlyInBox,
   unique,
   get,
-  collision
+  collision,
+  sortBy
 } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
@@ -135,8 +136,6 @@ export class GraphContainer extends React.Component<
           });
         });
       } else {
-        console.log(state.frames[0], transProps);
-
         updatedFrames = updateOneFrame(state.frames)(transProps);
       }
       return { frames: updatedFrames };
@@ -204,26 +203,22 @@ export class GraphContainer extends React.Component<
       height: (height + pad) / this.state.zoom
     });
 
-    const isInView = isBoxPartlyInBox(view);
+    const isInView = collision(view);
     const nodesFiltered = Object.values(this.props.nodes).filter(n =>
       ["pdf.segment.viewbox", "userDoc"].includes(n.data.type)
     );
 
     const framesInView = nodesFiltered.reduce((all, node) => {
       const mode = node.style.modes[node.style.modeIx];
-
       const { left, top, width, height } = node.style[mode];
-      console.log("MODE ", mode, left, top, width, height);
-
       const edges = getBoxEdges({ left, top, width, height });
-      const inView = true || isInView(edges);
+      const inView = isInView(edges);
       if (inView) {
         const isSelected = this.props.selectedNodes.includes(node.id);
         all.push({ id: node.id, left, top, width, height, isSelected });
       }
       return all;
     }, []);
-    //1234
 
     const linkIds = framesInView.reduce((all, frame) => {
       const linkIds = this.getLinksIdsOnNode(frame.id, this.props.links);
@@ -266,7 +261,6 @@ export class GraphContainer extends React.Component<
     if (e.target.id !== "GraphScrollContainer") return null;
     //Wrapper around div. Inside is a Slate component?
     //Huge pain: event bubbling?? ID trick to prevent
-    console.log(e.key); // Delete
     switch (e.key) {
       case "Delete":
         if (
@@ -284,8 +278,6 @@ export class GraphContainer extends React.Component<
           });
         }
       case "h":
-        console.log("key cmd");
-
         if (e.ctrlKey)
           this.setState(state => {
             return { hideViewboxes: !state.hideViewboxes };
@@ -501,11 +493,7 @@ export class GraphContainer extends React.Component<
 
         const pagenum = [pageNumber];
         if (isMin) {
-          return (
-            <div style={{ color: "green", fontSize: 16 }}>
-              {pdfDir}
-            </div>
-          );
+          return <div style={{ color: "green", fontSize: 16 }}>{pdfDir}</div>;
         }
 
         return (
@@ -586,7 +574,6 @@ export class GraphContainer extends React.Component<
           ) || { x: 0, y: 0, width: 0, height: 0 };
           const selection = getBoxEdges({ left, top, width, height });
           const isInSelection = collision(selection);
-          console.log("selection", selection);
 
           const selectedIds = this.state.frames.reduce((all, frame) => {
             const frameEdges = getBoxEdges(frame);
@@ -595,7 +582,6 @@ export class GraphContainer extends React.Component<
             }
             return all;
           }, []);
-          console.log("selectedIds", selectedIds);
 
           if (selectedIds.length > 0) {
             this.props.toggleSelections({
@@ -626,11 +612,36 @@ export class GraphContainer extends React.Component<
     const y = Math.min(dragCoords.y1, dragCoords.y2);
     const width = Math.abs(dragCoords.x1 - dragCoords.x2);
     const height = Math.abs(dragCoords.y1 - dragCoords.y2);
-    console.log(x, y, width, height, [x, y, width, height].includes(NaN));
     if ([x, y, width, height].includes(NaN)) {
       return undefined;
     }
     return { x, y, width, height };
+  };
+
+  nextNodeLocation = framesInView => {
+    // figure out where to put stuff
+    // on
+    console.log(framesInView);
+
+    const sorted = framesInView.sort(sortBy("left"));
+    for (let f1 of sorted) {
+      const possibleSpace = getBoxEdges({
+        left: f1.left,
+        top: f1.top + f1.height,
+        height: 200,
+        width: 200
+      });
+      const checkCollision = collision(possibleSpace);
+      for (let f2 of sorted) {
+        const edges = getBoxEdges(f2);
+        const isSpaceFree = checkCollision(edges);
+        if (isSpaceFree) {
+          const { minX, minY, maxX, maxY } = possibleSpace;
+          return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+        }
+      }
+    }
+    return undefined;
   };
 
   render() {
@@ -639,6 +650,7 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
+    const nextNodeLoc = this.nextNodeLocation(this.state.frames);
 
     return (
       <ScrollContainer
@@ -678,6 +690,13 @@ export class GraphContainer extends React.Component<
             >
               {rectCoords && (
                 <rect {...rectCoords} stroke="black" fill="none" />
+              )}
+              {nextNodeLoc && (
+                <rect
+                  {...nextNodeLoc}
+                  stroke="blue"
+                  fill="white"
+                />
               )}
               {this.state.links.length > 0 &&
                 this.state.links.map(link => {

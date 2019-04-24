@@ -116,7 +116,9 @@ class PageSvg extends React.Component<
     } = source.style as any;
     const style = {
       left: gLeft + Math.random() * 60,
-      top: gTop + gHeight + Math.random() * 60
+      top: gTop + gHeight + Math.random() * 60,
+      width,
+      height
     };
 
     // note we save with scale = 1

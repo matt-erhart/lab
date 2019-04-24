@@ -27,12 +27,14 @@
 - update batch of deleted node
 - dark green bar
 - default to min
-- place in open space, but on screen
+- max size
+- fix virtualize
 
+- place in open space, but on screen
 - svg layer padding?
 - resize frame covers padding
 - select neighbors
-
+- show links partially in view
 
     
 follow types        

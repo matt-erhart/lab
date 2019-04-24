@@ -91,8 +91,8 @@ export const makePdfSegmentViewbox = (
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
-      min: { ..._style, width: 220, height: 60, ...style },
-      max: { ..._style, width, height, ...style },
+      min: { ..._style, ...style, width: 220, height: 60 },
+      max: { ..._style, ...style, width: width + 100, height: height + 100 },
       modes: ["min", "max"],
       modeIx: 0,
       lockedCorner: "nw"
