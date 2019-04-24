@@ -1,41 +1,14 @@
-- min/max frame
-    - resizable frame cache gets out of sync 712-730
-    - 725 ltwh
-- swap content
-- render on toggle
-    - not rerendering
-- show userDocs
-    - update style
-- left/top userdoc sync
-    - if not selected, height no work
-    - on mouse down select one
-    - on toggle select one
-- save on escape close
-- place text seg top/left
-    - is newtexstyle getting to redux
-- right click to link canvas
-- right click to link nodes (prevent deselect)
-- ctrl-shift click placement on canvas
-------
-- draw select box
-    - why NaN
-    - zoom
-    - on mouse up box partly in box
-    - on click canvas deselect
-- selected above
-- right click canvasf
-- update batch of deleted node
-- dark green bar
-- default to min
-- max size
-- fix virtualize
+- xy vs left right
+- show on mount
+- possibleSpaces
 
-- place in open space, but on screen
+
+
 - svg layer padding?
 - resize frame covers padding
 - select neighbors
 - show links partially in view
-
+- LS position if not showing 
     
 follow types        
             
@@ -58,7 +31,6 @@ follow types
     - move together
         - neighbors
         - selected
-        - grouped 
     
     - render link thing
     - style

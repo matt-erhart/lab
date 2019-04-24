@@ -2,7 +2,7 @@ import { init, RematchRootState, createModel } from "@rematch/core";
 import produce, { original } from "immer";
 import { Nodes, Links, aNode, aLink, LinkBase } from "./creators";
 import jsonfile = require("jsonfile");
-import { NestedPartial } from "../renderer/utils";
+import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
 import { frame } from "../renderer/ResizableFrame";
 const settings = require("electron-settings");
@@ -32,6 +32,7 @@ export let defaultApp = {
       pdfDir: ""
     },
     graphContainer: {
+      // todo left/top are scroll to
       left: 0,
       top: 0,
       width: "50vw",
@@ -44,7 +45,8 @@ export let defaultApp = {
       | "synthesisOutlineEditor"
     // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
   },
-  portals: [] as frame[]
+  portals: [] as frame[],
+  nextNodeLocation: undefined as Box
 };
 
 let defaultGraph = {
@@ -52,7 +54,7 @@ let defaultGraph = {
   links: {} as Links,
   selectedNodes: [] as string[],
   selectedLinks: [] as string[],
-  patches: [] //todo ts
+  patches: [], //todo ts
 };
 
 const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
@@ -132,6 +134,11 @@ export const app = createModel({
       // how to communicate across models
       console.log("graph/removeBatch -> close open portals");
       return { ...state, portals: [] };
+    },
+    setNextNodeLocation(state, payload: Box) {
+      return produce(state, draft => { 
+        draft.nextNodeLocation = payload;
+      })
     }
   }
 });

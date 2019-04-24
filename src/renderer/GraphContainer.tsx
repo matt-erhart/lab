@@ -52,7 +52,8 @@ const GraphContainerDefaults = {
     editingId: "",
     zoom: 1,
     hideViewboxes: false,
-    dragCoords: { x1: NaN, x2: NaN, y1: NaN, y2: NaN }
+    dragCoords: { x1: NaN, x2: NaN, y1: NaN, y2: NaN },
+    nextNodeLocation: undefined
   }
 };
 const mapState = (state: iRootState) => ({
@@ -74,14 +75,15 @@ const mapDispatch = ({
     toggleSelections,
     toggleStyleMode
   },
-  app: { setMainPdfReader }
+  app: { setMainPdfReader, setNextNodeLocation }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   updateBatch,
   toggleSelections,
   setMainPdfReader,
-  toggleStyleMode
+  toggleStyleMode,
+  setNextNodeLocation
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -153,7 +155,16 @@ export class GraphContainer extends React.Component<
 
         return { id, style: { ...nodeStyle, [mode]: style } };
       });
-
+    const { scrollLeft, scrollTop } = this.state;
+    const nextNodeLocation = this.nextNodeLocation({
+      framesInView: this.state.frames,
+      containerBounds: this.state.containerBounds,
+      scrollLeft,
+      scrollTop
+    });
+    this.setState({ nextNodeLocation });
+    const { x: left, y: top, ...wh } = nextNodeLocation;
+    this.props.setNextNodeLocation({ left, top, ...rest });
     this.props.updateBatch({
       nodes: selected
     });
@@ -233,8 +244,17 @@ export class GraphContainer extends React.Component<
       return { source, target, id };
     });
 
+    const { scrollLeft, scrollTop } = this.state;
+    const nextNodeLocation = this.nextNodeLocation({
+      framesInView,
+      containerBounds,
+      scrollLeft,
+      scrollTop
+    });
+    console.log({ frames: framesInView, links, nextNodeLocation });
+
     this.setState(state => {
-      return { frames: framesInView, links };
+      return { frames: framesInView, links, nextNodeLocation };
     });
   };
 
@@ -618,30 +638,106 @@ export class GraphContainer extends React.Component<
     return { x, y, width, height };
   };
 
-  nextNodeLocation = framesInView => {
+  nextNodeLocation = ({
+    framesInView,
+    containerBounds: { width, height },
+    scrollLeft,
+    scrollTop
+  }) => {
     // figure out where to put stuff
     // on
-    console.log(framesInView);
+    if (!framesInView) return undefined;
+    const inView = isBoxInBox(
+      getBoxEdges({
+        left: scrollLeft,
+        top: scrollTop,
+        width,
+        height
+      })
+    );
 
-    const sorted = framesInView.sort(sortBy("left"));
-    for (let f1 of sorted) {
-      const possibleSpace = getBoxEdges({
+    const wh = { height: 200, width: 300 };
+    const pad = 20;
+    const topLeftEmptySpace = getBoxEdges({
+      left: this.state.scrollLeft + 30,
+      top: this.state.scrollTop + 30,
+      ...wh
+    });
+    // if (framesInView.length === 0) return topLeftEmptySpace;
+    let possibleSpaces = [topLeftEmptySpace];
+    for (let f1 of framesInView) {
+      const bellow = getBoxEdges({
         left: f1.left,
-        top: f1.top + f1.height,
-        height: 200,
-        width: 200
+        top: f1.top + f1.height + pad,
+        ...wh
       });
-      const checkCollision = collision(possibleSpace);
-      for (let f2 of sorted) {
-        const edges = getBoxEdges(f2);
-        const isSpaceFree = checkCollision(edges);
-        if (isSpaceFree) {
-          const { minX, minY, maxX, maxY } = possibleSpace;
-          return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
-        }
+      if (inView(bellow)) {
+        possibleSpaces.push(bellow);
+      }
+
+      const above = getBoxEdges({
+        left: f1.left,
+        top: f1.top - wh.height - pad,
+        ...wh
+      });
+
+      if (inView(above)) {
+        possibleSpaces.push(above);
+      }
+
+      const right = getBoxEdges({
+        left: f1.left + f1.width + pad,
+        top: f1.top,
+        ...wh
+      });
+
+      if (inView(right)) {
+        possibleSpaces.push(right);
+      }
+
+      const left = getBoxEdges({
+        left: f1.left - wh.width - pad,
+        top: f1.top,
+        ...wh
+      });
+
+      if (inView(left)) {
+        possibleSpaces.push(left);
       }
     }
-    return undefined;
+
+    possibleSpaces = possibleSpaces.sort(
+      (a, b) => a.minY + a.minX - b.minX - b.minY
+    ); // i.e. more left, more top is first
+    for (let possibleSpace of possibleSpaces) {
+      const checkCollision = collision(possibleSpace);
+      let noCollide = [];
+      for (let f2 of framesInView) {
+        const edges = getBoxEdges(f2);
+        noCollide.push(!checkCollision(edges));
+      }
+      if (noCollide.every(x => x)) {
+        const { minX, minY, maxX, maxY } = possibleSpace;
+        return {
+          x: minX,
+          y: minY,
+          width: maxX - minX,
+          height: maxY - minY
+        };
+      }
+    }
+    const { minX, minY, maxX, maxY } = topLeftEmptySpace;
+    return {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY
+    };
+  };
+
+  setNextLoc = e => {
+    const { x: left, y: top, ...wh } = this.state.nextNodeLocation;
+    this.props.setNextNodeLocation({ left, top, ...wh });
   };
 
   render() {
@@ -650,7 +746,7 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
-    const nextNodeLoc = this.nextNodeLocation(this.state.frames);
+    console.log(this.state.nextNodeLocation);
 
     return (
       <ScrollContainer
@@ -691,11 +787,12 @@ export class GraphContainer extends React.Component<
               {rectCoords && (
                 <rect {...rectCoords} stroke="black" fill="none" />
               )}
-              {nextNodeLoc && (
+              {this.state.nextNodeLocation && (
                 <rect
-                  {...nextNodeLoc}
-                  stroke="blue"
+                  {...this.state.nextNodeLocation}
+                  stroke="darkblue"
                   fill="white"
+                  strokeDasharray="4 2"
                 />
               )}
               {this.state.links.length > 0 &&
