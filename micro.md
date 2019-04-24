@@ -23,9 +23,14 @@
     - on mouse up box partly in box
     - on click canvas deselect
 - selected above
+- right click canvasf
+- update batch of deleted node
+- dark green bar
+- default to min
+- place in open space, but on screen
 
 - svg layer padding?
-- resize frame
+- resize frame covers padding
 - select neighbors
 
 

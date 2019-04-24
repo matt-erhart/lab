@@ -85,18 +85,15 @@ export const makePdfSegmentViewbox = (
   const _style = {
     id: id,
     left: Math.random() * 200 + 20,
-    top: Math.random() * 200 + 20,
-    width: width ? width + 116 : 200,
-    height: height ? height + 120 : 200,
-    ...style
+    top: Math.random() * 200 + 20
   };
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
-      min: _style,
-      max: _style,
-      modes: ["max", "min"],
+      min: { ..._style, width: 220, height: 60, ...style },
+      max: { ..._style, width, height, ...style },
+      modes: ["min", "max"],
       modeIx: 0,
       lockedCorner: "nw"
     },

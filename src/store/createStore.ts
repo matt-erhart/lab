@@ -239,7 +239,8 @@ export const graph = createModel({
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, isDirected } = nodeOrLink;
-            draft[payloadKey][id].meta.timeUpdated = Date.now();
+            if (!!draft[payloadKey][id])
+              draft[payloadKey][id].meta.timeUpdated = Date.now();
 
             for (let keyToUpdate of Object.keys(data || {})) {
               draft[payloadKey][id].data[keyToUpdate] = data[keyToUpdate];

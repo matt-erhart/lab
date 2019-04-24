@@ -1034,7 +1034,7 @@ const FontSizeInput = styled.input`
 
 const _EditorContainer = styled.div<{ fontSize: number }>``;
 const EditorContainer = styled(_EditorContainer)`
-  border: 1px solid lightgrey;
+  border-top: 1px solid lightgrey;
   padding: 5px;
   font-size: ${p => p.fontSize}px;
   overflow: auto;

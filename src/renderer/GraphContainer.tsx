@@ -501,7 +501,11 @@ export class GraphContainer extends React.Component<
 
         const pagenum = [pageNumber];
         if (isMin) {
-          return <div>{pdfDir}</div>;
+          return (
+            <div style={{ color: "green", fontSize: 16 }}>
+              {pdfDir}
+            </div>
+          );
         }
 
         return (
@@ -546,7 +550,7 @@ export class GraphContainer extends React.Component<
   };
 
   startSelect = e => {
-    if (e.target.id !== "SvgLayer") return null;
+    if (e.target.id !== "SvgLayer" || e.button !== 0) return null;
     const {
       left: bbLeft,
       top: bbTop
@@ -734,6 +738,7 @@ export class GraphContainer extends React.Component<
                     id="drag-handle"
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
+                    color="white"
                   >
                     <DragHandleButton
                       id="drag-handle-button"
@@ -841,10 +846,10 @@ const MapContainer = styled(ZoomDiv)`
   transform: scale(${p => p.zoom});
 `;
 
-const DragHandle = styled.div<{ isSelected: boolean }>`
+const DragHandle = styled.div<{ isSelected: boolean; color: string }>`
   min-height: 16px;
   font-size: 12px;
-  background-color: ${props => (props.isSelected ? "lightblue" : "grey")};
+  background-color: ${props => (props.isSelected ? "lightblue" : props.color)};
   flex: 0;
   user-select: none;
   &:hover {
@@ -853,10 +858,10 @@ const DragHandle = styled.div<{ isSelected: boolean }>`
 `;
 
 const DragHandleButton = styled.span`
-  outline: 1px solid black;
   background: white;
   cursor: pointer;
   vertical-align: middle;
   margin: 3px;
   margin-top: 1px;
+  color: lightgrey;
 `;
