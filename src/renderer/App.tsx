@@ -13,7 +13,7 @@ import Select from "react-select";
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
-import { setupDirFromPdfs } from "./io";
+import { setupDirFromPdfs, processAutoGrab } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
@@ -86,6 +86,7 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const processNewPdfs = async (pdfRootDir, nodes) => {
   const pdfDirs = await setupDirFromPdfs(pdfRootDir);
+  // console.log("setupDir succeed!")
 
   const pdfNodes = pdfDirs.map((dir, ix) => {
     const normDir = path.normalize(dir);
@@ -104,17 +105,19 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 
   const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
 
-  if (!featureToggles.showAutoGrab) {
-    // do not show auto-grab, return directly
-    return {newNodes:newPubs,newLinks:[]}
-  } else {
-    return createAutoGrabNodesAndLinkToPublicationNodes(
-      pdfDirs,
-      allNodeIds,
-      newPubs
-    );
-  }
+  return { newPubs: newPubs }
+
 };
+
+const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
+  var pdfDirs = await processAutoGrab(pdfRootDir)().then(result => { return result });
+  const allNodeIds = Object.keys(nodes);
+  return createAutoGrabNodesAndLinkToPublicationNodes(
+    pdfDirs,
+    allNodeIds,
+    newPubs
+  );
+}
 
 type rightPanelName = typeof defaultApp.panels.rightPanel;
 // todo rename _App
@@ -132,16 +135,36 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
-    const {newNodes,newLinks} = await processNewPdfs(
+    const { newPubs } = await processNewPdfs(
       // Destructuring assignment
       this.props.pdfRootDir,
       this.props.nodes
     );
-
-    if (newNodes.length > 0) {
-      this.props.addBatch({ nodes: newNodes,links:newLinks });
+    const nodesBeforePubs = this.props.nodes
+    if (newPubs.length > 0) {
+      this.props.addBatch({ nodes: newPubs });
+      console.log("nodes added")!
       if (this.props.pdfDir === "")
-        this.props.setMainPdfReader({ pdfDir: newNodes[0].id });
+        this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
+    }
+
+    if (featureToggles.showAutoGrab) {
+      console.log("Making autograb nodes! ")
+      const { newNodes, newLinks } = await processAutoGrabs(
+        // Destructuring assignment
+        this.props.pdfRootDir,
+        nodesBeforePubs,
+        newPubs
+      );
+
+      if (newNodes.length > 0) {
+        this.props.addBatch({ nodes: newNodes, links: newLinks });
+      }
+      // console.log("Making a fake pub node! ")
+      // const pdfNode = makePdfPublication("fakeDir");
+      // this.props.addBatch({ nodes: [pdfNode] });
+
+      // this.props.addBatch({ nodes: newNodes, links: newLinks });
     }
 
     window.addEventListener("keyup", this.keyback);

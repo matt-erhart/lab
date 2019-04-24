@@ -4,8 +4,35 @@ import axios from "axios";
 import {
   makeAutograbNode,
   aNode,
-  makeLink
+  makeLink,
+  PdfPublication, makePdfPublication
 } from "../store/creators";
+
+import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
+
+const PlaygroundDefaults = {
+  props: {},
+  state: { pdfNodes: [] as PdfPublication[] }
+};
+//mapState is a convention in Redux
+const mapState = (state: iRootState) => ({
+  pdfDir: state.app.panels.mainPdfReader.pdfDir, //more or less an alias
+  pdfRootDir: state.app.current.pdfRootDir,
+  nodes: state.graph.nodes,
+  mainPdfReader: state.app.panels.mainPdfReader,
+  rightPanel: state.app.panels.rightPanel
+});
+
+const mapDispatch = ({
+  graph: { addBatch },
+  app: { setMainPdfReader, setRightPanel }
+}: iDispatch) => ({ addBatch, setMainPdfReader, setRightPanel });
+
+
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
+
+
 
 export const createAutoGrabInfo = async (
   pagesOfTextToDisplay: any[], // textToDisplay Pages
@@ -19,6 +46,8 @@ export const createAutoGrabInfo = async (
 
   // Auto-grab from local python Flask service, code in ../../python-service/hello.py
   let autoGrabDetails = {};
+
+  const fileExists = fs.pathExists(path);
   await axios
     .post("http://52.10.103.106/autograb/pdfdata", {
       // .post("http://localhost/autograb/pdfdata", {
@@ -51,18 +80,15 @@ export const createAutoGrabInfo = async (
 
   // Test visiting an arbitrary existing web service ... tried https://jsonplaceholder.typicode.com/users
 
-  const fileExists = await fs.pathExists(path);
-
   if (!fileExists || overwrite) {
     console.log("autoGrabDetails")
     console.log(autoGrabDetails);
     await jsonfile.writeFile(path, autoGrabDetails);
-    return true;
+    return true
   } else {
     return false;
   }
-};
-
+}
 
 export const createAutoGrabNodesAndLinkToPublicationNodes = (pdfDirs: string[], allNodeIds: string[], newPubs: any[]) => {
 
