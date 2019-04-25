@@ -55,7 +55,8 @@ const mapState = (state: iRootState, props) => {
     nodes: state.graph.nodes,
     links: state.graph.links,
     portals: state.app.portals,
-    pdfDir: state.app.panels.mainPdfReader.pdfDir
+    pdfDir: state.app.panels.mainPdfReader.pdfDir,
+    nextNodeLoc: state.app.nextNodeLocation
   };
 };
 
@@ -108,6 +109,15 @@ class PageSvg extends React.Component<
       return null;
     }
     const source = this.props.nodes[this.props.pdfDir];
+    const hw = { width: 220, height: 60 }; //pulled from creators.ts
+
+    let lt = {};
+    if (!!this.props.nextNodeLoc) {
+      console.log("this.props.nextNodeLoc", this.props.nextNodeLoc);
+
+      const { left: l, top: t, width: w, height: h } = this.props.nextNodeLoc;
+      lt = { left: l, top: t + h - hw.height };
+    }
     let {
       left: gLeft,
       top: gTop,
@@ -117,8 +127,8 @@ class PageSvg extends React.Component<
     const style = {
       left: gLeft + Math.random() * 60,
       top: gTop + gHeight + Math.random() * 60,
-      width,
-      height
+      ...lt,
+      ...hw
     };
 
     // note we save with scale = 1
@@ -418,12 +428,12 @@ class PageSvg extends React.Component<
     }
 
     const segStyle = this.props.nodes[viewbox.id].style.min;
-    const tHeight = 200;
+    const tHeight = 120;
     const newTextStyle = {
       left: segStyle.left,
       top: segStyle.top - tHeight,
       height: tHeight,
-      width: 200
+      width: 250
     };
     const htmlNode = makeUserDoc({
       data: {},
@@ -457,7 +467,7 @@ class PageSvg extends React.Component<
     let htmlNodes = nodes.filter(node => node.data.type === "userDoc");
     if (htmlNodes.length === 0) {
       const segStyle = this.props.nodes[segmentId].style.min;
-      const tHeight = 200;
+      const tHeight = 120;
       const newTextStyle = {
         left: segStyle.left,
         top: segStyle.top - tHeight,
@@ -643,11 +653,13 @@ class PageSvg extends React.Component<
           )}
         </svg>
         <div
+          draggable={false}
           ref={this.divRef}
           style={{
             position: "absolute",
             width: this.props.svgWidth,
-            height: this.props.svgHeight
+            height: this.props.svgHeight,
+            userSelect: "none"
           }}
         >
           {this.props.linesOfText.length > 0 &&
@@ -679,13 +691,14 @@ class PageSvg extends React.Component<
           >
             {props => (
               <animated.div
+                draggable={false}
                 ref={this.selectionRectRef}
                 style={{
                   position: "absolute",
-                  top: top,
-                  left: left,
-                  width: width,
-                  height: height,
+                  top: top === Infinity ? 0 : top,
+                  left: left === Infinity ? 0 : left,
+                  width: width === Infinity ? 0 : width,
+                  height: height === Infinity ? 0 : height,
                   border: "1px solid grey"
                 }}
               />
@@ -697,6 +710,7 @@ class PageSvg extends React.Component<
 
               return (
                 <div
+                  draggable={false}
                   key={vb.id}
                   style={{
                     position: "absolute",

@@ -1,8 +1,14 @@
 - xy vs left right
 - show on mount
 - possibleSpaces
-
-
+- i can has coords
+- make two vbs
+- if x/y change push to redux
+- why not saving
+- draggble false in svg
+- autocomplete in green box
+- convert state
+- if selected, it's a frame
 
 - svg layer padding?
 - resize frame covers padding

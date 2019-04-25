@@ -162,12 +162,13 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-    this.setState({ nextNodeLocation });
-    const { x: left, y: top, ...wh } = nextNodeLocation;
-    this.props.setNextNodeLocation({ left, top, ...rest });
+
     this.props.updateBatch({
       nodes: selected
     });
+    const { x: left, y: top, ...wh } = nextNodeLocation;
+    this.props.setNextNodeLocation({ left, top, ...wh });
+    this.setState({ nextNodeLocation });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -185,6 +186,21 @@ export class GraphContainer extends React.Component<
       relevantPatch
     ) {
       this.getFramesInView(this.state.containerBounds);
+    }
+
+    const { x: x1, y: y1 } = prevState.nextNodeLocation || { x: 0, y: 0 };
+    const { x: x2, y: y2 } = this.state.nextNodeLocation || { x: 0, y: 0 };
+
+    if (x1 !== x2 || y1 !== y2) {
+      const { scrollLeft, scrollTop } = this.state;
+      const nextNodeLocation = this.nextNodeLocation({
+        framesInView: this.state.frames,
+        containerBounds: this.state.containerBounds,
+        scrollLeft,
+        scrollTop
+      });
+      const { x: left, y: top, ...wh } = nextNodeLocation;
+      this.props.setNextNodeLocation({ left, top, ...wh });
     }
 
     if (prevProps.graphPanel !== this.props.graphPanel) {
@@ -224,7 +240,7 @@ export class GraphContainer extends React.Component<
       const { left, top, width, height } = node.style[mode];
       const edges = getBoxEdges({ left, top, width, height });
       const inView = isInView(edges);
-      if (inView) {
+      if (inView || this.isSelected(node.id)) {
         const isSelected = this.props.selectedNodes.includes(node.id);
         all.push({ id: node.id, left, top, width, height, isSelected });
       }
@@ -251,7 +267,6 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-    console.log({ frames: framesInView, links, nextNodeLocation });
 
     this.setState(state => {
       return { frames: framesInView, links, nextNodeLocation };
@@ -645,7 +660,7 @@ export class GraphContainer extends React.Component<
     scrollTop
   }) => {
     // figure out where to put stuff
-    // on
+    //
     if (!framesInView) return undefined;
     const inView = isBoxInBox(
       getBoxEdges({
@@ -746,7 +761,6 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
-    console.log(this.state.nextNodeLocation);
 
     return (
       <ScrollContainer
@@ -758,6 +772,7 @@ export class GraphContainer extends React.Component<
         onClick={this.deselectAll}
         onWheel={this.onWheel}
         style={{ userSelect: "none" }}
+        onMouseLeave={this.setNextLoc}
       >
         <MapContainer
           id="GraphMapContainer"
@@ -790,9 +805,10 @@ export class GraphContainer extends React.Component<
               {this.state.nextNodeLocation && (
                 <rect
                   {...this.state.nextNodeLocation}
-                  stroke="darkblue"
+                  stroke="lightgrey"
                   fill="white"
                   strokeDasharray="4 2"
+                  style={{ userSelect: "none" }}
                 />
               )}
               {this.state.links.length > 0 &&
