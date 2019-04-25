@@ -12,6 +12,7 @@ export type frame = Partial<{
   top: number;
   width: number;
   height: number;
+  type: "move" | "resize"
 }>;
 export const updateOneFrame = (frames: frame[]) => (
   newDims = {
@@ -349,6 +350,7 @@ type hoverInfo = { location: loc; cursor: cursor };
 const getResizeInfo = (
   e: React.MouseEvent<HTMLDivElement, MouseEvent>
 ): hoverInfo => {
+  //@ts-ignore
   if (get(e, e => e.target.id) !== "frame")
     return { location: "default", cursor: "default" };
 

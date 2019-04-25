@@ -18,7 +18,6 @@ const pdfjs: PDFJSStatic = _pdfjs as any;
 import {
   flatten,
   zeroPad,
-
   sortBy
 } from "./utils";
 

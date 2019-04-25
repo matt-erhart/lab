@@ -9,6 +9,7 @@ export const initKeySafeSlate = () => {
       key: uuidv1(), // prevent conflicts with multiple instances of slate
       nodes: [
         {
+          //@ts-ignore
           object: "block",
           type: "paragraph",
           nodes: [
@@ -75,17 +76,17 @@ export const onSlash = (event, editor, next) => {
   return next();
 };
 
-function fuzzyMatch(text, abstractions) {
-  var results = fuzzy.filter(text.toLowerCase(), abstractions as any[], {
-    pre: "<b>",
-    post: "</b>",
-    extract: function(el) {
-      return el.text;
-    }
-  });
-  const toShow = results.map(el => ({
-    html: el.string,
-    ...el.original
-  }));
-  return toShow;
-}
+// function fuzzyMatch(text, abstractions) {
+//   var results = fuzzy.filter(text.toLowerCase(), abstractions as any[], {
+//     pre: "<b>",
+//     post: "</b>",
+//     extract: function(el) {
+//       return el.text;
+//     }
+//   });
+//   const toShow = results.map(el => ({
+//     html: el.string,
+//     ...el.original
+//   }));
+//   return toShow;
+// }

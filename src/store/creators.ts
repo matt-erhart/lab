@@ -140,7 +140,10 @@ const PdfPublicationDefaults = {
     width: 200,
     height: 200,
     fill: "grey",
-    stroke: "red"
+    stroke: "red",
+    modes: ["min", "max"],
+    modeIx: 0,
+    lockedCorner: "nw"
   },
   meta: makeNodeMeta()
 };
@@ -167,7 +170,10 @@ const AutoGrabDefaults = {
     width: 200,
     height: 200,
     fill: "grey",
-    stroke: "red"
+    stroke: "red",
+    modes: ["min", "max"],
+    modeIx: 0,
+    lockedCorner: "nw"
   },
   meta: makeNodeMeta()
 };

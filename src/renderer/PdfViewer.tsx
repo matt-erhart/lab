@@ -427,7 +427,6 @@ class PdfViewer extends React.Component<
           }}
         >
           <PageCanvas
-            draggable={false}
             id={"canvas-" + page.pageNumber}
             key={"canvas-" + page.pageNumber}
             page={page.page}

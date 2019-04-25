@@ -135,7 +135,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       // Destructuring assignment
       this.props.pdfRootDir,
       this.props.nodes
-    );
+    ) as any[];
 
     if (newNodes.length > 0) {
       this.props.addBatch({ nodes: newNodes });
@@ -197,6 +197,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         if (featureToggles.showDocList) {
           return <DocList />;
         } else {
+          return null
           break;
         }
       default:
@@ -241,7 +242,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
-                pageNumbersToLoad={[1]}
+                pageNumbersToLoad={[]}
                 scrollAfterClick={false}
                 {...{
                   pdfRootDir,

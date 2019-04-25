@@ -5,7 +5,7 @@ import styled from "styled-components";
 import produce from "immer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import TextEditor from "./TextEditor";
+
 import { Rectangle, removeOverlaps } from "webcola";
 import  DocEditor  from "./DocEditor";
 import { devlog } from "../store/featureToggle";
