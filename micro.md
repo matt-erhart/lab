@@ -6,9 +6,9 @@
 - virtualize pdf viewer
     - get container height
     - |   | 
-
-<- resize frame covers padding
-
+< resize frame covers padding
+- clamp left, top coords
+- ctrl also scrolls
 
 
 - svg layer padding?

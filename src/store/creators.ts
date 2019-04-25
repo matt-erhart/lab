@@ -54,7 +54,13 @@ export interface PdfPathInfo {
   pdfName: string;
   dir: string;
 }
-
+const clampLeftTop = obj => {
+  return {
+    ...obj,
+    left: obj.left < 1 ? 1 : obj.left,
+    top: obj.top < 1 ? 1 : obj.top
+  };
+};
 const ViewboxDataDefault = {
   left: 0,
   top: 0,
@@ -91,8 +97,13 @@ export const makePdfSegmentViewbox = (
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
-      min: { ..._style, ...style, width: 220, height: 60 },
-      max: { ..._style, ...style, width: width + 100, height: height + 100 },
+      min: clampLeftTop({ ..._style, ...style, width: 220, height: 60 }),
+      max: clampLeftTop({
+        ..._style,
+        ...style,
+        width: width + 100,
+        height: height + 100
+      }),
       modes: ["min", "max"],
       modeIx: 0,
       lockedCorner: "nw"
@@ -154,7 +165,11 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
     ...PdfPublicationDefaults,
     id: dirName,
     data: { ...PdfPublicationDefaults.data, ...data },
-    style: { ...PdfPublicationDefaults.style, ...style, id: dirName }
+    style: clampLeftTop({
+      ...PdfPublicationDefaults.style,
+      ...style,
+      id: dirName
+    })
   };
 };
 
@@ -199,7 +214,11 @@ export const makeAutograbNode = (
     ...AutoGrabDefaults,
     id: pdfDir + "-autograb",
     data: { ...AutoGrabDefaults.data, ...metadataToHighlight }, // deserialize metadataToHighlight data
-    style: { ...AutoGrabDefaults.style, ...style, id: pdfDir + "-autograb" }
+    style: clampLeftTop({
+      ...AutoGrabDefaults.style,
+      ...style,
+      id: pdfDir + "-autograb"
+    })
   };
 };
 
@@ -245,8 +264,8 @@ const UserDocDefaults = {
   },
   meta: makeNodeMeta(),
   style: {
-    min: { ...defaultUserDocBox, width: 300, height: 110 },
-    max: defaultUserDocBox,
+    min: clampLeftTop({ ...defaultUserDocBox, width: 300, height: 110 }),
+    max: clampLeftTop(defaultUserDocBox),
     modes: ["max", "min"],
     modeIx: 0,
     lockedCorner: "nw",
@@ -265,8 +284,8 @@ export const makeUserDoc = (
     data: { ...UserDocDefaults.data, ...data },
     style: {
       ...UserDocDefaults.style,
-      min: { ...UserDocDefaults.style.min, ...props.style.min },
-      max: { ...UserDocDefaults.style.max, ...props.style.max }
+      min: clampLeftTop({ ...UserDocDefaults.style.min, ...props.style.min }),
+      max: clampLeftTop({ ...UserDocDefaults.style.max, ...props.style.max })
     }
   };
 };

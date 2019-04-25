@@ -347,6 +347,7 @@ class PdfViewer extends React.Component<
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
     if (e.ctrlKey) {
+      e.preventDefault()
       const deltaY = e.deltaY;
       this.setState(state => {
         const prevScale = this.state.scale;
@@ -520,7 +521,6 @@ class PdfViewer extends React.Component<
 
   render() {
     console.log("pdf render");
-    console.log("pageNumbersInView", this.state.pageNumbersInView);
 
     const { width, height } = this.props;
     let overflow;
