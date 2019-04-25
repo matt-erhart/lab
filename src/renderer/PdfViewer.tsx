@@ -157,6 +157,8 @@ class PdfViewer extends React.Component<
   scrollRef = React.createRef<HTMLDivElement>();
   onScroll = e => {
     e.stopPropagation();
+    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
+    this.setState({ pageNumbersInView });
   };
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
@@ -347,11 +349,16 @@ class PdfViewer extends React.Component<
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
     if (e.ctrlKey) {
-      e.preventDefault()
+      e.preventDefault();
       const deltaY = e.deltaY;
       this.setState(state => {
         const prevScale = this.state.scale;
         const newScale = prevScale - deltaY / 1000;
+        // adjust scroll for new page size
+        this.scrollRef.current.scrollTo(
+          0,
+          (this.scrollRef.current.scrollTop / prevScale) * newScale
+        );
         const scaledPages = this.scalePages(state.pages, prevScale, newScale);
         const pageNumbersInView = this.getPageNumbersInView(scaledPages);
         return { pages: scaledPages, scale: newScale, pageNumbersInView };
@@ -470,6 +477,7 @@ class PdfViewer extends React.Component<
             minWidth: width,
             height,
             position: "relative"
+
           }}
         >
           {shouldRenderPage && (
@@ -568,7 +576,7 @@ class PdfViewer extends React.Component<
                 width,
                 height,
                 opacity: 0,
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             >
               {" "}

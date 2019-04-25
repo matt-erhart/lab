@@ -18,7 +18,7 @@
 - rerendering pdfs + double canvas per page
 follow types        
             
-        
+@100 x2  zoom 
 
 
 
