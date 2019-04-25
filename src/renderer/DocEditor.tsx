@@ -457,7 +457,6 @@ export class DocEditor extends React.Component<
     const anchorOffset = editor.value.selection.getIn(["anchor", "offset"]);
     //@ts-ignore
     const anchorText = oc(editor.value.anchorText).text("");
-    // console.log('anchorText', anchorText, this.state.isActive)
 
     const { text, isAfterSpace, isEndOfWord } = getWordAtCursor(
       anchorText,
@@ -781,8 +780,6 @@ export class DocEditor extends React.Component<
   };
 
   onFocus = e => {
-    console.log("set active");
-
     if (!this.state.isActive) {
       this.setState({ isActive: true });
     }
@@ -824,12 +821,6 @@ export class DocEditor extends React.Component<
 
   render() {
     const { wordAtCursor, showAutoComplete } = this.state;
-    console.log(
-      "word:",
-      wordAtCursor,
-      this.state.autoCompDocs,
-      this.state.isActive
-    );
 
     return (
       <OuterContainer

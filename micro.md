@@ -3,7 +3,9 @@
 - break it
     - aaaa, aa autocomplete
     - anchor text
-
+- virtualize pdf viewer
+    - get container height
+    - |   | 
 
 <- resize frame covers padding
 
@@ -13,7 +15,7 @@
 - select neighbors
 - show links partially in view
 - LS position if not showing 
-    
+- rerendering pdfs + double canvas per page
 follow types        
             
         

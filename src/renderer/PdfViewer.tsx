@@ -95,6 +95,7 @@ const PdfViewerDefaults = {
     scrollAfterClick: false
   },
   state: {
+    pageNumbersInView: [] as number[],
     scale: 2, // todo scale
     pages: [] as Page[],
     columnLefts: [] as number[],
@@ -221,6 +222,8 @@ class PdfViewer extends React.Component<
     const { left, top } = this.props;
     const pagesOffset = this.getPageOffset();
     this.scrollRef.current.scrollTo(left, top + pagesOffset);
+    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
+    this.setState({ pageNumbersInView });
   }
 
   loadFiles = async () => {
@@ -309,11 +312,15 @@ class PdfViewer extends React.Component<
       this.state.pages.length !== nextState.pages.length ||
       this.state.scale !== nextState.scale ||
       !equal(this.state.viewboxes, nextState.viewboxes) ||
-      nextState.activateScroll !== this.state.activateScroll
+      nextState.activateScroll !== this.state.activateScroll ||
+      nextState.pageNumbersInView !== this.state.pageNumbersInView
     );
   }
 
-  componentDidUpdate = async (prevProps: typeof PdfViewerDefaults.props) => {
+  componentDidUpdate = async (
+    prevProps: typeof PdfViewerDefaults.props,
+    prevState
+  ) => {
     if (prevProps.pdfDir !== this.props.pdfDir) {
       await this.loadFiles();
       this.setState({ viewboxes: [] });
@@ -328,6 +335,14 @@ class PdfViewer extends React.Component<
       if (this.scrollRef.current)
         this.scrollRef.current.scrollTo(left, top + pageOffset);
     }
+
+    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
+    if (
+      JSON.stringify(pageNumbersInView) !==
+      JSON.stringify(this.state.pageNumbersInView)
+    ) {
+      this.setState({ pageNumbersInView });
+    }
   };
 
   zoom = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -337,9 +352,35 @@ class PdfViewer extends React.Component<
         const prevScale = this.state.scale;
         const newScale = prevScale - deltaY / 1000;
         const scaledPages = this.scalePages(state.pages, prevScale, newScale);
-        return { pages: scaledPages, scale: newScale };
+        const pageNumbersInView = this.getPageNumbersInView(scaledPages);
+        return { pages: scaledPages, scale: newScale, pageNumbersInView };
       });
     }
+    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
+    this.setState({ pageNumbersInView });
+  };
+
+  getPageNumbersInView = pages => {
+    const { height } = this.scrollRef.current.getBoundingClientRect();
+    const scrollTop = this.scrollRef.current.scrollTop;
+
+    let pageTop = 0;
+    let pageIxsInView = [];
+    for (let pix in pages) {
+      const p = this.state.pages[pix];
+      const pageBottom = pageTop + p.viewport.height;
+      const pageIsBellowView = pageTop > scrollTop + height;
+      const pageIsAboveView = pageBottom < scrollTop;
+      const pageNotInView = pageIsBellowView || pageIsAboveView;
+      if (!pageNotInView) pageIxsInView.push(parseInt(pix) + 1);
+      pageTop = pageBottom;
+    }
+    const minPage = Math.min(...pageIxsInView);
+    const maxPage = Math.max(...pageIxsInView);
+    if (minPage > 1) pageIxsInView.push(minPage - 1);
+    if (maxPage < pages.length + 1) pageIxsInView.push(maxPage + 1);
+
+    return pageIxsInView;
   };
 
   onAddViewbox = (pageNumber: number, scale) => (viewboxCoords: {
@@ -409,10 +450,14 @@ class PdfViewer extends React.Component<
   renderPages = () => {
     const { pages } = this.state;
     const { pdfDir, pdfRootDir } = this.props;
+
     const havePages = pages.length > 0;
     if (!havePages) null;
     return pages.map((page, pageIx) => {
       const { width, height } = page.viewport;
+      const shouldRenderPage =
+        this.state.pageNumbersInView.includes(page.pageNumber) ||
+        this.props.pageNumbersToLoad.length === 1;
       return (
         <div
           draggable={false}
@@ -426,39 +471,48 @@ class PdfViewer extends React.Component<
             position: "relative"
           }}
         >
-          <PageCanvas
-            id={"canvas-" + page.pageNumber}
-            key={"canvas-" + page.pageNumber}
-            page={page.page}
-            viewport={page.viewport}
-          />
+          {shouldRenderPage && (
+            <PageCanvas
+              id={"canvas-" + page.pageNumber}
+              key={"canvas-" + page.pageNumber}
+              page={page.page}
+              viewport={page.viewport}
+            />
+          )}
+
           {/* <PageText
                   key={"text-" + pageNum}
                   scale={this.state.scale}
                   pageOfText={page.text}
                   // height={height}
                 /> */}
-
-          <PageSvg
-            draggable={false}
-            id={"svg-" + page.pageNumber}
-            // scale={this.state.scale}
-            isMainReader={this.props.isMainReader}
-            key={"svg-" + page.pageNumber}
-            svgWidth={width}
-            svgHeight={height}
-            pageOfText={page.text}
-            columnLefts={this.state.columnLefts.map(x => x * this.state.scale)}
-            linesOfText={page.linesOfText}
-            // images={page.images}
-            // height2color={this.state.height2color}
-            // fontNames2color={this.state.fontNames2color}
-            pdfPathInfo={{ pdfDir, pdfRootDir }}
-            // onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
-            viewboxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
-            scale={this.state.scale}
-            pageNumber={page.pageNumber}
-          />
+          {shouldRenderPage && (
+            <PageSvg
+              draggable={false}
+              id={"svg-" + page.pageNumber}
+              // scale={this.state.scale}
+              isMainReader={this.props.isMainReader}
+              key={"svg-" + page.pageNumber}
+              svgWidth={width}
+              svgHeight={height}
+              pageOfText={page.text}
+              columnLefts={this.state.columnLefts.map(
+                x => x * this.state.scale
+              )}
+              linesOfText={page.linesOfText}
+              // images={page.images}
+              // height2color={this.state.height2color}
+              // fontNames2color={this.state.fontNames2color}
+              pdfPathInfo={{ pdfDir, pdfRootDir }}
+              // onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
+              viewboxes={this.viewboxesForPage(
+                page.pageNumber,
+                this.state.scale
+              )}
+              scale={this.state.scale}
+              pageNumber={page.pageNumber}
+            />
+          )}
         </div>
       );
     });
@@ -466,6 +520,8 @@ class PdfViewer extends React.Component<
 
   render() {
     console.log("pdf render");
+    console.log("pageNumbersInView", this.state.pageNumbersInView);
+
     const { width, height } = this.props;
     let overflow;
     if (this.props.scrollAfterClick) {
