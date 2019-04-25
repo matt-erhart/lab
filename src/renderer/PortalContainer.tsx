@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import TextEditor from "./TextEditor";
 import { Rectangle, removeOverlaps } from "webcola";
 import  DocEditor  from "./DocEditor";
+import { devlog } from "../store/featureToggle";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -41,9 +42,9 @@ class PortalContainer extends React.Component<
   static defaultProps = PortalContainerDefaults.props;
   state = PortalContainerDefaults.state;
 
-  onTransformStart = (transProps: frame) => {
-    const { id } = transProps;
-    //todo select with redux
+  onTransformStart = ({event, id}) => {
+    devlog(event)
+    devlog(id)
   };
 
   componentDidMount() {
@@ -97,6 +98,7 @@ class PortalContainer extends React.Component<
                   key={frame.id}
                   id={frame.id}
                   {...{ left, top, width, height }}
+                  onTransformStart={this.onTransformStart}
                   onTransforming={this.onTransforming}
                   onTransformEnd={this.onTransformEnd}
                   isSelected={false}

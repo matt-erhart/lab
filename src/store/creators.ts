@@ -6,9 +6,6 @@ import path = require("path");
 import Plain from "slate-plain-serializer";
 import convertBase64 from "slate-base64-serializer";
 
-// todo! nodes are now frames
-// viewbox left/top should be scrollLeft/scrollTop
-
 export type NodeDataTypes =
   | "empty"
   | "userDoc" // document made by user after writing
@@ -29,10 +26,19 @@ export interface NodeMeta {
   editors?: string[];
 }
 
+import { Box } from "../renderer/utils";
+type corners = "nw" | "ne" | "sw" | "se";
+type modes = "min" | "max";
 export interface NodeBase {
   id: string;
   data: { type: NodeDataTypes };
-  style: { left: number; top: number; width: number; height: number };
+  style: {
+    min: Box;
+    max: Box;
+    modes: modes[];
+    modeIx: 0;
+    lockedCorner: corners;
+  };
   meta: NodeMeta;
 }
 
@@ -75,25 +81,21 @@ export const makePdfSegmentViewbox = (
 ) => {
   const now = Date.now();
   const id = uuidv1();
-  console.log({ ...ViewboxDataDefault, ...viewbox });
   const { width, height } = viewbox;
-
+  const _style = {
+    id: id,
+    left: Math.random() * 200 + 20,
+    top: Math.random() * 200 + 20
+  };
   return {
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
-      id: id,
-      type: "circle",
-      left: Math.random() * 200 + 20,
-      top: Math.random() * 200 + 20,
-      width: width ? width + 116 : 200,
-      height: height ? height + 120 : 200,
-      fill: "blue",
-      draggabled: true,
-      radius: 5,
-      stroke: "blue",
-      strokeWidth: 4,
-      ...style
+      min: { ..._style, ...style, width: 220, height: 60 },
+      max: { ..._style, ...style, width: width + 100, height: height + 100 },
+      modes: ["min", "max"],
+      modeIx: 0,
+      lockedCorner: "nw"
     },
     meta: makeNodeMeta()
   } as PdfSegmentViewbox;
@@ -221,6 +223,12 @@ export const makeLink = (sourceId: string, targetId: string, data = {}) => {
   };
 };
 
+const defaultUserDocBox = {
+  left: 0,
+  top: 0,
+  width: 300,
+  height: 110
+};
 const UserDocDefaults = {
   id: "",
   data: {
@@ -231,30 +239,33 @@ const UserDocDefaults = {
   },
   meta: makeNodeMeta(),
   style: {
-    left: 0,
-    top: 0,
-    width: 300,
-    height: 110,
+    min: { ...defaultUserDocBox, width: 300, height: 110 },
+    max: defaultUserDocBox,
+    modes: ["max", "min"],
+    modeIx: 0,
+    lockedCorner: "nw",
     fontSize: 26
   }
 };
 export type UserDoc = typeof UserDocDefaults;
-export const makeUserDoc = (props = { data: {}, style: {} }) => {
+export const makeUserDoc = (
+  props = { data: {}, style: { min: {}, max: {} } }
+) => {
   const data = { ...props.data };
   const id = uuidv1();
   return {
     ...UserDocDefaults,
     id,
     data: { ...UserDocDefaults.data, ...data },
-    style: { ...UserDocDefaults.style, ...props.style }
+    style: {
+      ...UserDocDefaults.style,
+      min: { ...UserDocDefaults.style.min, ...props.style.min },
+      max: { ...UserDocDefaults.style.max, ...props.style.max }
+    }
   };
 };
 
-export type aNode =
-  | PdfSegmentViewbox
-  | Empty
-  | PdfPublication
-  | AutoGrab;
+export type aNode = PdfSegmentViewbox | Empty | PdfPublication | AutoGrab;
 export type aLink = LinkBase;
 export type Nodes = { [id: string]: aNode }; // or...
 export type Links = { [id: string]: aLink }; // or...

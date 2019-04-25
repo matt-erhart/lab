@@ -1,0 +1,4035 @@
+{
+  "app": {
+    "current": {
+      "userId": "",
+      "pdfRootDir": "C:\\Users\\Joel\\Google Drive\\_Research Docs\\Web 2020\\bento-scholar\\ElectronTesting\\joel"
+    },
+    "settings": {
+      "appearance": {
+        "windowStyleOnOpen": {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 1000
+        },
+        "panels": {}
+      },
+      "keyboardShortcuts": {}
+    },
+    "panels": {
+      "mainPdfReader": {
+        "left": 601.3070011138916,
+        "top": 298.81209021084294,
+        "width": 1401,
+        "height": "100%",
+        "scale": 2,
+        "scrollToPageNumber": 4,
+        "pdfDir": "evansAdvancingScienceMining2011a"
+      },
+      "graphContainer": {
+        "left": 2441.276449018686,
+        "top": 2183.201399879477,
+        "width": "50vw",
+        "height": "100%",
+        "scale": 1
+      },
+      "rightPanel": "graphContainer"
+    },
+    "portals": []
+  },
+  "graph": {
+    "nodes": {
+      "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories": {
+        "id": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+          "left": 208.88181076300913,
+          "top": 833.3555453097213,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 125.82027918138843,
+          "y": 50
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553717388286
+        }
+      },
+      "Clark-et-al_2014_Micropublications": {
+        "id": "Clark-et-al_2014_Micropublications",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Clark-et-al_2014_Micropublications",
+          "left": 2429.497195378394,
+          "top": 1954.5093914635675,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 140.76978305424575,
+          "y": 128.80849654814398
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1555516729727
+        }
+      },
+      "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations": {
+        "id": "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations",
+          "left": 143.88181076300907,
+          "top": 1334.3555453097213,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 122.02230182366469,
+          "y": 258.3861389110649
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553875749116
+        }
+      },
+      "3e5f3eb0-4e8f-11e9-9f24-1bc7db81a189": {
+        "id": "3e5f3eb0-4e8f-11e9-9f24-1bc7db81a189",
+        "data": {
+          "left": 528.0774402618408,
+          "top": 149.41790771484375,
+          "height": 498,
+          "width": 585,
+          "userId": "default",
+          "pdfDir": "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations",
+          "pageNumber": 6,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "3e5f3eb0-4e8f-11e9-9f24-1bc7db81a189",
+          "type": "circle",
+          "left": 534.6380437473861,
+          "top": 1374.5593273123231,
+          "width": 701,
+          "height": 541,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471274524,
+          "timeUpdated": 1556129940062
+        }
+      },
+      "3ef62780-4e8f-11e9-9f24-1bc7db81a189": {
+        "id": "3ef62780-4e8f-11e9-9f24-1bc7db81a189",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>most private annotations are not useful to other people</p>",
+          "text": "most private annotations are not useful to other people"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1556129975699
+        },
+        "style": {
+          "left": 861.3822766501537,
+          "top": 1294.211341964338,
+          "width": 418,
+          "height": 105
+        }
+      },
+      "08399780-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "08399780-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "left": 101.07744026184082,
+          "top": 1155.5456008911133,
+          "height": 330,
+          "width": 488,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "08399780-4e90-11e9-9f24-1bc7db81a189",
+          "type": "circle",
+          "left": 592.8933355349459,
+          "top": 112.3183064913652,
+          "width": 604,
+          "height": 247,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471613176,
+          "timeUpdated": 1553474931874
+        }
+      },
+      "08e42f60-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "08e42f60-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>there are lots of problems with citation practices in science</p>",
+          "text": "there are lots of problems with citation practices in science"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1554847215998
+        },
+        "style": {
+          "left": 1470.6796075723812,
+          "top": 85.3183064913652,
+          "width": 406,
+          "height": 100
+        }
+      },
+      "21162f70-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "21162f70-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "left": 602.0774402618408,
+          "top": 1174.5456008911133,
+          "height": 107,
+          "width": 514,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "21162f70-4e90-11e9-9f24-1bc7db81a189",
+          "type": "circle",
+          "left": 675.8115237572783,
+          "top": 381.6194991755508,
+          "width": 533,
+          "height": 175,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471654887,
+          "timeUpdated": 1553717351775
+        }
+      },
+      "22603ba0-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "22603ba0-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>structured digital abstracts weren&#x27;t really adopted (ppl publish, but don&#x27;t formalize, their claims)</p>",
+          "text": "structured digital abstracts weren't really adopted (ppl publish, but don't formalize, their claims)"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1556038759230
+        },
+        "style": {
+          "left": 1429.5105553557528,
+          "top": 213.77334532939696,
+          "width": 485,
+          "height": 129
+        }
+      },
+      "7fbe0ed0-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "7fbe0ed0-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "left": 244.07744026184082,
+          "top": 742.1939239501953,
+          "height": 146,
+          "width": 773,
+          "userId": "default",
+          "pdfDir": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+          "pageNumber": 21,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "7fbe0ed0-4e90-11e9-9f24-1bc7db81a189",
+          "type": "circle",
+          "left": 600.5939153014747,
+          "top": 576.9615508394124,
+          "width": 768,
+          "height": 264,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471813693,
+          "timeUpdated": 1553717316451
+        }
+      },
+      "809fe350-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "809fe350-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>to be useful for other ppl, knowledge must be decontextualized</p>",
+          "text": "to be useful for other ppl, knowledge must be decontextualized"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553875882222
+        },
+        "style": {
+          "left": 1555.0124229660469,
+          "top": 441.96155083941244,
+          "width": 375,
+          "height": 138
+        }
+      },
+      "0f481f00-4e91-11e9-9f24-1bc7db81a189": {
+        "id": "0f481f00-4e91-11e9-9f24-1bc7db81a189",
+        "data": {
+          "left": 245.06196403503418,
+          "top": 1080.5967102050781,
+          "height": 380,
+          "width": 740,
+          "userId": "default",
+          "pdfDir": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+          "pageNumber": 22,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "0f481f00-4e91-11e9-9f24-1bc7db81a189",
+          "type": "circle",
+          "left": 682.8111221899883,
+          "top": 868.8107480293845,
+          "width": 825,
+          "height": 442,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553472054512,
+          "timeUpdated": 1553717317943
+        }
+      },
+      "da2da640-4e91-11e9-9f24-1bc7db81a189": {
+        "id": "da2da640-4e91-11e9-9f24-1bc7db81a189",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>to be useful for other ppl, decontextualized knowledge must be recontextualized</p>",
+          "text": "to be useful for other ppl, decontextualized knowledge must be recontextualized"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1555601635149
+        },
+        "style": {
+          "left": 1604.7359140472213,
+          "top": 606.8107480293845,
+          "width": 470,
+          "height": 110
+        }
+      },
+      "Hansen_2009_Overhearing-the-Crowd": {
+        "id": "Hansen_2009_Overhearing-the-Crowd",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Hansen_2009_Overhearing-the-Crowd",
+          "left": 139.56675528965013,
+          "top": 1644.6000464674266,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 146.22251740713176,
+          "y": 91.22281941120016
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553473603289,
+          "timeUpdated": 1553474441162
+        }
+      },
+      "e02efd50-4eaf-11e9-886b-1dc0577a09f9": {
+        "id": "e02efd50-4eaf-11e9-886b-1dc0577a09f9",
+        "data": {
+          "left": 1033.11,
+          "top": 674.1735000000003,
+          "height": 29.25,
+          "width": 790.3174500000002,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 8,
+          "type": "pdf.segment.viewbox",
+          "scale": 3.25
+        },
+        "style": {
+          "id": "e02efd50-4eaf-11e9-886b-1dc0577a09f9",
+          "type": "circle",
+          "left": 721.2815493016153,
+          "top": 1941.5786622481282,
+          "width": 906.3174500000002,
+          "height": 149.25,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553485289893,
+          "timeUpdated": 1553875830555
+        }
+      },
+      "e0401450-4eaf-11e9-886b-1dc0577a09f9": {
+        "id": "e0401450-4eaf-11e9-886b-1dc0577a09f9",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>the very thing that makes </p>",
+          "text": "the very thing that makes "
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553474606358,
+          "timeUpdated": 1553717433292
+        },
+        "style": {
+          "left": 1436.2844873554936,
+          "top": 1723.8286622481282,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "fe554520-523b-11e9-a0c6-0544500350b9": {
+        "id": "fe554520-523b-11e9-a0c6-0544500350b9",
+        "data": {
+          "left": 108,
+          "top": 587.8860000000009,
+          "height": 81.3420000000001,
+          "width": 495.1890000000001,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "fe554520-523b-11e9-a0c6-0544500350b9",
+          "type": "circle",
+          "left": 1260.0100855948788,
+          "top": 1507.3313460907762,
+          "width": 611.1890000000001,
+          "height": 201.3420000000001,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553875323506,
+          "timeUpdated": 1553875745369
+        }
+      },
+      "fe6e7270-523b-11e9-a0c6-0544500350b9": {
+        "id": "fe6e7270-523b-11e9-a0c6-0544500350b9",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>Write something right away</p>",
+          "text": "Write something right away"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553715144735,
+          "timeUpdated": 1553875344463
+        },
+        "style": {
+          "left": 1790.6818881007823,
+          "top": 1597.6733460907762,
+          "width": 300,
+          "height": 116
+        }
+      },
+      "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the": {
+        "id": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "left": 14.05760652206125,
+          "top": 2245.0741922892266,
+          "width": 335.38461538461536,
+          "height": 173.84615384615384,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 63.28129167181753,
+          "y": 232.47152951941237
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476463599,
+          "timeUpdated": 1555502231947
+        }
+      },
+      "c70df020-57b4-11e9-8cf1-877eeb2dd397": {
+        "id": "c70df020-57b4-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 137.06736755371094,
+          "top": 1070.9311904907227,
+          "height": 337,
+          "width": 909,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 5,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "c70df020-57b4-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 477.19491521005,
+          "top": 2161.6463037471362,
+          "width": 1025,
+          "height": 457,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476955682,
+          "timeUpdated": 1554488836423
+        }
+      },
+      "c9c23ab0-57b4-11e9-8cf1-877eeb2dd397": {
+        "id": "c9c23ab0-57b4-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>researchers rarely read whole articles; usually read very specific fragments for different tasks</p>",
+          "text": "researchers rarely read whole articles; usually read very specific fragments for different tasks"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1555452524671
+        },
+        "style": {
+          "left": 1663.7446185801364,
+          "top": 2499.338611439444,
+          "width": 387,
+          "height": 165
+        }
+      },
+      "372d8d20-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "372d8d20-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 632.2391989845618,
+          "top": 887.312309391,
+          "height": 44.837676452852406,
+          "width": 456.31097885092606,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 5,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "372d8d20-57b5-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 214.34507971978087,
+          "top": 2630.713053878732,
+          "width": 572.3109788509261,
+          "height": 164.8376764528524,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477143794,
+          "timeUpdated": 1554477143794
+        }
+      },
+      "3767d700-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "3767d700-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>lots of prior work trying to use discourse/rhetoric models to improve IR of scientific articles</p>",
+          "text": "lots of prior work trying to use discourse/rhetoric models to improve IR of scientific articles"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554477164936
+        },
+        "style": {
+          "left": 356.0769255601308,
+          "top": 2815.5507303315844,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "4eabf4a0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "4eabf4a0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 338.06736755371094,
+          "top": 101.12158203125,
+          "height": 461,
+          "width": 779,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 7,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "4eabf4a0-57b5-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 1016.9444195444933,
+          "top": 2750.8958564253585,
+          "width": 895,
+          "height": 581,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477183210,
+          "timeUpdated": 1555502395341
+        }
+      },
+      "4ff0d0b0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "4ff0d0b0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>useful model for annotating discourse elements of scientific articles (somehwat tuned to gender studies papers). called SciAnnotDoc</p>",
+          "text": "useful model for annotating discourse elements of scientific articles (somehwat tuned to gender studies papers). called SciAnnotDoc"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1556042862203
+        },
+        "style": {
+          "left": 1858.4168919521333,
+          "top": 2681.1266256561275,
+          "width": 498.46153846153845,
+          "height": 154.6153846153846
+        }
+      },
+      "6e6cec40-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "6e6cec40-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 344.06736755371094,
+          "top": 92.734619140625,
+          "height": 200,
+          "width": 779,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 11,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "6e6cec40-57b5-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 301.36901229030804,
+          "top": 2276.4793160696136,
+          "width": 895,
+          "height": 320,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477236484,
+          "timeUpdated": 1555502381619
+        }
+      },
+      "6ede72c0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "6ede72c0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>rule-based annotation algorithm can achieve high precision (but low recall) for discourse element annotation of full-text sentences in scientific papers</p>",
+          "text": "rule-based annotation algorithm can achieve high precision (but low recall) for discourse element annotation of full-text sentences in scientific papers"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554477262665
+        },
+        "style": {
+          "left": 423.1154781237143,
+          "top": 2933.4023929926902,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "97254510-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "97254510-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 593.0673675537109,
+          "top": 1144.6309814453125,
+          "height": 190,
+          "width": 527,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 12,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "97254510-57b5-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 173.21286441672262,
+          "top": 2586.949317094031,
+          "width": 643,
+          "height": 310,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477304802,
+          "timeUpdated": 1554477304802
+        }
+      },
+      "97e364f0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "97e364f0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>with discourse elements annotated and ability to search over them, researchers feel less likely to get too-large result sets filled with irrelevant things (vs. keyword search)</p>",
+          "text": "with discourse elements annotated and ability to search over them, researchers feel less likely to get too-large result sets filled with irrelevant things (vs. keyword search)"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554477358584
+        },
+        "style": {
+          "left": 333.1999610647451,
+          "top": 2916.949317094031,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "d5019aa0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "d5019aa0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 587.0673675537109,
+          "top": 1227.1100463867188,
+          "height": 141,
+          "width": 539,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 13,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "d5019aa0-57b5-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 210.15544633944194,
+          "top": 2638.4143707030953,
+          "width": 655,
+          "height": 261,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477408586,
+          "timeUpdated": 1554477408586
+        }
+      },
+      "d5d8c0c0-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "d5d8c0c0-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>with discourse elements modeled, can retrieve desired elements at higher levels of precision than keyword search</p>",
+          "text": "with discourse elements modeled, can retrieve desired elements at higher levels of precision than keyword search"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554477428836
+        },
+        "style": {
+          "left": 373.2574934510057,
+          "top": 2919.4143707030953,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "2833d260-57b6-11e9-8cf1-877eeb2dd397": {
+        "id": "2833d260-57b6-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "left": 833.0673675537109,
+          "top": 112.3568115234375,
+          "height": 230,
+          "width": 276,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 14,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "2833d260-57b6-11e9-8cf1-877eeb2dd397",
+          "type": "circle",
+          "left": 231.46216864739705,
+          "top": 2124.4781323474162,
+          "width": 392,
+          "height": 350,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554477548166,
+          "timeUpdated": 1554830107373
+        }
+      },
+      "28e37350-57b6-11e9-8cf1-877eeb2dd397": {
+        "id": "28e37350-57b6-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>takes more time to screen answers when doing v specific queries (e.g., findings about x measured by y) w keywords vs. serach over modeled discourse elements</p>",
+          "text": "takes more time to screen answers when doing v specific queries (e.g., findings about x measured by y) w keywords vs. serach over modeled discourse elements"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554830110395
+        },
+        "style": {
+          "left": 757.8067822780965,
+          "top": 2401.4781323474162,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "923bdd10-5b0d-11e9-94d0-fd3982571481": {
+        "id": "923bdd10-5b0d-11e9-94d0-fd3982571481",
+        "data": {
+          "left": 598.0673675537109,
+          "top": 937.7908630371094,
+          "height": 176,
+          "width": 520,
+          "userId": "default",
+          "pdfDir": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+          "pageNumber": 10,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "923bdd10-5b0d-11e9-94d0-fd3982571481",
+          "type": "circle",
+          "left": 119.73883560394708,
+          "top": 2539.743067168961,
+          "width": 636,
+          "height": 296,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554844945762,
+          "timeUpdated": 1554844945762
+        }
+      },
+      "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures": {
+        "id": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "left": 2229.177529034763,
+          "top": 123.1480143251103,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 144.99489014813025,
+          "y": 97.96157280629598
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991595434
+        }
+      },
+      "76cb49f0-5c64-11e9-b360-834710913e8b": {
+        "id": "76cb49f0-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "left": 45.0427188873291,
+          "top": 736.0849609375,
+          "height": 226,
+          "width": 1126,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 2,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "76cb49f0-5c64-11e9-b360-834710913e8b",
+          "type": "circle",
+          "left": 2262.785695763722,
+          "top": 1396.884133692211,
+          "width": 1242,
+          "height": 333.6923076923077,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554992217104,
+          "timeUpdated": 1555451867352
+        }
+      },
+      "78c2ad20-5c64-11e9-b360-834710913e8b": {
+        "id": "78c2ad20-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>ClaiMaker is based on discourse relations theory</p>",
+          "text": "ClaiMaker is based on discourse relations theory"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554992271247
+        },
+        "style": {
+          "left": 2573.390252387023,
+          "top": 713.6533644614417,
+          "width": 361,
+          "height": 110
+        }
+      },
+      "c39cd0f0-5c64-11e9-b360-834710913e8b": {
+        "id": "c39cd0f0-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "left": 61.0427188873291,
+          "top": 1344.6795654296875,
+          "height": 175,
+          "width": 536,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 2,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "c39cd0f0-5c64-11e9-b360-834710913e8b",
+          "type": "circle",
+          "left": 2285.544479207678,
+          "top": 373.1562816982134,
+          "width": 652,
+          "height": 295,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554992345983,
+          "timeUpdated": 1554992345983
+        }
+      },
+      "c451c910-5c64-11e9-b360-834710913e8b": {
+        "id": "c451c910-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>ClaiMaker is focused on modeling/capturing *relations* between objects`</p>",
+          "text": "ClaiMaker is focused on modeling/capturing *relations* between objects`"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554992390319
+        },
+        "style": {
+          "left": 2446.6509914217886,
+          "top": 688.1562816982134,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "04ce0160-5c66-11e9-b360-834710913e8b": {
+        "id": "04ce0160-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "left": 67.0427188873291,
+          "top": 771.4457855224609,
+          "height": 475,
+          "width": 540,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 8,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "04ce0160-5c66-11e9-b360-834710913e8b",
+          "type": "circle",
+          "left": 2265.376970842932,
+          "top": 335.6009347569781,
+          "width": 656,
+          "height": 595,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554992884854,
+          "timeUpdated": 1554992884854
+        }
+      },
+      "05b8fda0-5c66-11e9-b360-834710913e8b": {
+        "id": "05b8fda0-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>enable incremental/iterative structuring by providing &quot;play space&quot; and mechanism for &quot;publishing&quot; claims</p>",
+          "text": "enable incremental/iterative structuring by providing \"play space\" and mechanism for \"publishing\" claims"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554992937705
+        },
+        "style": {
+          "left": 2427.76319501634,
+          "top": 950.6009347569782,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "2ee993b0-5c66-11e9-b360-834710913e8b": {
+        "id": "2ee993b0-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "left": 67.0427188873291,
+          "top": 125.21347045898438,
+          "height": 529,
+          "width": 1083,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 8,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "2ee993b0-5c66-11e9-b360-834710913e8b",
+          "type": "circle",
+          "left": 2459.14198989976,
+          "top": 536.9145775325705,
+          "width": 1199,
+          "height": 649,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554992955499,
+          "timeUpdated": 1556131087560
+        }
+      },
+      "2fd55340-5c66-11e9-b360-834710913e8b": {
+        "id": "2fd55340-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>Mapping interface: ClaiMapper ties concepts/claims to documents</p>",
+          "text": "Mapping interface: ClaiMapper ties concepts/claims to documents"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1556134114195
+        },
+        "style": {
+          "left": 2463.500744416218,
+          "top": 1233.6068852248782,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "c5b40640-5c66-11e9-b360-834710913e8b": {
+        "id": "c5b40640-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "left": 213.0427188873291,
+          "top": 580.8712959289551,
+          "height": 402,
+          "width": 774,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 12,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "c5b40640-5c66-11e9-b360-834710913e8b",
+          "type": "circle",
+          "left": 1491.2938968412336,
+          "top": 752.270582608643,
+          "width": 890,
+          "height": 522,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554993208484,
+          "timeUpdated": 1556130511081
+        }
+      },
+      "c61b0570-5c66-11e9-b360-834710913e8b": {
+        "id": "c61b0570-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>ScholarlyOntologies project supports some recontextualization of ideas through linkages to other ideas, but not to underlying substrates like data / sections of papers</p>",
+          "text": "ScholarlyOntologies project supports some recontextualization of ideas through linkages to other ideas, but not to underlying substrates like data / sections of papers"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1556134137827
+        },
+        "style": {
+          "left": 2219.847061817597,
+          "top": 1317.3182016562619,
+          "width": 531,
+          "height": 163
+        }
+      },
+      "d82b1e50-5d1d-11e9-9068-4b1638052c04": {
+        "id": "d82b1e50-5d1d-11e9-9068-4b1638052c04",
+        "data": {
+          "left": 55.01359939575195,
+          "top": 470.5599994659424,
+          "height": 311,
+          "width": 502,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 14,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.8574051349163057
+        },
+        "style": {
+          "id": "d82b1e50-5d1d-11e9-9068-4b1638052c04",
+          "type": "circle",
+          "left": 1916.748659571312,
+          "top": 65.02262300809633,
+          "width": 618,
+          "height": 431,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555071837367,
+          "timeUpdated": 1555451874127
+        }
+      },
+      "da1ab950-5d1d-11e9-9068-4b1638052c04": {
+        "id": "da1ab950-5d1d-11e9-9068-4b1638052c04",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>ClaiMapper/Maker was only evaluated by internal use by first author</p>",
+          "text": "ClaiMapper/Maker was only evaluated by internal use by first author"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555071853974
+        },
+        "style": {
+          "left": 2386.9648423578446,
+          "top": 785.2533922388656,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "003dc140-5d1e-11e9-9068-4b1638052c04": {
+        "id": "003dc140-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "left": 33.01359939575195,
+          "top": 739.1600036621094,
+          "height": 261,
+          "width": 520,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 14,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.8574051349163057
+        },
+        "style": {
+          "id": "003dc140-5d1e-11e9-9068-4b1638052c04",
+          "type": "circle",
+          "left": 2254.93490290523,
+          "top": 377.38813733176164,
+          "width": 636,
+          "height": 381,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555071904596,
+          "timeUpdated": 1555071904596
+        }
+      },
+      "015d8920-5d1e-11e9-9068-4b1638052c04": {
+        "id": "015d8920-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>With argument modeling support, reader goes through three general stages of sensemaking, progressing from less to more formal</p>",
+          "text": "With argument modeling support, reader goes through three general stages of sensemaking, progressing from less to more formal"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1556134117416
+        },
+        "style": {
+          "left": 2143.4095765568945,
+          "top": 1081.4650604086846,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "53ee50c0-5d1e-11e9-9068-4b1638052c04": {
+        "id": "53ee50c0-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "left": 561.013599395752,
+          "top": 856.760009765625,
+          "height": 254,
+          "width": 499,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 14,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.8574051349163057
+        },
+        "style": {
+          "id": "53ee50c0-5d1e-11e9-9068-4b1638052c04",
+          "type": "circle",
+          "left": 3130.975855529221,
+          "top": 854.7667146220288,
+          "width": 615,
+          "height": 374,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555072045004,
+          "timeUpdated": 1555451878462
+        }
+      },
+      "54c68850-5d1e-11e9-9068-4b1638052c04": {
+        "id": "54c68850-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>Many studies have shown that people move from rough sketches to coherent arguments during writing/sensemaking</p>",
+          "text": "Many studies have shown that people move from rough sketches to coherent arguments during writing/sensemaking"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555451925710
+        },
+        "style": {
+          "left": 3579.608781712568,
+          "top": 1282.6128684681826,
+          "width": 506.1538461538462,
+          "height": 137.69230769230768
+        }
+      },
+      "82298d60-5d32-11e9-9068-4b1638052c04": {
+        "id": "82298d60-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "left": 546.0249996185303,
+          "top": 116.33999633789062,
+          "height": 283,
+          "width": 499,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 17,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.8574051349163057
+        },
+        "style": {
+          "id": "82298d60-5d32-11e9-9068-4b1638052c04",
+          "type": "circle",
+          "left": 3773.5523514526353,
+          "top": 410.03100891129776,
+          "width": 615,
+          "height": 403,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555080712502,
+          "timeUpdated": 1556131079304
+        }
+      },
+      "82b5a0c0-5d32-11e9-9068-4b1638052c04": {
+        "id": "82b5a0c0-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>People spend more time to get similar amounts of &quot;correctness&quot; for answering sensemaking questions with a claim map of lit compared to using a written review</p>",
+          "text": "People spend more time to get similar amounts of \"correctness\" for answering sensemaking questions with a claim map of lit compared to using a written review"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1556131095255
+        },
+        "style": {
+          "left": 3809.2346704102,
+          "top": 947.6097634900525,
+          "width": 563.0769230769231,
+          "height": 166.9230769230769
+        }
+      },
+      "acdf63e0-5d32-11e9-9068-4b1638052c04": {
+        "id": "acdf63e0-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "left": 568.0249996185303,
+          "top": 122.23499870300293,
+          "height": 414,
+          "width": 492,
+          "userId": "default",
+          "pdfDir": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+          "pageNumber": 16,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.8574051349163057
+        },
+        "style": {
+          "id": "acdf63e0-5d32-11e9-9068-4b1638052c04",
+          "type": "circle",
+          "left": 3218.216134635389,
+          "top": 20.672241924734266,
+          "width": 608,
+          "height": 534,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555080784158,
+          "timeUpdated": 1555451851868
+        }
+      },
+      "ad775e20-5d32-11e9-9068-4b1638052c04": {
+        "id": "ad775e20-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>sensemaking questions</p>",
+          "text": "sensemaking questions"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555084220754
+        },
+        "style": {
+          "left": 3432.9208057524147,
+          "top": 151.5953188478112,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "c6c82670-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "c6c82670-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 88.01899909973145,
+          "top": 196.552001953125,
+          "height": 233,
+          "width": 496,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 2,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "c6c82670-6129-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2462.124531368393,
+          "top": 2165.2004383356802,
+          "width": 612,
+          "height": 353,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555516766819,
+          "timeUpdated": 1555516766819
+        }
+      },
+      "c76fd820-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "c76fd820-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>lots of problems with biomed scholarly communication and scientific work</p>",
+          "text": "lots of problems with biomed scholarly communication and scientific work"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555516786517
+        },
+        "style": {
+          "left": 2615.0380935149865,
+          "top": 2538.2004383356802,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "e08b9bf0-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "e08b9bf0-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 93.01899909973145,
+          "top": 562.552001953125,
+          "height": 216,
+          "width": 503,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 2,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "e08b9bf0-6129-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2468.4965587728266,
+          "top": 2171.440293392402,
+          "width": 619,
+          "height": 336,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555516810031,
+          "timeUpdated": 1555516810031
+        }
+      },
+      "e1345f10-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "e1345f10-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>computational approaches have been proposed to deal with literature issues in biomed</p>",
+          "text": "computational approaches have been proposed to deal with literature issues in biomed"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555516829599
+        },
+        "style": {
+          "left": 2623.140924812151,
+          "top": 2527.440293392402,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "fdee5840-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "fdee5840-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 77.01899909973145,
+          "top": 157.96795654296875,
+          "height": 366,
+          "width": 520,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "fdee5840-6129-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2382.538996983556,
+          "top": 2662.9675930427247,
+          "width": 636,
+          "height": 486,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555516859332,
+          "timeUpdated": 1555517080533
+        }
+      },
+      "fec2bf40-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "fec2bf40-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>most statement-based models for compressing scientific ideas lack connections to evidence/context for statements</p>",
+          "text": "most statement-based models for compressing scientific ideas lack connections to evidence/context for statements"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555517501859
+        },
+        "style": {
+          "left": 2598.3843967607227,
+          "top": 3208.9675930427247,
+          "width": 382.3529411764706,
+          "height": 191.1764705882353
+        }
+      },
+      "2bb23210-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "2bb23210-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 60.018999099731445,
+          "top": 1072.9679565429688,
+          "height": 410,
+          "width": 534,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "2bb23210-612a-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 3365.4811160611325,
+          "top": 2889.753069098442,
+          "width": 650,
+          "height": 530,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555516936113,
+          "timeUpdated": 1555516940472
+        }
+      },
+      "6496b5b0-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "6496b5b0-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 603.0189990997314,
+          "top": 679.5679931640625,
+          "height": 195,
+          "width": 487,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "6496b5b0-612a-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2443.655597089331,
+          "top": 2182.6555965671914,
+          "width": 603,
+          "height": 315,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555517031563,
+          "timeUpdated": 1555517031563
+        }
+      },
+      "6651fa40-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "6651fa40-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>nanopublications have mainly been applied to v narrow tasks, but some ppl claim broader applications are possible</p>",
+          "text": "nanopublications have mainly been applied to v narrow tasks, but some ppl claim broader applications are possible"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555517059587
+        },
+        "style": {
+          "left": 2592.648660100926,
+          "top": 2517.6555965671914,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "ecc3fbb0-6147-11e9-a71a-0d16ecaabc88": {
+        "id": "ecc3fbb0-6147-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 591.0062484741211,
+          "top": 327.7874984741211,
+          "height": 194,
+          "width": 557,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 28,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "ecc3fbb0-6147-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2441.276449018686,
+          "top": 2183.201399879477,
+          "width": 673,
+          "height": 314,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555529715435,
+          "timeUpdated": 1555529715435
+        }
+      },
+      "ed44c470-6147-11e9-a71a-0d16ecaabc88": {
+        "id": "ed44c470-6147-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>asdflkjasd;lkfj</p>",
+          "text": "asdflkjasd;lkfj"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555529729553
+        },
+        "style": {
+          "left": 2607.383265314163,
+          "top": 2517.201399879477,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "f1c0ba30-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "f1c0ba30-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 113.38580321999999,
+          "top": 1157.898540776714,
+          "height": 67.56051114069783,
+          "width": 964.063252261915,
+          "userId": "default",
+          "pdfDir": "Clark-et-al_2014_Micropublications",
+          "pageNumber": 28,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "f1c0ba30-6148-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 2446.7527051587904,
+          "top": 2156.518468702038,
+          "width": 1080.0632522619148,
+          "height": 187.56051114069783,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555530153299,
+          "timeUpdated": 1555530153299
+        }
+      },
+      "fd2f0ed0-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "fd2f0ed0-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 623.0062484741211,
+          "top": 1099.6187591552734,
+          "height": 43,
+          "width": 51,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 9,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "fd2f0ed0-6148-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 194.08121558102977,
+          "top": 1878.8185182090565,
+          "width": 167,
+          "height": 163,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555530172477,
+          "timeUpdated": 1555530172477
+        }
+      },
+      "fec08440-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "fec08440-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 635.76,
+          "top": 1104.558,
+          "height": 39.11400000000003,
+          "width": 488.0375999999999,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 9,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "fec08440-6148-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 166.68621923042315,
+          "top": 1863.630589518911,
+          "width": 604.0375999999999,
+          "height": 159.11400000000003,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555530175108,
+          "timeUpdated": 1555530175108
+        }
+      },
+      "00af34e0-6149-11e9-a71a-0d16ecaabc88": {
+        "id": "00af34e0-6149-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "left": 635.76,
+          "top": 722.2500000000015,
+          "height": 60.228000000000065,
+          "width": 489.82860000000005,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 9,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "00af34e0-6149-11e9-a71a-0d16ecaabc88",
+          "type": "circle",
+          "left": 149.70194919935105,
+          "top": 1883.0035507527982,
+          "width": 605.8286,
+          "height": 180.22800000000007,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555530178350,
+          "timeUpdated": 1555530178350
+        }
+      },
+      "evansAdvancingScienceMining2011a": {
+        "id": "evansAdvancingScienceMining2011a",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "evansAdvancingScienceMining2011a",
+          "left": 110.80318645933123,
+          "top": 21.9833565443939,
+          "width": 200,
+          "height": 200,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 138.7824002647018,
+          "y": 194.92118030760847
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        }
+      },
+      "95bcd4a0-61eb-11e9-8773-f9acc6e91301": {
+        "id": "95bcd4a0-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "left": 36.77840042114258,
+          "top": 97.10639953613281,
+          "height": 795,
+          "width": 1026,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 6,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.875
+        },
+        "style": {
+          "id": "95bcd4a0-61eb-11e9-8773-f9acc6e91301",
+          "type": "circle",
+          "left": 169.62471178866042,
+          "top": 278.8267788919826,
+          "width": 1142,
+          "height": 915,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555600006891,
+          "timeUpdated": 1555600006891
+        }
+      },
+      "96830ad0-61eb-11e9-8773-f9acc6e91301": {
+        "id": "96830ad0-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>scientific reasoning/synthesis sits in a complex web of epistemic and social actors/forces/dynamics</p>",
+          "text": "scientific reasoning/synthesis sits in a complex web of epistemic and social actors/forces/dynamics"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555600037899
+        },
+        "style": {
+          "left": 453.8211800331082,
+          "top": 1213.8267788919825,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "ba063a90-61eb-11e9-8773-f9acc6e91301": {
+        "id": "ba063a90-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "left": 677.013599395752,
+          "top": 1226.4504089355469,
+          "height": 370,
+          "width": 593,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.25
+        },
+        "style": {
+          "id": "ba063a90-61eb-11e9-8773-f9acc6e91301",
+          "type": "circle",
+          "left": 527.6560373993516,
+          "top": 53.37826510441445,
+          "width": 709,
+          "height": 490,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555600067769,
+          "timeUpdated": 1555600102762
+        }
+      },
+      "baab2d20-61eb-11e9-8773-f9acc6e91301": {
+        "id": "baab2d20-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>named entity recognition is foundation of one big class of approaches for extracting statements from scientific texts</p>",
+          "text": "named entity recognition is foundation of one big class of approaches for extracting statements from scientific texts"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555600105453
+        },
+        "style": {
+          "left": 1084.5946508613479,
+          "top": 557.2244189505683,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "de0b4480-61eb-11e9-8773-f9acc6e91301": {
+        "id": "de0b4480-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "left": 63.01359939575195,
+          "top": 1132.1112060546875,
+          "height": 543,
+          "width": 1220.8624076843262,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 2,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.25
+        },
+        "style": {
+          "id": "de0b4480-61eb-11e9-8773-f9acc6e91301",
+          "type": "circle",
+          "left": 336.9052384772349,
+          "top": 87.89501922649919,
+          "width": 1336.8624076843262,
+          "height": 663,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555600128200,
+          "timeUpdated": 1556130043926
+        }
+      },
+      "deaeb070-61eb-11e9-8773-f9acc6e91301": {
+        "id": "deaeb070-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>formal/probablistic grammars are a major class of approaches for extracting meaningful statements from scientific texts</p>",
+          "text": "formal/probablistic grammars are a major class of approaches for extracting meaningful statements from scientific texts"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555600177126
+        },
+        "style": {
+          "left": 454.69476665075535,
+          "top": 930.8950192264992,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "3ca408b0-61ec-11e9-8773-f9acc6e91301": {
+        "id": "3ca408b0-61ec-11e9-8773-f9acc6e91301",
+        "data": {
+          "left": 48.01359939575195,
+          "top": 1413.572021484375,
+          "height": 195,
+          "width": 629,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.25
+        },
+        "style": {
+          "id": "3ca408b0-61ec-11e9-8773-f9acc6e91301",
+          "type": "circle",
+          "left": 118.6107969875219,
+          "top": 266.5969086037411,
+          "width": 745,
+          "height": 315,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555600286907,
+          "timeUpdated": 1555600286907
+        }
+      },
+      "3d4048b0-61ec-11e9-8773-f9acc6e91301": {
+        "id": "3d4048b0-61ec-11e9-8773-f9acc6e91301",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>ontologies are a major approach to extracting/formalizing knowledge from scientific texts</p>",
+          "text": "ontologies are a major approach to extracting/formalizing knowledge from scientific texts"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555600304286
+        },
+        "style": {
+          "left": 303.73563507237316,
+          "top": 601.5969086037411,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "633c2420-61ed-11e9-8773-f9acc6e91301": {
+        "id": "633c2420-61ed-11e9-8773-f9acc6e91301",
+        "data": {
+          "left": 670.013599395752,
+          "top": 452.37200021743774,
+          "height": 408,
+          "width": 617,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.25
+        },
+        "style": {
+          "id": "633c2420-61ed-11e9-8773-f9acc6e91301",
+          "type": "circle",
+          "left": 116.33280747838805,
+          "top": 237.26523965729575,
+          "width": 733,
+          "height": 528,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555600781155,
+          "timeUpdated": 1555600781155
+        }
+      },
+      "6495e7c0-61ed-11e9-8773-f9acc6e91301": {
+        "id": "6495e7c0-61ed-11e9-8773-f9acc6e91301",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>there is a lot of controversy about the illusion of consensus/uncertainty that ontologies come with</p>",
+          "text": "there is a lot of controversy about the illusion of consensus/uncertainty that ontologies come with"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555601633095
+        },
+        "style": {
+          "left": 298.1237668016288,
+          "top": 785.2652396572958,
+          "width": 300,
+          "height": 214.6153846153846
+        }
+      },
+      "kilicogluBiomedicalTextMining": {
+        "id": "kilicogluBiomedicalTextMining",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "kilicogluBiomedicalTextMining",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "kilicogluBiomedicalTextMining",
+          "left": 0.06721257974623285,
+          "top": 95.1710826660773,
+          "width": 297.1428571428571,
+          "height": 130.47619047619048,
+          "fill": "grey",
+          "stroke": "red",
+          "x": 79.48340826939857,
+          "y": 300.5510173837739
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1556134075884
+        }
+      },
+      "ffbb47d0-6220-11e9-90eb-fd3f2f9a9de4": {
+        "id": "ffbb47d0-6220-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "left": 717.0189990997314,
+          "top": 1447.31201171875,
+          "height": 213,
+          "width": 575,
+          "userId": "default",
+          "pdfDir": "kilicogluBiomedicalTextMining",
+          "pageNumber": 5,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.3000000000000003
+        },
+        "style": {
+          "id": "ffbb47d0-6220-11e9-90eb-fd3f2f9a9de4",
+          "type": "circle",
+          "left": 387.29061494192393,
+          "top": 250.51001443273321,
+          "width": 691,
+          "height": 333,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622948045,
+          "timeUpdated": 1556130533749
+        }
+      },
+      "00c7d5d0-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "00c7d5d0-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>systems to help manage info overload from text should represent key parts of scientific arguments, as well as the context behind those parts</p>",
+          "text": "systems to help manage info overload from text should represent key parts of scientific arguments, as well as the context behind those parts"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1555622973156
+        },
+        "style": {
+          "left": 359.38372975277036,
+          "top": 823.5100144327332,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "24eac800-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "24eac800-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "left": 133.01899909973145,
+          "top": 145.52197265625,
+          "height": 216,
+          "width": 558,
+          "userId": "default",
+          "pdfDir": "kilicogluBiomedicalTextMining",
+          "pageNumber": 6,
+          "type": "pdf.segment.viewbox",
+          "scale": 2.3000000000000003
+        },
+        "style": {
+          "id": "24eac800-6221-11e9-90eb-fd3f2f9a9de4",
+          "type": "circle",
+          "left": 542.7597863874644,
+          "top": 272.37726778588024,
+          "width": 674,
+          "height": 336,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555623010432,
+          "timeUpdated": 1556130047653
+        }
+      },
+      "2566d5d0-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "2566d5d0-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>we need systems that can bridge the gap between the inherently nuanced natural language medium of scientific argumentation to more &quot;computable&quot; and formal smenatic representations</p>",
+          "text": "we need systems that can bridge the gap between the inherently nuanced natural language medium of scientific argumentation to more \"computable\" and formal smenatic representations"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1556134107101
+        },
+        "style": {
+          "left": 72.77276028389886,
+          "top": 820.4651798737923,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "875ea220-66c4-11e9-b452-375df8466327": {
+        "id": "875ea220-66c4-11e9-b452-375df8466327",
+        "data": {
+          "left": 601.3070011138916,
+          "top": 298.27197265625,
+          "height": 273,
+          "width": 525,
+          "userId": "default",
+          "pdfDir": "evansAdvancingScienceMining2011a",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "875ea220-66c4-11e9-b452-375df8466327",
+          "type": "circle",
+          "left": 4.1749417401787525,
+          "top": 255.9852547872876,
+          "width": 641,
+          "height": 393,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1556132988226,
+          "timeUpdated": 1556134083076
+        }
+      },
+      "87e5d380-66c4-11e9-b452-375df8466327": {
+        "id": "87e5d380-66c4-11e9-b452-375df8466327",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>probabilikstic reasoning is hard</p><p></p>",
+          "text": "probabilikstic reasoning is hard\n"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1556134098856
+        },
+        "style": {
+          "left": 99.19317498033885,
+          "top": 692.0621778642106,
+          "width": 300,
+          "height": 110
+        }
+      },
+      "2a990ff0-66c7-11e9-b452-375df8466327": {
+        "id": "2a990ff0-66c7-11e9-b452-375df8466327",
+        "data": {
+          "type": "userHtml",
+          "html": "<p>With argument</p>",
+          "text": "With argument"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1556134142223
+        },
+        "style": {
+          "left": 1875.4584209735576,
+          "top": 1424.7569157527043,
+          "width": 300,
+          "height": 110
+        }
+      }
+    },
+    "links": {
+      "link-3e5f65c0-4e8f-11e9-9f24-1bc7db81a189": {
+        "id": "link-3e5f65c0-4e8f-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "Marshall_Brush_2004_Exploring-the-Relationship-Between-Personal-and-Public-Annotations",
+        "target": "3e5f3eb0-4e8f-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-3ef62781-4e8f-11e9-9f24-1bc7db81a189": {
+        "id": "link-3ef62781-4e8f-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "3e5f3eb0-4e8f-11e9-9f24-1bc7db81a189",
+        "target": "3ef62780-4e8f-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-08399781-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-08399781-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "08399780-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-08e42f61-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-08e42f61-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "08399780-4e90-11e9-9f24-1bc7db81a189",
+        "target": "08e42f60-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-21162f71-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-21162f71-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "21162f70-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-22603ba1-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-22603ba1-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "21162f70-4e90-11e9-9f24-1bc7db81a189",
+        "target": "22603ba0-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-7fbe0ed1-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-7fbe0ed1-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+        "target": "7fbe0ed0-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-809fe351-4e90-11e9-9f24-1bc7db81a189": {
+        "id": "link-809fe351-4e90-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "7fbe0ed0-4e90-11e9-9f24-1bc7db81a189",
+        "target": "809fe350-4e90-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-0f481f01-4e91-11e9-9f24-1bc7db81a189": {
+        "id": "link-0f481f01-4e91-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "Ackerman_Halverson_2004_Organizational-Memory-as-Objects,-Processes,-and-Trajectories",
+        "target": "0f481f00-4e91-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-da2da641-4e91-11e9-9f24-1bc7db81a189": {
+        "id": "link-da2da641-4e91-11e9-9f24-1bc7db81a189",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553471011538,
+          "timeUpdated": 1553471011538
+        },
+        "source": "0f481f00-4e91-11e9-9f24-1bc7db81a189",
+        "target": "da2da640-4e91-11e9-9f24-1bc7db81a189",
+        "isDirected": true
+      },
+      "link-e02f2460-4eaf-11e9-886b-1dc0577a09f9": {
+        "id": "link-e02f2460-4eaf-11e9-886b-1dc0577a09f9",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553474606358,
+          "timeUpdated": 1553474606358
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "e02efd50-4eaf-11e9-886b-1dc0577a09f9",
+        "isDirected": true
+      },
+      "link-e0401451-4eaf-11e9-886b-1dc0577a09f9": {
+        "id": "link-e0401451-4eaf-11e9-886b-1dc0577a09f9",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553474606358,
+          "timeUpdated": 1553474606358
+        },
+        "source": "e02efd50-4eaf-11e9-886b-1dc0577a09f9",
+        "target": "e0401450-4eaf-11e9-886b-1dc0577a09f9",
+        "isDirected": true
+      },
+      "link-fe554521-523b-11e9-a0c6-0544500350b9": {
+        "id": "link-fe554521-523b-11e9-a0c6-0544500350b9",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553715144735,
+          "timeUpdated": 1553715144735
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "fe554520-523b-11e9-a0c6-0544500350b9",
+        "isDirected": true
+      },
+      "link-fe6e7271-523b-11e9-a0c6-0544500350b9": {
+        "id": "link-fe6e7271-523b-11e9-a0c6-0544500350b9",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1553715144735,
+          "timeUpdated": 1553715144735
+        },
+        "source": "fe554520-523b-11e9-a0c6-0544500350b9",
+        "target": "fe6e7270-523b-11e9-a0c6-0544500350b9",
+        "isDirected": true
+      },
+      "link-c70df021-57b4-11e9-8cf1-877eeb2dd397": {
+        "id": "link-c70df021-57b4-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "c70df020-57b4-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-c9c23ab1-57b4-11e9-8cf1-877eeb2dd397": {
+        "id": "link-c9c23ab1-57b4-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "c70df020-57b4-11e9-8cf1-877eeb2dd397",
+        "target": "c9c23ab0-57b4-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-372d8d21-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-372d8d21-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "372d8d20-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-3767d701-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-3767d701-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "372d8d20-57b5-11e9-8cf1-877eeb2dd397",
+        "target": "3767d700-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-4eabf4a1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-4eabf4a1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "4eabf4a0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-4ff0d0b1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-4ff0d0b1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "4eabf4a0-57b5-11e9-8cf1-877eeb2dd397",
+        "target": "4ff0d0b0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-6e6cec41-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-6e6cec41-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "6e6cec40-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-6ede72c1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-6ede72c1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "6e6cec40-57b5-11e9-8cf1-877eeb2dd397",
+        "target": "6ede72c0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-97256c20-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-97256c20-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "97254510-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-97e364f1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-97e364f1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "97254510-57b5-11e9-8cf1-877eeb2dd397",
+        "target": "97e364f0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-d5019aa1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-d5019aa1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "d5019aa0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-d5d8c0c1-57b5-11e9-8cf1-877eeb2dd397": {
+        "id": "link-d5d8c0c1-57b5-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "d5019aa0-57b5-11e9-8cf1-877eeb2dd397",
+        "target": "d5d8c0c0-57b5-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-2833d261-57b6-11e9-8cf1-877eeb2dd397": {
+        "id": "link-2833d261-57b6-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "2833d260-57b6-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-28e37351-57b6-11e9-8cf1-877eeb2dd397": {
+        "id": "link-28e37351-57b6-11e9-8cf1-877eeb2dd397",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554476705099,
+          "timeUpdated": 1554476705099
+        },
+        "source": "2833d260-57b6-11e9-8cf1-877eeb2dd397",
+        "target": "28e37350-57b6-11e9-8cf1-877eeb2dd397",
+        "isDirected": true
+      },
+      "link-923c0420-5b0d-11e9-94d0-fd3982571481": {
+        "id": "link-923c0420-5b0d-11e9-94d0-fd3982571481",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554829795367,
+          "timeUpdated": 1554829795367
+        },
+        "source": "Ribaupierre_Falquet_2017_Extracting-discourse-elements-and-annotating-scientific-documents-using-the",
+        "target": "923bdd10-5b0d-11e9-94d0-fd3982571481",
+        "isDirected": true
+      },
+      "link-76cb7100-5c64-11e9-b360-834710913e8b": {
+        "id": "link-76cb7100-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "76cb49f0-5c64-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-78c2ad21-5c64-11e9-b360-834710913e8b": {
+        "id": "link-78c2ad21-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "76cb49f0-5c64-11e9-b360-834710913e8b",
+        "target": "78c2ad20-5c64-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-c39cd0f1-5c64-11e9-b360-834710913e8b": {
+        "id": "link-c39cd0f1-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "c39cd0f0-5c64-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-c451f020-5c64-11e9-b360-834710913e8b": {
+        "id": "link-c451f020-5c64-11e9-b360-834710913e8b",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "c39cd0f0-5c64-11e9-b360-834710913e8b",
+        "target": "c451c910-5c64-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-04ce0161-5c66-11e9-b360-834710913e8b": {
+        "id": "link-04ce0161-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "04ce0160-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-05b8fda1-5c66-11e9-b360-834710913e8b": {
+        "id": "link-05b8fda1-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "04ce0160-5c66-11e9-b360-834710913e8b",
+        "target": "05b8fda0-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-2ee993b1-5c66-11e9-b360-834710913e8b": {
+        "id": "link-2ee993b1-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "2ee993b0-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-2fd55341-5c66-11e9-b360-834710913e8b": {
+        "id": "link-2fd55341-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "2ee993b0-5c66-11e9-b360-834710913e8b",
+        "target": "2fd55340-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-c5b40641-5c66-11e9-b360-834710913e8b": {
+        "id": "link-c5b40641-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "c5b40640-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-c61b0571-5c66-11e9-b360-834710913e8b": {
+        "id": "link-c61b0571-5c66-11e9-b360-834710913e8b",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1554991556073,
+          "timeUpdated": 1554991556073
+        },
+        "source": "c5b40640-5c66-11e9-b360-834710913e8b",
+        "target": "c61b0570-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-d82b6c70-5d1d-11e9-9068-4b1638052c04": {
+        "id": "link-d82b6c70-5d1d-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "d82b1e50-5d1d-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-da1ab951-5d1d-11e9-9068-4b1638052c04": {
+        "id": "link-da1ab951-5d1d-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "d82b1e50-5d1d-11e9-9068-4b1638052c04",
+        "target": "da1ab950-5d1d-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-003dc141-5d1e-11e9-9068-4b1638052c04": {
+        "id": "link-003dc141-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "003dc140-5d1e-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-015d8921-5d1e-11e9-9068-4b1638052c04": {
+        "id": "link-015d8921-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "003dc140-5d1e-11e9-9068-4b1638052c04",
+        "target": "015d8920-5d1e-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-53ee50c1-5d1e-11e9-9068-4b1638052c04": {
+        "id": "link-53ee50c1-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "53ee50c0-5d1e-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-54c68851-5d1e-11e9-9068-4b1638052c04": {
+        "id": "link-54c68851-5d1e-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "53ee50c0-5d1e-11e9-9068-4b1638052c04",
+        "target": "54c68850-5d1e-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-82298d61-5d32-11e9-9068-4b1638052c04": {
+        "id": "link-82298d61-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "82298d60-5d32-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-82b5a0c1-5d32-11e9-9068-4b1638052c04": {
+        "id": "link-82b5a0c1-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "82298d60-5d32-11e9-9068-4b1638052c04",
+        "target": "82b5a0c0-5d32-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-acdf63e1-5d32-11e9-9068-4b1638052c04": {
+        "id": "link-acdf63e1-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "Uren-et-al_2006_Sensemaking-tools-for-understanding-research-literatures",
+        "target": "acdf63e0-5d32-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-ad775e21-5d32-11e9-9068-4b1638052c04": {
+        "id": "link-ad775e21-5d32-11e9-9068-4b1638052c04",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555030905901,
+          "timeUpdated": 1555030905901
+        },
+        "source": "acdf63e0-5d32-11e9-9068-4b1638052c04",
+        "target": "ad775e20-5d32-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-c6ca2240-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-c6ca2240-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "c6c82670-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-c76fd821-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-c76fd821-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "c6c82670-6129-11e9-a71a-0d16ecaabc88",
+        "target": "c76fd820-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-e08b9bf1-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-e08b9bf1-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "e08b9bf0-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-e1345f11-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-e1345f11-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "e08b9bf0-6129-11e9-a71a-0d16ecaabc88",
+        "target": "e1345f10-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-fdee5841-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-fdee5841-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "fdee5840-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-fec2bf41-6129-11e9-a71a-0d16ecaabc88": {
+        "id": "link-fec2bf41-6129-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "fdee5840-6129-11e9-a71a-0d16ecaabc88",
+        "target": "fec2bf40-6129-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-2bb23211-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "link-2bb23211-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "2bb23210-612a-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-6496b5b1-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "link-6496b5b1-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "6496b5b0-612a-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-6651fa41-612a-11e9-a71a-0d16ecaabc88": {
+        "id": "link-6651fa41-612a-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "6496b5b0-612a-11e9-a71a-0d16ecaabc88",
+        "target": "6651fa40-612a-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-ecc3fbb1-6147-11e9-a71a-0d16ecaabc88": {
+        "id": "link-ecc3fbb1-6147-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "ecc3fbb0-6147-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-ed44c471-6147-11e9-a71a-0d16ecaabc88": {
+        "id": "link-ed44c471-6147-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "ecc3fbb0-6147-11e9-a71a-0d16ecaabc88",
+        "target": "ed44c470-6147-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-f1c0ba31-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "link-f1c0ba31-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Clark-et-al_2014_Micropublications",
+        "target": "f1c0ba30-6148-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-fd2f0ed1-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "link-fd2f0ed1-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "fd2f0ed0-6148-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-fec08441-6148-11e9-a71a-0d16ecaabc88": {
+        "id": "link-fec08441-6148-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "fec08440-6148-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-00af34e1-6149-11e9-a71a-0d16ecaabc88": {
+        "id": "link-00af34e1-6149-11e9-a71a-0d16ecaabc88",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555277191234,
+          "timeUpdated": 1555277191234
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "00af34e0-6149-11e9-a71a-0d16ecaabc88",
+        "isDirected": true
+      },
+      "link-95bcfbb0-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-95bcfbb0-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "95bcd4a0-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-968331e0-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-968331e0-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "95bcd4a0-61eb-11e9-8773-f9acc6e91301",
+        "target": "96830ad0-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-ba063a91-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-ba063a91-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "ba063a90-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-baab2d21-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-baab2d21-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "ba063a90-61eb-11e9-8773-f9acc6e91301",
+        "target": "baab2d20-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-de0b4481-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-de0b4481-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "de0b4480-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-deaeb071-61eb-11e9-8773-f9acc6e91301": {
+        "id": "link-deaeb071-61eb-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "de0b4480-61eb-11e9-8773-f9acc6e91301",
+        "target": "deaeb070-61eb-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-3ca408b1-61ec-11e9-8773-f9acc6e91301": {
+        "id": "link-3ca408b1-61ec-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "3ca408b0-61ec-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-3d4048b1-61ec-11e9-8773-f9acc6e91301": {
+        "id": "link-3d4048b1-61ec-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "3ca408b0-61ec-11e9-8773-f9acc6e91301",
+        "target": "3d4048b0-61ec-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-633c4b30-61ed-11e9-8773-f9acc6e91301": {
+        "id": "link-633c4b30-61ed-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "633c2420-61ed-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-6495e7c1-61ed-11e9-8773-f9acc6e91301": {
+        "id": "link-6495e7c1-61ed-11e9-8773-f9acc6e91301",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555599920921,
+          "timeUpdated": 1555599920921
+        },
+        "source": "633c2420-61ed-11e9-8773-f9acc6e91301",
+        "target": "6495e7c0-61ed-11e9-8773-f9acc6e91301",
+        "isDirected": true
+      },
+      "link-ffbb47d1-6220-11e9-90eb-fd3f2f9a9de4": {
+        "id": "link-ffbb47d1-6220-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1555622834265
+        },
+        "source": "kilicogluBiomedicalTextMining",
+        "target": "ffbb47d0-6220-11e9-90eb-fd3f2f9a9de4",
+        "isDirected": true
+      },
+      "link-00c7d5d1-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "link-00c7d5d1-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1555622834265
+        },
+        "source": "ffbb47d0-6220-11e9-90eb-fd3f2f9a9de4",
+        "target": "00c7d5d0-6221-11e9-90eb-fd3f2f9a9de4",
+        "isDirected": true
+      },
+      "link-24eac801-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "link-24eac801-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1555622834265
+        },
+        "source": "kilicogluBiomedicalTextMining",
+        "target": "24eac800-6221-11e9-90eb-fd3f2f9a9de4",
+        "isDirected": true
+      },
+      "link-2566d5d1-6221-11e9-90eb-fd3f2f9a9de4": {
+        "id": "link-2566d5d1-6221-11e9-90eb-fd3f2f9a9de4",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555622834265,
+          "timeUpdated": 1555622834265
+        },
+        "source": "24eac800-6221-11e9-90eb-fd3f2f9a9de4",
+        "target": "2566d5d0-6221-11e9-90eb-fd3f2f9a9de4",
+        "isDirected": true
+      },
+      "link-1c3462e0-66c0-11e9-b452-375df8466327": {
+        "id": "link-1c3462e0-66c0-11e9-b452-375df8466327",
+        "data": {
+          "text": "",
+          "html": ""
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "2ee993b0-5c66-11e9-b360-834710913e8b",
+        "target": "82b5a0c0-5d32-11e9-9068-4b1638052c04",
+        "isDirected": true
+      },
+      "link-875ea221-66c4-11e9-b452-375df8466327": {
+        "id": "link-875ea221-66c4-11e9-b452-375df8466327",
+        "data": {
+          "text": "",
+          "html": "",
+          "type": "more"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "evansAdvancingScienceMining2011a",
+        "target": "875ea220-66c4-11e9-b452-375df8466327",
+        "isDirected": true
+      },
+      "link-87e5d381-66c4-11e9-b452-375df8466327": {
+        "id": "link-87e5d381-66c4-11e9-b452-375df8466327",
+        "data": {
+          "text": "compress",
+          "html": "<p>compress</p>"
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "875ea220-66c4-11e9-b452-375df8466327",
+        "target": "87e5d380-66c4-11e9-b452-375df8466327",
+        "isDirected": true
+      },
+      "link-1e9be8d0-66c7-11e9-b452-375df8466327": {
+        "id": "link-1e9be8d0-66c7-11e9-b452-375df8466327",
+        "data": {
+          "text": "",
+          "html": ""
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "87e5d380-66c4-11e9-b452-375df8466327",
+        "target": "2566d5d0-6221-11e9-90eb-fd3f2f9a9de4",
+        "isDirected": true
+      },
+      "link-255b3450-66c7-11e9-b452-375df8466327": {
+        "id": "link-255b3450-66c7-11e9-b452-375df8466327",
+        "data": {
+          "text": "",
+          "html": ""
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "015d8920-5d1e-11e9-9068-4b1638052c04",
+        "target": "2fd55340-5c66-11e9-b360-834710913e8b",
+        "isDirected": true
+      },
+      "link-35bcc700-66c7-11e9-b452-375df8466327": {
+        "id": "link-35bcc700-66c7-11e9-b452-375df8466327",
+        "data": {
+          "text": "",
+          "html": ""
+        },
+        "style": {
+          "stroke": "lightgrey"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1555883026039,
+          "timeUpdated": 1555883026039
+        },
+        "source": "c61b0570-5c66-11e9-b360-834710913e8b",
+        "target": "2a990ff0-66c7-11e9-b452-375df8466327",
+        "isDirected": true
+      }
+    },
+    "selectedNodes": [
+      "c61b0570-5c66-11e9-b360-834710913e8b"
+    ],
+    "selectedLinks": [],
+    "patches": [
+      {
+        "op": "replace",
+        "path": [
+          "nodes",
+          "2a990ff0-66c7-11e9-b452-375df8466327"
+        ],
+        "value": {
+          "id": "2a990ff0-66c7-11e9-b452-375df8466327",
+          "data": {
+            "type": "userHtml",
+            "html": "<p>With argument</p>",
+            "text": "With argument"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1555883026039,
+            "timeUpdated": 1556134142223
+          },
+          "style": {
+            "left": 1875.4584209735576,
+            "top": 1424.7569157527043,
+            "width": 300,
+            "height": 110
+          }
+        }
+      }
+    ]
+  }
+}

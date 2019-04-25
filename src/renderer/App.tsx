@@ -28,7 +28,6 @@ import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
-import console = require("console");
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
 

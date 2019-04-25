@@ -1,19 +1,13 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
 import produce, { original } from "immer";
-const pino = require("pino");
-const logger = pino({ base: null }, "./patches.log"); //142k default, 700k extreme
-// logger.info({ patch: { b: 1 } });
 import { Nodes, Links, aNode, aLink, LinkBase } from "./creators";
 import jsonfile = require("jsonfile");
-import { NestedPartial } from "../renderer/utils";
+import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
-import { oc } from "ts-optchain";
 import { frame } from "../renderer/ResizableFrame";
-import { devlog } from "./featureToggle";
 const settings = require("electron-settings");
 const { clientWidth } = document.documentElement;
-// stored in user/data.
-// todo add userId?
+
 const pdfRootDir = settings.get("pdfRootDir");
 export let defaultApp = {
   current: {
@@ -29,7 +23,6 @@ export let defaultApp = {
   },
   panels: {
     mainPdfReader: {
-      // todo should be scrollto
       left: 0,
       top: 0,
       width: clientWidth / 2,
@@ -39,7 +32,7 @@ export let defaultApp = {
       pdfDir: ""
     },
     graphContainer: {
-      // todo should be scrollto
+      // todo left/top are scroll to
       left: 0,
       top: 0,
       width: "50vw",
@@ -52,7 +45,8 @@ export let defaultApp = {
       | "synthesisOutlineEditor"
     // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
   },
-  portals: [] as frame[]
+  portals: [] as frame[],
+  nextNodeLocation: undefined as Box
 };
 
 let defaultGraph = {
@@ -60,7 +54,7 @@ let defaultGraph = {
   links: {} as Links,
   selectedNodes: [] as string[],
   selectedLinks: [] as string[],
-  patches: [] //todo ts
+  patches: [], //todo ts
 };
 
 const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
@@ -138,8 +132,13 @@ export const app = createModel({
     },
     "graph/removeBatch": (state, payload) => {
       // how to communicate across models
-      console.log("graph/removeBatch -> close open portals")
+      console.log("graph/removeBatch -> close open portals");
       return { ...state, portals: [] };
+    },
+    setNextNodeLocation(state, payload: Box) {
+      return produce(state, draft => { 
+        draft.nextNodeLocation = payload;
+      })
     }
   }
 });
@@ -247,7 +246,8 @@ export const graph = createModel({
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, isDirected } = nodeOrLink;
-            draft[payloadKey][id].meta.timeUpdated = Date.now();
+            if (!!draft[payloadKey][id])
+              draft[payloadKey][id].meta.timeUpdated = Date.now();
 
             for (let keyToUpdate of Object.keys(data || {})) {
               draft[payloadKey][id].data[keyToUpdate] = data[keyToUpdate];
@@ -298,6 +298,34 @@ export const graph = createModel({
             }
           }
         }
+      });
+    },
+    toggleStyleMode(state, payload: { id: string }) {
+      const { id } = payload;
+      const ix = state.nodes[id].style.modeIx;
+      console.log("ID", id, ix);
+
+      const prevMode = state.nodes[id].style.modes[ix];
+      const nModes = state.nodes[id].style.modes.length;
+      const newIx = ix + 1 < nModes ? ix + 1 : 0; //can toggle > 2 opts
+      const nextMode = state.nodes[id].style.modes[newIx];
+      return produce(state, draft => {
+        // switch on style.lockedCorner for more options
+        draft.nodes[id].style[nextMode].left =
+          draft.nodes[id].style[prevMode].left;
+        draft.nodes[id].style[nextMode].top =
+          draft.nodes[id].style[prevMode].top;
+
+        draft.nodes[id].style.modeIx = newIx;
+        draft.patches = [
+          {
+            op: "replace",
+            path: ["nodes", id, "style", "modeIx"],
+            value: newIx
+          }
+        ];
+
+        return draft;
       });
     }
   }
