@@ -1,10 +1,15 @@
 - recreate virtualization bug
-
-
 - ts
+- break it
+    - aaaa, aa autocomplete
+    - anchor text
+
+
+<- resize frame covers padding
+
+
 
 - svg layer padding?
-- resize frame covers padding
 - select neighbors
 - show links partially in view
 - LS position if not showing 
