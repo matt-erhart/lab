@@ -9,18 +9,11 @@
   <!--te-->
 
 # Roadmap
-- auto complete + put editor everywhere
-- pack/dock + move neighbors
-
----
-big editor + side bar
-
 
 -------
 - document editor
-   - more reliable autocomplete without giant stuff in it
    - insert one doc in another
-   - transpilation
+   - transcullison?
    - paraphrasing something imported
    - create node from selected text
    - create nodes/links from outline heirarchy
@@ -35,7 +28,7 @@ big editor + side bar
       - autocomplete for search parameters
          - consider neo4j queries
 
-- autocomplete -> limit to 40 chars ~plain text, small UI
+- autocomplete ->  small UI
    - text matching algorithm
    - could be ghost text instead of popup 
 
@@ -61,11 +54,10 @@ big editor + side bar
    - perf
       - zoom
       - prevent rerender
-      - virtualize
    
 - graph viewer
    - select all left/right/up/down
-   - move many with mouse / arrows
+   - move many with arrows
    - force directed
    - collision
    - alignment tools
@@ -73,9 +65,7 @@ big editor + side bar
    - perf: react spring + transform + opacity
 
 - Bug reports
-   - text editor id can be undefined
-   - auto-complete doesn't always work
-   - graph viewbox container should resize -> see multi-instance customizable layouts
+   - text editor id can be undefined. maybe fixed?
 
 
 # Slate-TroubleShooting
