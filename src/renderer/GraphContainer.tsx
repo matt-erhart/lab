@@ -25,7 +25,9 @@ import {
   Nodes,
   PdfPublication,
   AutoGrab,
-  makeUserDoc
+  makeUserDoc,
+  PdfSegmentViewbox,
+  NodeBase
 } from "../store/creators";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
@@ -34,8 +36,8 @@ import { devlog } from "../store/featureToggle";
 import { MdZoomOutMap } from "react-icons/md";
 import { dragData } from "./rx";
 const frames = [
-  { id: "1", left: 100, top: 300, height: 100, width: 100 },
-  { id: "2", left: 101, top: 100, height: 100, width: 100 }
+  { id: "1", left: 100, top: 300, height: 100, width: 100, isSelected: false },
+  { id: "2", left: 101, top: 100, height: 100, width: 100, isSelected: false }
 ];
 
 /**
@@ -150,10 +152,10 @@ export class GraphContainer extends React.Component<
       .filter(frame => this.props.selectedNodes.includes(frame.id))
       .map(x => {
         const { isSelected, id, ...style } = x;
-        const nodeStyle = this.props.nodes[id].style;
-        const mode = nodeStyle.modes[nodeStyle.modeIx];
+        const node = this.props.nodes[id] as PdfSegmentViewbox;
+        const mode = node.style.modes[node.style.modeIx];
 
-        return { id, style: { ...nodeStyle, [mode]: style } };
+        return { id, style: { ...node.style, [mode]: style } };
       });
     const { scrollLeft, scrollTop } = this.state;
     const nextNodeLocation = this.nextNodeLocation({
@@ -219,16 +221,21 @@ export class GraphContainer extends React.Component<
     return linksOnNode;
   };
 
-  // this function transforms the component inherited Redux state.nodes into the many frames
-  getFramesInView = containerBounds => {
+  getScreenEdges = (containerBounds, pad=200) => {
     const { width, height } = containerBounds;
-    const pad = 200;
+    const zoomedIn = this.state.zoom > 1 ? this.state.zoom : 1;
     const view = getBoxEdges({
-      left: this.state.scrollLeft - pad,
-      top: this.state.scrollTop - pad,
+      left: (this.state.scrollLeft - pad) / zoomedIn,
+      top: (this.state.scrollTop - pad) / zoomedIn,
       width: (width + pad) / this.state.zoom,
       height: (height + pad) / this.state.zoom
     });
+    return view;
+  };
+
+  // this function transforms the component inherited Redux state.nodes into the many frames
+  getFramesInView = containerBounds => {
+    const view = this.getScreenEdges(containerBounds);
 
     const isInView = collision(view);
     const nodesFiltered = Object.values(this.props.nodes).filter(n =>
@@ -236,7 +243,8 @@ export class GraphContainer extends React.Component<
     );
 
     const framesInView = nodesFiltered.reduce((all, node) => {
-      const mode = node.style.modes[node.style.modeIx];
+      const nodeStyle = node.style as NodeBase["style"];
+      const mode = nodeStyle.modes[nodeStyle.modeIx];
       const { left, top, width, height } = node.style[mode];
       const edges = getBoxEdges({ left, top, width, height });
       const inView = isInView(edges);
@@ -393,6 +401,7 @@ export class GraphContainer extends React.Component<
         top: (clientY - top) / this.state.zoom
       };
       const userHtml = makeUserDoc({
+        data: {},
         style: {
           min: xy,
           max: xy
@@ -527,7 +536,7 @@ export class GraphContainer extends React.Component<
           pageNumber
         } = node.data as ViewboxData;
 
-        const { modeIx, modes } = node.style;
+        const { modeIx, modes } = node.style as NodeBase["style"];
         const isMin = modes[modeIx] === "min";
 
         const pagenum = [pageNumber];
@@ -570,7 +579,7 @@ export class GraphContainer extends React.Component<
       this.setState(state => {
         const newZoom =
           state.zoom + (e.nativeEvent.wheelDelta / wheelDefault) * 0.2;
-        return { zoom: newZoom > 0 ? newZoom : state.zoom };
+        return { zoom: newZoom > .1 ? newZoom : state.zoom };
       });
       this.getFramesInView(this.state.containerBounds);
     }
@@ -666,20 +675,14 @@ export class GraphContainer extends React.Component<
     // figure out where to put stuff
     //
     if (!framesInView) return undefined;
-    const inView = isBoxInBox(
-      getBoxEdges({
-        left: scrollLeft,
-        top: scrollTop,
-        width,
-        height
-      })
-    );
+
+    const inView = isBoxInBox(this.getScreenEdges({ width, height }, 0));
 
     const wh = { height: 200, width: 300 };
     const pad = 20;
     const topLeftEmptySpace = getBoxEdges({
-      left: this.state.scrollLeft + 30,
-      top: this.state.scrollTop + 30,
+      left: (this.state.scrollLeft + 30) / this.state.zoom,
+      top: (this.state.scrollTop + 30) / this.state.zoom,
       ...wh
     });
     // if (framesInView.length === 0) return topLeftEmptySpace;
@@ -765,6 +768,8 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
+    console.log(this.state.zoom)
+    
 
     return (
       <ScrollContainer
@@ -782,16 +787,16 @@ export class GraphContainer extends React.Component<
           id="GraphMapContainer"
           ref={this.mapRef}
           zoom={this.state.zoom}
-          height={4000}
-          width={4000}
+          height={8000}
+          width={8000}
           onMouseDown={this.startSelect}
         >
           {width && height && (
             <svg
               id="SvgLayer"
-              viewBox={`0 0 ${4000} ${4000}`}
-              width={4000}
-              height={4000}
+              viewBox={`0 0 ${8000} ${8000}`}
+              width={8000}
+              height={8000}
               style={{
                 position: "absolute",
                 left: 0,
@@ -868,7 +873,7 @@ export class GraphContainer extends React.Component<
                 isSelected={isSelected}
                 zoom={this.state.zoom}
                 hide={hide}
-                mode={get(node, n => n.style.modes[n.style.modeIx])}
+                mode={get(node, (n: any) => n.style.modes[n.style.modeIx])}
                 dragHandle={
                   <DragHandle
                     id="drag-handle"
@@ -880,6 +885,7 @@ export class GraphContainer extends React.Component<
                       id="drag-handle-button"
                       onClick={e => {
                         e.stopPropagation();
+                        //@ts-ignore
                         if (e.target.id === "drag-handle-button") {
                           this.props.toggleSelections({
                             selectedNodes: [frame.id],
@@ -975,8 +981,8 @@ export const ScrollContainer = styled.div`
 `;
 const ZoomDiv = styled.div<{ zoom: number; width?: number; height?: number }>``;
 const MapContainer = styled(ZoomDiv)`
-  width: ${p => (p.width ? p.width : 4000)}px;
-  height: ${p => (p.height ? p.height : 4000)}px;
+  width: ${p => (p.width ? p.width : 8000)}px;
+  height: ${p => (p.height ? p.height : 8000)}px;
   position: relative;
   transform-origin: top left;
   transform: scale(${p => p.zoom});

@@ -18,12 +18,11 @@ const pdfjs: PDFJSStatic = _pdfjs as any;
 import {
   flatten,
   zeroPad,
-
   sortBy
 } from "./utils";
 
 import { histogram, mean, median, deviation } from "d3-array";
-import { createAutoGrabInfo } from "./AutoGrab";
+import { createAutoGrabInfo, createGROBIDMetadata } from "./AutoGrab";
 import { featureToggles } from "../store/featureToggle";
 // const FormData = require('form-data');
 import FormData, { getHeaders } from "form-data";
@@ -294,6 +293,30 @@ export const processAutoGrab = (
       pdfPath,
       true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
     ).then(result => console.log("createAutoGrabInfo succeed"))
+  }
+  // }
+  return pdfDirs;
+};
+
+export const processGROBID = (
+  pdfRootDir: string,
+  overwrite = false
+) => async () => {
+  // todo return new pdf nodes from this function
+  console.log("preprocessing pdfs");
+  // console.time("time");
+  const scale = 1;
+  //   const dir = pdfDirs[0];
+  const pdfDirs = await listDirs(pdfRootDir);
+  for (let dir of pdfDirs) {
+
+    const files = await ls(dir + "/*");
+    const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+    await createGROBIDMetadata(
+      path.join(dir, "metadataFromGROBID.json"),
+      pdfPath,
+      true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
+    ).then(result => console.log("createGROBIDMetadata succeed"))
   }
   // }
   return pdfDirs;

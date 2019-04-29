@@ -7,6 +7,7 @@ export const isCancelException = error => (
 
 const PageCanvasDefaults = {
   props: {
+    id: "",
     page: undefined as pdfjs.PDFPageProxy,
     viewport: undefined as pdfjs.PDFPageViewport
   },

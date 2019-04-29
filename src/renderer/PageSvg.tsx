@@ -3,7 +3,7 @@ import { Spring, animated } from "react-spring";
 import { dndContainer } from "./rx";
 import { Subscription } from "rxjs";
 import { PageOfText } from "./io";
-import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
+import { getRectCoords, flatten, get, getRectEdges, mode, NestedPartial } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
 import { Image } from "./PdfViewer";
@@ -427,7 +427,7 @@ class PageSvg extends React.Component<
       viewbox = this.onAddViewbox(selectionRect);
     }
 
-    const segStyle = this.props.nodes[viewbox.id].style.min;
+    const segStyle = (this.props.nodes[viewbox.id] as PdfSegmentViewbox).style.min;
     const tHeight = 120;
     const newTextStyle = {
       left: segStyle.left,
@@ -466,7 +466,7 @@ class PageSvg extends React.Component<
 
     let htmlNodes = nodes.filter(node => node.data.type === "userDoc");
     if (htmlNodes.length === 0) {
-      const segStyle = this.props.nodes[segmentId].style.min;
+      const segStyle = (this.props.nodes[segmentId] as PdfSegmentViewbox).style.min;
       const tHeight = 120;
       const newTextStyle = {
         left: segStyle.left,
@@ -476,8 +476,8 @@ class PageSvg extends React.Component<
       };
 
       htmlNodes.push(
+        //@ts-ignore
         makeUserDoc({
-          data: {},
           style: { min: newTextStyle, max: newTextStyle }
         })
       );
@@ -521,8 +521,8 @@ class PageSvg extends React.Component<
     const spaceRight = clientWidth - bounding.right;
 
     const isOneNode = htmlNodes.length === 1;
-    const defaultWidth = isOneNode ? htmlNodes[0].style.max.width : 300;
-    const defaultHeight = isOneNode ? htmlNodes[0].style.max.height : 100;
+    const defaultWidth = isOneNode ? (htmlNodes[0] as PdfSegmentViewbox).style.max.width : 300;
+    const defaultHeight = isOneNode ? (htmlNodes[0] as PdfSegmentViewbox).style.max.height : 100;
 
     let frames = [];
     let shift = 0;
@@ -734,8 +734,8 @@ class PageSvg extends React.Component<
                       });
                     } else {
                       this.props.setGraphContainer({
-                        left: vb.style.left,
-                        top: vb.style.top
+                        left: vb.style.min.left,
+                        top: vb.style.min.top
                       });
                     }
                   }}

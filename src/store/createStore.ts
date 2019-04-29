@@ -1,6 +1,6 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
 import produce, { original } from "immer";
-import { Nodes, Links, aNode, aLink, LinkBase } from "./creators";
+import { Nodes, Links, aNode, aLink, LinkBase, PdfSegmentViewbox } from "./creators";
 import jsonfile = require("jsonfile");
 import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
@@ -302,6 +302,7 @@ export const graph = createModel({
     },
     toggleStyleMode(state, payload: { id: string }) {
       const { id } = payload;
+      const node = state.nodes[id] as aNode
       const ix = state.nodes[id].style.modeIx;
       console.log("ID", id, ix);
 

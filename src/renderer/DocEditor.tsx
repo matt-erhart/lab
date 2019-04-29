@@ -35,15 +35,14 @@ import {
   getSelectionRange,
   inFirstNotSecondArray,
   get,
-  getSpaceAround,
   getBoxEdges,
   getEdgeDiffs,
   moreSpaceIs,
   getClientBox,
-  getElementBox
+  getElementBox,
+  NestedPartial
 } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
-import { UserDoc } from "../store/creators";
 import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 import { Portal } from "./Portal";
@@ -258,9 +257,9 @@ export class DocEditor extends React.Component<
 
   state = DocEditorDefaults.state;
   editor: Editor;
-  outerContainer = React.createRef<HTMLElement>();
-  portalDiv = React.createRef<HTMLElement>();
-  menu = React.createRef<HTMLElement>();
+  outerContainer = React.createRef<HTMLDivElement>();
+  portalDiv = React.createRef<HTMLDivElement>();
+  menu = React.createRef<HTMLDivElement>();
   ref = editor => {
     this.editor = editor;
   };
@@ -747,7 +746,7 @@ export class DocEditor extends React.Component<
     return next();
   };
 
-  save = e => {
+  save = (e?) => {
     !!e && e.stopPropagation();
     // this.setState({ isFocused: false });
     this.setState({
@@ -765,6 +764,7 @@ export class DocEditor extends React.Component<
           id: this.props.id,
           data: {
             ...serialized,
+            //@ts-ignore
             useTextForAutocomplete: this.state.useTextForAutocomplete
           }
         }
@@ -795,6 +795,7 @@ export class DocEditor extends React.Component<
     if (e.ctrlKey) {
       e.preventDefault();
       const inc = e.nativeEvent.wheelDelta / wheelDefault;
+      //@ts-ignore
       this.props.updateBatch({
         nodes: [
           {
@@ -805,7 +806,7 @@ export class DocEditor extends React.Component<
             data: {
               ...this.serialize(this.state.editorValue)
             }
-          }
+          } as NestedPartial<UserDoc>
         ]
       });
     }
@@ -862,7 +863,7 @@ export class DocEditor extends React.Component<
                   // onMouseUp={this.onMouseUp}
                 >
                   <Editor
-                    id="editor"
+                    // id="editor"
                     readOnly={this.props.readOnly}
                     ref={this.ref as any}
                     spellCheck={false}

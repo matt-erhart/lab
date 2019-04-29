@@ -13,7 +13,7 @@ import Select from "react-select";
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
-import { setupDirFromPdfs, processAutoGrab } from "./io";
+import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
@@ -22,7 +22,7 @@ import {
   PdfPublication,
   makeLink
 } from "../store/creators";
-import { createAutoGrabNodesAndLinkToPublicationNodes } from "./AutoGrab";
+import { createAutoGrabNodesAndLinkToPublicationNodes, createGROBIDNodesAndLinkToPublicationNodes } from "./AutoGrab";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
@@ -122,6 +122,23 @@ const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
   );
 }
 
+const processGROBIDs = async (pdfRootDir, nodes, newPubs) => {
+
+  // Put AutoGrab info in a metaToHighlight.json file
+  var pdfDirs = await processGROBID(pdfRootDir)().then(result => { return result });
+  const allNodeIds = Object.keys(nodes);
+
+  // Move GROBID info from metadataFromGROBID.json file to state.json
+  // return "data's been written!"
+
+  return createGROBIDNodesAndLinkToPublicationNodes(
+    pdfDirs,
+    allNodeIds,
+    newPubs
+  );
+
+}
+
 type rightPanelName = typeof defaultApp.panels.rightPanel;
 // todo rename _App
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
@@ -151,23 +168,34 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
 
-    if (featureToggles.showAutoGrab) {
-      console.log("Making autograb nodes! ")
-      const { newNodes, newLinks } = await processAutoGrabs(
-        // Destructuring assignment
-        this.props.pdfRootDir,
-        nodesBeforePubs,
-        newPubs
-      );
+    if (featureToggles.showAutoGrab) { // show autograb and GROBID extracted metadata
+      console.log("Making participant info nodes and GROBID metadata nodes! ")
 
-      if (newNodes.length > 0) {
-        this.props.addBatch({ nodes: newNodes, links: newLinks });
+      { // This 1st block: making participant info nodes
+        const { newNodes, newLinks } = await processAutoGrabs(
+          // Destructuring assignment
+          this.props.pdfRootDir,
+          nodesBeforePubs,
+          newPubs
+        );
+
+        if (newNodes.length > 0) {
+          this.props.addBatch({ nodes: newNodes, links: newLinks });
+        }
       }
-      // console.log("Making a fake pub node! ")
-      // const pdfNode = makePdfPublication("fakeDir");
-      // this.props.addBatch({ nodes: [pdfNode] });
+      { // This 2nd block: Making GROBID extracted metadata nodes
 
-      // this.props.addBatch({ nodes: newNodes, links: newLinks });
+        const { newNodes, newLinks } = await processGROBIDs(
+          // Destructuring assignment
+          this.props.pdfRootDir,
+          nodesBeforePubs,
+          newPubs
+        );
+        if (newNodes.length > 0) {
+          this.props.addBatch({ nodes: newNodes, links: newLinks });
+        }
+        // console.log(resultMessage)
+      }
     }
 
     window.addEventListener("keyup", this.keyback);
@@ -224,6 +252,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         if (featureToggles.showDocList) {
           return <DocList />;
         } else {
+          return null
           break;
         }
       default:
@@ -268,7 +297,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
-                pageNumbersToLoad={[1]}
+                pageNumbersToLoad={[]}
                 scrollAfterClick={false}
                 {...{
                   pdfRootDir,
