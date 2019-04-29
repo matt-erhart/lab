@@ -62,7 +62,6 @@ def createEmp():
     empDB.append(dat)
     return jsonify(dat)
 
-
 # The HTTP POST method is used to send user-generated data to the web server. For example, a POST method is used when a user comments on a forum or if they upload a profile picture.
 # curl -i -H "Content-type: application/json" -X POST -d "{}" http://localhost:5000/autograb/pdfdata
 @app.route('/autograb/pdfdata', methods=['POST'])
