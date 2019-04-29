@@ -110,8 +110,12 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 };
 
 const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
+
+  // Put AutoGrab info in a metaToHighlight.json file
   var pdfDirs = await processAutoGrab(pdfRootDir)().then(result => { return result });
   const allNodeIds = Object.keys(nodes);
+
+  // Move AutoGrab info from metaToHighlight.json file to state.json
   return createAutoGrabNodesAndLinkToPublicationNodes(
     pdfDirs,
     allNodeIds,
