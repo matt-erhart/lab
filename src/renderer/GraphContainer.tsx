@@ -96,7 +96,7 @@ type props = typeof GraphContainerDefaults.props & connectedProps;
 export class GraphContainer extends React.Component<
   props,
   typeof GraphContainerDefaults.state
-> {
+  > {
   static defaultProps = GraphContainerDefaults.props;
   state = GraphContainerDefaults.state;
   scrollRef = React.createRef<HTMLDivElement>();
@@ -182,7 +182,7 @@ export class GraphContainer extends React.Component<
     // todo perf. use patches
     if (
       Object.values(prevProps.nodes).length !==
-        Object.values(this.props.nodes).length ||
+      Object.values(this.props.nodes).length ||
       Object.values(prevProps.links).length !==
         Object.values(this.props.links).length ||
       relevantPatch
@@ -485,10 +485,14 @@ export class GraphContainer extends React.Component<
           <DocEditor
             key={node.id}
             id={node.id}
-            // readOnly={this.state.editingId !== node.id}
+          // readOnly={this.state.editingId !== node.id}
           />
         );
       case "autograb":
+        const data = (node as AutoGrab).data["participant_detail"]
+        var scoredTextList = data.map(function (d) {
+          return <li>{d.text}:{d.score}</li>;
+        })
         return (
           <div
             key={node.id}
@@ -515,8 +519,8 @@ export class GraphContainer extends React.Component<
                   })
                 }
               />{" "} */}
-              "Auto-grab participant_detail (huge TODO in styling)"
-              {JSON.stringify((node as AutoGrab).data["participant_detail"])}
+              <ul>{scoredTextList}</ul>
+              {/* {JSON.stringify((node as AutoGrab).data["participant_detail"])} */}
             </span>
           </div>
         );
@@ -920,7 +924,7 @@ const LinkLineDefaults = {
 export class LinkLine extends React.PureComponent<
   typeof LinkLineDefaults.props & any, // help initialize props/state, otherwise warning pops up
   typeof LinkLineDefaults.state
-> {
+  > {
   static defaultProps = LinkLineDefaults.props;
   state = LinkLineDefaults.state;
   render() {

@@ -22,9 +22,12 @@ import {
 } from "./utils";
 
 import { histogram, mean, median, deviation } from "d3-array";
-import { createAutoGrabInfo } from "./AutoGrab";
+import { createAutoGrabInfo, createGROBIDMetadata } from "./AutoGrab";
 import { featureToggles } from "../store/featureToggle";
 // const FormData = require('form-data');
+import FormData, { getHeaders } from "form-data";
+import console = require("console");
+
 
 interface FileInfo {
   fullFilePath: string;
@@ -219,20 +222,6 @@ export const preprocessPdfs = (
 
     let pagesOfText = await loadPageJson(dir, "textToDisplay");
 
-    // after parsing per-page textToDisplay from PDF pages,
-    // auto-grab info from the pdf, including two steps:
-    // 1) API communication to python
-    // and 2) write to "metadataToHighlight.json"
-    if (featureToggles.showAutoGrab) {
-      await createAutoGrabInfo(
-        pagesOfText,
-        path.join(dir, "metadataToHighlight.json"),
-        pdf,
-        pdfPath,
-        true //Now it always overwrites. TODO (Xin) later, change to variable overwrite
-      );
-    }
-
     const columnLefts = getLeftEdgeOfColumns(pagesOfText);
     await existsElseMake(path.join(dir, `columnLefts.json`), columnLefts);
 
@@ -262,6 +251,75 @@ export const preprocessPdfs = (
     });
   }
   // console.timeEnd("time");
+};
+
+export const processAutoGrab = (
+  pdfRootDir: string,
+  overwrite = false
+) => async () => {
+  // todo return new pdf nodes from this function
+  console.log("preprocessing pdfs");
+  // console.time("time");
+  const scale = 1;
+  //   const dir = pdfDirs[0];
+  const pdfDirs = await listDirs(pdfRootDir);
+  for (let dir of pdfDirs) {
+
+    const files = await ls(dir + "/*");
+    const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+    let pdf;
+    try {
+      var data = new Uint8Array(fs.readFileSync(pdfPath));
+      pdf = await pdfjs.getDocument({ data });
+      // pdf = await pdfjs.getDocument(pdfPath);
+    } catch (err) {
+      console.log(err);
+      debugger;
+    }
+
+    let pagesOfText = await loadPageJson(dir, "textToDisplay");
+
+    // after parsing per-page textToDisplay from PDF pages,
+    // auto-grab info from the pdf, including two steps:
+    // 1) API communication to python
+    // and 2) write to "metadataToHighlight.json"
+    // if (featureToggles.showAutoGrab) {
+
+    // TODO: change to Promise.all
+    await createAutoGrabInfo(
+      pagesOfText,
+      path.join(dir, "metadataToHighlight.json"),
+      pdf,
+      pdfPath,
+      true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
+    ).then(result => console.log("createAutoGrabInfo succeed"))
+  }
+  // }
+  return pdfDirs;
+};
+
+export const processGROBID = (
+  pdfRootDir: string,
+  overwrite = false
+) => async () => {
+  // todo return new pdf nodes from this function
+  console.log("preprocessing pdfs");
+  // console.time("time");
+  const scale = 1;
+  //   const dir = pdfDirs[0];
+  const pdfDirs = await listDirs(pdfRootDir);
+  for (let dir of pdfDirs) {
+
+    const files = await ls(dir + "/*");
+    const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+    await createGROBIDMetadata(
+      path.join(dir, "metadataFromGROBID.json"),
+      pdfPath,
+      true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
+    ).then(result => console.log("createGROBIDMetadata succeed"))
+  }
+  // }
+  return pdfDirs;
 };
 
 // export const fontStats = (pages: []) => {

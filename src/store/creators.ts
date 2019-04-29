@@ -197,12 +197,14 @@ export type AutoGrab = typeof AutoGrabDefaults;
 
 export const makeAutograbNode = (
   fulldirName: string,
-  data = {},
+  dataPath:string, //"metadataToHighlight.json",
+  nodeSuffix:string, //"-autograb"
   style = {}
+  
 ) => {
   // console.log("inside makeAutoGrabNode " + fulldirName);
   const metadataToHighlight = JSON.parse(
-    fs.readFileSync(fulldirName + "metadataToHighlight.json").toString()
+    fs.readFileSync(fulldirName + dataPath).toString()
   );
 
   const normDir = path.normalize(fulldirName);
@@ -212,7 +214,7 @@ export const makeAutograbNode = (
 
   return {
     ...AutoGrabDefaults,
-    id: pdfDir + "-autograb",
+    id: pdfDir + nodeSuffix,
     data: { ...AutoGrabDefaults.data, ...metadataToHighlight }, // deserialize metadataToHighlight data
     style: clampLeftTop({
       ...AutoGrabDefaults.style,
