@@ -1,6 +1,13 @@
 import { init, RematchRootState, createModel } from "@rematch/core";
 import produce, { original } from "immer";
-import { Nodes, Links, aNode, aLink, LinkBase, PdfSegmentViewbox } from "./creators";
+import {
+  Nodes,
+  Links,
+  aNode,
+  aLink,
+  LinkBase,
+  PdfSegmentViewbox
+} from "./creators";
 import jsonfile = require("jsonfile");
 import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
@@ -54,7 +61,7 @@ let defaultGraph = {
   links: {} as Links,
   selectedNodes: [] as string[],
   selectedLinks: [] as string[],
-  patches: [], //todo ts
+  patches: [] //todo ts
 };
 
 const stateJsonPath = path.join(pdfRootDir, "./state.json"); // init in main/index.ts
@@ -65,9 +72,12 @@ try {
 } catch (err) {
   savedModelsJson = {};
 }
-
+let current = { ...savedModelsJson.current, pdfRootDir };
 export const app = createModel({
-  state: { ...defaultApp, ...savedModelsJson.app } as typeof defaultApp,
+  state: {
+    ...defaultApp,
+    ...{ ...savedModelsJson.app, current }
+  } as typeof defaultApp,
   reducers: {
     setRightPanel(state, panelName: typeof defaultApp.panels.rightPanel) {
       return { ...state, panels: { ...state.panels, rightPanel: panelName } };
@@ -136,9 +146,9 @@ export const app = createModel({
       return { ...state, portals: [] };
     },
     setNextNodeLocation(state, payload: Box) {
-      return produce(state, draft => { 
+      return produce(state, draft => {
         draft.nextNodeLocation = payload;
-      })
+      });
     }
   }
 });
@@ -302,7 +312,7 @@ export const graph = createModel({
     },
     toggleStyleMode(state, payload: { id: string }) {
       const { id } = payload;
-      const node = state.nodes[id] as aNode
+      const node = state.nodes[id] as aNode;
       const ix = state.nodes[id].style.modeIx;
       console.log("ID", id, ix);
 
