@@ -477,7 +477,6 @@ class PdfViewer extends React.Component<
             minWidth: width,
             height,
             position: "relative"
-
           }}
         >
           {shouldRenderPage && (
@@ -576,7 +575,7 @@ class PdfViewer extends React.Component<
                 width,
                 height,
                 opacity: 0,
-                cursor: "pointer",
+                cursor: "pointer"
               }}
             >
               {" "}

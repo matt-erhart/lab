@@ -1,8 +1,10 @@
-- remember last scroll possition in pdf
+- 153 remember last scroll possition in pdf
+- 
+
+
+
 - left drag no snap
-
 - named axises
-
 - multli canvas
 - L shaped pdf view with synced scroll
 - focus green box portal -> settimout hack

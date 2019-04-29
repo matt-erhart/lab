@@ -227,8 +227,8 @@ export class GraphContainer extends React.Component<
     const view = getBoxEdges({
       left: (this.state.scrollLeft - pad) / zoomedIn,
       top: (this.state.scrollTop - pad) / zoomedIn,
-      width: (width + pad * 2) / this.state.zoom,
-      height: (height + pad * 2) / this.state.zoom
+      width: (width + (pad * 2)) / this.state.zoom,
+      height: (height + (pad * 2)) / this.state.zoom
     });
     return view;
   };
