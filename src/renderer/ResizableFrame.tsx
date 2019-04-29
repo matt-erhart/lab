@@ -5,7 +5,6 @@ var equal = require("fast-deep-equal");
 import { dragData } from "./rx";
 import { Subscription } from "rxjs";
 import { get } from "./utils";
-// example updateOneFrane which you could import and use
 
 export type frame = Partial<{
   id: string;
@@ -52,7 +51,11 @@ const mouseDownDefault = {
   id: ""
 };
 type onTrans = (newDims: frame) => void;
-type transStart = (info: {id: string, event: MouseEvent}) => void
+type transStart = (info: {
+  id: string;
+  event: MouseEvent;
+  type: "move" | "resize";
+}) => void;
 const ResizableFrameDefaults = {
   props: {
     left: 0,
@@ -69,7 +72,8 @@ const ResizableFrameDefaults = {
     zoom: 1, // i.e. applies to all
     scale: 1, // todo sometimes we want one node to scale up/down
     style: {} as React.CSSProperties,
-    hide: false
+    hide: false,
+    mode: "max"
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo
@@ -85,7 +89,15 @@ export class ResizableFrame extends React.Component<
   cache = { left: 0, top: 0, width: 0, height: 0 };
 
   shouldComponentUpdate(props, state) {
-    for (let dim of ["left", "top", "width", "height", "isSelected", "hide"]) {
+    for (let dim of [
+      "left",
+      "top",
+      "width",
+      "height",
+      "isSelected",
+      "hide",
+      "mode"
+    ]) {
       if (this.props[dim] !== props[dim]) {
         return true;
       }
@@ -180,6 +192,14 @@ export class ResizableFrame extends React.Component<
   sub: Subscription;
   onMouseDownResize = e => {
     if (e.target.id !== "frame") return null;
+    this.props.onTransformStart({
+      event: e,
+      id: this.props.id,
+      type: "resize"
+    });
+
+    const { left, top, width, height } = this.props;
+    this.cache = { ...this.cache, left, top, width, height };
 
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
@@ -195,7 +215,8 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
-    this.props.onTransformStart({event: e, id: this.props.id})
+    if (e.target.id !== "drag-handle") return null;
+    this.props.onTransformStart({ event: e, id: this.props.id, type: "move" });
     e.stopPropagation();
     this.isMouseDown = true;
     this.sub = dragData(e).subscribe(mData => {
@@ -233,7 +254,7 @@ export class ResizableFrame extends React.Component<
   }
 
   render() {
-    const { left, top, width, height } = this.props;
+    const { left, top, width, height, isSelected } = this.props;
 
     return (
       <OuterContainer
@@ -244,7 +265,8 @@ export class ResizableFrame extends React.Component<
           transform: `translate(${left}px, ${top}px)`,
           width,
           height,
-          ...this.props.style
+          ...this.props.style,
+          zIndex: isSelected ? 2 : 1
         }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
@@ -255,6 +277,7 @@ export class ResizableFrame extends React.Component<
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
+          id: "drag-handle",
           ...this.props.dragHandle.props,
           draggable: false,
           onMouseDown: this.onMouseDownMove

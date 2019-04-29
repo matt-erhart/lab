@@ -1,9 +1,24 @@
-- select on mouse down
-    - remove hack at 845
-    - find it mouseselect
-      
+- xy vs left right
+- show on mount
+- possibleSpaces
+- i can has coords
+- make two vbs
+- if x/y change push to redux
+- why not saving
+- draggble false in svg
+- autocomplete in green box
+- convert state
+- if selected, it's a frame
 
-
+- svg layer padding?
+- resize frame covers padding
+- select neighbors
+- show links partially in view
+- LS position if not showing 
+    
+follow types        
+            
+        
 
 
 
@@ -22,7 +37,6 @@
     - move together
         - neighbors
         - selected
-        - grouped 
     
     - render link thing
     - style
@@ -66,3 +80,4 @@
     - search for "" for magic strings
     - replace oc with get
     - typescript for rx->ontransforming in graphcontainer
+    - pdfview minhw with flex chain

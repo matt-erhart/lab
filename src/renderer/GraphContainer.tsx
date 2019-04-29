@@ -1,12 +1,17 @@
 import * as React from "react";
 import styled from "styled-components";
 import produce from "immer";
-var equal = require("fast-deep-equal");
-import { dragData, mData } from "./rx";
-import { Subscription } from "rxjs";
-import { Rectangle, removeOverlaps } from "webcola";
+
 import { ResizableFrame, updateOneFrame, frame } from "./ResizableFrame";
-import { getBoxEdges, isBoxInBox, isBoxPartlyInBox, unique } from "./utils";
+import {
+  getBoxEdges,
+  isBoxInBox,
+  isBoxPartlyInBox,
+  unique,
+  get,
+  collision,
+  sortBy
+} from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
 import PdfViewer from "./PdfViewer";
@@ -14,7 +19,6 @@ import {
   ViewboxData,
   NodeDataTypes,
   aNode,
-  makeUserHtml,
   makeLink,
   aLink,
   Links,
@@ -23,12 +27,12 @@ import {
   AutoGrab,
   makeUserDoc
 } from "../store/creators";
-import TextEditor from "./TextEditor";
 import { oc } from "ts-optchain";
 import { FileIcon } from "./Icons";
 import DocEditor from "./DocEditor";
 import { devlog } from "../store/featureToggle";
-
+import { MdZoomOutMap } from "react-icons/md";
+import { dragData } from "./rx";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100 },
   { id: "2", left: 101, top: 100, height: 100, width: 100 }
@@ -46,8 +50,10 @@ const GraphContainerDefaults = {
     scrollLeft: 0,
     scrollTop: 0,
     editingId: "",
-    zoom: 0.65,
-    hideViewboxes: false
+    zoom: 1,
+    hideViewboxes: false,
+    dragCoords: { x1: NaN, x2: NaN, y1: NaN, y2: NaN },
+    nextNodeLocation: undefined
   }
 };
 const mapState = (state: iRootState) => ({
@@ -62,14 +68,22 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch, updateBatch, toggleSelections },
-  app: { setMainPdfReader }
+  graph: {
+    addBatch,
+    removeBatch,
+    updateBatch,
+    toggleSelections,
+    toggleStyleMode
+  },
+  app: { setMainPdfReader, setNextNodeLocation }
 }: iDispatch) => ({
   addBatch,
   removeBatch,
   updateBatch,
   toggleSelections,
-  setMainPdfReader
+  setMainPdfReader,
+  toggleStyleMode,
+  setNextNodeLocation
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -93,7 +107,9 @@ export class GraphContainer extends React.Component<
   }
 
   onTransformStart = ({ event, id }) => {
-    this.onMouseSelect(id, 'Nodes')(event)
+    if (event.button === 0) {
+      this.onMouseSelect(id, "Nodes")(event);
+    }
   };
 
   onTransforming = (transProps: any) => {
@@ -134,23 +150,57 @@ export class GraphContainer extends React.Component<
       .filter(frame => this.props.selectedNodes.includes(frame.id))
       .map(x => {
         const { isSelected, id, ...style } = x;
-        return { id, style };
+        const nodeStyle = this.props.nodes[id].style;
+        const mode = nodeStyle.modes[nodeStyle.modeIx];
+
+        return { id, style: { ...nodeStyle, [mode]: style } };
       });
+    const { scrollLeft, scrollTop } = this.state;
+    const nextNodeLocation = this.nextNodeLocation({
+      framesInView: this.state.frames,
+      containerBounds: this.state.containerBounds,
+      scrollLeft,
+      scrollTop
+    });
 
     this.props.updateBatch({
       nodes: selected
     });
+    const { x: left, y: top, ...wh } = nextNodeLocation;
+    this.props.setNextNodeLocation({ left, top, ...wh });
+    this.setState({ nextNodeLocation });
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const hasModeIx = get(this.props.patches, p =>
+      p[0].path.includes("modeIx")
+    );
+    const relevantPatch = this.props.patches !== prevProps.patches && hasModeIx;
+
     // todo perf. use patches
     if (
       Object.values(prevProps.nodes).length !==
       Object.values(this.props.nodes).length ||
       Object.values(prevProps.links).length !==
-      Object.values(this.props.links).length
+        Object.values(this.props.links).length ||
+      relevantPatch
     ) {
       this.getFramesInView(this.state.containerBounds);
+    }
+
+    const { x: x1, y: y1 } = prevState.nextNodeLocation || { x: 0, y: 0 };
+    const { x: x2, y: y2 } = this.state.nextNodeLocation || { x: 0, y: 0 };
+
+    if (x1 !== x2 || y1 !== y2) {
+      const { scrollLeft, scrollTop } = this.state;
+      const nextNodeLocation = this.nextNodeLocation({
+        framesInView: this.state.frames,
+        containerBounds: this.state.containerBounds,
+        scrollLeft,
+        scrollTop
+      });
+      const { x: left, y: top, ...wh } = nextNodeLocation;
+      this.props.setNextNodeLocation({ left, top, ...wh });
     }
 
     if (prevProps.graphPanel !== this.props.graphPanel) {
@@ -180,18 +230,22 @@ export class GraphContainer extends React.Component<
       height: (height + pad) / this.state.zoom
     });
 
-    const isInView = isBoxPartlyInBox(view);
-    const framesInView = Object.values(this.props.nodes).reduce((all, node) => {
-      const { left, top, width, height } = node.style;
+    const isInView = collision(view);
+    const nodesFiltered = Object.values(this.props.nodes).filter(n =>
+      ["pdf.segment.viewbox", "userDoc"].includes(n.data.type)
+    );
+
+    const framesInView = nodesFiltered.reduce((all, node) => {
+      const mode = node.style.modes[node.style.modeIx];
+      const { left, top, width, height } = node.style[mode];
       const edges = getBoxEdges({ left, top, width, height });
-      const inView = true || isInView(edges);
-      if (inView) {
+      const inView = isInView(edges);
+      if (inView || this.isSelected(node.id)) {
         const isSelected = this.props.selectedNodes.includes(node.id);
         all.push({ id: node.id, left, top, width, height, isSelected });
       }
       return all;
     }, []);
-    //1234
 
     const linkIds = framesInView.reduce((all, frame) => {
       const linkIds = this.getLinksIdsOnNode(frame.id, this.props.links);
@@ -206,8 +260,16 @@ export class GraphContainer extends React.Component<
       return { source, target, id };
     });
 
+    const { scrollLeft, scrollTop } = this.state;
+    const nextNodeLocation = this.nextNodeLocation({
+      framesInView,
+      containerBounds,
+      scrollLeft,
+      scrollTop
+    });
+
     this.setState(state => {
-      return { frames: framesInView, links };
+      return { frames: framesInView, links, nextNodeLocation };
     });
   };
 
@@ -234,7 +296,6 @@ export class GraphContainer extends React.Component<
     if (e.target.id !== "GraphScrollContainer") return null;
     //Wrapper around div. Inside is a Slate component?
     //Huge pain: event bubbling?? ID trick to prevent
-    console.log(e.key); // Delete
     switch (e.key) {
       case "Delete":
         if (
@@ -252,8 +313,6 @@ export class GraphContainer extends React.Component<
           });
         }
       case "h":
-        console.log("key cmd");
-
         if (e.ctrlKey)
           this.setState(state => {
             return { hideViewboxes: !state.hideViewboxes };
@@ -271,7 +330,7 @@ export class GraphContainer extends React.Component<
   };
 
   onMouseSelect = (id, nodesOrLinks: "Nodes" | "Links") => e => {
-    devlog('onmousedown')
+    devlog("onmousedown");
     e.stopPropagation();
 
     const isSelected = this.isSelected(id);
@@ -293,7 +352,11 @@ export class GraphContainer extends React.Component<
   };
 
   deselectAll = e => {
-    if (!e.shiftKey && e.target.id === "SvgLayer")
+    if (
+      !e.shiftKey &&
+      e.target.id === "SvgLayer" &&
+      !!this.dragCoordsToRect(this.state.dragCoords, this.state.zoom)
+    )
       this.props.toggleSelections({
         selectedNodes: [],
         selectedLinks: [],
@@ -307,7 +370,7 @@ export class GraphContainer extends React.Component<
       e.target.id === "SvgLayer" &&
       this.props.selectedNodes.length > 0
     ) {
-      const targetId = this.makeUserHtmlNode(e);
+      const targetId = this.makeUserHtmlNode(e); //!todo
       if (targetId.length > 0) {
         const newLinks = this.linkSelectedToNode(
           this.props.nodes,
@@ -325,10 +388,14 @@ export class GraphContainer extends React.Component<
     const { left, top } = e.currentTarget.getBoundingClientRect();
     const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
     if (allowId) {
+      const xy = {
+        left: (clientX - left) / this.state.zoom,
+        top: (clientY - top) / this.state.zoom
+      };
       const userHtml = makeUserDoc({
         style: {
-          left: (clientX - left) / this.state.zoom,
-          top: (clientY - top) / this.state.zoom
+          min: xy,
+          max: xy
         }
       });
       this.props.addBatch({ nodes: [userHtml] });
@@ -460,7 +527,13 @@ export class GraphContainer extends React.Component<
           pageNumber
         } = node.data as ViewboxData;
 
+        const { modeIx, modes } = node.style;
+        const isMin = modes[modeIx] === "min";
+
         const pagenum = [pageNumber];
+        if (isMin) {
+          return <div style={{ color: "green", fontSize: 16 }}>{pdfDir}</div>;
+        }
 
         return (
           <PdfViewer
@@ -503,10 +576,195 @@ export class GraphContainer extends React.Component<
     }
   };
 
+  startSelect = e => {
+    if (e.target.id !== "SvgLayer" || e.button !== 0) return null;
+    const {
+      left: bbLeft,
+      top: bbTop
+    } = this.mapRef.current.getBoundingClientRect();
+
+    dragData(e).subscribe(data => {
+      const x = data.clientX - bbLeft;
+      const y = data.clientY - bbTop;
+      switch (data.type) {
+        case "mousedown":
+          this.setState(state => ({
+            dragCoords: {
+              x1: x / state.zoom,
+              y1: y / state.zoom,
+              x2: NaN,
+              y2: NaN
+            }
+          }));
+          break;
+        case "mousemove":
+          this.setState(state => ({
+            dragCoords: {
+              ...state.dragCoords,
+              x2: x / state.zoom,
+              y2: y / state.zoom
+            }
+          }));
+          break;
+        case "mouseup":
+          const { x: left, y: top, width, height } = this.dragCoordsToRect(
+            this.state.dragCoords,
+            this.state.zoom
+          ) || { x: 0, y: 0, width: 0, height: 0 };
+          const selection = getBoxEdges({ left, top, width, height });
+          const isInSelection = collision(selection);
+
+          const selectedIds = this.state.frames.reduce((all, frame) => {
+            const frameEdges = getBoxEdges(frame);
+            if (isInSelection(frameEdges)) {
+              all.push(frame.id);
+            }
+            return all;
+          }, []);
+
+          if (selectedIds.length > 0) {
+            this.props.toggleSelections({
+              selectedNodes: selectedIds,
+              clearFirst: true
+            });
+          } else {
+            this.props.toggleSelections({
+              selectedNodes: [],
+              selectedLinks: [],
+              clearFirst: true
+            });
+          }
+
+          this.setState({
+            dragCoords: GraphContainerDefaults.state.dragCoords
+          });
+          break;
+      }
+    });
+  };
+
+  dragCoordsToRect = (
+    dragCoords: typeof GraphContainerDefaults.state.dragCoords,
+    zoom: number
+  ) => {
+    const x = Math.min(dragCoords.x1, dragCoords.x2);
+    const y = Math.min(dragCoords.y1, dragCoords.y2);
+    const width = Math.abs(dragCoords.x1 - dragCoords.x2);
+    const height = Math.abs(dragCoords.y1 - dragCoords.y2);
+    if ([x, y, width, height].includes(NaN)) {
+      return undefined;
+    }
+    return { x, y, width, height };
+  };
+
+  nextNodeLocation = ({
+    framesInView,
+    containerBounds: { width, height },
+    scrollLeft,
+    scrollTop
+  }) => {
+    // figure out where to put stuff
+    //
+    if (!framesInView) return undefined;
+    const inView = isBoxInBox(
+      getBoxEdges({
+        left: scrollLeft,
+        top: scrollTop,
+        width,
+        height
+      })
+    );
+
+    const wh = { height: 200, width: 300 };
+    const pad = 20;
+    const topLeftEmptySpace = getBoxEdges({
+      left: this.state.scrollLeft + 30,
+      top: this.state.scrollTop + 30,
+      ...wh
+    });
+    // if (framesInView.length === 0) return topLeftEmptySpace;
+    let possibleSpaces = [topLeftEmptySpace];
+    for (let f1 of framesInView) {
+      const bellow = getBoxEdges({
+        left: f1.left,
+        top: f1.top + f1.height + pad,
+        ...wh
+      });
+      if (inView(bellow)) {
+        possibleSpaces.push(bellow);
+      }
+
+      const above = getBoxEdges({
+        left: f1.left,
+        top: f1.top - wh.height - pad,
+        ...wh
+      });
+
+      if (inView(above)) {
+        possibleSpaces.push(above);
+      }
+
+      const right = getBoxEdges({
+        left: f1.left + f1.width + pad,
+        top: f1.top,
+        ...wh
+      });
+
+      if (inView(right)) {
+        possibleSpaces.push(right);
+      }
+
+      const left = getBoxEdges({
+        left: f1.left - wh.width - pad,
+        top: f1.top,
+        ...wh
+      });
+
+      if (inView(left)) {
+        possibleSpaces.push(left);
+      }
+    }
+
+    possibleSpaces = possibleSpaces.sort(
+      (a, b) => a.minY + a.minX - b.minX - b.minY
+    ); // i.e. more left, more top is first
+    for (let possibleSpace of possibleSpaces) {
+      const checkCollision = collision(possibleSpace);
+      let noCollide = [];
+      for (let f2 of framesInView) {
+        const edges = getBoxEdges(f2);
+        noCollide.push(!checkCollision(edges));
+      }
+      if (noCollide.every(x => x)) {
+        const { minX, minY, maxX, maxY } = possibleSpace;
+        return {
+          x: minX,
+          y: minY,
+          width: maxX - minX,
+          height: maxY - minY
+        };
+      }
+    }
+    const { minX, minY, maxX, maxY } = topLeftEmptySpace;
+    return {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY
+    };
+  };
+
+  setNextLoc = e => {
+    const { x: left, y: top, ...wh } = this.state.nextNodeLocation;
+    this.props.setNextNodeLocation({ left, top, ...wh });
+  };
+
   render() {
     const { width, height } = this.state.containerBounds;
-    const f1 = this.state.frames[0];
-    const f2 = this.state.frames[1];
+    const rectCoords = this.dragCoordsToRect(
+      this.state.dragCoords,
+      this.state.zoom
+    );
 
     return (
       <ScrollContainer
@@ -517,6 +775,8 @@ export class GraphContainer extends React.Component<
         tabIndex={0}
         onClick={this.deselectAll}
         onWheel={this.onWheel}
+        style={{ userSelect: "none" }}
+        onMouseLeave={this.setNextLoc}
       >
         <MapContainer
           id="GraphMapContainer"
@@ -524,6 +784,7 @@ export class GraphContainer extends React.Component<
           zoom={this.state.zoom}
           height={4000}
           width={4000}
+          onMouseDown={this.startSelect}
         >
           {width && height && (
             <svg
@@ -542,6 +803,18 @@ export class GraphContainer extends React.Component<
               onClick={this.deselectAll}
               onContextMenu={this.makeNodeAndLinkIt}
             >
+              {rectCoords && (
+                <rect {...rectCoords} stroke="black" fill="none" />
+              )}
+              {this.state.nextNodeLocation && (
+                <rect
+                  {...this.state.nextNodeLocation}
+                  stroke="lightgrey"
+                  fill="white"
+                  strokeDasharray="4 2"
+                  style={{ userSelect: "none" }}
+                />
+              )}
               {this.state.links.length > 0 &&
                 this.state.links.map(link => {
                   const sourceFrame = this.state.frames.find(
@@ -595,11 +868,30 @@ export class GraphContainer extends React.Component<
                 isSelected={isSelected}
                 zoom={this.state.zoom}
                 hide={hide}
+                mode={get(node, n => n.style.modes[n.style.modeIx])}
                 dragHandle={
                   <DragHandle
+                    id="drag-handle"
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
-                  />
+                    color="white"
+                  >
+                    <DragHandleButton
+                      id="drag-handle-button"
+                      onClick={e => {
+                        e.stopPropagation();
+                        if (e.target.id === "drag-handle-button") {
+                          this.props.toggleSelections({
+                            selectedNodes: [frame.id],
+                            clearFirst: true
+                          });
+                          this.props.toggleStyleMode({ id: frame.id });
+                        }
+                      }}
+                    >
+                      min/max
+                    </DragHandleButton>
+                  </DragHandle>
                 }
               >
                 {this.renderGraphNodes(frame)}
@@ -689,11 +981,11 @@ const MapContainer = styled(ZoomDiv)`
   transform-origin: top left;
   transform: scale(${p => p.zoom});
 `;
-// calc(var(--width) / var(--zoom)),
-// calc(var(--height) / var(--zoom))
-const DragHandle = styled.div<{ isSelected: boolean }>`
-  min-height: 10px;
-  background-color: ${props => (props.isSelected ? "lightblue" : "grey")};
+
+const DragHandle = styled.div<{ isSelected: boolean; color: string }>`
+  min-height: 16px;
+  font-size: 12px;
+  background-color: ${props => (props.isSelected ? "lightblue" : props.color)};
   flex: 0;
   user-select: none;
   &:hover {
@@ -701,4 +993,11 @@ const DragHandle = styled.div<{ isSelected: boolean }>`
   }
 `;
 
-const minViewboxNode = styled.div``;
+const DragHandleButton = styled.span`
+  background: white;
+  cursor: pointer;
+  vertical-align: middle;
+  margin: 3px;
+  margin-top: 1px;
+  color: lightgrey;
+`;

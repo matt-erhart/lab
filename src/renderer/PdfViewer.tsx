@@ -177,26 +177,28 @@ class PdfViewer extends React.Component<
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
       const viewboxes = produce(state.viewboxes, draft => {
-        props.patches.forEach(patch => {
-          const id = patch.value.id;
+        props.patches
+          .filter(p => !!p.value.data)
+          .forEach(patch => {
+            const id = patch.value.id;
 
-          if (
-            (patch.value.data.type === "pdf.segment.viewbox",
-            patch.value.data.pdfDir === props.pdfDir)
-          ) {
-            if (patch.op === "add") draft.push(patch.value);
-            if (patch.op === "remove") {
-              draft.splice(draft.findIndex(v => v.id === id), 1);
-            }
-            if (patch.op === "replace") {
-              const ix = state.viewboxes.findIndex(v => v.id === id);
+            if (
+              (patch.value.data.type === "pdf.segment.viewbox",
+              patch.value.data.pdfDir === props.pdfDir)
+            ) {
+              if (patch.op === "add") draft.push(patch.value);
+              if (patch.op === "remove") {
+                draft.splice(draft.findIndex(v => v.id === id), 1);
+              }
+              if (patch.op === "replace") {
+                const ix = state.viewboxes.findIndex(v => v.id === id);
 
-              if (ix > -1 && !equal(state.viewboxes[ix], patch.value)) {
-                draft[ix] = patch.value;
+                if (ix > -1 && !equal(state.viewboxes[ix], patch.value)) {
+                  draft[ix] = patch.value;
+                }
               }
             }
-          }
-        });
+          });
         return draft;
       });
 
@@ -413,6 +415,7 @@ class PdfViewer extends React.Component<
       const { width, height } = page.viewport;
       return (
         <div
+          draggable={false}
           id="pdf-viewer"
           key={page.pageNumber}
           onWheel={this.zoom}
@@ -424,6 +427,7 @@ class PdfViewer extends React.Component<
           }}
         >
           <PageCanvas
+            draggable={false}
             id={"canvas-" + page.pageNumber}
             key={"canvas-" + page.pageNumber}
             page={page.page}
@@ -437,6 +441,7 @@ class PdfViewer extends React.Component<
                 /> */}
 
           <PageSvg
+            draggable={false}
             id={"svg-" + page.pageNumber}
             // scale={this.state.scale}
             isMainReader={this.props.isMainReader}
@@ -466,18 +471,19 @@ class PdfViewer extends React.Component<
     let overflow;
     if (this.props.scrollAfterClick) {
       overflow =
-      this.props.scrollAfterClick && this.state.activateScroll
-        ? "scroll"
-        : "hidden";
+        this.props.scrollAfterClick && this.state.activateScroll
+          ? "scroll"
+          : "hidden";
     } else {
-      overflow= 'scroll'
+      overflow = "scroll";
     }
-      
+
     // todo: set height and width and then scrollto
     return (
       <>
         <div
           id="MainPdfReader"
+          draggable={false}
           ref={this.scrollRef}
           style={{
             maxWidth: width,
@@ -499,6 +505,7 @@ class PdfViewer extends React.Component<
         >
           {this.props.scrollAfterClick && !this.state.activateScroll && (
             <div
+              draggable={false}
               style={{
                 background: "blue",
                 position: "absolute",

@@ -6,6 +6,8 @@ import { Editor } from "slate-react";
 import * as React from "react";
 import styled from "styled-components";
 import Plain from "slate-plain-serializer";
+import convertBase64 from "slate-base64-serializer";
+
 import { oc } from "ts-optchain";
 import Lists from "@convertkit/slate-lists";
 import Keymap from "@convertkit/slate-keymap";
@@ -26,7 +28,6 @@ import {
 } from "react-icons/md";
 import Downshift from "downshift";
 import { connect } from "react-redux";
-import convertBase64 from "slate-base64-serializer";
 
 // custom
 import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
@@ -263,6 +264,9 @@ export class DocEditor extends React.Component<
   ref = editor => {
     this.editor = editor;
   };
+  componentWillUnmount() {
+    this.save();
+  }
 
   static getDerivedStateFromProps(props, state) {
     // todo perf patch
@@ -321,7 +325,7 @@ export class DocEditor extends React.Component<
 
   componentDidMount() {
     setTimeout(() => {
-      this.editor.focus();
+      !!this.editor && this.editor.focus();
     }, 100); // thanks random github user
     this.initBase64();
   }
@@ -744,7 +748,7 @@ export class DocEditor extends React.Component<
   };
 
   save = e => {
-    e.stopPropagation();
+    !!e && e.stopPropagation();
     // this.setState({ isFocused: false });
     this.setState({
       wordAtCursor: "",
@@ -754,7 +758,7 @@ export class DocEditor extends React.Component<
     // if (e.target.id !== "EditorContainer") return null;
     const serialized = this.serialize(this.state.editorValue);
     if (serialized.base64 === this.getCurrentBase64()) return null;
-    this.cleanLinks()
+    this.cleanLinks();
     this.props.updateBatch({
       nodes: [
         {
@@ -883,7 +887,7 @@ export class DocEditor extends React.Component<
                       <PortalDiv
                         id="autocomplete-div"
                         ref={this.portalDiv}
-                        style={this.state.portalStyle}
+                        style={{...this.state.portalStyle, zIndex: 2}}
                       >
                         {this.state.autoCompDocs.map((doc, index) => {
                           return (
@@ -1031,7 +1035,7 @@ const FontSizeInput = styled.input`
 
 const _EditorContainer = styled.div<{ fontSize: number }>``;
 const EditorContainer = styled(_EditorContainer)`
-  border: 1px solid lightgrey;
+  border-top: 1px solid lightgrey;
   padding: 5px;
   font-size: ${p => p.fontSize}px;
   overflow: auto;

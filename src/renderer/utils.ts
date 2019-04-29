@@ -207,6 +207,16 @@ export const isBoxPartlyInBox = (bigBox: BoxEdges) => (smallBox: BoxEdges) => {
   return (minXOk || maxXOk) && (minYOk || maxYOk);
 };
 
+export const collision = (bigBox: BoxEdges) => (smallBox: BoxEdges) => {
+  // axis aligned bounding box
+  return (
+    smallBox.minX < bigBox.maxX &&
+    smallBox.maxX > bigBox.minX &&
+    smallBox.minY < bigBox.maxY &&
+    smallBox.maxY > bigBox.minY
+  );
+};
+
 // type BoxEdgesDiffs = { label: string; dist: number; diff: number }[];
 
 export const getEdgeDiffs = (box1: BoxEdges) => (box2: BoxEdges): BoxEdges => {
@@ -214,7 +224,7 @@ export const getEdgeDiffs = (box1: BoxEdges) => (box2: BoxEdges): BoxEdges => {
   const diffs = Object.entries(box1).reduce(
     (all, edge) => {
       const [key, val] = edge;
-      all = { ...all, [key]: val - box2[key]};
+      all = { ...all, [key]: val - box2[key] };
       return all;
     },
     {} as BoxEdges
@@ -226,8 +236,8 @@ export const moreSpaceIs = (edgeDiffs: BoxEdges) => {
   return {
     down: Math.abs(edgeDiffs.minY) < edgeDiffs.maxY,
     right: Math.abs(edgeDiffs.minX) < edgeDiffs.maxX
-  }
-}
+  };
+};
 
 export const getElementBox = (el): Box => {
   // e.g. from mouse event:   event.currentTarget

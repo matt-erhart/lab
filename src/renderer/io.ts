@@ -1,8 +1,6 @@
 import fs = require("fs-extra");
-import os = require("os");
 import path = require("path");
 import glob = require("glob");
-import uuidv1 = require("uuid/v1");
 import jsonfile = require("jsonfile");
 import * as _pdfjs from "pdfjs-dist";
 var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
@@ -13,19 +11,14 @@ if (typeof window !== "undefined" && "Worker" in window) {
 
 import {
   PDFJSStatic,
-  PDFDocumentProxy,
-  PDFInfo,
-  PDFMetadata,
-  PDFTreeNode
+
 } from "pdfjs-dist";
 const pdfjs: PDFJSStatic = _pdfjs as any;
 
 import {
   flatten,
   zeroPad,
-  unique,
-  brewer12,
-  roundedToFixed,
+
   sortBy
 } from "./utils";
 
@@ -35,6 +28,7 @@ import { featureToggles } from "../store/featureToggle";
 // const FormData = require('form-data');
 import FormData, { getHeaders } from "form-data";
 import console = require("console");
+
 
 interface FileInfo {
   fullFilePath: string;

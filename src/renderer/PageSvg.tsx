@@ -6,7 +6,6 @@ import { PageOfText } from "./io";
 import { getRectCoords, flatten, get, getRectEdges, mode } from "./utils";
 import { LineOfText } from "./PdfViewer";
 import produce from "immer";
-import PopupPortal from "./PopupPortal";
 import { Image } from "./PdfViewer";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
@@ -16,7 +15,6 @@ import {
   makeLink,
   makeUserDoc
 } from "../store/creators";
-import PortalContainer from "./PortalContainer";
 // todo consistant CAPS
 import { getNeighborhood } from "./graphUtils";
 /**
@@ -57,7 +55,8 @@ const mapState = (state: iRootState, props) => {
     nodes: state.graph.nodes,
     links: state.graph.links,
     portals: state.app.portals,
-    pdfDir: state.app.panels.mainPdfReader.pdfDir
+    pdfDir: state.app.panels.mainPdfReader.pdfDir,
+    nextNodeLoc: state.app.nextNodeLocation
   };
 };
 
@@ -110,6 +109,15 @@ class PageSvg extends React.Component<
       return null;
     }
     const source = this.props.nodes[this.props.pdfDir];
+    const hw = { width: 220, height: 60 }; //pulled from creators.ts
+
+    let lt = {};
+    if (!!this.props.nextNodeLoc) {
+      console.log("this.props.nextNodeLoc", this.props.nextNodeLoc);
+
+      const { left: l, top: t, width: w, height: h } = this.props.nextNodeLoc;
+      lt = { left: l, top: t + h - hw.height };
+    }
     let {
       left: gLeft,
       top: gTop,
@@ -118,7 +126,9 @@ class PageSvg extends React.Component<
     } = source.style as any;
     const style = {
       left: gLeft + Math.random() * 60,
-      top: gTop + gHeight + Math.random() * 60
+      top: gTop + gHeight + Math.random() * 60,
+      ...lt,
+      ...hw
     };
 
     // note we save with scale = 1
@@ -417,12 +427,18 @@ class PageSvg extends React.Component<
       viewbox = this.onAddViewbox(selectionRect);
     }
 
-    const segStyle = this.props.nodes[viewbox.id].style;
+    const segStyle = this.props.nodes[viewbox.id].style.min;
+    const tHeight = 120;
     const newTextStyle = {
-      left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
-      top: 20 + segStyle.top + segStyle.height
+      left: segStyle.left,
+      top: segStyle.top - tHeight,
+      height: tHeight,
+      width: 250
     };
-    const htmlNode = makeUserDoc({ data: {}, style: newTextStyle });
+    const htmlNode = makeUserDoc({
+      data: {},
+      style: { min: newTextStyle, max: newTextStyle }
+    });
     const newLink = makeLink(viewbox.id, htmlNode.id, {
       text: "compress",
       html: "<p>compress</p>"
@@ -450,13 +466,21 @@ class PageSvg extends React.Component<
 
     let htmlNodes = nodes.filter(node => node.data.type === "userDoc");
     if (htmlNodes.length === 0) {
-      const segStyle = this.props.nodes[segmentId].style;
+      const segStyle = this.props.nodes[segmentId].style.min;
+      const tHeight = 120;
       const newTextStyle = {
-        left: segStyle.left + (segStyle.width - Math.random() * 10) / 4,
-        top: 20 + segStyle.top + segStyle.height
+        left: segStyle.left,
+        top: segStyle.top - tHeight,
+        height: tHeight,
+        width: segStyle.width
       };
 
-      htmlNodes.push(makeUserDoc({ data: {}, style: newTextStyle }));
+      htmlNodes.push(
+        makeUserDoc({
+          data: {},
+          style: { min: newTextStyle, max: newTextStyle }
+        })
+      );
       const newLink = makeLink(segmentId, htmlNodes[0].id, {
         text: "compress",
         html: "<p>compress</p>"
@@ -497,8 +521,8 @@ class PageSvg extends React.Component<
     const spaceRight = clientWidth - bounding.right;
 
     const isOneNode = htmlNodes.length === 1;
-    const defaultWidth = isOneNode ? htmlNodes[0].style.width : 300;
-    const defaultHeight = isOneNode ? htmlNodes[0].style.height : 100;
+    const defaultWidth = isOneNode ? htmlNodes[0].style.max.width : 300;
+    const defaultHeight = isOneNode ? htmlNodes[0].style.max.height : 100;
 
     let frames = [];
     let shift = 0;
@@ -629,11 +653,13 @@ class PageSvg extends React.Component<
           )}
         </svg>
         <div
+          draggable={false}
           ref={this.divRef}
           style={{
             position: "absolute",
             width: this.props.svgWidth,
-            height: this.props.svgHeight
+            height: this.props.svgHeight,
+            userSelect: "none"
           }}
         >
           {this.props.linesOfText.length > 0 &&
@@ -665,13 +691,14 @@ class PageSvg extends React.Component<
           >
             {props => (
               <animated.div
+                draggable={false}
                 ref={this.selectionRectRef}
                 style={{
                   position: "absolute",
-                  top: top,
-                  left: left,
-                  width: width,
-                  height: height,
+                  top: top === Infinity ? 0 : top,
+                  left: left === Infinity ? 0 : left,
+                  width: width === Infinity ? 0 : width,
+                  height: height === Infinity ? 0 : height,
                   border: "1px solid grey"
                 }}
               />
@@ -683,6 +710,7 @@ class PageSvg extends React.Component<
 
               return (
                 <div
+                  draggable={false}
                   key={vb.id}
                   style={{
                     position: "absolute",
