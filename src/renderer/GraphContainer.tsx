@@ -211,6 +211,10 @@ export class GraphContainer extends React.Component<
         left * this.state.zoom,
         top * this.state.zoom
       );
+      this.setState({
+        scrollLeft: left * this.state.zoom,
+        scrollTop: top * this.state.zoom
+      });
     }
   }
 
@@ -775,7 +779,7 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
-    console.log(this.state.zoom);
+    console.log(this.state.frames);
 
     return (
       <ScrollContainer
