@@ -19,7 +19,8 @@ const mouseMap = (e: MouseEvent) => {
     x: e.clientX,
     y: e.clientY,
     ctrlKey: e.ctrlKey,
-    shiftKey: e.shiftKey
+    shiftKey: e.shiftKey,
+    button: e.button
   };
 };
 type mouseData = ReturnType<typeof mouseMap>;

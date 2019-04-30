@@ -163,6 +163,7 @@ class PageSvg extends React.Component<
   isCtrl = false;
   clientX = 0;
   clientY = 0;
+  mouseButton = -1;
   async componentDidMount() {
     this.snap(this.state.selectionRect);
     const dnd = dndContainer(this.divRef);
@@ -181,6 +182,7 @@ class PageSvg extends React.Component<
           this.isCtrl = mouse.ctrlKey;
           this.clientX = mouse.x;
           this.clientY = mouse.y;
+          this.mouseButton = mouse.button
           this.setState({
             duration: 0,
             div: { ...this.state.div, text: "" },
@@ -223,20 +225,31 @@ class PageSvg extends React.Component<
         case "mouseup":
           const { width, height } = this.state.selectionRect;
 
-          if ((this.isCtrl, this.isShift)) {
-            this.makeSegmentAndComment(
-              this.state.selectionRect,
-              this.clientX,
-              this.clientY
-            );
-            break;
-          }
+          // if ((this.isCtrl, this.isShift)) {
+          //   this.makeSegmentAndComment(
+          //     this.state.selectionRect,
+          //     this.clientX,
+          //     this.clientY
+          //   );
+          //   break;
+          // }
+          console.log(mouse.button)
           if (height > 30 || width > 30) {
-            if (!mouse.ctrlKey) {
-              this.inferMakeViewbox(this.state.selectionRect);
-            } else {
+            if (this.mouseButton === 0) {
               this.makeViewbox(this.state.selectionRect);
+            } else if (this.mouseButton === 2) {
+              this.makeSegmentAndComment(
+                this.state.selectionRect,
+                this.clientX,
+                this.clientY
+              );
             }
+            // this.makeViewbox(this.state.selectionRect);
+            // if (!mouse.ctrlKey) {
+            //   this.inferMakeViewbox(this.state.selectionRect);
+            // } else {
+            //   this.makeViewbox(this.state.selectionRect);
+            // }
           } else {
             this.setState({
               selectionRect: PageSvgDefaults.state.selectionRect
@@ -423,7 +436,8 @@ class PageSvg extends React.Component<
   };
 
   makeSegmentAndComment = (selectionRect, mouseX, mouseY) => {
-    const newSelect = this.snapToColumn(selectionRect);
+    // const newSelect = this.snapToColumn(selectionRect); // use when pdf parsing better
+    const newSelect = selectionRect
     const anyInfinite = Object.values(newSelect).some(x => x === Infinity);
 
     let viewbox;
@@ -739,7 +753,7 @@ class PageSvg extends React.Component<
                   onContextMenu={e => {
                     if (!this.props.isMainReader) {
                       e.preventDefault();
-                      console.log("from svg", vb.id, top / vb.data.scale );
+                      console.log("from svg", vb.id, top / vb.data.scale);
                       this.props.setMainPdfReader({
                         scrollToPageNumber: vb.data.pageNumber,
                         left: left / vb.data.scale,

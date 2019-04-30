@@ -1,11 +1,4 @@
-- right click vb to scroll pdf a bit off: zoom
-  - pagesvg
-  - pdfviewer
-  - 
 
-
-
-- left drag no snap
 - named axises
 - multli canvas
 - L shaped pdf view with synced scroll
