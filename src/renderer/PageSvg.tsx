@@ -22,8 +22,10 @@ import {
   makeLink,
   makeUserDoc
 } from "../store/creators";
+import { MdDeleteForever } from "react-icons/md";
 // todo consistant CAPS
 import { getNeighborhood } from "./graphUtils";
+import styled from "styled-components";
 /**
  * @class **PageSvg**
  *
@@ -182,7 +184,7 @@ class PageSvg extends React.Component<
           this.isCtrl = mouse.ctrlKey;
           this.clientX = mouse.x;
           this.clientY = mouse.y;
-          this.mouseButton = mouse.button
+          this.mouseButton = mouse.button;
           this.setState({
             duration: 0,
             div: { ...this.state.div, text: "" },
@@ -233,7 +235,7 @@ class PageSvg extends React.Component<
           //   );
           //   break;
           // }
-          console.log(mouse.button)
+          console.log(mouse.button);
           if (height > 30 || width > 30) {
             if (this.mouseButton === 0) {
               this.makeViewbox(this.state.selectionRect);
@@ -437,7 +439,7 @@ class PageSvg extends React.Component<
 
   makeSegmentAndComment = (selectionRect, mouseX, mouseY) => {
     // const newSelect = this.snapToColumn(selectionRect); // use when pdf parsing better
-    const newSelect = selectionRect
+    const newSelect = selectionRect;
     const anyInfinite = Object.values(newSelect).some(x => x === Infinity);
 
     let viewbox;
@@ -602,6 +604,9 @@ class PageSvg extends React.Component<
     });
     this.props.updatePortals(frames);
   };
+  deleteViewbox = id => {
+    this.props.removeBatch({ nodes: [id] });
+  };
 
   render() {
     const { left, top, width, height } = this.state.selectionRect;
@@ -736,7 +741,7 @@ class PageSvg extends React.Component<
               const { top, left, width, height } = vb.data;
 
               return (
-                <div
+                <ViewboxDiv
                   draggable={false}
                   key={vb.id}
                   style={{
@@ -747,7 +752,8 @@ class PageSvg extends React.Component<
                     height: height,
                     border: "2px solid green",
                     lineHeight: "1em",
-                    backgroundColor: "transparent"
+                    backgroundColor: "transparent",
+                    overflow: ""
                   }}
                   onClick={this.openTextPortal(vb.id)}
                   onContextMenu={e => {
@@ -767,7 +773,17 @@ class PageSvg extends React.Component<
                       });
                     }
                   }}
-                />
+                >
+                  <div
+                    id="delete-icon"
+                    style={{ position: "absolute", top: -30 }}
+                    onClick={e => {
+                      e.stopPropagation()
+                      this.deleteViewbox(vb.id)}}
+                  >
+                    <MdDeleteForever />
+                  </div>
+                </ViewboxDiv>
               );
             })}
           {/* {this.state.showText && (
@@ -822,3 +838,19 @@ export default connect(
   mapState,
   mapDispatch
 )(PageSvg);
+
+const ViewboxDiv = styled.div`
+  div {
+    opacity: 0;
+    cursor: pointer;
+    :hover {
+      color: red;
+    }
+  }
+
+  &:hover {
+    div {
+      opacity: 1;
+    }
+  }
+`;

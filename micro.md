@@ -1,4 +1,6 @@
 
+- delete vb from pdf
+
 - named axises
 - multli canvas
 - L shaped pdf view with synced scroll
@@ -8,7 +10,7 @@
 - put min vbs just ow enough to see the link
 - highlight links -> rel to neighbors
 - add a 'fit to text' button
-- create new text node under current
+- create new text node under current like 'a'
 - show/ hide links on mouse over / keycmd
 - edit links
 - keep links offscreen-ish
