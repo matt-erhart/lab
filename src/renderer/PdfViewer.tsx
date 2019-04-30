@@ -157,9 +157,23 @@ class PdfViewer extends React.Component<
   scrollRef = React.createRef<HTMLDivElement>();
   onScroll = e => {
     e.stopPropagation();
-    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
-    this.setState({ pageNumbersInView });
+    this.updatePagesInView();
   };
+
+  updatePagesInView = () => {
+    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
+    this.setState(state => {
+      if (
+        JSON.stringify(state.pageNumbersInView) ===
+        JSON.stringify(pageNumbersInView)
+      ) {
+        return null;
+      } else {
+        return { pageNumbersInView };
+      }
+    });
+  };
+
   static getDerivedStateFromProps(
     props: typeof PdfViewerDefaults.props & connectedProps,
     state: typeof PdfViewerDefaults.state
@@ -176,9 +190,11 @@ class PdfViewer extends React.Component<
           n.data.pdfDir === props.pdfDir
         );
       });
-
+      console.log("return { viewboxes, patches: props.patches };");
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
+      console.log("props.patches !== state.patches");
+
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches
           .filter(p => !!p.value.data)
@@ -332,6 +348,7 @@ class PdfViewer extends React.Component<
       prevProps.scrollToPageNumber !== this.props.scrollToPageNumber ||
       prevProps.top !== this.props.top
     ) {
+      console.log("scrollToPageNumber");
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
       const { scale } = this.state; // current
@@ -348,6 +365,11 @@ class PdfViewer extends React.Component<
       JSON.stringify(pageNumbersInView) !==
       JSON.stringify(this.state.pageNumbersInView)
     ) {
+      console.log(
+        JSON.stringify(pageNumbersInView),
+        JSON.stringify(this.state.pageNumbersInView)
+      );
+
       this.setState({ pageNumbersInView });
     }
   };
@@ -369,8 +391,6 @@ class PdfViewer extends React.Component<
         return { pages: scaledPages, scale: newScale, pageNumbersInView };
       });
     }
-    const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
-    this.setState({ pageNumbersInView });
   };
 
   getPageNumbersInView = pages => {
@@ -380,7 +400,7 @@ class PdfViewer extends React.Component<
     let pageTop = 0;
     let pageIxsInView = [];
     for (let pix in pages) {
-      const p = this.state.pages[pix];
+      const p = pages[pix];
       const pageBottom = pageTop + p.viewport.height;
       const pageIsBellowView = pageTop > scrollTop + height;
       const pageIsAboveView = pageBottom < scrollTop;
