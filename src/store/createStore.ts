@@ -256,6 +256,7 @@ export const graph = createModel({
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, isDirected } = nodeOrLink;
+            if (draft[payloadKey][id] === undefined) return draft
             if (!!draft[payloadKey][id])
               draft[payloadKey][id].meta.timeUpdated = Date.now();
 

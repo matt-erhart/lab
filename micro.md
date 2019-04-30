@@ -1,5 +1,4 @@
 
-- delete vb from pdf
 
 - named axises
 - multli canvas
