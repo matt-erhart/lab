@@ -207,7 +207,10 @@ export class GraphContainer extends React.Component<
 
     if (prevProps.graphPanel !== this.props.graphPanel) {
       const { left, top } = this.props.graphPanel;
-      this.scrollRef.current.scrollTo(left, top);
+      this.scrollRef.current.scrollTo(
+        left * this.state.zoom,
+        top * this.state.zoom
+      );
     }
   }
 
@@ -227,8 +230,8 @@ export class GraphContainer extends React.Component<
     const view = getBoxEdges({
       left: (this.state.scrollLeft - pad) / zoomedIn,
       top: (this.state.scrollTop - pad) / zoomedIn,
-      width: (width + (pad * 2)) / this.state.zoom,
-      height: (height + (pad * 2)) / this.state.zoom
+      width: (width + pad * 2) / this.state.zoom,
+      height: (height + pad * 2) / this.state.zoom
     });
     return view;
   };

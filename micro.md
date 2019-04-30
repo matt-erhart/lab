@@ -1,5 +1,7 @@
-- 153 remember last scroll possition in pdf
-- 
+- right click vb to scroll pdf a bit off: zoom
+  - pagesvg
+  - pdfviewer
+  - 
 
 
 
@@ -9,7 +11,6 @@
 - L shaped pdf view with synced scroll
 - focus green box portal -> settimout hack
 - pdf rerenders on scroll
-- right click vb to scroll pdf a bit off: zoom
 - new min vbs should take the size of same pdfdir
 - put min vbs just ow enough to see the link
 - highlight links -> rel to neighbors

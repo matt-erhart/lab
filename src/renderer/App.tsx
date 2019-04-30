@@ -239,7 +239,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    this.props.setMainPdfReader({ pdfDir: opt.label, scrollToPageNumber: 0 });
+    this.props.setMainPdfReader({ pdfDir: opt.label, scrollToPageNumber: 0, left: 0, });
   };
 
   //todo mdata
@@ -309,8 +309,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 {...{
                   pdfRootDir,
                   ...this.props.mainPdfReader,
-                  left: 0,
-                  top: 0,
                   height: "100%"
                 }}
               />

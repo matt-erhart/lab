@@ -96,7 +96,7 @@ const PdfViewerDefaults = {
   },
   state: {
     pageNumbersInView: [] as number[],
-    scale: 2, // todo scale
+    scale: 1, // todo scale
     pages: [] as Page[],
     columnLefts: [] as number[],
     height2color: {} as any,
@@ -334,8 +334,13 @@ class PdfViewer extends React.Component<
     ) {
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
-      if (this.scrollRef.current)
-        this.scrollRef.current.scrollTo(left, top + pageOffset);
+      const { scale } = this.state; // current
+      if (this.scrollRef.current) {
+        this.scrollRef.current.scrollTo(
+          (left - 10) * scale,
+          (top - 10) * scale + pageOffset
+        );
+      }
     }
 
     const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
@@ -476,7 +481,8 @@ class PdfViewer extends React.Component<
             width,
             minWidth: width,
             height,
-            position: "relative"
+            position: "relative",
+            borderBottom: "1px solid lightgrey"
           }}
         >
           {shouldRenderPage && (
@@ -527,7 +533,7 @@ class PdfViewer extends React.Component<
   };
 
   render() {
-    console.log("pdf render");
+    console.log("pdf render", this.state.scale);
 
     const { width, height } = this.props;
     let overflow;
