@@ -41,8 +41,8 @@ export const createGROBIDMetadata = async (
 ) => {
   let GROBIDMetadata = {};
   const fileExists = fs.pathExists(path);
-  const filePath = 'python-service/tmp/paper276.pdf';
-  const pdfData = fs.readFileSync(filePath);
+  // const filePath = 'python-service/tmp/paper276.pdf';
+  const pdfData = fs.readFileSync(pdfPath);
 
   await axios.post('http://52.10.103.106/autograb/grobidmetadata', pdfData, {
     // axios.post('http://localhost:5000/autograb/grobidmetadata', pdfData, {
