@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, MenuItem } from "electron";
+import { app, BrowserWindow, BrowserView, Menu, MenuItem } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
 import { existsElseMake } from "../renderer/io";
@@ -31,7 +31,7 @@ function createMainWindow() {
       })
     );
   }
-
+  
   window.on("closed", () => {
     mainWindow = null;
   });
@@ -45,102 +45,100 @@ function createMainWindow() {
 
   const template = [
     {
-      label: 'File',
-      submenu: [
-        { label: 'Set Pdf Folder', async click () { 
-          await setPdfRootDir()
-          window.reload()
-         }
-      },
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
-        { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-        { role: 'pasteandmatchstyle' },
-        { role: 'delete' },
-        { role: 'selectall' }
-      ]
-    },
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forcereload' },
-        { role: 'toggledevtools' },
-        { type: 'separator' },
-        { role: 'resetzoom' },
-        { role: 'zoomin' },
-        { role: 'zoomout' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
-    },
-    {
-      role: 'window',
-      submenu: [
-        { role: 'minimize' },
-        { role: 'close' }
-      ]
-    },
-    {
-      role: 'help',
+      label: "File",
       submenu: [
         {
-          label: 'Learn More',
-          click () { require('electron').shell.openExternal('https://electronjs.org') }
+          label: "Set Pdf Folder",
+          async click() {
+            await setPdfRootDir();
+            window.reload();
+          }
+        }
+      ]
+    },
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "pasteandmatchstyle" },
+        { role: "delete" },
+        { role: "selectall" }
+      ]
+    },
+    {
+      label: "View",
+      submenu: [
+        { role: "reload" },
+        { role: "forcereload" },
+        { role: "toggledevtools" },
+        { type: "separator" },
+        { role: "resetzoom" },
+        { role: "zoomin" },
+        { role: "zoomout" },
+        { type: "separator" },
+        { role: "togglefullscreen" }
+      ]
+    },
+    {
+      role: "window",
+      submenu: [{ role: "minimize" }, { role: "close" }]
+    },
+    {
+      role: "help",
+      submenu: [
+        {
+          label: "Learn More",
+          click() {
+            require("electron").shell.openExternal("https://electronjs.org");
+          }
         }
       ]
     }
-  ]
-  
-  if (process.platform === 'darwin') {
+  ];
+
+  if (process.platform === "darwin") {
     template.unshift({
       label: app.getName(),
       submenu: [
-        { role: 'about' },
-        { type: 'separator' },
-        { role: 'services' },
-        { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideothers' },
-        { role: 'unhide' },
-        { type: 'separator' },
-        { role: 'quit' }
+        { role: "about" },
+        { type: "separator" },
+        { role: "services" },
+        { type: "separator" },
+        { role: "hide" },
+        { role: "hideothers" },
+        { role: "unhide" },
+        { type: "separator" },
+        { role: "quit" }
       ]
-    })
-  
+    });
+
     // Edit menu
     template[1].submenu.push(
       //@ts-ignore
-      { type: 'separator' },
+      { type: "separator" },
       {
-        label: 'Speech',
-        submenu: [
-          { role: 'startspeaking' },
-          { role: 'stopspeaking' }
-        ]
+        label: "Speech",
+        submenu: [{ role: "startspeaking" }, { role: "stopspeaking" }]
       }
-    )
-  
+    );
+
     // Window menu
     template[3].submenu = [
-      { role: 'close' },
-      { role: 'minimize' },
-      { role: 'zoom' },
-      { type: 'separator' },
-      { role: 'front' }
-    ]
+      { role: "close" },
+      { role: "minimize" },
+      { role: "zoom" },
+      { type: "separator" },
+      { role: "front" }
+    ];
   }
   //@ts-ignore
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
   return window;
 }
 
@@ -165,15 +163,15 @@ const settings = require("electron-settings");
 app.on("ready", async () => {
   const pdfRootDir = settings.get("pdfRootDir") || false;
   if (!pdfRootDir) {
-    await setPdfRootDir()
+    await setPdfRootDir();
   }
   mainWindow = createMainWindow();
 });
 
 const setPdfRootDir = async () => {
-    const pathArray = dialog.showOpenDialog({ properties: ["openDirectory"] });
-    const pdfRootDir = path.join(...pathArray)
-    settings.set("pdfRootDir", path.join(...pathArray));
-    const stateJsonPath = path.join(pdfRootDir, "./state.json");
-    const madeEmptyJson = await existsElseMake(stateJsonPath, {});
-}
+  const pathArray = dialog.showOpenDialog({ properties: ["openDirectory"] });
+  const pdfRootDir = path.join(...pathArray);
+  settings.set("pdfRootDir", path.join(...pathArray));
+  const stateJsonPath = path.join(pdfRootDir, "./state.json");
+  const madeEmptyJson = await existsElseMake(stateJsonPath, {});
+};

@@ -9,7 +9,7 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
-
+import GoogleScholar from './GoogleScholar'
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
@@ -254,7 +254,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-        return <ListView />;
+        return <GoogleScholar />  
+
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
           return <DocList />;

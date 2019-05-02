@@ -1,10 +1,16 @@
-- pdf rerenders
+- metadata
+  - iframe electron
 
+- participant info
+  - git issue ms
+
+
+---------------------------
+- save main pdf zoom level + scroll
 - named axises
 - multli canvas
 - L shaped pdf view with synced scroll
 - focus green box portal -> settimout hack
-- pdf rerenders on scroll
 - new min vbs should take the size of same pdfdir
 - put min vbs just ow enough to see the link
 - highlight links -> rel to neighbors
@@ -14,6 +20,7 @@
 - edit links
 - keep links offscreen-ish
 - scale vb in graph container
+const inside = require('point-in-polygon-hao')
 
 - move together
   - neighbors

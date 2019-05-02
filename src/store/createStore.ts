@@ -250,6 +250,7 @@ export const graph = createModel({
     ) {
       // todo updatetime
       // 400 items = 9ms, 300 items = 7ms
+      //@ts-ignore
       return produce(state, draft => {
         draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {

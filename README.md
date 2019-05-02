@@ -10,7 +10,23 @@
 
 # Roadmap
 
+
+
+
+
+
 -------
+- chrome extension + firebase
+   - select text, right click send to firebase list of {url, time, query}
+   - firebase onlist add, knn search, list view 
+
+- Fine-tuned, conditional semantic vectors for KNN search
+   - Fine-tuned by machines
+      - fastai + gorbid our pdfs?
+   - conditional
+      - paper/website title, authors, venue, section header
+      - knowledge graph links
+
 - document editor
    - insert one doc in another
    - transcullison?
