@@ -1,53 +1,27 @@
-import { mergeDefaults } from "../renderer/utils";
-import { number } from "prop-types";
+// lib
 import uuidv1 = require("uuid/v1");
 import fs = require("fs-extra");
 import path = require("path");
-import Plain from "slate-plain-serializer";
 import convertBase64 from "slate-base64-serializer";
+
+// custom
+import { Box } from "../renderer/utils";
 
 export type NodeDataTypes =
   | "empty"
+  | "user"
   | "userDoc" // document made by user after writing
   | "pdf.segment.viewbox" //
   | "pdf.segment.text"
   | "pdf.publication" //
-  | "user"
   | "person"
   | "venue"
   | "query" // queries have style overrides, combine subqueries to reuse, ooo
   | "projection/map/affinity/dimension/coordinates matter"
   | "autograb";
 
-export interface NodeMeta {
-  createdBy: string;
-  timeCreated: number;
-  timeUpdated: number;
-  editors?: string[];
-}
-
-import { Box } from "../renderer/utils";
-type corners = "nw" | "ne" | "sw" | "se";
+type corners = "nw" | "ne" | "sw" | "se"; // north, south, west, east
 type modes = "min" | "max";
-export interface NodeBase {
-  id: string;
-  data: { type: NodeDataTypes };
-  style: {
-    min: Box;
-    max: Box;
-    modes: modes[];
-    modeIx: 0;
-    lockedCorner: corners;
-  };
-  meta: NodeMeta;
-}
-
-export interface Empty extends NodeBase {
-  data: {
-    type: "empty";
-  };
-  meta: NodeMeta;
-}
 
 export interface PdfPathInfo {
   pdfPath: string;
@@ -73,8 +47,9 @@ const ViewboxDataDefault = {
   scale: 1
 };
 export type ViewboxData = typeof ViewboxDataDefault;
-export interface PdfSegmentViewbox extends NodeBase {
+export interface PdfSegmentViewbox {
   data: ViewboxData;
+  style: {};
 }
 import { CircleConfig, LineConfig } from "konva";
 import console = require("console");
@@ -197,10 +172,9 @@ export type AutoGrab = typeof AutoGrabDefaults;
 
 export const makeAutograbNode = (
   fulldirName: string,
-  dataPath:string, //"metadataToHighlight.json",
-  nodeSuffix:string, //"-autograb"
+  dataPath: string, //"metadataToHighlight.json",
+  nodeSuffix: string, //"-autograb"
   style = {}
-  
 ) => {
   // console.log("inside makeAutoGrabNode " + fulldirName);
   const metadataToHighlight = JSON.parse(
@@ -292,7 +266,34 @@ export const makeUserDoc = (
   };
 };
 
-export type aNode = PdfSegmentViewbox | Empty | PdfPublication | AutoGrab;
+
+export type NodeData = {
+  id: string;
+} & Partial<
+  UserDoc["data"] & PdfPublication["data"] & PdfSegmentViewbox["data"]
+>;
+
+export type NodeStyle = {
+  id: string;
+} & Partial<
+  UserDoc["style"] & PdfPublication["style"] & PdfSegmentViewbox["style"]
+>;
+
+export interface NodeMeta {
+  createdBy: string;
+  timeCreated: number;
+  timeUpdated: number;
+  editors?: string[];
+}
+
+export interface NodeBase {
+  id: string;
+  data: NodeData;
+  style: NodeStyle;
+  meta: NodeMeta;
+}
+
+export type aNode = PdfSegmentViewbox | PdfPublication | AutoGrab;
 export type aLink = LinkBase;
-export type Nodes = { [id: string]: aNode }; // or...
+export type Nodes = { [id: string]: NodeBase }; // or...
 export type Links = { [id: string]: aLink }; // or...

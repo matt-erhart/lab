@@ -1,8 +1,41 @@
-- metadata
-  - iframe electron
+- 1st degree neighbor cache
+  - on crud link
+  - redux in tsnode
+  - 1138 fix ts
+    - how to get autocomplete
+      - 
 
-- participant info
-  - git issue ms
+make a tag heirarchy  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ---------------------------

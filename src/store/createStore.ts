@@ -12,10 +12,20 @@ import jsonfile = require("jsonfile");
 import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
 import { frame } from "../renderer/ResizableFrame";
+import { get } from "../renderer/utils";
 const settings = require("electron-settings");
-const { clientWidth } = document.documentElement;
+const { clientWidth } = { clientWidth: -1 };
+// get(document, d => d.documentElement, {
+//   clientWidth: -1
+// });
+let pdfRootDir;
+try {
+  pdfRootDir = settings.get("pdfRootDir");
+} catch {
+  // for node dev
+  pdfRootDir = "F:\\GoogleSync\\megaCogLab\\ElectronTesting\\matt";
+}
 
-const pdfRootDir = settings.get("pdfRootDir");
 export let defaultApp = {
   current: {
     userId: "",
@@ -257,7 +267,7 @@ export const graph = createModel({
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, isDirected } = nodeOrLink;
-            if (draft[payloadKey][id] === undefined) return draft
+            if (draft[payloadKey][id] === undefined) return draft;
             if (!!draft[payloadKey][id])
               draft[payloadKey][id].meta.timeUpdated = Date.now();
 
