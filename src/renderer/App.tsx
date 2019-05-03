@@ -31,8 +31,10 @@ import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
+import SynthesisEditor from "./SynthesisEditor";
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
+import console = require("console");
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -148,11 +150,13 @@ type rightPanelName = typeof defaultApp.panels.rightPanel;
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
   keyback = (e: KeyboardEvent) => {
+    console.log(e)
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
-      "3": "synthesisOutlineEditor" as rightPanelName
+      "3": "synthesisOutlineEditor" as rightPanelName,
       // "3": "docEditor" as rightPanelName
+      "4": "synthesisOutlineRealEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
@@ -171,6 +175,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
+
+    // adding key listener before the autograb task (which is time-consuming and may block key listening)
+    window.addEventListener("keyup", this.keyback);  
 
     if (featureToggles.showAutoGrab) {
       // show autograb and GROBID extracted metadata
@@ -204,8 +211,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         // console.log(resultMessage)
       }
     }
-
-    window.addEventListener("keyup", this.keyback);
   }
 
   componentWillUnmount() {
@@ -260,10 +265,16 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           return <DocList />;
         } else {
           return null;
-          break;
+        }
+      case "synthesisOutlineRealEditor":
+        if (featureToggles.showDocList) {
+          return <SynthesisEditor />;
+          // return <DocEditor />;
+        } else {
+          return null;
         }
       default:
-        return <div>alt-1 | alt-2 | alt-3</div>;
+        return <div>alt-1 | alt-2 | alt-3 | alt-4 (for mac users, ctrl+alt+[1/2/3/4])</div>;
     }
   };
 

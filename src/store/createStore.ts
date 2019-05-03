@@ -50,6 +50,7 @@ export let defaultApp = {
       | "graphContainer"
       | "listview"
       | "synthesisOutlineEditor"
+      | "synthesisOutlineRealEditor"
     // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
   },
   portals: [] as frame[],

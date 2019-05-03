@@ -1,0 +1,2633 @@
+{
+  "app": {
+    "current": {
+      "userId": "",
+      "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+      "pdfRootDir": "C:\\Users\\Joel\\Google Drive\\_Research Docs\\Web 2020\\bento-scholar\\ElectronTesting\\joel"
+    },
+    "settings": {
+      "appearance": {
+        "windowStyleOnOpen": {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 1000
+        },
+        "panels": {}
+      },
+      "keyboardShortcuts": {}
+    }
+  },
+  "graph": {
+    "nodes": {
+      "Hemminger-Bradley-M._TerMaat-Julia_2014_Annotating-for-the-world": {
+        "id": "Hemminger-Bradley-M._TerMaat-Julia_2014_Annotating-for-the-world",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Hemminger-Bradley-M._TerMaat-Julia_2014_Annotating-for-the-world",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Hemminger-Bradley-M._TerMaat-Julia_2014_Annotating-for-the-world",
+          "x": 266.2558676759355,
+          "y": 266.08998967544215,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551648959494,
+          "timeUpdated": 1551739200848
+        }
+      },
+      "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive": {
+        "id": "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive",
+          "x": 264.1665250638749,
+          "y": 159.94746675542402,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551648959494,
+          "timeUpdated": 1551738411441
+        }
+      },
+      "Nobarany-et-al_2012_Facilitating-the-Reuse-Process-in-Distributed-Collaboration": {
+        "id": "Nobarany-et-al_2012_Facilitating-the-Reuse-Process-in-Distributed-Collaboration",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Nobarany-et-al_2012_Facilitating-the-Reuse-Process-in-Distributed-Collaboration",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Nobarany-et-al_2012_Facilitating-the-Reuse-Process-in-Distributed-Collaboration",
+          "x": 115.2715028991881,
+          "y": 303.909027563529,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551648959494,
+          "timeUpdated": 1551738416287
+        }
+      },
+      "Palmer_1999_Structures-and-strategies-of-interdisciplinary-science": {
+        "id": "Palmer_1999_Structures-and-strategies-of-interdisciplinary-science",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Palmer_1999_Structures-and-strategies-of-interdisciplinary-science",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Palmer_1999_Structures-and-strategies-of-interdisciplinary-science",
+          "x": 221.04516432356684,
+          "y": 321.8254256584843,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551648959494,
+          "timeUpdated": 1551739094612
+        }
+      },
+      "Hansen_2009_Overhearing-the-Crowd": {
+        "id": "Hansen_2009_Overhearing-the-Crowd",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "fileExt": ".pdf",
+          "title": "Hansen 2009 Overhearing the Crowd",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Hansen_2009_Overhearing-the-Crowd",
+          "x": 485.5526602394825,
+          "y": 73,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551649075664,
+          "timeUpdated": 1552427617443
+        }
+      },
+      "Hars_2001_Designing-Scientific-Knowledge-Infrastructures": {
+        "id": "Hars_2001_Designing-Scientific-Knowledge-Infrastructures",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Hars_2001_Designing-Scientific-Knowledge-Infrastructures",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Hars_2001_Designing-Scientific-Knowledge-Infrastructures",
+          "x": 163.32446605026794,
+          "y": 37.31157596215517,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551649399639,
+          "timeUpdated": 1551702820162
+        }
+      },
+      "Rzhetsky-et-al_2006_Microparadigms": {
+        "id": "Rzhetsky-et-al_2006_Microparadigms",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Rzhetsky-et-al_2006_Microparadigms",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Rzhetsky-et-al_2006_Microparadigms",
+          "x": 77.36396274583774,
+          "y": 539.3795801736694,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738629983,
+          "timeUpdated": 1551738629983
+        }
+      },
+      "490bdc90-3ece-11e9-9761-affd11e9504c": {
+        "id": "490bdc90-3ece-11e9-9761-affd11e9504c",
+        "data": {
+          "left": 107.99999999999994,
+          "top": 326.47200000000043,
+          "height": 241.96199999999953,
+          "width": 493.5491999999999,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 8,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "490bdc90-3ece-11e9-9761-affd11e9504c",
+          "type": "circle",
+          "x": 434.1880265372474,
+          "y": 183.5436376916003,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551739132122,
+          "timeUpdated": 1551739164396
+        }
+      },
+      "02c74c90-3f75-11e9-9761-affd11e9504c": {
+        "id": "02c74c90-3f75-11e9-9761-affd11e9504c",
+        "data": {
+          "left": 67.5,
+          "top": 138.0637500000002,
+          "height": 11.25,
+          "width": 307.562625,
+          "userId": "default",
+          "pdfDir": "Hansen_2009_Overhearing-the-Crowd",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 1.25
+        },
+        "style": {
+          "id": "02c74c90-3f75-11e9-9761-affd11e9504c",
+          "type": "circle",
+          "x": 386.2444977899827,
+          "y": 205.94555220287617,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551810740185,
+          "timeUpdated": 1551826534784
+        }
+      },
+      "0cb98880-3f75-11e9-9761-affd11e9504c": {
+        "id": "0cb98880-3f75-11e9-9761-affd11e9504c",
+        "data": {
+          "type": "userMedia.text",
+          "text": "tech support threads often consist of relatively short threads of messages"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738979574,
+          "timeUpdated": 1551826538415
+        },
+        "style": {
+          "id": "0cb98880-3f75-11e9-9761-affd11e9504c",
+          "x": 386.0464284204022,
+          "y": 263.9139985803271,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "199b9160-3f75-11e9-9761-affd11e9504c": {
+        "id": "199b9160-3f75-11e9-9761-affd11e9504c",
+        "data": {
+          "type": "userMedia.text",
+          "text": "hello"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738979574,
+          "timeUpdated": 1551810783981
+        },
+        "style": {
+          "id": "199b9160-3f75-11e9-9761-affd11e9504c",
+          "x": 429,
+          "y": 277,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies": {
+        "id": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+          "fileExt": ".pdf",
+          "title": "Edwards (2009) intro to infrastructures special issue in JAIST",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+          "x": 59.121501694470034,
+          "y": 50,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552425880795,
+          "timeUpdated": 1552486252118
+        }
+      },
+      "73a538d0-450d-11e9-8d78-6d0794385e78": {
+        "id": "73a538d0-450d-11e9-8d78-6d0794385e78",
+        "data": {
+          "left": 175.07762872000012,
+          "top": 881.1086580800003,
+          "height": 287.6890426399999,
+          "width": 888.1669801600004,
+          "userId": "default",
+          "pdfDir": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+          "pageNumber": 6,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "73a538d0-450d-11e9-8d78-6d0794385e78",
+          "type": "circle",
+          "x": 65.70315845903997,
+          "y": 109.60390949207549,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552425968862,
+          "timeUpdated": 1552425968862
+        }
+      },
+      "7e4a7110-450d-11e9-8d78-6d0794385e78": {
+        "id": "7e4a7110-450d-11e9-8d78-6d0794385e78",
+        "data": {
+          "type": "userMedia.text",
+          "text": "infrastructures cannot really be planned in advance; they must be grown \"organically\""
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552425880795,
+          "timeUpdated": 1552425880795
+        },
+        "style": {
+          "id": "7e4a7110-450d-11e9-8d78-6d0794385e78",
+          "x": 68.28961868089729,
+          "y": 183.0631806600494,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "50d8d050-4599-11e9-9643-8f30f9225135": {
+        "id": "50d8d050-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "left": 175.08,
+          "top": 210.0706,
+          "height": 287.92753120000015,
+          "width": 890.0749336800004,
+          "userId": "default",
+          "pdfDir": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "50d8d050-4599-11e9-9643-8f30f9225135",
+          "type": "circle",
+          "x": 126.57444801760228,
+          "y": 155.156269591471,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552486040021,
+          "timeUpdated": 1552486066726
+        }
+      },
+      "58690060-4599-11e9-9643-8f30f9225135": {
+        "id": "58690060-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "userMedia.text",
+          "text": "Integration across infrastructures is hard because of gateways"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552487090493
+        },
+        "style": {
+          "id": "58690060-4599-11e9-9643-8f30f9225135",
+          "x": 284.96301926157946,
+          "y": 512.629688128842,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "9fc63270-4599-11e9-9643-8f30f9225135": {
+        "id": "9fc63270-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "left": 175.08000000000007,
+          "top": 903.3067048000004,
+          "height": 19.48879999999997,
+          "width": 882.5873367199999,
+          "userId": "default",
+          "pdfDir": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "9fc63270-4599-11e9-9643-8f30f9225135",
+          "type": "circle",
+          "x": 363.4918592671998,
+          "y": 371.57467158258527,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552486172440,
+          "timeUpdated": 1552486210802
+        }
+      },
+      "a474c660-4599-11e9-9643-8f30f9225135": {
+        "id": "a474c660-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "userMedia.text",
+          "text": "write a thing"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552486213660
+        },
+        "style": {
+          "id": "a474c660-4599-11e9-9643-8f30f9225135",
+          "x": 388.3917248825772,
+          "y": 471.23610353156164,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "2ea3aef0-459a-11e9-9643-8f30f9225135": {
+        "id": "2ea3aef0-459a-11e9-9643-8f30f9225135",
+        "data": {
+          "left": 729.45239008428,
+          "top": 117.77336624824011,
+          "height": 200.52853538083997,
+          "width": 354.0515860784002,
+          "userId": "default",
+          "pdfDir": "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive",
+          "pageNumber": 4,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "2ea3aef0-459a-11e9-9643-8f30f9225135",
+          "type": "circle",
+          "x": 269.9861679201583,
+          "y": 251.4184461653307,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552486412127,
+          "timeUpdated": 1552486412127
+        }
+      },
+      "3312a1d0-459a-11e9-9643-8f30f9225135": {
+        "id": "3312a1d0-459a-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "userMedia.text",
+          "text": "people read in choppy stages"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552485792104
+        },
+        "style": {
+          "id": "3312a1d0-459a-11e9-9643-8f30f9225135",
+          "x": 274.57388933204163,
+          "y": 325.1890047059641,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder": {
+        "id": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "fileExt": ".pdf",
+          "title": "jones (2009) burden of knowledge",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "x": 44.49237357462265,
+          "y": 354.37631012526896,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156382
+        }
+      },
+      "f622fa90-45b7-11e9-be2b-6bcffedeedd1": {
+        "id": "f622fa90-45b7-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.19817983999994,
+          "top": 398.0227052800001,
+          "height": 19.9264,
+          "width": 767.02890784,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 23,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "f622fa90-45b7-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 157.82855911213449,
+          "y": 588.1360017051807,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499202234,
+          "timeUpdated": 1552499301739
+        }
+      },
+      "fd7d9bb0-45b7-11e9-be2b-6bcffedeedd1": {
+        "id": "fd7d9bb0-45b7-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "innovators spread evenly in any given domain of innovation"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552752415658
+        },
+        "style": {
+          "id": "fd7d9bb0-45b7-11e9-be2b-6bcffedeedd1",
+          "x": 199.53926446611098,
+          "y": 671.2772069129833,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "1abf6280-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "1abf6280-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.19816063999997,
+          "top": 504.9612248200001,
+          "height": 367.3456151800001,
+          "width": 772.5266016,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 23,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "1abf6280-45b8-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 184.3970507209009,
+          "y": 553.8053229109782,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499263656,
+          "timeUpdated": 1552499296716
+        }
+      },
+      "2bee0930-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "2bee0930-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "the ratio between educational expenditure and lifetime income is constant across innovator cohorts or domains of expertise"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552499306580
+        },
+        "style": {
+          "id": "2bee0930-45b8-11e9-be2b-6bcffedeedd1",
+          "x": 344.6834279824932,
+          "y": 614.1694395593513,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "46ee6b80-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "46ee6b80-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.20421344,
+          "top": 1128.410936,
+          "height": 95.85590400000001,
+          "width": 766.9870624,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 23,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "46ee6b80-45b8-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 36.387620565828996,
+          "y": 464.9168841916423,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499337784,
+          "timeUpdated": 1552499337784
+        }
+      },
+      "628e4220-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "628e4220-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "not sure how to phrase this yet: innovators self-allocate across domains (even though each has slightly different costs/benefits) to offset costs/benefits of crowding etc"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552497850583
+        },
+        "style": {
+          "id": "628e4220-45b8-11e9-be2b-6bcffedeedd1",
+          "x": 42.66536643977602,
+          "y": 543.6826707845197,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "8e4275d0-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "8e4275d0-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.20625919999998,
+          "top": 872.1875200000002,
+          "height": 19.926400000000058,
+          "width": 766.9472096000002,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 24,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "8e4275d0-45b8-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 31.60894161932511,
+          "y": 473.66746279316243,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499457453,
+          "timeUpdated": 1552499457453
+        }
+      },
+      "974dad20-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "974dad20-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "people tend to specialize more over time (especially in areas with deeper knowledge) due to...."
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552752473900
+        },
+        "style": {
+          "id": "974dad20-45b8-11e9-be2b-6bcffedeedd1",
+          "x": 27.546985107264845,
+          "y": 528.816091554303,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "ce37c050-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "ce37c050-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 141.05892000000006,
+          "top": 650.4462736,
+          "height": 19.926400000000058,
+          "width": 727.1343488,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 25,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "ce37c050-45b8-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 73.0277185027777,
+          "y": 501.0990605053318,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499564757,
+          "timeUpdated": 1552499564757
+        }
+      },
+      "dcd16440-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "dcd16440-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "innovators all else equal prefer to work in \"hot\" areas with low learning costs"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552497850583
+        },
+        "style": {
+          "id": "dcd16440-45b8-11e9-be2b-6bcffedeedd1",
+          "x": 68.51083132752436,
+          "y": 563.5718539440606,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "29e57280-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "29e57280-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.19417056000009,
+          "top": 170.13045279999983,
+          "height": 459.4529872000003,
+          "width": 767.0269151999998,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 26,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "29e57280-45b9-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 540.8214358402495,
+          "y": 583.3263833057422,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499718568,
+          "timeUpdated": 1552499780839
+        }
+      },
+      "3b49a820-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "3b49a820-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "narrowing expertise reduces innovation growth to the extent that breadth of expertise is important for innovation"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552499755258
+        },
+        "style": {
+          "id": "3b49a820-45b9-11e9-be2b-6bcffedeedd1",
+          "x": 523.5669245716053,
+          "y": 658.426375000112,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "c4c482f0-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "c4c482f0-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "left": 101.20420000000001,
+          "top": 440.34239999999954,
+          "height": 187.3081600000005,
+          "width": 766.9990182400003,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 28,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "c4c482f0-45b9-11e9-be2b-6bcffedeedd1",
+          "type": "circle",
+          "x": 771.6146010950838,
+          "y": 325.86888160318296,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552499978399,
+          "timeUpdated": 1552500040421
+        }
+      },
+      "dac487d0-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "dac487d0-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "userMedia.text",
+          "text": "1 of 2 key implications from the model: the knowledge transfer coefficient is a central parameter to optimize to retain our ability to innovate"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753143012
+        },
+        "style": {
+          "id": "dac487d0-45b9-11e9-be2b-6bcffedeedd1",
+          "x": 1065.127613066496,
+          "y": 414.4018438664024,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find": {
+        "id": "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find",
+          "x": 86.57743600046308,
+          "y": 50,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        }
+      },
+      "Jones_2010_Age-and-Great-Invention": {
+        "id": "Jones_2010_Age-and-Great-Invention",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Jones_2010_Age-and-Great-Invention",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Jones_2010_Age-and-Great-Invention",
+          "x": 352.314457750302,
+          "y": 849.2982074402169,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552753158639
+        }
+      },
+      "nsf_big_ideas": {
+        "id": "nsf_big_ideas",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "nsf_big_ideas",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "nsf_big_ideas",
+          "x": 112.16949255169617,
+          "y": 899.9661470386709,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        }
+      },
+      "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology": {
+        "id": "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology",
+          "x": 1125.3491194396222,
+          "y": 1072.679329095958,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752855324
+        }
+      },
+      "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge": {
+        "id": "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge",
+          "x": 125.55072074019805,
+          "y": 538.6684829349942,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        }
+      },
+      "542de100-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "542de100-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "left": 201.16,
+          "top": 718.18,
+          "height": 57.60000000000002,
+          "width": 884.2679999999999,
+          "userId": "default",
+          "pdfDir": "nsf_big_ideas",
+          "pageNumber": 11,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "542de100-4805-11e9-9e62-0baa55ce00a7",
+          "type": "circle",
+          "x": 92.84317543490204,
+          "y": 952.9837664413543,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752333584,
+          "timeUpdated": 1552752333584
+        }
+      },
+      "5f79b980-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "5f79b980-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "userMedia.text",
+          "text": "grand challenges in science are increasingly interdisciplinary"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752372982
+        },
+        "style": {
+          "id": "5f79b980-4805-11e9-9e62-0baa55ce00a7",
+          "x": 60.48096922867519,
+          "y": 1038.004876555508,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "bf0ae770-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "bf0ae770-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "left": 642.0176817,
+          "top": 136.2102,
+          "height": 569,
+          "width": 343.43362774,
+          "userId": "default",
+          "pdfDir": "Jones_2010_Age-and-Great-Invention",
+          "pageNumber": 10,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "bf0ae770-4805-11e9-9e62-0baa55ce00a7",
+          "type": "circle",
+          "x": 460.1051488946793,
+          "y": 769.6616723721386,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752512871,
+          "timeUpdated": 1552753168379
+        }
+      },
+      "cf737f00-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "cf737f00-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "userMedia.text",
+          "text": "Scientists are increasingly older when they win a Nobel prize, and when they get their first PhD"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552753164556
+        },
+        "style": {
+          "id": "cf737f00-4805-11e9-9e62-0baa55ce00a7",
+          "x": 364.9702500055181,
+          "y": 981.8184585941175,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "e2a23b70-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "e2a23b70-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "left": 435.5207008999999,
+          "top": 1099.418114899996,
+          "height": 331.7782056400001,
+          "width": 680.0031160440008,
+          "userId": "default",
+          "pdfDir": "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "e2a23b70-4805-11e9-9e62-0baa55ce00a7",
+          "type": "circle",
+          "x": 90.88451300061712,
+          "y": 604.514097121016,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752572583,
+          "timeUpdated": 1552752572583
+        }
+      },
+      "e7a41f80-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "e7a41f80-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "userMedia.text",
+          "text": "science is increasingly being done in teams"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752783501
+        },
+        "style": {
+          "id": "e7a41f80-4805-11e9-9e62-0baa55ce00a7",
+          "x": 73.81573141289648,
+          "y": 660.1297273799368,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "Uzzi-et-al_2013_Atypical-Combinations-and-Scientific-Impact": {
+        "id": "Uzzi-et-al_2013_Atypical-Combinations-and-Scientific-Impact",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "Uzzi-et-al_2013_Atypical-Combinations-and-Scientific-Impact",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "Uzzi-et-al_2013_Atypical-Combinations-and-Scientific-Impact",
+          "x": 77.9008621564414,
+          "y": 855.8284150698711,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752711964
+        }
+      },
+      "78ba4df0-4806-11e9-97df-4b9f21ca580c": {
+        "id": "78ba4df0-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "left": 614.3513928,
+          "top": 1087.92560352,
+          "height": 228.01799041999993,
+          "width": 314.37800660000005,
+          "userId": "default",
+          "pdfDir": "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "78ba4df0-4806-11e9-97df-4b9f21ca580c",
+          "type": "circle",
+          "x": 782.0232892814636,
+          "y": 1014.9923619046234,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752824399,
+          "timeUpdated": 1552752863100
+        }
+      },
+      "7b551d10-4806-11e9-97df-4b9f21ca580c": {
+        "id": "7b551d10-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "userMedia.text",
+          "text": "The most breakthrough science is increasingly being done by small teams"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752882322
+        },
+        "style": {
+          "id": "7b551d10-4806-11e9-97df-4b9f21ca580c",
+          "x": 618.7660697719031,
+          "y": 993.086393077759,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "be6ae170-4806-11e9-97df-4b9f21ca580c": {
+        "id": "be6ae170-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "left": 224.334,
+          "top": 208.47980000000007,
+          "height": 612.9182,
+          "width": 777.6020736000003,
+          "userId": "default",
+          "pdfDir": "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find",
+          "pageNumber": 10,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "be6ae170-4806-11e9-97df-4b9f21ca580c",
+          "type": "circle",
+          "x": 47.40426574579776,
+          "y": 145.3952605009173,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752941319,
+          "timeUpdated": 1552752941319
+        }
+      },
+      "c38fdde0-4806-11e9-97df-4b9f21ca580c": {
+        "id": "c38fdde0-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "userMedia.text",
+          "text": "While research effort has skyrocketed, research impact has stagnated or declined"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752953828
+        },
+        "style": {
+          "id": "c38fdde0-4806-11e9-97df-4b9f21ca580c",
+          "x": 45.81876044290408,
+          "y": 234.26261638105862,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "24a19150-4807-11e9-97df-4b9f21ca580c": {
+        "id": "24a19150-4807-11e9-97df-4b9f21ca580c",
+        "data": {
+          "left": 101.20213152,
+          "top": 129.49055999999996,
+          "height": 354.68991999999974,
+          "width": 767.0468415999999,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 3,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "24a19150-4807-11e9-97df-4b9f21ca580c",
+          "type": "circle",
+          "x": 52.155311713548386,
+          "y": 489.810417514816,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552753112805,
+          "timeUpdated": 1552753112805
+        }
+      },
+      "32c0d520-4807-11e9-97df-4b9f21ca580c": {
+        "id": "32c0d520-4807-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "userMedia.text",
+          "text": "the burden of knowledge on innovators and scientists is increasing"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552753176372
+        },
+        "style": {
+          "id": "32c0d520-4807-11e9-97df-4b9f21ca580c",
+          "x": 20.74515963232649,
+          "y": 562.2539953940131,
+          "stroke": "black",
+          "fill": "black"
+        }
+      },
+      "The-Ethnography-of-Infrastructure": {
+        "id": "The-Ethnography-of-Infrastructure",
+        "data": {
+          "type": "pdf.publication",
+          "publicationType": "",
+          "pdfDir": "The-Ethnography-of-Infrastructure",
+          "fileExt": ".pdf",
+          "title": "",
+          "venue": "",
+          "authors": [],
+          "year": null,
+          "volume": "",
+          "issue": "",
+          "url": "",
+          "arxivId": "",
+          "pmid": "",
+          "doi": "",
+          "isbn": "",
+          "issn": "",
+          "published": true
+        },
+        "style": {
+          "id": "The-Ethnography-of-Infrastructure",
+          "x": 68.57993213569226,
+          "y": 252.02898375569802,
+          "fill": "grey",
+          "stroke": "red"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552780467072,
+          "timeUpdated": 1552780467072
+        }
+      },
+      "dc7a3d60-4846-11e9-a0a5-9d6d5671486d": {
+        "id": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+        "data": {
+          "left": 101.20612,
+          "top": 957.19332,
+          "height": 19.926399999999944,
+          "width": 766.8675040000002,
+          "userId": "default",
+          "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "pageNumber": 1,
+          "type": "pdf.segment.viewbox",
+          "scale": 2
+        },
+        "style": {
+          "id": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+          "type": "circle",
+          "x": 42.541592728182664,
+          "y": 399.1315319553461,
+          "fill": "blue",
+          "draggabled": true,
+          "radius": 5,
+          "stroke": "blue",
+          "strokeWidth": 4
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552780479543,
+          "timeUpdated": 1552780479543
+        }
+      }
+    },
+    "links": {
+      "490c03a0-3ece-11e9-9761-affd11e9504c": {
+        "id": "490c03a0-3ece-11e9-9761-affd11e9504c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "490c03a0-3ece-11e9-9761-affd11e9504c",
+          "points": [
+            485.5526602394825,
+            73,
+            434.1880265372474,
+            183.5436376916003
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738979574,
+          "timeUpdated": 1552427617443
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "490bdc90-3ece-11e9-9761-affd11e9504c",
+        "undirected": true
+      },
+      "02c74c91-3f75-11e9-9761-affd11e9504c": {
+        "id": "02c74c91-3f75-11e9-9761-affd11e9504c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "02c74c91-3f75-11e9-9761-affd11e9504c",
+          "points": [
+            485.5526602394825,
+            73,
+            386.2444977899827,
+            205.94555220287617
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738979574,
+          "timeUpdated": 1552427617443
+        },
+        "source": "Hansen_2009_Overhearing-the-Crowd",
+        "target": "02c74c90-3f75-11e9-9761-affd11e9504c",
+        "undirected": true
+      },
+      "0cb98881-3f75-11e9-9761-affd11e9504c": {
+        "id": "0cb98881-3f75-11e9-9761-affd11e9504c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "0cb98881-3f75-11e9-9761-affd11e9504c",
+          "points": [
+            386.2444977899827,
+            205.94555220287617,
+            386.0464284204022,
+            263.9139985803271
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1551738979574,
+          "timeUpdated": 1551826538415
+        },
+        "source": "02c74c90-3f75-11e9-9761-affd11e9504c",
+        "target": "0cb98880-3f75-11e9-9761-affd11e9504c",
+        "undirected": true
+      },
+      "73a55fe0-450d-11e9-8d78-6d0794385e78": {
+        "id": "73a55fe0-450d-11e9-8d78-6d0794385e78",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "73a55fe0-450d-11e9-8d78-6d0794385e78",
+          "points": [
+            59.121501694470034,
+            50,
+            65.70315845903997,
+            109.60390949207549
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552425880795,
+          "timeUpdated": 1552425880795
+        },
+        "source": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+        "target": "73a538d0-450d-11e9-8d78-6d0794385e78",
+        "undirected": true
+      },
+      "7e4a7111-450d-11e9-8d78-6d0794385e78": {
+        "id": "7e4a7111-450d-11e9-8d78-6d0794385e78",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "7e4a7111-450d-11e9-8d78-6d0794385e78",
+          "points": [
+            65.70315845903997,
+            109.60390949207549,
+            68.28961868089729,
+            183.0631806600494
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552425880795,
+          "timeUpdated": 1552425880795
+        },
+        "source": "73a538d0-450d-11e9-8d78-6d0794385e78",
+        "target": "7e4a7110-450d-11e9-8d78-6d0794385e78",
+        "undirected": true
+      },
+      "50d8d051-4599-11e9-9643-8f30f9225135": {
+        "id": "50d8d051-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "50d8d051-4599-11e9-9643-8f30f9225135",
+          "points": [
+            59.121501694470034,
+            50,
+            126.57444801760228,
+            155.156269591471
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552486066726
+        },
+        "source": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+        "target": "50d8d050-4599-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "58690061-4599-11e9-9643-8f30f9225135": {
+        "id": "58690061-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "58690061-4599-11e9-9643-8f30f9225135",
+          "points": [
+            126.57444801760228,
+            155.156269591471,
+            284.96301926157946,
+            512.629688128842
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552487090493
+        },
+        "source": "50d8d050-4599-11e9-9643-8f30f9225135",
+        "target": "58690060-4599-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "9fc65980-4599-11e9-9643-8f30f9225135": {
+        "id": "9fc65980-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "9fc65980-4599-11e9-9643-8f30f9225135",
+          "points": [
+            59.121501694470034,
+            50,
+            363.4918592671998,
+            371.57467158258527
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552486210802
+        },
+        "source": "Edwards-et-al-(2009)-Introduction--An-Agenda-for-Infrastructure-Studies",
+        "target": "9fc63270-4599-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "a474c661-4599-11e9-9643-8f30f9225135": {
+        "id": "a474c661-4599-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "a474c661-4599-11e9-9643-8f30f9225135",
+          "points": [
+            363.4918592671998,
+            371.57467158258527,
+            388.3917248825772,
+            471.23610353156164
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552486213660
+        },
+        "source": "9fc63270-4599-11e9-9643-8f30f9225135",
+        "target": "a474c660-4599-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "2ea3aef1-459a-11e9-9643-8f30f9225135": {
+        "id": "2ea3aef1-459a-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "2ea3aef1-459a-11e9-9643-8f30f9225135",
+          "points": [
+            264.1665250638749,
+            159.94746675542402,
+            269.9861679201583,
+            251.4184461653307
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552485792104
+        },
+        "source": "Hong-et-al_2012_Microanalysis-of-Active-Reading-Behavior-to-Inform-Design-of-Interactive",
+        "target": "2ea3aef0-459a-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "3312a1d1-459a-11e9-9643-8f30f9225135": {
+        "id": "3312a1d1-459a-11e9-9643-8f30f9225135",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "3312a1d1-459a-11e9-9643-8f30f9225135",
+          "points": [
+            269.9861679201583,
+            251.4184461653307,
+            274.57388933204163,
+            325.1890047059641
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552485792104,
+          "timeUpdated": 1552485792104
+        },
+        "source": "2ea3aef0-459a-11e9-9643-8f30f9225135",
+        "target": "3312a1d0-459a-11e9-9643-8f30f9225135",
+        "undirected": true
+      },
+      "f62321a0-45b7-11e9-be2b-6bcffedeedd1": {
+        "id": "f62321a0-45b7-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "f62321a0-45b7-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            157.82855911213449,
+            588.1360017051807
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156381
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "f622fa90-45b7-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "fd7d9bb1-45b7-11e9-be2b-6bcffedeedd1": {
+        "id": "fd7d9bb1-45b7-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "fd7d9bb1-45b7-11e9-be2b-6bcffedeedd1",
+          "points": [
+            157.82855911213449,
+            588.1360017051807,
+            199.53926446611098,
+            671.2772069129833
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552499301739
+        },
+        "source": "f622fa90-45b7-11e9-be2b-6bcffedeedd1",
+        "target": "fd7d9bb0-45b7-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "1abf6281-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "1abf6281-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "1abf6281-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            184.3970507209009,
+            553.8053229109782
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156381
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "1abf6280-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "2bee0931-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "2bee0931-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "2bee0931-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            184.3970507209009,
+            553.8053229109782,
+            344.6834279824932,
+            614.1694395593513
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552499306579
+        },
+        "source": "1abf6280-45b8-11e9-be2b-6bcffedeedd1",
+        "target": "2bee0930-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "46ee6b81-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "46ee6b81-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "46ee6b81-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            36.387620565828996,
+            464.9168841916423
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156381
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "46ee6b80-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "628e4221-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "628e4221-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "628e4221-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            36.387620565828996,
+            464.9168841916423,
+            42.66536643977602,
+            543.6826707845197
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552497850583
+        },
+        "source": "46ee6b80-45b8-11e9-be2b-6bcffedeedd1",
+        "target": "628e4220-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "8e4275d1-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "8e4275d1-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "8e4275d1-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            31.60894161932511,
+            473.66746279316243
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156381
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "8e4275d0-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "974dad21-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "974dad21-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "974dad21-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            31.60894161932511,
+            473.66746279316243,
+            27.546985107264845,
+            528.816091554303
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552497850583
+        },
+        "source": "8e4275d0-45b8-11e9-be2b-6bcffedeedd1",
+        "target": "974dad20-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "ce37c051-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "ce37c051-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "ce37c051-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            73.0277185027777,
+            501.0990605053318
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156381
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "ce37c050-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "dcd16441-45b8-11e9-be2b-6bcffedeedd1": {
+        "id": "dcd16441-45b8-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "dcd16441-45b8-11e9-be2b-6bcffedeedd1",
+          "points": [
+            73.0277185027777,
+            501.0990605053318,
+            68.51083132752436,
+            563.5718539440606
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552497850583
+        },
+        "source": "ce37c050-45b8-11e9-be2b-6bcffedeedd1",
+        "target": "dcd16440-45b8-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "29e57281-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "29e57281-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "29e57281-45b9-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            540.8214358402495,
+            583.3263833057422
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156382
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "29e57280-45b9-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "3b49a821-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "3b49a821-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "3b49a821-45b9-11e9-be2b-6bcffedeedd1",
+          "points": [
+            540.8214358402495,
+            583.3263833057422,
+            523.5669245716053,
+            658.426375000112
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552499780839
+        },
+        "source": "29e57280-45b9-11e9-be2b-6bcffedeedd1",
+        "target": "3b49a820-45b9-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "c4c482f1-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "c4c482f1-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "c4c482f1-45b9-11e9-be2b-6bcffedeedd1",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            771.6146010950838,
+            325.86888160318296
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552753156382
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "c4c482f0-45b9-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "dac487d1-45b9-11e9-be2b-6bcffedeedd1": {
+        "id": "dac487d1-45b9-11e9-be2b-6bcffedeedd1",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "dac487d1-45b9-11e9-be2b-6bcffedeedd1",
+          "points": [
+            771.6146010950838,
+            325.86888160318296,
+            1065.127613066496,
+            414.4018438664024
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552497850583,
+          "timeUpdated": 1552500040421
+        },
+        "source": "c4c482f0-45b9-11e9-be2b-6bcffedeedd1",
+        "target": "dac487d0-45b9-11e9-be2b-6bcffedeedd1",
+        "undirected": true
+      },
+      "542e0810-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "542e0810-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "542e0810-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            112.16949255169617,
+            899.9661470386709,
+            92.84317543490204,
+            952.9837664413543
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        },
+        "source": "nsf_big_ideas",
+        "target": "542de100-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "5f79b981-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "5f79b981-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "5f79b981-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            92.84317543490204,
+            952.9837664413543,
+            60.48096922867519,
+            1038.004876555508
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        },
+        "source": "542de100-4805-11e9-9e62-0baa55ce00a7",
+        "target": "5f79b980-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "bf0ae771-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "bf0ae771-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "bf0ae771-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            352.314457750302,
+            849.2982074402169,
+            460.1051488946793,
+            769.6616723721386
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552753168379
+        },
+        "source": "Jones_2010_Age-and-Great-Invention",
+        "target": "bf0ae770-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "cf737f01-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "cf737f01-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "cf737f01-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            460.1051488946793,
+            769.6616723721386,
+            364.9702500055181,
+            981.8184585941175
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552753168379
+        },
+        "source": "bf0ae770-4805-11e9-9e62-0baa55ce00a7",
+        "target": "cf737f00-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "e2a23b71-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "e2a23b71-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "e2a23b71-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            125.55072074019805,
+            538.6684829349942,
+            90.88451300061712,
+            604.514097121016
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        },
+        "source": "Wuchty-et-al_2007_The-increasing-dominance-of-teams-in-production-of-knowledge",
+        "target": "e2a23b70-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "e7a41f81-4805-11e9-9e62-0baa55ce00a7": {
+        "id": "e7a41f81-4805-11e9-9e62-0baa55ce00a7",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "e7a41f81-4805-11e9-9e62-0baa55ce00a7",
+          "points": [
+            90.88451300061712,
+            604.514097121016,
+            73.81573141289648,
+            660.1297273799368
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752290448,
+          "timeUpdated": 1552752290448
+        },
+        "source": "e2a23b70-4805-11e9-9e62-0baa55ce00a7",
+        "target": "e7a41f80-4805-11e9-9e62-0baa55ce00a7",
+        "undirected": true
+      },
+      "78ba4df1-4806-11e9-97df-4b9f21ca580c": {
+        "id": "78ba4df1-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "78ba4df1-4806-11e9-97df-4b9f21ca580c",
+          "points": [
+            1125.3491194396222,
+            1072.679329095958,
+            782.0232892814636,
+            1014.9923619046234
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752863099
+        },
+        "source": "Wu-et-al_2019_Large-teams-develop-and-small-teams-disrupt-science-and-technology",
+        "target": "78ba4df0-4806-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "7b554420-4806-11e9-97df-4b9f21ca580c": {
+        "id": "7b554420-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "7b554420-4806-11e9-97df-4b9f21ca580c",
+          "points": [
+            782.0232892814636,
+            1014.9923619046234,
+            618.7660697719031,
+            993.086393077759
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752865908
+        },
+        "source": "78ba4df0-4806-11e9-97df-4b9f21ca580c",
+        "target": "7b551d10-4806-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "be6ae171-4806-11e9-97df-4b9f21ca580c": {
+        "id": "be6ae171-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "be6ae171-4806-11e9-97df-4b9f21ca580c",
+          "points": [
+            86.57743600046308,
+            50,
+            47.40426574579776,
+            145.3952605009173
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752711964
+        },
+        "source": "Bloom-et-al_2017_Are-Ideas-Getting-Harder-to-Find",
+        "target": "be6ae170-4806-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "c39004f0-4806-11e9-97df-4b9f21ca580c": {
+        "id": "c39004f0-4806-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "c39004f0-4806-11e9-97df-4b9f21ca580c",
+          "points": [
+            47.40426574579776,
+            145.3952605009173,
+            45.81876044290408,
+            234.26261638105862
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752711964
+        },
+        "source": "be6ae170-4806-11e9-97df-4b9f21ca580c",
+        "target": "c38fdde0-4806-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "24a19151-4807-11e9-97df-4b9f21ca580c": {
+        "id": "24a19151-4807-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "24a19151-4807-11e9-97df-4b9f21ca580c",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            52.155311713548386,
+            489.810417514816
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552753156382
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "24a19150-4807-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "32c0d521-4807-11e9-97df-4b9f21ca580c": {
+        "id": "32c0d521-4807-11e9-97df-4b9f21ca580c",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "32c0d521-4807-11e9-97df-4b9f21ca580c",
+          "points": [
+            52.155311713548386,
+            489.810417514816,
+            20.74515963232649,
+            562.2539953940131
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552752711964,
+          "timeUpdated": 1552752711964
+        },
+        "source": "24a19150-4807-11e9-97df-4b9f21ca580c",
+        "target": "32c0d520-4807-11e9-97df-4b9f21ca580c",
+        "undirected": true
+      },
+      "dc7a6470-4846-11e9-a0a5-9d6d5671486d": {
+        "id": "dc7a6470-4846-11e9-a0a5-9d6d5671486d",
+        "data": {
+          "type": "more"
+        },
+        "style": {
+          "id": "dc7a6470-4846-11e9-a0a5-9d6d5671486d",
+          "points": [
+            44.49237357462265,
+            354.37631012526896,
+            42.541592728182664,
+            399.1315319553461
+          ],
+          "stroke": "black",
+          "strokeWidth": 3,
+          "opacity": 0.5,
+          "fill": "black"
+        },
+        "meta": {
+          "createdBy": "defaultUser",
+          "timeCreated": 1552780467072,
+          "timeUpdated": 1552780467072
+        },
+        "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+        "target": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+        "undirected": true
+      }
+    },
+    "selectedNodes": [],
+    "selectedLinks": [],
+    "patches": [
+      {
+        "op": "add",
+        "path": [
+          "nodes",
+          "dc7a3d60-4846-11e9-a0a5-9d6d5671486d"
+        ],
+        "value": {
+          "id": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+          "data": {
+            "left": 101.20612,
+            "top": 957.19332,
+            "height": 19.926399999999944,
+            "width": 766.8675040000002,
+            "userId": "default",
+            "pdfDir": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+            "pageNumber": 1,
+            "type": "pdf.segment.viewbox",
+            "scale": 2
+          },
+          "style": {
+            "id": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+            "type": "circle",
+            "x": 42.541592728182664,
+            "y": 399.1315319553461,
+            "fill": "blue",
+            "draggabled": true,
+            "radius": 5,
+            "stroke": "blue",
+            "strokeWidth": 4
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1552780479543,
+            "timeUpdated": 1552780479543
+          }
+        }
+      },
+      {
+        "op": "add",
+        "path": [
+          "links",
+          "dc7a6470-4846-11e9-a0a5-9d6d5671486d"
+        ],
+        "value": {
+          "id": "dc7a6470-4846-11e9-a0a5-9d6d5671486d",
+          "data": {
+            "type": "more"
+          },
+          "style": {
+            "id": "dc7a6470-4846-11e9-a0a5-9d6d5671486d",
+            "points": [
+              44.49237357462265,
+              354.37631012526896,
+              42.541592728182664,
+              399.1315319553461
+            ],
+            "stroke": "black",
+            "strokeWidth": 3,
+            "opacity": 0.5,
+            "fill": "black"
+          },
+          "meta": {
+            "createdBy": "defaultUser",
+            "timeCreated": 1552780467072,
+            "timeUpdated": 1552780467072
+          },
+          "source": "Jones-2009-Review-of-Economic-Studies-The-Burden-of-Knowledge-and-the-“Death-of-the-Renaissance-Man”-Is-Innovation-Getting-Harder",
+          "target": "dc7a3d60-4846-11e9-a0a5-9d6d5671486d",
+          "undirected": true
+        }
+      }
+    ]
+  }
+}
