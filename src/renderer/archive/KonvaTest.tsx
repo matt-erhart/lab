@@ -125,7 +125,7 @@
 //   componentDidUpdate(prevProps, prevState) {
 //     if (prevProps.patches !== this.props.patches) {
 //       console.log(this.props.patches)
-      
+
 //       this.props.patches.forEach(patch => {
 //         const isNode = patch.path[0] === "nodes";
 //         const layerName = isNode ? "nodeLayer" : "linkLayer";
@@ -166,7 +166,7 @@
 
 //     if (prevProps.selectedNodes !== this.props.selectedNodes) {
 //       console.log(prevProps.selectedNodes, this.props.selectedNodes)
-      
+
 //       prevProps.selectedNodes.forEach(id => {
 //         const n = this.nodeLayer.findOne("#" + id);
 //         if (n) (n as any).shadowEnabled(false);

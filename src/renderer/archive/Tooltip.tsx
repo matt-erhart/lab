@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useLayoutEffect, useState, useRef, useEffect } from "react";
-import { Portal } from "./Portal";
+import { Portal } from "../Portal";
 
 /**
  * @class **Tooltip**

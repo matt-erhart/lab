@@ -1,7 +1,7 @@
 import fs = require("fs-extra");
 import os = require("os");
 import path = require("path");
-import { listPdfs } from "../renderer/io";
+import { listPdfs } from "../io";
 var iconv = require('iconv-lite');
 
 const doIt = async () => {

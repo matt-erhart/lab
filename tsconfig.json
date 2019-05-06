@@ -1,5 +1,5 @@
 {
-
+  "exclude": ["src/renderer/archive", "src/renderer/codeExperiments"],
   "compilerOptions": {
     "inlineSources": true,
     "sourceMap": true,

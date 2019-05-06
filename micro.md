@@ -1,11 +1,5 @@
-- 1st degree neighbor cache
-  - on crud link
-  - redux in tsnode
-  - 1138 fix ts
-    - how to get autocomplete
-      - 
-
-make a tag heirarchy  
+- change thresh
+- delete files
 
 
 

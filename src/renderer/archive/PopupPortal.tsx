@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useEffect} from "react";
-import { Portal } from "./Portal";
+import { Portal } from "../Portal";
 import { Manager, Popper } from "react-popper";
 import { number } from "prop-types";
 import { oc } from "ts-optchain";

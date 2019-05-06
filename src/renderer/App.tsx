@@ -9,7 +9,7 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
-import GoogleScholar from './GoogleScholar'
+import GoogleScholar from './codeExperiments/GoogleScholar'
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";

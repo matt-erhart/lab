@@ -35,6 +35,27 @@ const clampLeftTop = obj => {
     top: obj.top < 1 ? 1 : obj.top
   };
 };
+interface lt_hw {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+interface lt_hw_br extends lt_hw {
+  bottom: number;
+  right: number;
+}
+
+interface StyleBase {
+  id: string;
+  modes: modes[];
+  modeIx: number;
+  lockedCorner: corners;
+  min: lt_hw & any
+  max: lt_hw & any
+}
+
 const ViewboxDataDefault = {
   left: 0,
   top: 0,
@@ -48,8 +69,9 @@ const ViewboxDataDefault = {
 };
 export type ViewboxData = typeof ViewboxDataDefault;
 export interface PdfSegmentViewbox {
+  id: string;
   data: ViewboxData;
-  style: {};
+  style: StyleBase;
 }
 import { CircleConfig, LineConfig } from "konva";
 import console = require("console");
@@ -58,7 +80,7 @@ import { Editor } from "slate-react";
 import { initKeySafeSlate } from "../renderer/EditorUtils";
 export const makePdfSegmentViewbox = (
   viewbox = {} as Partial<ViewboxData>,
-  style = {}
+  style = {} as Partial<NodeStyle>
 ) => {
   const now = Date.now();
   const id = uuidv1();
@@ -72,6 +94,7 @@ export const makePdfSegmentViewbox = (
     id: id,
     data: { ...ViewboxDataDefault, ...viewbox },
     style: {
+      id: id,
       min: clampLeftTop({ ..._style, ...style, width: 220, height: 60 }),
       max: clampLeftTop({
         ..._style,
@@ -265,7 +288,6 @@ export const makeUserDoc = (
     }
   };
 };
-
 
 export type NodeData = {
   id: string;
