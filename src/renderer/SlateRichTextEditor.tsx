@@ -3,7 +3,7 @@ import { Value, Block, Document, Selection } from 'slate'
 import { LinkPlugin, LinkButton } from '@slate-editor/link-plugin'
 
 import * as React from 'react'
-const initialValue = require('./value.json') // TODO: pre-load Joel's outline
+const initialValue = require('../store/value.json') // TODO: pre-load Joel's outline
 import { isKeyHotkey } from 'is-hotkey'
 
 const DEFAULT_NODE = 'paragraph'
@@ -31,9 +31,25 @@ export const Button = styled('span')`
         ? 'white'
         : '#aaa'
       : props.active
-      ? 'black'
-      : '#ccc'};
+        ? 'black'
+        : '#ccc'};
 `
+
+type SlateTypes =
+  | "bold"
+  | "italics"
+  | "underline"
+  | "ordered-list"
+  | "unordered-list"
+  | "list-item-child"
+  | "list-item"
+  | "paragraph"
+  | "heading-one"
+  | "heading-two"
+  | "heading-three"
+  | "block-quote"
+  | "bulleted-list"
+  | "numbered-list"
 
 export const Icon = styled(({ className, ...rest }) => {
   return <span className={`material-icons ${className}`} {...rest} />
@@ -59,7 +75,94 @@ export const Toolbar = styled(Menu)`
   margin-bottom: 20px;
 `
 
-export class SlateRichTextEditor extends React.Component <any,any> {
+
+export class SlateRichTextEditor extends React.Component<any, any>{
+
+  timeout: number = 0
+  RECONTEXTUALIZE_HOOK_ICON = 'find_in_page'
+  state = {
+    value: Value.fromJSON(initialValue),
+  }
+  
+    /**
+   * Check if the current selection has a mark with `type` in it.
+   *
+   * @param {String} type
+   * @return {Boolean}
+   */
+
+  hasMark = type => {
+    const { value } = this.state
+    // console.log(type)
+    return value.activeMarks.some(mark => mark.type === type)
+  }
+  
+  editor: Editor;
+  ref = editor => {
+    this.editor = editor;
+  };
+
+
+  onClickMark = (event, type) => {
+    if (type === 'recontextualize_hook') {
+      console.log('inside recontexutalize_hook')
+      this.editor.insertText('[x]')
+      return
+    }
+
+    // console.log('Inside onClickMark')
+
+    event.preventDefault()
+    this.editor.toggleMark(type)
+  }
+
+  renderMarkButton = (type:SlateTypes, icon:string) => {
+    const isActive = this.hasMark(type)
+    let sidenote:any
+    sidenote = <div />
+    if (icon === this.RECONTEXTUALIZE_HOOK_ICON) {
+      sidenote = <div>cmd+r</div> // />'cmd+r'
+    }
+
+    // TODO: onClickMark for recontext hook
+    return (
+      <Button
+        active={isActive}
+        onMouseDown={event => this.onClickMark(event, type)}
+      >
+        <Icon>{icon}</Icon>
+        {sidenote}
+      </Button>
+    )
+  }
+
+  
+
+  render() {
+
+    return (
+      <Toolbar>
+          {this.renderMarkButton('bold' as SlateTypes, 'format_bold')} 
+          {/*{this.renderMarkButton('italic', 'format_italic')}
+          {this.renderMarkButton('underlined', 'format_underlined')}
+          {this.renderMarkButton('code', 'code')} */}
+          {/* {this.renderBlockButton('heading-one', 'looks_one')}
+          {this.renderBlockButton('heading-two', 'looks_two')}
+          {this.renderBlockButton('block-quote', 'format_quote')}
+          {this.renderBlockButton('numbered-list', 'format_list_numbered')}
+          {this.renderBlockButton('bulleted-list', 'format_list_bulleted')} */}
+          {/* {this.renderMarkButton(
+            'recontextualize_hook',
+            this.RECONTEXTUALIZE_HOOK_ICON
+          )}{' '} */}
+          {/* TODO when user click this button, it will insert into current cursor position a reconteztualize hook, e.g. [cite!] or [x] */}
+          {/* <LinkButton /> */}
+        </Toolbar>
+    )
+  }
+}
+
+export class SlateRichTextEditorOriginal extends React.Component<any, any> {
   /**
    * Deserialize the initial editor value.
    *
@@ -112,6 +215,7 @@ export class SlateRichTextEditor extends React.Component <any,any> {
   // refRealEditor = editor => {
   //   this.editor = editor
   // }
+  editor: Editor;
 
   ref = editor => {
     this.editor = editor;
@@ -139,19 +243,19 @@ export class SlateRichTextEditor extends React.Component <any,any> {
     return (
       <div>
         <Toolbar>
-          {this.renderMarkButton('bold', 'format_bold')}
+          {/* {this.renderMarkButton('bold', 'format_bold')}
           {this.renderMarkButton('italic', 'format_italic')}
           {this.renderMarkButton('underlined', 'format_underlined')}
-          {this.renderMarkButton('code', 'code')}
-          {this.renderBlockButton('heading-one', 'looks_one')}
+          {this.renderMarkButton('code', 'code')} */}
+          {/* {this.renderBlockButton('heading-one', 'looks_one')}
           {this.renderBlockButton('heading-two', 'looks_two')}
           {this.renderBlockButton('block-quote', 'format_quote')}
           {this.renderBlockButton('numbered-list', 'format_list_numbered')}
-          {this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-          {this.renderMarkButton(
+          {this.renderBlockButton('bulleted-list', 'format_list_bulleted')} */}
+          {/* {this.renderMarkButton(
             'recontextualize_hook',
             this.RECONTEXTUALIZE_HOOK_ICON
-          )}{' '}
+          )}{' '} */}
           {/* TODO when user click this button, it will insert into current cursor position a reconteztualize hook, e.g. [cite!] or [x] */}
           {/* <LinkButton /> */}
         </Toolbar>
@@ -170,7 +274,7 @@ export class SlateRichTextEditor extends React.Component <any,any> {
           // onMouseUp={this.onMouseUp}
           decorateNode={this.decorateNode}
           onClick={this.onClick}
-          // plugins={plugins}
+        // plugins={plugins}
         />
       </div>
     )
@@ -186,9 +290,10 @@ export class SlateRichTextEditor extends React.Component <any,any> {
 
   renderMarkButton = (type, icon) => {
     const isActive = this.hasMark(type)
-    let sidenote = <div />
+    let sidenote:any
+    sidenote = <div />
     if (icon === this.RECONTEXTUALIZE_HOOK_ICON) {
-      sidenote = 'cmd+r'
+      sidenote = <div>cmd+r</div> // />'cmd+r'
     }
 
     // TODO: onClickMark for recontext hook
@@ -212,29 +317,29 @@ export class SlateRichTextEditor extends React.Component <any,any> {
    * @return {Element}
    */
 
-  renderBlockButton = (type, icon) => {
-    let isActive = this.hasBlock(type)
+  // renderBlockButton = (type: SlateTypes, icon) => {
+  //   let isActive = this.hasBlock(type)
 
-    if (['numbered-list', 'bulleted-list'].includes(type)) {
-      const {
-        value: { document, blocks },
-      } = this.state
+  //   if (['numbered-list', 'bulleted-list'].includes(type)) {
+  //     const {
+  //       value: { document, blocks },
+  //     } = this.state
 
-      if (blocks.size > 0) {
-        const parent = document.getParent(blocks.first().key)
-        isActive = this.hasBlock('list-item') && parent && parent.type === type
-      }
-    }
+  //     if (blocks.size > 0) {
+  //       const parent = document.getParent(blocks.first().key)
+  //       isActive = this.hasBlock('list-item') && parent!=null  && (parent.type  === type)
+  //     }
+  //   }
 
-    return (
-      <Button
-        active={isActive}
-        onMouseDown={event => this.onClickBlock(event, type)}
-      >
-        <Icon>{icon}</Icon>
-      </Button>
-    )
-  }
+  //   return (
+  //     <Button
+  //       active={isActive}
+  //       onMouseDown={event => this.onClickBlock(event, type)}
+  //     >
+  //       <Icon>{icon}</Icon>
+  //     </Button>
+  //   )
+  // }
 
   /**
    * Render a Slate node.

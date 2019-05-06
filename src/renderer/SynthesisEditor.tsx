@@ -8,12 +8,12 @@ import styled from "styled-components";
 import Plain from "slate-plain-serializer";
 import convertBase64 from "slate-base64-serializer";
 
-import { Display } from './CardSlider'
+// import { Display } from './CardSlider'
 import { oc } from "ts-optchain";
 import Lists from "@convertkit/slate-lists";
 import Keymap from "@convertkit/slate-keymap";
-import { Grommet, Grid, Box, Text,CheckBox } from 'grommet'
-import { SlateRichTextEditor } from './SlateRichTextEditor'
+import { Grommet, Grid, Box, Text, CheckBox } from 'grommet'
+import { SlateRichTextEditor } from './SlateRichTextEditorNew'
 import { grommet } from 'grommet/themes'
 import { normalizeColor, deepMerge } from 'grommet/utils'
 import {
@@ -179,16 +179,184 @@ const SynthesisEditorDefaults = { // TODO: understand these feature toggle
 };
 
 
+/**
+ * 
+ *  This is where SlateRichTextEditor definition starts
+ */
+
+
+// import { LinkPlugin, LinkButton } from '@slate-editor/link-plugin'
+
+const initialValue = require('../store/value.json') // TODO: pre-load Joel's outline
+import { isKeyHotkey } from 'is-hotkey'
+import {Value} from 'slate'
+const DEFAULT_NODE = 'paragraph'
+
+const isBoldHotkey = isKeyHotkey('mod+b') // Mac users shall press cmd + b
+const isItalicHotkey = isKeyHotkey('mod+i')
+const isUnderlinedHotkey = isKeyHotkey('mod+u')
+const isCodeHotkey = isKeyHotkey('mod+`')
+const isRecontextualize = isKeyHotkey('mod+r')
+
+// const plugins = [LinkPlugin()]
+
+/**
+ * The rich text example. from https://github.com/ianstormtaylor/slate/tree/master/examples/rich-text
+ *
+ * @type {Component}
+ */
+
+// import styled from 's@emotion/styled'
+
+export const Button = styled('span')`
+  cursor: pointer;
+  color: ${props =>
+    props.reversed
+      ? props.active
+        ? 'white'
+        : '#aaa'
+      : props.active
+        ? 'black'
+        : '#ccc'};
+`
+
+type SlateTypes =
+  | "bold"
+  | "italics"
+  | "underline"
+  | "ordered-list"
+  | "unordered-list"
+  | "list-item-child"
+  | "list-item"
+  | "paragraph"
+  | "heading-one"
+  | "heading-two"
+  | "heading-three"
+  | "block-quote"
+  | "bulleted-list"
+  | "numbered-list"
+
+export const Icon = styled(({ className, ...rest }) => {
+  return <span className={`material-icons ${className}`} {...rest} />
+})`
+  font-size: 30px;
+  vertical-align: text-bottom;
+`
+
+export const Menu = styled('div')`
+  & > * {
+    display: inline-block;
+  }
+  & > * + * {
+    margin-left: 15px;
+  }
+`
+
+export const Toolbar = styled(Menu)`
+  position: relative;
+  padding: 1px 18px 17px;
+  margin: 0 -20px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
+`
+
+// export class SlateRichTextEditor extends React.Component<any, any>{
+
+//   timeout: number = 0
+//   RECONTEXTUALIZE_HOOK_ICON = 'find_in_page'
+//   state = {
+//     value: Value.fromJSON(initialValue),
+//   }
+
+//     /**
+//    * Check if the current selection has a mark with `type` in it.
+//    *
+//    * @param {String} type
+//    * @return {Boolean}
+//    */
+
+//   hasMark = type => {
+//     const { value } = this.state
+//     // console.log(type)
+//     return value.activeMarks.some(mark => mark.type === type)
+//   }
+  
+//   editor: Editor;
+//   ref = editor => {
+//     this.editor = editor;
+//   };
+
+
+//   onClickMark = (event, type) => {
+//     if (type === 'recontextualize_hook') {
+//       console.log('inside recontexutalize_hook')
+//       this.editor.insertText('[x]')
+//       return
+//     }
+
+//     // console.log('Inside onClickMark')
+
+//     event.preventDefault()
+//     this.editor.toggleMark(type)
+//   }
+
+//   renderMarkButton = (type:SlateTypes, icon:string) => {
+//     const isActive = this.hasMark(type)
+//     let sidenote:any
+//     sidenote = <div />
+//     if (icon === this.RECONTEXTUALIZE_HOOK_ICON) {
+//       sidenote = <div>cmd+r</div> // />'cmd+r'
+//     }
+
+//     // TODO: onClickMark for recontext hook
+//     return (
+//       <Button
+//         active={isActive}
+//         onMouseDown={event => this.onClickMark(event, type)}
+//       >
+//         <Icon>{icon}</Icon>
+//         {sidenote}
+//       </Button>
+//     )
+//   }
+
+  
+
+//   render() {
+
+//     return (
+//       <Toolbar>
+//           {this.renderMarkButton('bold' as SlateTypes, 'format_bold')} 
+//           {/*{this.renderMarkButton('italic', 'format_italic')}
+//           {this.renderMarkButton('underlined', 'format_underlined')}
+//           {this.renderMarkButton('code', 'code')} */}
+//           {/* {this.renderBlockButton('heading-one', 'looks_one')}
+//           {this.renderBlockButton('heading-two', 'looks_two')}
+//           {this.renderBlockButton('block-quote', 'format_quote')}
+//           {this.renderBlockButton('numbered-list', 'format_list_numbered')}
+//           {this.renderBlockButton('bulleted-list', 'format_list_bulleted')} */}
+//           {/* {this.renderMarkButton(
+//             'recontextualize_hook',
+//             this.RECONTEXTUALIZE_HOOK_ICON
+//           )}{' '} */}
+//           {/* TODO when user click this button, it will insert into current cursor position a reconteztualize hook, e.g. [cite!] or [x] */}
+//           {/* <LinkButton /> */}
+//         </Toolbar>
+//     )
+//   }
+// }
+
+
 export class SynthesisEditor extends React.Component<
   typeof SynthesisEditorDefaults.props & connectedProps,
   typeof SynthesisEditorDefaults.state
-> {
+  > {
   static defaultProps = SynthesisEditorDefaults.props;
 
   // TODO: understand the props and states logic (may + redux)
   state = SynthesisEditorDefaults.state;
   editor: Editor;
-  editorRef = React.createRef()
+  editorRef = React.createRef<HTMLDivElement>(); //createRef() //createRef<HTMLDivElement>();
   outerContainer = React.createRef<HTMLDivElement>();
   portalDiv = React.createRef<HTMLDivElement>();
   menu = React.createRef<HTMLDivElement>();
@@ -246,47 +414,47 @@ export class SynthesisEditor extends React.Component<
     this.claim2Context = claim2Context
   }
 
-    /*
-    onHoverHighlightCurrentUserInput() is an example of 
-    child to parent communication. 
-    It changes infocard style (border color) when the child 
-    SlateRichTextEditor passes value to it. 
-  */
+  /*
+  onHoverHighlightCurrentUserInput() is an example of 
+  child to parent communication. 
+  It changes infocard style (border color) when the child 
+  SlateRichTextEditor passes value to it. 
+*/
 
- onHoverHighlightCurrentUserInput = userInput => {
-  // console.log('userInput is ' + userInput)
-  const trimedUserInput = userInput.trim()
+  onHoverHighlightCurrentUserInput = userInput => {
+    // console.log('userInput is ' + userInput)
+    const trimedUserInput = userInput.trim()
 
-  if (
-    this.refsCollection != null &&
-    this.refsCollection.hasOwnProperty(trimedUserInput) &&
-    this.refsCollection[trimedUserInput] != null
-  ) {
-    this.refsCollection[trimedUserInput].setStyle()
+    if (
+      this.refsCollection != null &&
+      this.refsCollection.hasOwnProperty(trimedUserInput) &&
+      this.refsCollection[trimedUserInput] != null
+    ) {
+      this.refsCollection[trimedUserInput].setStyle()
+    }
   }
-}
 
-/*
-    offHoverHighlightCurrentUserInput() is another example of 
-    child to parent communication. 
-    It resets infocard style (border color) when the child SlateRichTextEditor 
-    passes signal to it. 
-  */
+  /*
+      offHoverHighlightCurrentUserInput() is another example of 
+      child to parent communication. 
+      It resets infocard style (border color) when the child SlateRichTextEditor 
+      passes signal to it. 
+    */
 
- offHoverHighlightCurrentUserInput = userInput => {
-  const trimedUserInput = userInput.trim()
-  if (
-    this.refsCollection != null &&
-    this.refsCollection.hasOwnProperty(trimedUserInput) &&
-    this.refsCollection[trimedUserInput] != null
-  ) {
-    this.refsCollection[trimedUserInput].resetStyle()
+  offHoverHighlightCurrentUserInput = userInput => {
+    const trimedUserInput = userInput.trim()
+    if (
+      this.refsCollection != null &&
+      this.refsCollection.hasOwnProperty(trimedUserInput) &&
+      this.refsCollection[trimedUserInput] != null
+    ) {
+      this.refsCollection[trimedUserInput].resetStyle()
+    }
   }
-}
 
-componentDidMount() {
-  this.fromClaimToContext()
-}
+  componentDidMount() {
+    this.fromClaimToContext()
+  }
 
   componentWillUnmount() {
     // this.save();
@@ -357,7 +525,8 @@ componentDidMount() {
 
     // TODO: this is where to insert floating box hovering button
     if (null != this.editorRef && null != this.editorRef.current) {
-      this.editorRef.current.codeForFun() //This will be invoked whenever the code is on change!!
+      // this.editorRef.current.codeForFun() //This will be invoked whenever the code is on change!!
+      this.ref.current.codeForFun()
     }
 
     // for (var i = 0; i < currentContextMapping.length; i++) {
@@ -375,49 +544,48 @@ componentDidMount() {
     // this.refsCollection = {}
 
     const infoCardHeight = this.state.numOfX * 700 + 'px'
+
     // console.log(this.state.contextMapping)
-    const listItems =
-      this.state.contextMapping != null ? (
-        this.state.contextMapping.map(
-          (item, index) => {
-            this.refsCollection[item.userInput.toString()] = React.createRef()
-            return (
-              <CSSTransition
-                in={true}
-                appear={true}
-                enter={true}
-                timeout={2000}
-                classNames="fade"
-                // unmountOnExit
-                key={'CSSTransition' + item.userInput.substring(0, 10)}
-              >
-                <div key={'Display' + item.userInput.substring(0, 10)}>
-                  <Display
-                    // ref={this.refsCollection[item.userInput.toString()]}
-                    ref={c =>
-                      (this.refsCollection[item.userInput.toString()] = c)
-                    }
-                    originalText={item.userInput}
-                    contextStruct={item.contextStruct}
-                    similarClaim={item.similarClaim}
-                    displayKey={item.userInput}
-                    key={item.userInput} //Must use a key value unique to the element from https://stackoverflow.com/questions/43642351/react-list-rendering-wrong-data-after-deleting-item.
-                  />
-                </div>
-              </CSSTransition>
-            )
-          }
-          // <div>{item.userInput}</div>
-        )
-      ) : (
-        <div />
-      )
+    // const listItems =
+    //   this.state.contextMapping != null ? (
+    //     this.state.contextMapping.map(
+    //       (item, index) => {
+    //         this.refsCollection[item.userInput.toString()] = React.createRef()
+    //         return (
+    //           <CSSTransition
+    //             in={true}
+    //             appear={true}
+    //             enter={true}
+    //             timeout={2000}
+    //             classNames="fade"
+    //             // unmountOnExit
+    //             key={'CSSTransition' + item.userInput.substring(0, 10)}
+    //           >
+    //             <div key={'Display' + item.userInput.substring(0, 10)}>
+    //               <Display
+    //                 // ref={this.refsCollection[item.userInput.toString()]}
+    //                 ref={c =>
+    //                   (this.refsCollection[item.userInput.toString()] = c)
+    //                 }
+    //                 originalText={item.userInput}
+    //                 contextStruct={item.contextStruct}
+    //                 similarClaim={item.similarClaim}
+    //                 displayKey={item.userInput}
+    //                 key={item.userInput} //Must use a key value unique to the element from https://stackoverflow.com/questions/43642351/react-list-rendering-wrong-data-after-deleting-item.
+    //               />
+    //             </div>
+    //           </CSSTransition>
+    //         )
+    //       }
+    //       // <div>{item.userInput}</div>
+    //     )
+    //   ) : (
+    //     <div />
+    //   )
 
     return (
 
       <Grommet full theme={deepMerge(grommet, customToggleTheme)}>
-        Anything as placeholder
-
         <Grid
           fill
           rows={['auto', 'full']}
@@ -467,14 +635,36 @@ componentDidMount() {
             <SlateRichTextEditor
               onUpdate={this.onUpdate.bind(this)}
               // ref={this.editorRef}
-              ref={this.ref as any}
-              onHoverHighlightCurrentUserInput={
-                this.onHoverHighlightCurrentUserInput
-              }
-              offHoverHighlightCurrentUserInput={
-                this.offHoverHighlightCurrentUserInput
-              }
+
+              // ref={this.ref as any}
+              // onHoverHighlightCurrentUserInput={
+              //   this.onHoverHighlightCurrentUserInput
+              // }
+              // offHoverHighlightCurrentUserInput={
+              //   this.offHoverHighlightCurrentUserInput
+              // }
             />
+            {/* <Editor
+              // id="editor"
+              readOnly={this.props.readOnly}
+              ref={this.ref as any}
+              spellCheck={false}
+              onChange={this.onChange}
+              value={this.state.editorValue}
+              plugins={plugins}
+              style={{
+                padding: 0,
+                margin: 0,
+                flex: 1,
+                cursor: "text"
+              }}
+              renderMark={this.renderMark}
+              renderNode={this.renderSlateNodes}
+              // getInputProps makes arrow keys work for autocomp
+              onKeyDown={this.onKeyDown(downshift.getInputProps)}
+              schema={schema}
+              // onBlur={this.save}
+              /> */}
             {/* Somethin here */}
           </Box>
 
@@ -483,8 +673,8 @@ componentDidMount() {
             <Box gridArea="sidebar" pad="medium" height={infoCardHeight}>
               {/* Basically limitless height */}
 
-              {listItems} 
-              {/* Uncomment above line! */}
+              {/* {listItems}  */}
+              Uncomment above line!
 
 
               {/* <InfoCards contextMapping={this.state.contextMapping} /> */}
@@ -512,6 +702,7 @@ const PortalDiv = styled.div`
 `;
 
 import * as fuzzy from "fuzzy";
+import console = require("console");
 
 function fuzzyMatch(textToMatch, nodesWithText) {
   var results = fuzzy.filter(
@@ -520,7 +711,7 @@ function fuzzyMatch(textToMatch, nodesWithText) {
     {
       pre: "<b>",
       post: "</b>",
-      extract: function(el) {
+      extract: function (el) {
         return el.data.text;
       }
     }
@@ -538,20 +729,20 @@ export default connect(
 )(SynthesisEditor);
 
 
-const _Button = styled.span<{ isActive: boolean; onMouseDown? }>``;
-export const Button = styled(_Button)`
-  cursor: pointer;
-  margin: 0px 5px;
-  padding: 0px;
-  color: ${props => (props.isActive ? "black" : "darkgrey")};
-`;
+// const _Button = styled.span<{ isActive: boolean; onMouseDown?}>``;
+// export const Button = styled(_Button)`
+//   cursor: pointer;
+//   margin: 0px 5px;
+//   padding: 0px;
+//   color: ${props => (props.isActive ? "black" : "darkgrey")};
+// `;
 
-export const Toolbar = styled(PortalDiv)`
-  flex: 0;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  background: white;
-  padding: 8px;
-`;
+// export const Toolbar = styled(PortalDiv)`
+//   flex: 0;
+//   display: flex;
+//   align-items: center;
+//   position: absolute;
+//   background: white;
+//   padding: 8px;
+// `;
 
