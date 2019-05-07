@@ -394,7 +394,7 @@ export class DocEditor extends React.Component<
       ? selectionEdges.maxY
       : selectionEdges.minY - portalHeight - 3;
 
-    return { left, top };
+    return { left: Math.round(left*10)/10, top:Math.round(top*10)/10 };
   };
 
   setAutoCompPosition = () => {
@@ -404,6 +404,8 @@ export class DocEditor extends React.Component<
       if (newTrans === state.portalStyle.transform) {
         return null;
       } else {
+        console.log(newTrans, state.portalStyle.transform);
+
         return { portalStyle: { ...state.portalStyle, transform: newTrans } };
       }
     });

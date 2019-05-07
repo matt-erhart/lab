@@ -74,7 +74,6 @@ export interface PdfSegmentViewbox {
   style: StyleBase;
 }
 import { CircleConfig, LineConfig } from "konva";
-import console = require("console");
 import { fstat } from "fs-extra";
 import { Editor } from "slate-react";
 import { initKeySafeSlate } from "../renderer/EditorUtils";

@@ -9,9 +9,9 @@
   <!--te-->
 
 # Roadmap
-
-
-
+- FIX AUTOCOMP COORDS
+- ELECTRON LEVEL ZOOM
+- ctrl-f
 
 
 

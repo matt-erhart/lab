@@ -115,6 +115,10 @@ export class GraphContainer extends React.Component<
   };
 
   onTransforming = (transProps: any) => {
+    const browserZoom =
+      Math.round((window.outerWidth / window.innerWidth) * 100) / 100;
+    const effectiveZoom = browserZoom * this.state.zoom;
+    console.log("browserZoom: ", browserZoom);
     // todo ts
     // const zoomed = { ...transProps, top: transProps.top / this.state.zoom };
     // const updatedWindows = updateOneFrame(this.state.frames)(zoomed);
@@ -134,8 +138,8 @@ export class GraphContainer extends React.Component<
             const { left, top } = frames[ix];
             frames[ix] = {
               ...frames[ix],
-              left: left + movementX / this.state.zoom,
-              top: top + movementY / this.state.zoom
+              left: left + movementX / effectiveZoom,
+              top: top + movementY / effectiveZoom
             };
           });
         });

@@ -239,7 +239,8 @@ class PdfViewer extends React.Component<
     await this.loadFiles();
     const { left, top } = this.props;
     const pagesOffset = this.getPageOffset();
-    this.scrollRef.current.scrollTo(left, top + pagesOffset);
+    !!this.scrollRef.current &&
+      this.scrollRef.current.scrollTo(left, top + pagesOffset);
     const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
     this.setState({ pageNumbersInView });
   }
@@ -382,6 +383,7 @@ class PdfViewer extends React.Component<
         const prevScale = this.state.scale;
         const newScale = prevScale - deltaY / 1000;
         // adjust scroll for new page size
+        !!this.scrollRef.current &&
         this.scrollRef.current.scrollTo(
           0,
           (this.scrollRef.current.scrollTop / prevScale) * newScale

@@ -10,6 +10,7 @@ import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
 import GoogleScholar from './codeExperiments/GoogleScholar'
+
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
@@ -17,10 +18,8 @@ import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
-  makeAutograbNode,
   aNode,
   PdfPublication,
-  makeLink
 } from "../store/creators";
 import {
   createAutoGrabNodesAndLinkToPublicationNodes,
@@ -30,7 +29,6 @@ import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
-import DocEditor from "./DocEditor";
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
 
