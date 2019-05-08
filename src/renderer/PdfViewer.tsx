@@ -190,11 +190,8 @@ class PdfViewer extends React.Component<
           n.data.pdfDir === props.pdfDir
         );
       });
-      console.log("return { viewboxes, patches: props.patches };");
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
-      console.log("props.patches !== state.patches");
-
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches
           .filter(p => !!p.value.data)
@@ -239,7 +236,8 @@ class PdfViewer extends React.Component<
     await this.loadFiles();
     const { left, top } = this.props;
     const pagesOffset = this.getPageOffset();
-    this.scrollRef.current.scrollTo(left, top + pagesOffset);
+    !!this.scrollRef.current &&
+      this.scrollRef.current.scrollTo(left, top + pagesOffset);
     const pageNumbersInView = this.getPageNumbersInView(this.state.pages);
     this.setState({ pageNumbersInView });
   }
@@ -348,7 +346,6 @@ class PdfViewer extends React.Component<
       prevProps.scrollToPageNumber !== this.props.scrollToPageNumber ||
       prevProps.top !== this.props.top
     ) {
-      console.log("scrollToPageNumber");
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
       const { scale } = this.state; // current
@@ -365,11 +362,6 @@ class PdfViewer extends React.Component<
       JSON.stringify(pageNumbersInView) !==
       JSON.stringify(this.state.pageNumbersInView)
     ) {
-      console.log(
-        JSON.stringify(pageNumbersInView),
-        JSON.stringify(this.state.pageNumbersInView)
-      );
-
       this.setState({ pageNumbersInView });
     }
   };
@@ -382,6 +374,7 @@ class PdfViewer extends React.Component<
         const prevScale = this.state.scale;
         const newScale = prevScale - deltaY / 1000;
         // adjust scroll for new page size
+        !!this.scrollRef.current &&
         this.scrollRef.current.scrollTo(
           0,
           (this.scrollRef.current.scrollTop / prevScale) * newScale
@@ -553,8 +546,6 @@ class PdfViewer extends React.Component<
   };
 
   render() {
-    console.log("pdf render", this.state.scale);
-
     const { width, height } = this.props;
     let overflow;
     if (this.props.scrollAfterClick) {

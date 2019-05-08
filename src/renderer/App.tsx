@@ -9,6 +9,7 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
+import GoogleScholar from './codeExperiments/GoogleScholar'
 
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
@@ -17,8 +18,7 @@ import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
-  makeAutograbNode,
-  aNode,
+  NodeBase,
   PdfPublication,
   makeLink
 } from "../store/creators"; 
@@ -219,7 +219,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // todo switch to patches
-    const pdfNodes = (Object.values(nextProps.nodes) as aNode[]).filter(
+    const pdfNodes = (Object.values(nextProps.nodes) as NodeBase[]).filter(
       n => n.data.type === "pdf.publication"
     );
     let wasUpdated = false;
@@ -259,7 +259,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-        return <ListView />;
+        return <GoogleScholar />  
+
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
           return <DocList />;

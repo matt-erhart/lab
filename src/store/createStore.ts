@@ -12,10 +12,20 @@ import jsonfile = require("jsonfile");
 import { NestedPartial, Box } from "../renderer/utils";
 import path = require("path");
 import { frame } from "../renderer/ResizableFrame";
+import { get } from "../renderer/utils";
 const settings = require("electron-settings");
-const { clientWidth } = document.documentElement;
+const { clientWidth } = { clientWidth: -1 };
+// get(document, d => d.documentElement, {
+//   clientWidth: -1
+// });
+let pdfRootDir;
+try {
+  pdfRootDir = settings.get("pdfRootDir");
+} catch {
+  // for node dev
+  pdfRootDir = "F:\\GoogleSync\\megaCogLab\\ElectronTesting\\matt";
+}
 
-const pdfRootDir = settings.get("pdfRootDir");
 export let defaultApp = {
   current: {
     userId: "",
@@ -251,13 +261,14 @@ export const graph = createModel({
     ) {
       // todo updatetime
       // 400 items = 9ms, 300 items = 7ms
+      //@ts-ignore
       return produce(state, draft => {
         draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
             // like spread but faster
             const { id, data, style, source, target, isDirected } = nodeOrLink;
-            if (draft[payloadKey][id] === undefined) return draft
+            if (draft[payloadKey][id] === undefined) return draft;
             if (!!draft[payloadKey][id])
               draft[payloadKey][id].meta.timeUpdated = Date.now();
 
@@ -316,8 +327,6 @@ export const graph = createModel({
       const { id } = payload;
       const node = state.nodes[id] as aNode;
       const ix = state.nodes[id].style.modeIx;
-      console.log("ID", id, ix);
-
       const prevMode = state.nodes[id].style.modes[ix];
       const nModes = state.nodes[id].style.modes.length;
       const newIx = ix + 1 < nModes ? ix + 1 : 0; //can toggle > 2 opts
@@ -406,7 +415,7 @@ const saveToJson = {
 
 const store = init({
   models,
-  plugins: [logit, saveToJson]
+  plugins: [saveToJson]
 });
 
 export default store;

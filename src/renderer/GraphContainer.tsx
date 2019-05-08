@@ -115,6 +115,9 @@ export class GraphContainer extends React.Component<
   };
 
   onTransforming = (transProps: any) => {
+    const browserZoom =
+      Math.round((window.outerWidth / window.innerWidth) * 100) / 100;
+    const effectiveZoom = browserZoom * this.state.zoom;
     // todo ts
     // const zoomed = { ...transProps, top: transProps.top / this.state.zoom };
     // const updatedWindows = updateOneFrame(this.state.frames)(zoomed);
@@ -134,8 +137,8 @@ export class GraphContainer extends React.Component<
             const { left, top } = frames[ix];
             frames[ix] = {
               ...frames[ix],
-              left: left + movementX / this.state.zoom,
-              top: top + movementY / this.state.zoom
+              left: left + movementX / effectiveZoom,
+              top: top + movementY / effectiveZoom
             };
           });
         });
@@ -232,8 +235,8 @@ export class GraphContainer extends React.Component<
     const { width, height } = containerBounds;
     const zoomedIn = this.state.zoom > 1 ? this.state.zoom : 1;
     const view = getBoxEdges({
-      left: (this.state.scrollLeft - pad) / zoomedIn,
-      top: (this.state.scrollTop - pad) / zoomedIn,
+      left: (this.state.scrollLeft - pad) / this.state.zoom,
+      top: (this.state.scrollTop - pad) / this.state.zoom,
       width: (width + pad * 2) / this.state.zoom,
       height: (height + pad * 2) / this.state.zoom
     });
@@ -282,6 +285,7 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
+    console.log('nextNodeLocation: ', nextNodeLocation);
 
     this.setState(state => {
       return { frames: framesInView, links, nextNodeLocation };
@@ -779,7 +783,6 @@ export class GraphContainer extends React.Component<
       this.state.dragCoords,
       this.state.zoom
     );
-    console.log(this.state.frames);
 
     return (
       <ScrollContainer

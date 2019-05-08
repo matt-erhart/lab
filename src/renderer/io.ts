@@ -89,7 +89,6 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
       dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
       const postFix = dirNameExists ? "_" + count : "";
       neededDir = dirNameExists ? neededDir + postFix : neededDir;
-      console.log(neededDir);
 
       if (count > 100) debugger;
     } while (dirNameExists);

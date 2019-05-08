@@ -43,7 +43,7 @@ import {
   NestedPartial
 } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
-import { htmlSerializer } from "./htmlSerializer";
+import { htmlSerializer } from "./archive/htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 import { Portal } from "./Portal";
 
@@ -215,7 +215,7 @@ const DocEditorDefaults = {
     readOnly: false,
     id: "",
     nodesOrLinks: "nodes",
-    autoCompThresh: 140 // n chars
+    autoCompThresh: 50 // n chars
   },
   state: {
     editorValue: initKeySafeSlate(),
@@ -335,7 +335,7 @@ export class DocEditor extends React.Component<
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.nodes === this.props.nodes) {
+    if (prevProps.nodes === this.props.nodes && prevState !== this.state) {
       this.setAutoCompPosition();
       this.setMenuPosition();
     }
@@ -394,7 +394,7 @@ export class DocEditor extends React.Component<
       ? selectionEdges.maxY
       : selectionEdges.minY - portalHeight - 3;
 
-    return { left, top };
+    return { left: Math.round(left*10)/10, top:Math.round(top*10)/10 };
   };
 
   setAutoCompPosition = () => {
