@@ -384,7 +384,7 @@ export const loadPageJson = async (
   const numberOfPages = finalFile.numberOfPages;
   const pageNumbers = checkGetPageNumsToLoad(numberOfPages, pageNumbersToLoad);
 
-  let pages = [];
+  let pages: PageOfText[] = [];
   for (let pageNum of pageNumbers) {
     const pageId = zeroPad(pageNum, 4);
     const page = await jsonfile.readFile(
@@ -392,7 +392,7 @@ export const loadPageJson = async (
     ); //todo PageToDisplay type
     pages.push(page);
   }
-  return pages; // sorted by page number
+  return pages  // sorted by page number
 };
 
 export const getLines = (

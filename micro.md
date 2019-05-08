@@ -1,6 +1,12 @@
-- should update on zoom out
-- xy stay the same on wheel
+- ctrl-f
+  - search all
+    - giant string with id+offsets
+    - load all text for pdf
 
+
+
+  - pagetext toggle with cursor
+  - cc selected text
 
 
 

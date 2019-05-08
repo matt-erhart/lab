@@ -9,8 +9,6 @@
   <!--te-->
 
 # Roadmap
-- FIX AUTOCOMP COORDS
-- ELECTRON LEVEL ZOOM
 - ctrl-f
 
 
@@ -86,9 +84,8 @@
 
 # Slate-TroubleShooting
 ** Can't focus multiple instances of slate editors, e.g. in a list: **
-Cause: conflicting keys uses to find editor in the dom
-Solution: 
-editorUtils/initKeySafeSlate()
+Cause: conflicting keys used to find editor in the dom
+Solution: editorUtils.tsx/initKeySafeSlate()
 
 
 # Dictionary
@@ -128,7 +125,6 @@ http://js.cytoscape.org/
 # graph layouts
 
 https://ialab.it.monash.edu/webcola/index.html
-http://sigmajs.org/ dedicated to graph drawing.
 https://github.com/d3/d3-force
 
 # electron perf notes
