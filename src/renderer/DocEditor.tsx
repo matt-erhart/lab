@@ -404,8 +404,6 @@ export class DocEditor extends React.Component<
       if (newTrans === state.portalStyle.transform) {
         return null;
       } else {
-        console.log(newTrans, state.portalStyle.transform);
-
         return { portalStyle: { ...state.portalStyle, transform: newTrans } };
       }
     });

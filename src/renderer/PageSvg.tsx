@@ -122,8 +122,6 @@ class PageSvg extends React.Component<
 
     let lt = {};
     if (!!this.props.nextNodeLoc) {
-      console.log("this.props.nextNodeLoc", this.props.nextNodeLoc);
-
       const { left: l, top: t, width: w, height: h } = this.props.nextNodeLoc;
       lt = { left: l, top: t + h - hw.height };
     }
@@ -235,7 +233,6 @@ class PageSvg extends React.Component<
           //   );
           //   break;
           // }
-          console.log(mouse.button);
           if (height > 30 || width > 30) {
             if (this.mouseButton === 0) {
               this.makeViewbox(this.state.selectionRect);
@@ -759,7 +756,6 @@ class PageSvg extends React.Component<
                   onContextMenu={e => {
                     if (!this.props.isMainReader) {
                       e.preventDefault();
-                      console.log("from svg", vb.id, top / vb.data.scale);
                       this.props.setMainPdfReader({
                         scrollToPageNumber: vb.data.pageNumber,
                         left: left / vb.data.scale,

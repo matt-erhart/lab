@@ -1,5 +1,5 @@
-- change thresh
-- delete files
+- should update on zoom out
+- xy stay the same on wheel
 
 
 

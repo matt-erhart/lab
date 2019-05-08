@@ -133,8 +133,11 @@ export class ResizableFrame extends React.Component<
   // };
 
   resize = (dx, dy) => {
-    const zoomDx = dx / this.props.zoom;
-    const zoomDy = dy / this.props.zoom;
+    const browserZoom =
+      Math.round((window.outerWidth / window.innerWidth) * 100) / 100;
+    const effectiveZoom = browserZoom * this.props.zoom;
+    const zoomDx = dx / effectiveZoom;
+    const zoomDy = dy / effectiveZoom;
 
     const updateSides = {
       right: { width: this.cache.width + zoomDx },

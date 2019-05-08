@@ -18,7 +18,7 @@ import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import ListView from "./ListView";
 import {
   makePdfPublication,
-  aNode,
+  NodeBase,
   PdfPublication,
 } from "../store/creators";
 import {
@@ -212,7 +212,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // todo switch to patches
-    const pdfNodes = (Object.values(nextProps.nodes) as aNode[]).filter(
+    const pdfNodes = (Object.values(nextProps.nodes) as NodeBase[]).filter(
       n => n.data.type === "pdf.publication"
     );
     let wasUpdated = false;

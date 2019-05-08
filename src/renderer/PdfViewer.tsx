@@ -190,11 +190,8 @@ class PdfViewer extends React.Component<
           n.data.pdfDir === props.pdfDir
         );
       });
-      console.log("return { viewboxes, patches: props.patches };");
       return { viewboxes, patches: props.patches };
     } else if (props.patches !== state.patches) {
-      console.log("props.patches !== state.patches");
-
       const viewboxes = produce(state.viewboxes, draft => {
         props.patches
           .filter(p => !!p.value.data)
@@ -349,7 +346,6 @@ class PdfViewer extends React.Component<
       prevProps.scrollToPageNumber !== this.props.scrollToPageNumber ||
       prevProps.top !== this.props.top
     ) {
-      console.log("scrollToPageNumber");
       const pageOffset = this.getPageOffset();
       const { left, top } = this.props;
       const { scale } = this.state; // current
@@ -366,11 +362,6 @@ class PdfViewer extends React.Component<
       JSON.stringify(pageNumbersInView) !==
       JSON.stringify(this.state.pageNumbersInView)
     ) {
-      console.log(
-        JSON.stringify(pageNumbersInView),
-        JSON.stringify(this.state.pageNumbersInView)
-      );
-
       this.setState({ pageNumbersInView });
     }
   };
@@ -555,8 +546,6 @@ class PdfViewer extends React.Component<
   };
 
   render() {
-    console.log("pdf render", this.state.scale);
-
     const { width, height } = this.props;
     let overflow;
     if (this.props.scrollAfterClick) {

@@ -326,8 +326,6 @@ export const graph = createModel({
       const { id } = payload;
       const node = state.nodes[id] as aNode;
       const ix = state.nodes[id].style.modeIx;
-      console.log("ID", id, ix);
-
       const prevMode = state.nodes[id].style.modes[ix];
       const nModes = state.nodes[id].style.modes.length;
       const newIx = ix + 1 < nModes ? ix + 1 : 0; //can toggle > 2 opts
@@ -416,7 +414,7 @@ const saveToJson = {
 
 const store = init({
   models,
-  plugins: [logit, saveToJson]
+  plugins: [saveToJson]
 });
 
 export default store;
