@@ -52,7 +52,7 @@ export const createGROBIDMetadata = async (
   }).catch(err => {
     console.log(err + " Bypass, use fake data instead");
     //Fake data if service request failed ...
-    GROBIDMetadata = { "author": "bla", "venue": "bla" }
+    GROBIDMetadata = { "author": "bla", "venue": "bla", "title": "bla" }
   });
 
   if (!fileExists || overwrite) {

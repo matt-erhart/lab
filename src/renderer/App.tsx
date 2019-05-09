@@ -35,6 +35,7 @@ import SynthesisEditor from "./SynthesisEditor";
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
 import console = require("console");
+import { List } from "grommet-icons";
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -140,7 +141,6 @@ const processGROBIDs = async (pdfRootDir, nodes, newPubs) => {
   return createGROBIDNodesAndLinkToPublicationNodes(
     pdfDirs,
     allNodeIds,
-
     newPubs
   );
 };
@@ -196,6 +196,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           this.props.addBatch({ nodes: newNodes, links: newLinks });
         }
       }
+      
       {
         // This 2nd block: Making GROBID extracted metadata nodes
 
@@ -259,7 +260,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-        return <GoogleScholar />  
+        // return <GoogleScholar />  
+        return <ListView />
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
