@@ -81,7 +81,7 @@ export class ListView extends React.Component<
         onKeyUp={this.onKeyUp}
       >
         {/* "this is the ScrollContainer" */}
-      {this.props.pdfDir.length > 0 &&
+        {this.props.pdfDir.length > 0 &&
           this.state.nodes.map(node => {
             const { left, top, width, height, scale } = node.data;
             const isSelected = this.props.selectedNodes.includes(node.id);
@@ -126,6 +126,9 @@ export class ListView extends React.Component<
                         {key}:{data[key]}
                       </li>)
                     }
+                    else{
+                      return null
+                    }
                   });
                   return (
                     <div
@@ -138,7 +141,7 @@ export class ListView extends React.Component<
                       }}
                       draggable={false}
                     >
-                      <b style={{fontSize:"15px"}}>Metadata from GROBID</b>
+                      <b style={{ fontSize: "15px" }}>Metadata from GROBID</b>
                       <span style={{ fontSize: "12px" }}>
                         <ul>
                           {scoredTextList}
@@ -172,13 +175,15 @@ export class ListView extends React.Component<
                     }}
                     draggable={false}
                   >
-                    <b style={{fontSize:"15px"}}>Participant Information for this paper</b>
+                    <b style={{ fontSize: "15px" }}>Participant Information for this paper</b>
                     <span style={{ fontSize: "12px" }}>
                       <ul>{scoredTextList}</ul>
                       {/* {JSON.stringify((node as AutoGrab).data["participant_detail"])} */}
                     </span>
                   </div>
                 );
+              default:
+                return null;
             }
           })}
       </ScrollContainer>

@@ -47,18 +47,29 @@ const button_dict = {
  * @type {Component}
  */
 
-import styled from '@emotion/styled'
 
+import styled from "styled-components";
+import { ViewPropTypes } from 'react-native';
+
+// const ButtonDefaults = {
+//   reversed: false,
+//   active: true,
+// };
+
+// import styled, { StyledFunction } from "styled-components"
+
+const _Button = styled.span<{active:boolean}>``;
+export const ToolbarButton = styled(_Button)`
+  cursor: pointer;
+  margin: 0px 5px;
+  padding: 0px;
+  color: ${props => (props.active ? "black" : "darkgrey")};
+`;
+
+
+// import styled from '@emotion/styled'
 export const Button = styled('span')`
   cursor: pointer;
-  color: ${props =>
-    props.reversed
-      ? props.active
-        ? 'white'
-        : '#aaa'
-      : props.active
-        ? 'black'
-        : '#ccc'};
 `
 
 type SlateTypes =
@@ -176,7 +187,7 @@ export class SlateRichTextEditor extends React.Component<any, any>{
 
     // TODO: onClickMark for recontext hook
     return (
-      <Button
+      <ToolbarButton
         active={isActive}
         onMouseDown={event => this.onClickMark(event, type)}
       >
@@ -184,9 +195,61 @@ export class SlateRichTextEditor extends React.Component<any, any>{
           <IconDiv><Icon>{icon}</Icon></IconDiv>
           <IconSidenote>{sidenote}</IconSidenote>
         </IconContainer>
-      </Button>
+      </ToolbarButton>
     )
   }
+
+    /**
+   * When a block button is clicked, toggle the block type.
+   *
+   * @param {Event} event
+   * @param {String} type
+   */
+
+  onClickBlock = (event, type) => {
+    event.preventDefault()
+
+    const { editor } = this
+    const { value } = editor
+    const { document } = value
+
+    // Handle everything but list buttons.
+    if (type !== 'bulleted-list' && type !== 'numbered-list') {
+      const isActive = this.hasBlock(type)
+      const isList = this.hasBlock('list-item')
+
+      if (isList) {
+        editor
+          .setBlocks(isActive ? DEFAULT_NODE : type)
+          .unwrapBlock('bulleted-list')
+          .unwrapBlock('numbered-list')
+      } else {
+        editor.setBlocks(isActive ? DEFAULT_NODE : type)
+      }
+    } else {
+      // Handle the extra wrapping required for list buttons.
+      const isList = this.hasBlock('list-item')
+      const isType = value.blocks.some(block => {
+        return !!document.getClosest(block.key, parent => parent.type === type)
+      })
+
+      if (isList && isType) {
+        editor
+          .setBlocks(DEFAULT_NODE)
+          .unwrapBlock('bulleted-list')
+          .unwrapBlock('numbered-list')
+      } else if (isList) {
+        editor
+          .unwrapBlock(
+            type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
+          )
+          .wrapBlock(type)
+      } else {
+        editor.setBlocks('list-item').wrapBlock(type)
+      }
+    }
+  }
+
 
   renderBlockButton = (type: SlateTypes, icon: React.ReactNode) => {
     let isActive = this.hasBlock(type)
@@ -203,12 +266,12 @@ export class SlateRichTextEditor extends React.Component<any, any>{
     }
 
     return (
-      <Button
+      <ToolbarButton
         active={isActive}
         onMouseDown={event => this.onClickBlock(event, type)}
       >
         <Icon>{icon}</Icon>
-      </Button>
+      </ToolbarButton>
     )
   }
 
@@ -235,6 +298,12 @@ export class SlateRichTextEditor extends React.Component<any, any>{
     }, 800)
 
     this.setState({ value })
+  }
+  codeForFun = () => {
+    // console.log(
+    //   'Code for fun!!! [TODO] maybe use this function to local recontext-hook and insert an href element for floating window'
+    // )
+    // console.log(this.editor.value.document.nodes.get(0).text)
   }
 
   onKeyDown = (event, editor, next) => {
@@ -312,16 +381,17 @@ export class SlateRichTextEditor extends React.Component<any, any>{
           /* always use {children} https://github.com/ianstormtaylor/slate/issues/2142 */
           <Button
             //TODO: add hover function back!! 
-            // onMouseOver={() => {
-            //   const textBeforeHook = props.node.text.substring(0, props.offset)
-            //   this.props.onHoverHighlightCurrentUserInput(textBeforeHook)
-            // }}
+            onMouseOver={() => {
+              // const textBeforeHook = props.node.text.substring(0, props.offset)
+              // this.props.onHoverHighlightCurrentUserInput(textBeforeHook)
+            }}
             // onMouseOut={() => {
             //   const textBeforeHook = props.node.text.substring(0, props.offset)
             //   this.props.offHoverHighlightCurrentUserInput(textBeforeHook)
             // }}
             // {...attributes} //attributes has few information
             style={{ color: 'ForestGreen' }}
+
           >
             <b>{children}</b>
           </Button>

@@ -284,6 +284,11 @@ export const processAutoGrab = (
     // and 2) write to "metadataToHighlight.json"
     // if (featureToggles.showAutoGrab) {
 
+    const fileExists = await fs.pathExists(path.join(dir, "metadataToHighlight.json"));
+    if (fileExists && !overwrite){
+      break
+    }
+
     // TODO: change to Promise.all
     await createAutoGrabInfo(
       pagesOfText,
@@ -311,6 +316,12 @@ export const processGROBID = (
 
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+
+    const fileExists = await fs.pathExists(path.join(dir, "metadataFromGROBID.json"));
+    if (fileExists && !overwrite){
+      break
+    }
+
     await createGROBIDMetadata(
       path.join(dir, "metadataFromGROBID.json"),
       pdfPath,

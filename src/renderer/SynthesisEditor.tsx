@@ -47,7 +47,7 @@ import {
   NestedPartial
 } from "./utils";
 import { iDispatch, iRootState } from "../store/createStore";
-import { htmlSerializer } from "./htmlSerializer";
+// import { htmlSerializer } from "./htmlSerializer";
 import { NodeDataTypes, makeLink, UserDoc } from "../store/creators";
 import { Portal } from "./Portal";
 
@@ -206,19 +206,6 @@ const isRecontextualize = isKeyHotkey('mod+r')
  * @type {Component}
  */
 
-// import styled from 's@emotion/styled'
-
-export const Button = styled('span')`
-  cursor: pointer;
-  color: ${props =>
-    props.reversed
-      ? props.active
-        ? 'white'
-        : '#aaa'
-      : props.active
-        ? 'black'
-        : '#ccc'};
-`
 
 type SlateTypes =
   | "bold"
@@ -360,6 +347,7 @@ export class SynthesisEditor extends React.Component<
   outerContainer = React.createRef<HTMLDivElement>();
   portalDiv = React.createRef<HTMLDivElement>();
   menu = React.createRef<HTMLDivElement>();
+
   ref = editor => {
     this.editor = editor;
   };
@@ -526,7 +514,8 @@ export class SynthesisEditor extends React.Component<
     // TODO: this is where to insert floating box hovering button
     if (null != this.editorRef && null != this.editorRef.current) {
       // this.editorRef.current.codeForFun() //This will be invoked whenever the code is on change!!
-      this.ref.current.codeForFun()
+      // this.ref.current.codeForFun()
+      // (this.editor as Editor).codeForFun()
     }
 
     // for (var i = 0; i < currentContextMapping.length; i++) {
