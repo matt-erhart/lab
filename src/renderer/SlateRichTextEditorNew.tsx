@@ -230,7 +230,7 @@ export class SlateRichTextEditor extends React.Component<any, any>{
       // Handle the extra wrapping required for list buttons.
       const isList = this.hasBlock('list-item')
       const isType = value.blocks.some(block => {
-        return !!document.getClosest(block.key, parent => parent.type === type)
+        return !!document.getClosest(block.key, parent => (parent as any).type === type)
       })
 
       if (isList && isType) {
@@ -261,7 +261,7 @@ export class SlateRichTextEditor extends React.Component<any, any>{
 
       if (blocks.size > 0) {
         const parent = document.getParent(blocks.first().key)
-        isActive = this.hasBlock('list-item') && parent != null && (parent.type === type)
+        isActive = this.hasBlock('list-item') && parent != null && ((parent as any).type === type)
       }
     }
 

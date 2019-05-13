@@ -29,6 +29,24 @@ const mapState = (state: iRootState, props: typeof ListViewDefaults) => {
   };
 };
 
+function compare(nodeA: any, nodeB: any) {
+  // console.log("Inside compare"+a.id)
+  // console.log(b.id)
+  if (nodeA.id.toString() < nodeB.id.toString()) {
+    return -1;
+  }
+  if (nodeA.id.toString() > nodeB.id.toString()) {
+    return 1;
+  }
+  return 0;
+}
+
+function keySort(keyA: string, keyB: string) {
+  if (keyA == "title")
+    return 1;
+  return 0;
+}
+
 const mapDispatch = ({
   graph: { removeBatch, toggleSelections }
 }: iDispatch) => ({ removeBatch, toggleSelections });
@@ -55,34 +73,44 @@ export class ListView extends React.Component<
       }) || [];
 
     if (props.pdfDir !== state.pdfDir || nodes.length !== state.nodes.length) {  // filtered nodes have a shorter length
-      return { pdfDir: props.pdfDir, nodes: nodes.sort((nodeA, nodeB) => (nodeA.id.toString() > nodeB.id.toString() ? 1 : 0)).reverse() };  //sort by paper ID? 
+
+      return {
+        pdfDir: props.pdfDir,
+        nodes: nodes.sort((nodeA, nodeB) => (nodeA.id > nodeB.id ? 1 : 0))
+      };  //sort by paper ID? 
     } else {
       return null;
     }
   }
 
-  toggleSelect = id => e => {
-    this.props.toggleSelections({ selectedNodes: [id] });
-  };
+  // toggleSelect = id => e => {
+  //   this.props.toggleSelections({ selectedNodes: [id] });
+  // };
 
-  onKeyUp = e => {
-    if (e.target.id === "ListView" && e.key === "Delete") {
-      this.props.removeBatch({ nodes: this.props.selectedNodes });
-      this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
-    }
-  };
+  // onKeyUp = e => {
+  //   if (e.target.id === "ListView" && e.key === "Delete") {
+  //     this.props.removeBatch({ nodes: this.props.selectedNodes });
+  //     this.props.toggleSelections({ selectedNodes: [], clearFirst: true });
+  //   }
+  // };
 
   render() {
+    // const sortedArray = this.state.nodes.sort(compare)
+    // // nodeA, nodeB) => (nodeA['id'].toString() > nodeB['id'].toString() ? 1 : 0)
+    // console.log(sortedArray.map(node => {
+    //   return node['id']
+    // }))
     return (
       <ScrollContainer
         tabIndex={0}
         style={{ minWidth: 600 }}
         id="ListView"
-        onKeyUp={this.onKeyUp}
+      // onKeyUp={this.onKeyUp}
       >
         {/* "this is the ScrollContainer" */}
+
         {this.props.pdfDir.length > 0 &&
-          this.state.nodes.map(node => {
+          this.state.nodes.sort(compare).map(node => {
             const { left, top, width, height, scale } = node.data;
             const isSelected = this.props.selectedNodes.includes(node.id);
             const offset = 20;
@@ -120,13 +148,23 @@ export class ListView extends React.Component<
               case "GROBIDMetadata":
                 {
                   const data = (node as AutoGrab).data;
-                  var scoredTextList = Object.keys(data).map(function (key, index) {
+                  var scoredTextList = Object.keys(data).sort(keySort).map(function (key, index) {
                     if (key != "type") {
+                      let value;
+                      if (Array.isArray(data[key])) {
+                        //  if (typeof (value) == typeof(""))
+                        value = data[key].join(", ");
+                      } else if (data[key] == "") {
+                        value = "null"
+                      }
+                      else {
+                        value = data[key];
+                      }
                       return (<li>
-                        {key}:{data[key]}
+                        {key}: {value}
                       </li>)
                     }
-                    else{
+                    else {
                       return null
                     }
                   });
@@ -141,7 +179,9 @@ export class ListView extends React.Component<
                       }}
                       draggable={false}
                     >
-                      <b style={{ fontSize: "15px" }}>Metadata from GROBID</b>
+                      {/* {node.id} */}
+                      <b style={{ fontSize: "15px" }}>Paper metadata </b>
+                      {/* from GROBID */}
                       <span style={{ fontSize: "12px" }}>
                         <ul>
                           {scoredTextList}
@@ -159,11 +199,11 @@ export class ListView extends React.Component<
                 var scoredTextList = data.map(function (d) {
                   return (
                     <li>
-                      {d.text}:{d.score}
+                      {/* Confidence {d.score.toFixed(3)}:<br /> */}
+                      {d.text}
                     </li>
                   );
                 });
-                // const scoredTextList=""
                 return (
                   <div
                     key={node.id}
@@ -175,7 +215,8 @@ export class ListView extends React.Component<
                     }}
                     draggable={false}
                   >
-                    <b style={{ fontSize: "15px" }}>Participant Information for this paper</b>
+                    {/* {node.id} */}
+                    <b style={{ fontSize: "15px" }}>User study (e.g. participant information) for the above paper</b>
                     <span style={{ fontSize: "12px" }}>
                       <ul>{scoredTextList}</ul>
                       {/* {JSON.stringify((node as AutoGrab).data["participant_detail"])} */}

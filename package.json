@@ -7,7 +7,8 @@
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:dir": "yarn dist --dir"
+    "dist:dir": "yarn dist --dir",
+    "dist:mac": "yarn dist:dir --mac zip",
   },
   "author": "Matt",
   "license": "MIT",
