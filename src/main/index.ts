@@ -53,6 +53,12 @@ function createMainWindow() {
             await setPdfRootDir();
             window.reload();
           }
+        },
+        {
+          label: "Reload - mac users",
+          async click() {
+            window.reload();
+          }
         }
       ]
     },
