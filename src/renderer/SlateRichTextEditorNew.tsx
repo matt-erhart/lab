@@ -250,7 +250,6 @@ export class SlateRichTextEditor extends React.Component<any, any>{
     }
   }
 
-
   renderBlockButton = (type: SlateTypes, icon: React.ReactNode) => {
     let isActive = this.hasBlock(type)
 
@@ -380,16 +379,15 @@ export class SlateRichTextEditor extends React.Component<any, any>{
         return (
           /* always use {children} https://github.com/ianstormtaylor/slate/issues/2142 */
           <Button
-            //TODO: add hover function back!! 
             onMouseOver={() => {
-              // const textBeforeHook = props.node.text.substring(0, props.offset)
-              // this.props.onHoverHighlightCurrentUserInput(textBeforeHook)
+              const textBeforeHook = props.node.text.substring(0, props.offset)
+              this.props.onHoverHighlightCurrentUserInput(textBeforeHook)
             }}
-            // onMouseOut={() => {
-            //   const textBeforeHook = props.node.text.substring(0, props.offset)
-            //   this.props.offHoverHighlightCurrentUserInput(textBeforeHook)
-            // }}
-            // {...attributes} //attributes has few information
+            onMouseOut={() => {
+              const textBeforeHook = props.node.text.substring(0, props.offset)
+              this.props.offHoverHighlightCurrentUserInput(textBeforeHook)
+            }}
+            {...attributes} //attributes has few information
             style={{ color: 'ForestGreen' }}
 
           >

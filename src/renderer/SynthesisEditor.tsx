@@ -8,7 +8,7 @@ import styled from "styled-components";
 import Plain from "slate-plain-serializer";
 import convertBase64 from "slate-base64-serializer";
 
-// import { Display } from './CardSlider'
+import { Display } from './CardSlider'
 import { oc } from "ts-optchain";
 import Lists from "@convertkit/slate-lists";
 import Keymap from "@convertkit/slate-keymap";
@@ -416,9 +416,11 @@ export class SynthesisEditor extends React.Component<
     if (
       this.refsCollection != null &&
       this.refsCollection.hasOwnProperty(trimedUserInput) &&
-      this.refsCollection[trimedUserInput] != null
+      this.refsCollection[trimedUserInput].current != null
     ) {
-      this.refsCollection[trimedUserInput].setStyle()
+      // console.log(this.refsCollection[trimedUserInput])
+      // console.log(this.refsCollection[trimedUserInput].current)
+      this.refsCollection[trimedUserInput].current.setStyle()
     }
   }
 
@@ -434,9 +436,11 @@ export class SynthesisEditor extends React.Component<
     if (
       this.refsCollection != null &&
       this.refsCollection.hasOwnProperty(trimedUserInput) &&
-      this.refsCollection[trimedUserInput] != null
+      this.refsCollection[trimedUserInput].current != null
     ) {
-      this.refsCollection[trimedUserInput].resetStyle()
+      // console.log(this.refsCollection[trimedUserInput])
+      this.refsCollection[trimedUserInput].current.resetStyle()
+      // this.refsCollection[trimedUserInput].resetStyle()
     }
   }
 
@@ -464,6 +468,7 @@ export class SynthesisEditor extends React.Component<
       })
     }
     this.setState({ editorValue: value })
+    // console.log("this.state.numOfX "+this.state.numOfX)
     this.getContextMapping(value)
   }
 
@@ -520,7 +525,7 @@ export class SynthesisEditor extends React.Component<
 
     // for (var i = 0; i < currentContextMapping.length; i++) {
     //   this.refsCollection[
-    //     currentContextMapping[i].userInput
+    //     (currentContextMapping[i] as any).userInput
     //   ] = React.createRef()
     // }
   }
@@ -535,42 +540,46 @@ export class SynthesisEditor extends React.Component<
     const infoCardHeight = this.state.numOfX * 700 + 'px'
 
     // console.log(this.state.contextMapping)
-    // const listItems =
-    //   this.state.contextMapping != null ? (
-    //     this.state.contextMapping.map(
-    //       (item, index) => {
-    //         this.refsCollection[item.userInput.toString()] = React.createRef()
-    //         return (
-    //           <CSSTransition
-    //             in={true}
-    //             appear={true}
-    //             enter={true}
-    //             timeout={2000}
-    //             classNames="fade"
-    //             // unmountOnExit
-    //             key={'CSSTransition' + item.userInput.substring(0, 10)}
-    //           >
-    //             <div key={'Display' + item.userInput.substring(0, 10)}>
-    //               <Display
-    //                 // ref={this.refsCollection[item.userInput.toString()]}
-    //                 ref={c =>
-    //                   (this.refsCollection[item.userInput.toString()] = c)
-    //                 }
-    //                 originalText={item.userInput}
-    //                 contextStruct={item.contextStruct}
-    //                 similarClaim={item.similarClaim}
-    //                 displayKey={item.userInput}
-    //                 key={item.userInput} //Must use a key value unique to the element from https://stackoverflow.com/questions/43642351/react-list-rendering-wrong-data-after-deleting-item.
-    //               />
-    //             </div>
-    //           </CSSTransition>
-    //         )
-    //       }
-    //       // <div>{item.userInput}</div>
-    //     )
-    //   ) : (
-    //     <div />
-    //   )
+    const listItems =
+      this.state.contextMapping != null ? (
+        this.state.contextMapping.map(
+          (item, index) => {
+            this.refsCollection[item.userInput.toString()] = React.createRef<HTMLDivElement>()
+            // console.log(item.similarClaim)
+            return (
+              <CSSTransition
+                in={true}
+                appear={true}
+                enter={true}
+                timeout={2000}
+                classNames="fade"
+                // unmountOnExit
+                key={'CSSTransition' + item.userInput.substring(0, 10)}
+              >
+                <div key={'Display' + item.userInput.substring(0, 10)}>
+                  <Display
+                    ref={this.refsCollection[item.userInput.toString()]}
+                    // ref={display =>{
+                    //   // console.log("Setting this display ref")
+                    //   // console.log(typeof this.refsCollection[item.userInput.toString()])
+                    //   this.refsCollection[item.userInput.toString()] = display
+                    // }
+                    // }
+                    originalText={item.userInput}
+                    contextStruct={item.contextStruct}
+                    similarClaim={item.similarClaim}
+                    displayKey={item.userInput}
+                    key={item.userInput} //Must use a key value unique to the element from https://stackoverflow.com/questions/43642351/react-list-rendering-wrong-data-after-deleting-item.
+                  />
+                </div>
+              </CSSTransition>
+            )
+          }
+          // <div>{item.userInput}</div>
+        )
+      ) : (
+        <div />
+      )
 
     return (
 
@@ -626,12 +635,12 @@ export class SynthesisEditor extends React.Component<
               // ref={this.editorRef}
 
               // ref={this.ref as any}
-              // onHoverHighlightCurrentUserInput={
-              //   this.onHoverHighlightCurrentUserInput
-              // }
-              // offHoverHighlightCurrentUserInput={
-              //   this.offHoverHighlightCurrentUserInput
-              // }
+              onHoverHighlightCurrentUserInput={
+                this.onHoverHighlightCurrentUserInput
+              }
+              offHoverHighlightCurrentUserInput={
+                this.offHoverHighlightCurrentUserInput
+              }
             />
             {/* <Editor
               // id="editor"
@@ -662,9 +671,8 @@ export class SynthesisEditor extends React.Component<
             <Box gridArea="sidebar" pad="medium" height={infoCardHeight}>
               {/* Basically limitless height */}
 
-              {/* {listItems}  */}
-              Uncomment above line!
-
+              {listItems} 
+              {/* Uncomment above line! */}
 
               {/* <InfoCards contextMapping={this.state.contextMapping} /> */}
               {/* <div>{this.state.contextMapping}</div> */}
