@@ -199,7 +199,6 @@ export const makeAutograbNode = (
   nodeSuffix: string, //"-autograb"
   style = {}
 ) => {
-  // console.log("inside makeAutoGrabNode " + fulldirName);
   const metadataToHighlight = JSON.parse(
     fs.readFileSync(fulldirName + dataPath).toString()
   );

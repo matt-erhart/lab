@@ -21,7 +21,7 @@ import {
   NodeBase,
   PdfPublication,
   makeLink
-} from "../store/creators"; 
+} from "../store/creators";
 import {
   createAutoGrabNodesAndLinkToPublicationNodes,
   createGROBIDNodesAndLinkToPublicationNodes
@@ -31,7 +31,8 @@ import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
-import SynthesisEditor from "./SynthesisEditor";
+import WOZEditor from "./WOZEditor";
+import RealisticEditor from './RealisticEditor';
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
 import console = require("console");
@@ -82,9 +83,9 @@ const mapState = (state: iRootState) => ({
 
 // set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
-  graph: { addBatch },
+  graph: { addBatch, updateBatch },
   app: { setMainPdfReader, setRightPanel }
-}: iDispatch) => ({ addBatch, setMainPdfReader, setRightPanel });
+}: iDispatch) => ({ addBatch, updateBatch, setMainPdfReader, setRightPanel });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -156,7 +157,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       "2": "listview" as rightPanelName,
       "3": "synthesisOutlineEditor" as rightPanelName,
       // "3": "docEditor" as rightPanelName
-      "4": "synthesisOutlineRealEditor" as rightPanelName
+      "4": "synthesisOutlineWOZEditor" as rightPanelName,
+      "5": "synthesisOutlineRealEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
@@ -177,7 +179,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     // adding key listener before the autograb task (which is time-consuming and may block key listening)
-    window.addEventListener("keyup", this.keyback);  
+    window.addEventListener("keyup", this.keyback);
 
     if (featureToggles.showAutoGrab) {
       // show autograb and GROBID extracted metadata
@@ -194,9 +196,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
         if (newNodes.length > 0) {
           this.props.addBatch({ nodes: newNodes, links: newLinks });
+          this.props.updateBatch({ nodes: newNodes, links: newLinks });
         }
       }
-      
+
       {
         // This 2nd block: Making GROBID extracted metadata nodes
 
@@ -208,6 +211,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         );
         if (newNodes.length > 0) {
           this.props.addBatch({ nodes: newNodes, links: newLinks });
+          this.props.updateBatch({ nodes: newNodes, links: newLinks });          
         }
         // console.log(resultMessage)
       }
@@ -269,15 +273,23 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         } else {
           return null;
         }
+      case "synthesisOutlineWOZEditor":
+        if (featureToggles.showDocList) {
+          return <WOZEditor />;
+          // return <DocEditor />;
+        } else {
+          return null;
+        }
+
       case "synthesisOutlineRealEditor":
         if (featureToggles.showDocList) {
-          return <SynthesisEditor />;
+          return <RealisticEditor />;
           // return <DocEditor />;
         } else {
           return null;
         }
       default:
-        return <div>alt-1 | alt-2 | alt-3 | alt-4 (for mac users, ctrl+alt+[1/2/3/4])</div>;
+        return <div>alt-1 | alt-2 | alt-3 | alt-4 | alt-5 (for mac users, ctrl+alt+[1/2/3/4])</div>;
     }
   };
 

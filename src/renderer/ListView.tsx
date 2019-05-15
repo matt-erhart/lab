@@ -180,7 +180,7 @@ export class ListView extends React.Component<
                       draggable={false}
                     >
                       {/* {node.id} */}
-                      <b style={{ fontSize: "15px" }}>Paper metadata </b>
+                      <b style={{ fontSize: "15px" }}>Paper metadata {node.id}</b>
                       {/* from GROBID */}
                       <span style={{ fontSize: "12px" }}>
                         <ul>
@@ -216,7 +216,7 @@ export class ListView extends React.Component<
                     draggable={false}
                   >
                     {/* {node.id} */}
-                    <b style={{ fontSize: "15px" }}>User study (e.g. participant information) for the above paper</b>
+                    <b style={{ fontSize: "15px" }}>User study (e.g. participant information) for paper {node.id}</b>
                     <span style={{ fontSize: "12px" }}>
                       <ul>{scoredTextList}</ul>
                       {/* {JSON.stringify((node as AutoGrab).data["participant_detail"])} */}
