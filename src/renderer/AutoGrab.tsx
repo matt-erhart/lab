@@ -177,6 +177,76 @@ export const createAutoGrabNodesAndLinkToPublicationNodes = (pdfDirs: string[], 
 
 }
 
+
+
+export const createAutoGrabNodesAndLinkToPublicationNodesSingle = (dir: string, allNodeIds: string[], newPubs: any[]) => {
+  const fileExists = fs.pathExistsSync(dir + "metadataToHighlight.json")
+  let autograbNodes: any[]
+  if (fileExists) {
+    autograbNodes = [makeAutograbNode(
+      dir,
+      "metadataToHighlight.json",
+      "-autograb",
+      { x: 0, y: 0 }
+    )]
+  } else {
+    autograbNodes = []
+  }
+
+  // const newAutograbs = autograbNodes.filter(
+  //   autograbNode => !allNodeIds.includes(autograbNode.id)
+  // ); //filter out nodes that exists
+
+  // add links from nodes of type auto-grab to nodes of pdf.publication
+  let newLinks = [];
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes = [] as aNode[];
+  // const nodesArray = newPubs.concat(autograbNodes);
+  const nodesArray = [].concat(autograbNodes);
+  for (let i = 0; i < nodesArray.length; i++) {
+    newNodes.push(nodesArray[i]);
+  }
+  // return new nodes and links batch to be added in Redux
+  return { newNodes: newNodes, newLinks: newLinks };
+
+}
+
+
+export const createGROBIDNodesAndLinkToPublicationNodesSingle = (dir: string, allNodeIds: string[], newPubs: any[]) => {
+
+  const fileExists = fs.pathExistsSync(dir + "metadataFromGROBID.json")
+  let autograbNodes: any[]
+  if (fileExists) {
+    autograbNodes = [makeAutograbNode(
+      dir,
+      "metadataFromGROBID.json",
+      "-GROBIDMetadata",
+      { x: 0, y: 0 }
+    )]
+  } else {
+    autograbNodes = []
+  }
+
+  // const newAutograbs = autograbNodes.filter(
+  //   autograbNode => !allNodeIds.includes(autograbNode.id)
+  // ); //filter out nodes that exists
+
+  // add links from nodes of type auto-grab to nodes of pdf.publication
+  let newLinks = [];
+
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes = [] as aNode[];
+  // const nodesArray = newPubs.concat(autograbNodes);
+  const nodesArray = [].concat(autograbNodes);
+  for (let i = 0; i < nodesArray.length; i++) {
+    newNodes.push(nodesArray[i]);
+  }
+  // return new nodes and links batch to be added in Redux
+  return { newNodes: newNodes, newLinks: newLinks };
+
+}
+
+
 export const createGROBIDNodesAndLinkToPublicationNodes = (pdfDirs: string[], allNodeIds: string[], newPubs: any[]) => {
 
   const autograbNodes = pdfDirs

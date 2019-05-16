@@ -210,4 +210,5 @@ const cleanUpAutograb = async () => {
       }
     }
   }
+  // TODO clean up autograb node in state.json
 }

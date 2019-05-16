@@ -134,13 +134,16 @@ export const preprocessPdfs = (
   for (let dir of pdfDirs) {
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+    if (!pdfPath){
+      continue
+    }
     let pdf;
     try {
       var data = new Uint8Array(fs.readFileSync(pdfPath));
       pdf = await pdfjs.getDocument({ data });
       // pdf = await pdfjs.getDocument(pdfPath);
     } catch (err) {
-      console.log(err);
+      console.log(err+pdfPath);
       debugger;
     }
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
@@ -285,7 +288,7 @@ export const processAutoGrab = (
     // if (featureToggles.showAutoGrab) {
 
     const fileExists = await fs.pathExists(path.join(dir, "metadataToHighlight.json"));
-    if (fileExists && !overwrite){
+    if (fileExists && !overwrite) {
       break
     }
 
@@ -300,6 +303,82 @@ export const processAutoGrab = (
   }
   // }
   return pdfDirs;
+};
+
+export const createAutograbJSON = (
+  dir: string,
+  overwrite = false
+) => async () => {
+  console.log("inside createAutograbJSON")
+  const files = await ls(dir + "/*");
+  const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+  if (!pdfPath){
+    return false
+  }
+  let pdf;
+  try {
+    var data = new Uint8Array(fs.readFileSync(pdfPath));
+    pdf = await pdfjs.getDocument({ data });
+    // pdf = await pdfjs.getDocument(pdfPath);
+  } catch (err) {
+    console.log(err);
+    debugger;
+  }
+
+  let pagesOfText = await loadPageJson(dir, "textToDisplay");
+
+  const fileExists = await fs.pathExists(path.join(dir, "metadataToHighlight.json"));
+  if (fileExists && !overwrite) {
+    return false
+  }
+
+  // TODO: change to Promise.all
+  await createAutoGrabInfo(
+    pagesOfText,
+    path.join(dir, "metadataToHighlight.json"),
+    pdf,
+    pdfPath,
+    true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
+  ).then(result => console.log("createAutoGrabInfo succeed for " + dir))
+
+  return true
+};
+
+export const createGROBIDJSON = (
+  dir: string,
+  overwrite = false
+) => async () => {
+  console.log("inside createAutograbJSON")
+  const files = await ls(dir + "/*");
+  const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
+  if (!pdfPath){
+    return false
+  }
+  let pdf;
+  try {
+    var data = new Uint8Array(fs.readFileSync(pdfPath));
+    pdf = await pdfjs.getDocument({ data });
+    // pdf = await pdfjs.getDocument(pdfPath);
+  } catch (err) {
+    console.log(err);
+    debugger;
+  }
+
+  let pagesOfText = await loadPageJson(dir, "textToDisplay");
+
+  const fileExists = await fs.pathExists(path.join(dir, "metadataFromGROBID.json"));
+  if (fileExists && !overwrite) {
+    return false
+  }
+
+  // TODO: change to Promise.all
+  await createGROBIDMetadata(
+    path.join(dir, "metadataFromGROBID.json"),
+    pdfPath,
+    true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
+  ).then(result => console.log("metadataFromGROBID succeed for " + dir))
+
+  return true
 };
 
 export const processGROBID = (
@@ -318,7 +397,7 @@ export const processGROBID = (
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
 
     const fileExists = await fs.pathExists(path.join(dir, "metadataFromGROBID.json"));
-    if (fileExists && !overwrite){
+    if (fileExists && !overwrite) {
       break
     }
 

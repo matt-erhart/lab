@@ -47,6 +47,10 @@ function keySort(keyA: string, keyB: string) {
   return 0;
 }
 
+function forFun(){
+  console.log("for Fun")
+}
+
 const mapDispatch = ({
   graph: { removeBatch, toggleSelections }
 }: iDispatch) => ({ removeBatch, toggleSelections });
@@ -82,6 +86,12 @@ export class ListView extends React.Component<
       return null;
     }
   }
+
+//   shouldComponentUpdate(nextProps) {
+//     const differentTitle = this.props.title !== nextProps.title;
+//     const differentDone = this.props.done !== nextProps.done
+//     return differentTitle || differentDone;
+// }
 
   // toggleSelect = id => e => {
   //   this.props.toggleSelections({ selectedNodes: [id] });
@@ -236,3 +246,5 @@ export default connect(
   mapState,
   mapDispatch
 )(ListView);
+
+
