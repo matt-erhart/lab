@@ -152,7 +152,6 @@ export const createAutoGrabNodesAndLinkToPublicationNodes = (pdfDirs: string[], 
       );
     });
 
-
   const newAutograbs = autograbNodes.filter(
     autograbNode => !allNodeIds.includes(autograbNode.id)
   ); //filter out nodes that exists

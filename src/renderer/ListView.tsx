@@ -160,7 +160,7 @@ export class ListView extends React.Component<
                       else {
                         value = data[key];
                       }
-                      return (<li>
+                      return (<li key={node.id+key.toString()}>
                         {key}: {value}
                       </li>)
                     }
@@ -196,9 +196,9 @@ export class ListView extends React.Component<
               case "autograb":
                 const data = (node as AutoGrab).data["participant_detail"];
                 // const data=node.data['participant_detail'];
-                var scoredTextList = data.map(function (d) {
+                var scoredTextList = data.map(function (d,index) {
                   return (
-                    <li>
+                    <li key={node.id+index.toString()}>
                       {/* Confidence {d.score.toFixed(3)}:<br /> */}
                       {d.text}
                     </li>
