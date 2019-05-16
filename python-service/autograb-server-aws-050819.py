@@ -301,36 +301,39 @@ client=grobid_client()
 
 @app.route('/autograb/grobidmetadata', methods=['POST'])
 def parsePDFAndGROBIDExtract():
-	filename=str(int(time.time()))+str(random.randint(0, 1000))+".pdf"
-	pdf_path='tmp/'+filename
-	
-	# print(request.data)
-	with open(pdf_path, 'wb') as f2:
-		f2.write(request.data)
-		f2.flush()
+	try:
+		filename=str(int(time.time()))+str(random.randint(0, 1000))+".pdf"
+		pdf_path='tmp/'+filename
 		
-	xml_text=client.process_pdf(pdf_path)
-	# print("TEI written!!",xml_text)
-	soup = BeautifulSoup(xml_text, 'xml')
-	author_list=[]
-	for author in soup.findAll("author"):
+		# print(request.data)
+		with open(pdf_path, 'wb') as f2:
+			f2.write(request.data)
+			f2.flush()
+			
+		xml_text=client.process_pdf(pdf_path)
+		# print("TEI written!!",xml_text)
+		soup = BeautifulSoup(xml_text, 'xml')
+		author_list=[]
+		for author in soup.findAll("author"):
+			try:
+				author_list.append(author.findAll("persName")[0].findAll("forename")[0].findAll(text=True)[0]+" "+author.findAll("persName")[0].findAll("surname")[0].findAll(text=True)[0])
+			except:
+				continue
 		try:
-			author_list.append(author.findAll("persName")[0].findAll("forename")[0].findAll(text=True)[0]+" "+author.findAll("persName")[0].findAll("surname")[0].findAll(text=True)[0])
+			venue=" ".join(soup.findAll("monogr")[0].findAll(text=True)).replace("\n"," ").strip()
 		except:
-			continue
-	try:
-		venue=" ".join(soup.findAll("monogr")[0].findAll(text=True)).replace("\n"," ").strip()
+			venue="NULL"
+
+		try:
+			title=" ".join(soup.findAll("title")[0])
+		except:
+			title="NULL"
+
+		os.remove(pdf_path)
+
+		return jsonify({"author":author_list,"venue":venue ,"title":title})
 	except:
-		venue="NULL"
-
-	try:
-		title=" ".join(soup.findAll("title")[0])
-	except:
-		title="NULL"
-
-	os.remove(pdf_path)
-
-	return jsonify({"author":author_list,"venue":venue ,"title":title})
+		return jsonify({"author":"null","venue":"null","title":"null"})
 
 @app.route("/")
 def hello():
@@ -379,6 +382,7 @@ def createEmp():
 # curl -i -H "Content-type: application/json" -X POST -d "{}" http://localhost:5000/autograb/pdfdata
 @app.route('/autograb/pdfdata', methods=['POST'])
 def parsePDFAndGetAutoGrab():
+	try:
 	# TODO: put python code/process that takes parses pdf data from request.json, then auto-grab details
 	# To decode data received in a Flask request
 	# https://stackoverflow.com/questions/10434599/how-to-get-data-received-in-flask-request
@@ -386,53 +390,18 @@ def parsePDFAndGetAutoGrab():
 	# print(request.json["pagesOfTextToDisplay"])
 	
 	
-	filename='tmp/pagesOfTextToDisplay-'+request.json["path"].split("/")[-2].split(".pdf")[0]+'.json'
-	with open(filename, 'w') as outfile:
-		json.dump(request.json["pagesOfTextToDisplay"], outfile, indent=4)
-	
-	# filename='tmp/pagesOfTextToDisplay-2.json'
-	metadataToHighlight=inference(filename)
-	os.remove(filename)
-	
-	# fake metadataToHighlight for front-end rendering
-	# metadataToHighlight = {
-	#     "note": "Below are a list of (key, value) for metadata.Each key is the metadata type, the value is a list of top-scored sentences for that metadata type. These sentences were parsed and concatenated with an external tool (spacy). ",
-	#     "participant_detail": [
-	#         {
-	#             "text": "We interviewed industry researchers with academic training, who shared how they have used academic research to inform their work.",
-	#             "score": 0.9181269407272339
-	#         },
-	#         {
-	#             "text": "In the second interview stage, we broadened recruiting criteria and interviewed 37 participants engaged in HCI-related research and practice fields.",
-	#             "score": 0.8893097639083862
-	#         },
-	#         {
-	#             "text": "We also interviewed science communicators and communication managers.",
-	#             "score": 0.710110604763031
-	#         },
-	#         {
-	#             "text": "We iterated on the model after each interview.",
-	#             "score": 0.6941357851028442
-	#         },
-	#         {
-	#             "text": "Second, we interviewed academic researchers, design practitioners and students, entrepreneurs, and science communicators.",
-	#             "score": 0.6827952265739441
-	#         },
-	#         {
-	#             "text": "We met with him and he prototyped a version that we had in mind.",
-	#             "score": 0.6094831824302673
-	#         },
-	#         {
-	#             "text": "See detailed participant information on Table 1, and in Supplementary materials.",
-	#             "score": 0.47279655933380127
-	#         },
-	#         {
-	#             "text": "Second, at the bottom, we show participant experience in the HCI field.",
-	#             "score": 0.37527304887771606
-	#         }
-	#     ]
-	# }
-	return jsonify(metadataToHighlight)
+		filename='tmp/pagesOfTextToDisplay-'+request.json["path"].split("/")[-2].split(".pdf")[0]+'.json'
+		with open(filename, 'w') as outfile:
+			json.dump(request.json["pagesOfTextToDisplay"], outfile, indent=4)
+		
+		# filename='tmp/pagesOfTextToDisplay-2.json'
+		metadataToHighlight=inference(filename)
+		os.remove(filename)
+		
+		# fake metadataToHighlight for front-end rendering
+		return jsonify(metadataToHighlight)
+	except:
+		return
 
 # curl -i -X DELETE http://localhost:5000/empdb/employee/301
 @app.route('/empdb/employee/<empId>', methods=['DELETE'])
