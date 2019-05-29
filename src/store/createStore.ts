@@ -60,6 +60,8 @@ export let defaultApp = {
       | "graphContainer"
       | "listview"
       | "synthesisOutlineEditor"
+      | "synthesisOutlineRealEditor"
+      | "synthesisOutlineWOZEditor"
     // rightPanel: "graphContainer" as "graphContainer" | "listview" | "docEditor"
   },
   portals: [] as frame[],
@@ -187,10 +189,10 @@ export const graph = createModel({
                 value: arrItem
               });
             } else {
-              console.log(
-                arrItem,
-                "already exists. maybe you want updateData()"
-              );
+              // console.log(
+              //   arrItem,
+              //   "already exists. maybe you want updateData() -> after this line, follows with updateData() for simplicity"
+              // );
             }
           }
         }

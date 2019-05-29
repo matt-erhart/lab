@@ -101,6 +101,11 @@ Solution: editorUtils.tsx/initKeySafeSlate()
 
 # Dev-Reference
 
+# Sweet path from Matt's use 
+
+This would be either field deployment inspiration or walk path for a demo video. 
+
+process: random youtube rec -> watch 30 sec vid -> skim paper -> find interesting bit -> download into pdf dir -> open up electron -> grab bits to share -> screenshot -> paste into slack -> add context message in slack (edited)
 
 # Design
 

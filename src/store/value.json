@@ -1,0 +1,185 @@
+{
+  "document": {
+    "nodes": [
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "The most important problems in science are increasingly interdisciplinary [x]"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "This means we have a growing interdisciplinary \"burden of knowledge\" [x] - intuitively, the \"overhead\" we have to pay to get into a position to do the science is getting bigger and bigger"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "We’re coping with this (for now)..."
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        "object": "block",
+        "type": "bulleted-list",
+        "nodes": [
+          {
+            "object": "block",
+            "type": "list-item",
+            "nodes": [
+              {
+                "object": "text",
+                "leaves": [
+                  {
+                    "text": "With more specialized education [x]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "bulleted-list",
+        "nodes": [
+          {
+            "object": "block",
+            "type": "list-item",
+            "nodes": [
+              {
+                "object": "text",
+                "leaves": [
+                  {
+                    "text": "Scientists are increasingly older when they win a Nobel prize and when they get their first PhD [x]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "bulleted-list",
+        "nodes": [
+          {
+            "object": "block",
+            "type": "list-item",
+            "nodes": [
+              {
+                "object": "text",
+                "leaves": [
+                  {
+                    "text": "By doing more science in teams [x]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "But how long can this last? We’re starting to see some signs of strain"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "bulleted-list",
+        "nodes": [
+          {
+            "object": "block",
+            "type": "list-item",
+            "nodes": [
+              {
+                "object": "text",
+                "leaves": [
+                  {
+                    "text": "While research effort has skyrocketed, research productivity (ratio of impact/breakthroughs to effort) has stagnated or declined [x]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "Primary conjecture: the growing interdisciplinary burden of knowledge is straining the infrastructure we use to synthesize knowledge"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "Infrastructure is invisible until it fails"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "nodes": [
+          {
+            "object": "text",
+            "leaves": [
+              {
+                "text": "Primary “big question”: What infrastructures can we build to secure the long-term health of open, collaborative, interdisciplinary science?"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
