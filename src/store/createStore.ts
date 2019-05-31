@@ -261,7 +261,8 @@ export const graph = createModel({
       // todo updatetime
       // 400 items = 9ms, 300 items = 7ms
       //@ts-ignore
-      return produce(state, draft => {
+      const newState = produce(state, draft => {
+        
         draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
@@ -298,6 +299,10 @@ export const graph = createModel({
           }
         }
       });
+
+      console.log('state.nodes[payload.nodes[0].id].data', state.nodes[payload.nodes[0].id].data)
+      console.log('newState[payload[0].id]', newState.nodes[payload.nodes[0].id].data)
+      return newState
     },
     toggleSelections(
       state,

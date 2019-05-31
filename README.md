@@ -9,6 +9,9 @@
   <!--te-->
 
 # Roadmap
+- explore logs
+- explore feature toggle
+- post-hoc resize
 - ctrl-f
 
 

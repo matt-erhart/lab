@@ -19,6 +19,7 @@ import path = require("path");
 import PageCanvas from "./PageCanvas";
 import PageText from "./PageText";
 import PageSvg from "./PageSvg";
+import { PageBoxes } from "./PageBoxes";
 import memoizeOne from "memoize-one";
 import { oc } from "ts-optchain";
 import {
@@ -375,10 +376,10 @@ class PdfViewer extends React.Component<
         const newScale = prevScale - deltaY / 1000;
         // adjust scroll for new page size
         !!this.scrollRef.current &&
-        this.scrollRef.current.scrollTo(
-          0,
-          (this.scrollRef.current.scrollTop / prevScale) * newScale
-        );
+          this.scrollRef.current.scrollTo(
+            0,
+            (this.scrollRef.current.scrollTop / prevScale) * newScale
+          );
         const scaledPages = this.scalePages(state.pages, prevScale, newScale);
         const pageNumbersInView = this.getPageNumbersInView(scaledPages);
         return { pages: scaledPages, scale: newScale, pageNumbersInView };
@@ -514,31 +515,37 @@ class PdfViewer extends React.Component<
                   // height={height}
                 /> */}
           {shouldRenderPage && (
-            <PageSvg
-              draggable={false}
-              id={"svg-" + page.pageNumber}
-              // scale={this.state.scale}
-              isMainReader={this.props.isMainReader}
+            <PageBoxes
               key={"svg-" + page.pageNumber}
-              svgWidth={width}
-              svgHeight={height}
-              pageOfText={page.text}
-              columnLefts={this.state.columnLefts.map(
-                x => x * this.state.scale
-              )}
-              linesOfText={page.linesOfText}
-              // images={page.images}
-              // height2color={this.state.height2color}
-              // fontNames2color={this.state.fontNames2color}
-              pdfPathInfo={{ pdfDir, pdfRootDir }}
-              // onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
-              viewboxes={this.viewboxesForPage(
-                page.pageNumber,
-                this.state.scale
-              )}
-              scale={this.state.scale}
-              pageNumber={page.pageNumber}
+              pageWidth={width}
+              pageHeight={height}
+              boxes={this.viewboxesForPage(page.pageNumber, this.state.scale)}
             />
+            // <PageSvg
+            //   draggable={false}
+            //   id={"svg-" + page.pageNumber}
+            //   // scale={this.state.scale}
+            //   isMainReader={this.props.isMainReader}
+            //   key={"svg-" + page.pageNumber}
+            //   svgWidth={width}
+            //   svgHeight={height}
+            //   pageOfText={page.text}
+            //   columnLefts={this.state.columnLefts.map(
+            //     x => x * this.state.scale
+            //   )}
+            //   linesOfText={page.linesOfText}
+            //   // images={page.images}
+            //   // height2color={this.state.height2color}
+            //   // fontNames2color={this.state.fontNames2color}
+            //   pdfPathInfo={{ pdfDir, pdfRootDir }}
+            //   // onAddViewbox={this.onAddViewbox(page.pageNumber, this.state.scale)}
+            //   viewboxes={this.viewboxesForPage(
+            //     page.pageNumber,
+            //     this.state.scale
+            //   )}
+            //   scale={this.state.scale}
+            //   pageNumber={page.pageNumber}
+            // />
           )}
         </div>
       );

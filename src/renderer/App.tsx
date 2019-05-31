@@ -9,8 +9,8 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
-import GoogleScholar from './codeExperiments/GoogleScholar'
-
+import GoogleScholar from "./codeExperiments/GoogleScholar";
+import { Pdf } from "./Pdf";
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
@@ -19,7 +19,7 @@ import ListView from "./ListView";
 import {
   makePdfPublication,
   NodeBase,
-  PdfPublication,
+  PdfPublication
 } from "../store/creators";
 import {
   createAutoGrabNodesAndLinkToPublicationNodes,
@@ -237,7 +237,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    this.props.setMainPdfReader({ pdfDir: opt.label, scrollToPageNumber: 0, left: 0, });
+    this.props.setMainPdfReader({
+      pdfDir: opt.label,
+      scrollToPageNumber: 0,
+      left: 0
+    });
   };
 
   //todo mdata
@@ -252,7 +256,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-        return <GoogleScholar />  
+        return <GoogleScholar />;
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
@@ -279,6 +283,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     // return <DocEditor />;
+    return <Pdf load={{ dir: pdfDir, rootdir: pdfRootDir }} />;
 
     return (
       <ViewPortContainer>

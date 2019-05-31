@@ -523,6 +523,13 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@^7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
+  integrity sha512-TuI4qpWZP6lGOGIuGWtp9sPluqYICmbk8T/1vpSysqJxRPkudh/ofFWyqdcMsDf2s7KvDL4/YHgKyvcS3g9CJQ==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.0.0", "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.2.2.tgz#005b3fdf0ed96e88041330379e0da9a708eb2907"
@@ -626,6 +633,80 @@
 "@emotion/utils@^0.8.2":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@emotion/utils/-/utils-0.8.2.tgz#576ff7fb1230185b619a75d258cbc98f0867a8dc"
+
+"@interactjs/actions@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/actions/-/actions-1.4.4.tgz#fd029c66a5b82c0aa1ec95f48eab67d92bfb49f1"
+  integrity sha512-vFvjaYrpxLWL5ObLr+vWqEilTie+fMl2LNzJtZBb4Ni9uJ1SG8Tyi3SbxN+HfMpXhWbVjvrfeBKFoHBJ0PNalg==
+
+"@interactjs/auto-scroll@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/auto-scroll/-/auto-scroll-1.4.4.tgz#2996670efcb1769e60dfb449d8f2e017c7e2bf10"
+  integrity sha512-uzDAemEAMDyM5Y0O3qItqjUpQIe0IO3CErpTrbMYLlZHT8ZulS5vjGmkfMlYhEpG2KbfK/jnzkZb6IJyCMQYPw==
+
+"@interactjs/auto-start@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/auto-start/-/auto-start-1.4.4.tgz#cbf9f6665f6a0df4b7ff305ce0d2fcecd0f7f803"
+  integrity sha512-YbhhjXdhpr0c8nuges7mXZeVbgyUAd25RvhZrirmKZF2nPjS2RMlx8UXGDSEZKJbqkschjHu6jvUVzft2FYdRA==
+
+"@interactjs/core@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/core/-/core-1.4.4.tgz#0793d5d0206aca34410ae7125d7949ac277776a9"
+  integrity sha512-UH5GAdmvONIJHqRR6fDL228+G/vIfyh7m7b0SOqbKgSfOm1clwkQ2ky+YxHaCpvrgnYVePljEwN3HMaWOnp9zg==
+
+"@interactjs/dev-tools@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/dev-tools/-/dev-tools-1.4.4.tgz#3818d42048d7bf9a5a23c1be6087dd4eba76323e"
+  integrity sha512-xAdMRbE/DYAxfOCRQmN/cNcaw0ECmN6Cr/7Lawx4riCopwNmuawR7Ymbo3IBoqEKJqF4xobovAmmeLmq/FnYNA==
+  dependencies:
+    "@interactjs/utils" "1.4.4"
+
+"@interactjs/inertia@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/inertia/-/inertia-1.4.4.tgz#dd923c3181a340a05db983d8ced89e84207b0783"
+  integrity sha512-0WODz2dnJQ3Ul/pusVkHwFUq7D6fmbAMccTbhmTprGPSP5ccHAiHsi3l9UmjqTwIRSiVgXjMKeCKnqxkUFf+/Q==
+
+"@interactjs/interact@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/interact/-/interact-1.4.4.tgz#0121526a5478bdb6885e937c0d103717c62f37c0"
+  integrity sha512-Cm7J0yraE0LgJOnrMeAxGPq2g9spfNP8GFzUSXcKsD/Vg4BCBdmRDeO7ypIEa1COS5VoUeRmmxu1/6DgDUfumA==
+
+"@interactjs/modifiers@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/modifiers/-/modifiers-1.4.4.tgz#e49ebdfb6afac3ff5beda6a56070ef5f329f7cdb"
+  integrity sha512-qTY6Z+4YGOXiv6sAB9/GbFfcMMLRe0DFj9Z3chrAoE+K02VrdKhlurihjogZTqd3jNX8XKgxG/vJwOZHlSz3KQ==
+
+"@interactjs/pointer-events@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/pointer-events/-/pointer-events-1.4.4.tgz#42208feb9b344dd9ce10df180bd05ed2ad533992"
+  integrity sha512-NE09fNUNgfXnEzlL5VUCib+pYuLZ80lrwCbmC/hxrPvUzhqDxUshlb2vi/IoLP8eblQvvrkmOYhQgPp+xUse+w==
+
+"@interactjs/reflow@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/reflow/-/reflow-1.4.4.tgz#eba8908cabb8a725b99d727793f9923d544b2eb6"
+  integrity sha512-R1D7GGLzqpit5jDVI3BoMTAHm/aK28K62AZ1TnfbQiqhkD3RKIFJEbZ2MEwJBLAxxfZmPMbgZX+wASHbZ1/d/A==
+
+"@interactjs/types@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/types/-/types-1.4.4.tgz#aedf4bd197d128a8d058e65f754698ffc9efd3ef"
+  integrity sha512-q6wv46UZFDeg2TJDjnDJKkLtM4yela2MSduOVsuGM6pxsv3X2vCwiCjWiRDaHS9QSmJ5LmDcwsipgEGJuf8ePw==
+  dependencies:
+    "@interactjs/actions" "1.4.4"
+    "@interactjs/auto-scroll" "1.4.4"
+    "@interactjs/auto-start" "1.4.4"
+    "@interactjs/core" "1.4.4"
+    "@interactjs/dev-tools" "1.4.4"
+    "@interactjs/inertia" "1.4.4"
+    "@interactjs/interact" "1.4.4"
+    "@interactjs/modifiers" "1.4.4"
+    "@interactjs/pointer-events" "1.4.4"
+    "@interactjs/reflow" "1.4.4"
+    "@interactjs/utils" "1.4.4"
+
+"@interactjs/utils@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@interactjs/utils/-/utils-1.4.4.tgz#c927779a42022b1f4ac473581f491ba3fa22135b"
+  integrity sha512-s4pet+uz54Md9aRd2btPax9ICwMlSmLYhpWtYEd2v+g9WZozuRKg+R6FDC1uMkfcVclxKchVb5r7HV03GcmNnw==
 
 "@posthtml/esm@^1.0.0":
   version "1.0.0"
@@ -4254,7 +4335,7 @@ hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0, hoist-non-react-
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
 
-hoist-non-react-statics@^3.2.0, hoist-non-react-statics@^3.2.1:
+hoist-non-react-statics@^3.2.0, hoist-non-react-statics@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
   dependencies:
@@ -4532,6 +4613,13 @@ inherits@2.0.1:
 ini@^1.3.4, ini@~1.3.0:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
+
+interactjs@^1.4.2, interactjs@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/interactjs/-/interactjs-1.4.4.tgz#8f07a07568f00719aa0e64bce3c1d31e14e42682"
+  integrity sha512-xr+DLSqB7LDHgwvTyxINgPqfg2pCLTab2vHCbop/KiZkYslU+uEEdwSOcfqYskxeGyPzFWLEzPQXapAhW5x+og==
+  dependencies:
+    "@interactjs/types" "1.4.4"
 
 internal-ip@^3.0.1:
   version "3.0.1"
@@ -6673,6 +6761,14 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+pdfjs-dist@2.1.266:
+  version "2.1.266"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.1.266.tgz#cded02268b389559e807f410d2a729db62160026"
+  integrity sha512-Jy7o1wE3NezPxozexSbq4ltuLT0Z21ew/qrEiAEeUZzHxMHGk4DUV1D7RuCXg5vJDvHmjX1YssN+we9QfRRgXQ==
+  dependencies:
+    node-ensure "^0.0.0"
+    worker-loader "^2.0.0"
+
 "pdfjs-dist@file:./modules/pdfjs-dist":
   version "2.0.489"
   dependencies:
@@ -7112,7 +7208,7 @@ prompts@^2.0.1:
     kleur "^3.0.0"
     sisteransi "^1.0.0"
 
-prop-types@^15.5.10, prop-types@^15.5.7:
+prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   dependencies:
@@ -7359,7 +7455,7 @@ react-is@^16.6.0:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
 
-react-is@^16.6.3, react-is@^16.7.0:
+react-is@^16.7.0:
   version "16.8.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.1.tgz#a80141e246eb894824fb4f2901c0c50ef31d4cdb"
 
@@ -7367,9 +7463,21 @@ react-is@^16.8.1:
   version "16.8.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.2.tgz#09891d324cad1cb0c1f2d91f70a71a4bee34df0f"
 
+react-is@^16.8.6:
+  version "16.8.6"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
+  integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
+
 react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+
+react-pdf-js@^5.0.6:
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/react-pdf-js/-/react-pdf-js-5.0.6.tgz#93d46f76593c212d1a96a792934b7764a69bef17"
+  integrity sha512-EZFuTt0lTfC57Vo0TBK/DHwMXypMumWkV8CGLL9oOeFIryxJAvsAEk5ZmK/y+JRsCcCHS1GEeDpBEsMXe18b1g==
+  dependencies:
+    pdfjs-dist "2.1.266"
 
 react-popper@^1.3.2:
   version "1.3.3"
@@ -7382,16 +7490,17 @@ react-popper@^1.3.2:
     typed-styles "^0.0.7"
     warning "^4.0.2"
 
-react-redux@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-6.0.0.tgz#09e86eeed5febb98e9442458ad2970c8f1a173ef"
+react-redux@^7.1.0-alpha.5:
+  version "7.1.0-rc.1"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.0-rc.1.tgz#af42e20901e443191ace09392b1c8b85721a5de6"
+  integrity sha512-ULeRoensr1LZqs1f7HiWYWN67ppRuoBbB5NfSKn3Py92G7qNSnNb+GC2quMgOXXrMBmcq0C9hvPn3xwhQmUXKw==
   dependencies:
-    "@babel/runtime" "^7.2.0"
-    hoist-non-react-statics "^3.2.1"
+    "@babel/runtime" "^7.4.5"
+    hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
     loose-envify "^1.4.0"
-    prop-types "^15.6.2"
-    react-is "^16.6.3"
+    prop-types "^15.7.2"
+    react-is "^16.8.6"
 
 react-select@^2.3.0:
   version "2.3.0"
@@ -7467,6 +7576,14 @@ react@^16.8.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.13.1"
+
+reactablejs@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/reactablejs/-/reactablejs-0.1.3.tgz#f8020bc7929afc69ca5c7015d2162f17cfbcc355"
+  integrity sha512-AYnEumdRf1ATWypCXe7Ov/EqQP9j4eloUWe3+yLwc9Nh0rlX8YLABGAO7Rre/MESmpDhup98WnbP8A/td7ZxpA==
+  dependencies:
+    interactjs "^1.4.2"
+    utility-types "^3.7.0"
 
 read-config-file@3.2.1, read-config-file@^3.2.0:
   version "3.2.1"
@@ -7669,6 +7786,11 @@ regenerator-runtime@^0.11.0:
 regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
+
+regenerator-runtime@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
+  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
 regenerator-transform@^0.13.3:
   version "0.13.3"
@@ -9195,6 +9317,11 @@ util@^0.11.0:
 utila@^0.4.0, utila@~0.4:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/utila/-/utila-0.4.0.tgz#8a16a05d445657a3aea5eecc5b12a4fa5379772c"
+
+utility-types@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/utility-types/-/utility-types-3.7.0.tgz#51f1c29fa35d4267488345706efcf3f68f2b1933"
+  integrity sha512-mqRJXN7dEArK/NZNJUubjr9kbFFVZcmF/JHDc9jt5O/aYXUVmopHYujDMhLmLil1Bxo2+khe6KAIVvDH9Yc4VA==
 
 utils-merge@1.0.1:
   version "1.0.1"

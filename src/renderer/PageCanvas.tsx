@@ -86,11 +86,11 @@ export default class PageCanvas extends React.Component<
           style={{ position: "absolute" }}
           ref={this.canvasLayer}
         />
-        <canvas
+        {/* <canvas
           draggable={false}
           style={{ position: "absolute", display: "none" }}
           ref={this.canvasCrop}
-        />
+        /> */}
       </>
     );
   }

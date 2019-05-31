@@ -1,3 +1,19 @@
+draw preview
+
+draw on page
+
+
+
+
+
+
+
+
+
+
+
+
+
 - ctrl-f
   - search all
     - giant string with id+offsets
