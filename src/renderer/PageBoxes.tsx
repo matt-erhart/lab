@@ -56,8 +56,7 @@ export const PageBoxes: React.FC<Props> = props => {
         type: "updated",
         payload: { id: action.payload.id, box: action.payload.box }
       });
-      console.log('action.payload.box : ', action.payload.box );
-
+      console.log("action.payload.box : ", action.payload.box);
     },
     [props.onChange]
   );
@@ -65,14 +64,17 @@ export const PageBoxes: React.FC<Props> = props => {
   return (
     <>
       <OuterMostDiv
+        draggable={false}
+        onDrag={e => e.preventDefault()}
         id={outerId}
         ref={outerRef}
-        draggable={false}
         pageWidth={props.pageWidth}
         pageHeight={props.pageHeight}
       >
         {!!box && startedDrawing && (
           <div
+            draggable={false}
+            onDragStart={e => e.preventDefault()}
             style={{
               ...box,
               border: "1px solid blue",
@@ -86,12 +88,14 @@ export const PageBoxes: React.FC<Props> = props => {
 
             return (
               <AdjustableBox
+                draggable={false}
+                onDragStart={e => e.preventDefault()}
                 key={box.id}
                 id={box.id}
                 initBox={{
                   top: top,
-                  left: left - 5,
-                  width: width + 5,
+                  left: left,
+                  width: width,
                   height: height
                 }}
                 onChange={onChange}

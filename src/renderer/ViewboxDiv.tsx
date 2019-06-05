@@ -70,11 +70,14 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
   const { initBox, ...rest } = props;
   return (
     <_AdjustableBox
+      draggable={false}
       id="viewbox"
       ref={divRef}
       style={{ ...initBox, ...box }}
       {...rest}
       onMouseDown={e => e.stopPropagation()}
+      onDragStart={e => e.preventDefault()}
+
     />
   );
 }, shouldMemo);

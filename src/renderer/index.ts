@@ -8,3 +8,6 @@ Render process is responsible for running the web page, which is an instance of 
 
 import  "./App";
 // import  "./Test";
+window.addEventListener('dragstart', e => {
+    console.log(e);
+})

@@ -52,7 +52,7 @@ interface RequiredProps {
 }
 
 export const Pdf = (_props: OptionalProps & RequiredProps) => {
-  console.log('render pdf');
+  console.log("render pdf");
 
   const props = { ...defaultProps, ..._props };
   const boxes: PdfSegmentViewbox[] = useSelector((state: iRootState) => {
@@ -126,7 +126,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   };
 
   return (
-    <div style={{ overflow: "scroll", height: "100vh" }}>
+    <div draggable={false} style={{ overflow: "scroll", height: "100vh" }}>
       {renderPages(pages)}
     </div>
   );
