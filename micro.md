@@ -1,10 +1,14 @@
 
-create viewbox 
-  - save box
+put hover menu on nearest edge (top/bottom for now) 11:21
+
+
+
+
 
 nextnodeloc
 
 --- defer
+chain links in simple interface
 maigc strings
 load pdf pages in sequence
 improve webpack compile times
