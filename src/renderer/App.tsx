@@ -15,22 +15,36 @@ import { Pdf } from "./Pdf";
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
+import { createAutograbJSON, createGROBIDJSON, listDirs } from './io'
+// import fs = require("fs-extra");
 import ListView from "./ListView";
 import {
   makePdfPublication,
   NodeBase,
+<<<<<<< HEAD
   PdfPublication
+=======
+  PdfPublication,
+  makeLink
+>>>>>>> 79a09378ad25585514ebcb1d08da6b4c8d889a61
 } from "../store/creators";
 import {
   createAutoGrabNodesAndLinkToPublicationNodes,
-  createGROBIDNodesAndLinkToPublicationNodes
+  createGROBIDNodesAndLinkToPublicationNodes,
+  createAutoGrabNodesAndLinkToPublicationNodesSingle,
+  createGROBIDNodesAndLinkToPublicationNodesSingle,
 } from "./AutoGrab";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
 import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
+import DocEditor from "./DocEditor";
+import WOZEditor from "./WOZEditor";
+import RealisticEditor from './RealisticEditor';
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
+import console = require("console");
+import { List } from "grommet-icons";
 
 const NavBar = styled.div`
   font-size: 30px;
@@ -77,9 +91,9 @@ const mapState = (state: iRootState) => ({
 
 // set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
-  graph: { addBatch },
+  graph: { addBatch, updateBatch },
   app: { setMainPdfReader, setRightPanel }
-}: iDispatch) => ({ addBatch, setMainPdfReader, setRightPanel });
+}: iDispatch) => ({ addBatch, updateBatch, setMainPdfReader, setRightPanel });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -108,20 +122,51 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
   return { newPubs: newPubs };
 };
 
-const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
-  // Put AutoGrab info in a metaToHighlight.json file
-  var pdfDirs = await processAutoGrab(pdfRootDir)().then(result => {
-    return result;
-  });
-  const allNodeIds = Object.keys(nodes);
+// const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
+//   // Put AutoGrab info in a metaToHighlight.json file
+//   var pdfDirs = await processAutoGrab(pdfRootDir)().then(result => {
+//     return result;
+//   });
+//   const allNodeIds = Object.keys(nodes);
 
-  // Move AutoGrab info from metaToHighlight.json file to state.json
-  return createAutoGrabNodesAndLinkToPublicationNodes(
-    pdfDirs,
-    allNodeIds,
-    newPubs
-  );
-};
+//   // Move AutoGrab info from metaToHighlight.json file to state.json
+//   return createAutoGrabNodesAndLinkToPublicationNodes(
+//     pdfDirs,
+//     allNodeIds,
+//     newPubs
+//   );
+// };
+
+// const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
+//   const pdfDirs = await listDirs(pdfRootDir);
+//   const allNodeIds = Object.keys(nodes);
+//   for (let dir of pdfDirs) {
+//     await createAutograbJSON(dir)
+//     const { newNodes, newLinks } = createAutoGrabNodesAndLinkToPublicationNodes(
+//       pdfDirs,
+//       allNodeIds,
+//       newPubs
+//     );
+
+
+
+//     if (newNodes.length > 0) {
+//       this.props.addBatch({ nodes: newNodes, links: newLinks });
+//       this.props.updateBatch({ nodes: newNodes, links: newLinks });
+//     }
+
+//   }
+
+
+
+
+//   // Move AutoGrab info from metaToHighlight.json file to state.json
+//   // return createAutoGrabNodesAndLinkToPublicationNodes(
+//   //   pdfDirs,
+//   //   allNodeIds,
+//   //   newPubs
+//   // );
+// };
 
 const processGROBIDs = async (pdfRootDir, nodes, newPubs) => {
   // Put AutoGrab info in a metaToHighlight.json file
@@ -136,7 +181,6 @@ const processGROBIDs = async (pdfRootDir, nodes, newPubs) => {
   return createGROBIDNodesAndLinkToPublicationNodes(
     pdfDirs,
     allNodeIds,
-
     newPubs
   );
 };
@@ -146,11 +190,14 @@ type rightPanelName = typeof defaultApp.panels.rightPanel;
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
   keyback = (e: KeyboardEvent) => {
+    console.log(e)
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
-      "3": "synthesisOutlineEditor" as rightPanelName
+      "3": "synthesisOutlineEditor" as rightPanelName,
       // "3": "docEditor" as rightPanelName
+      "4": "synthesisOutlineWOZEditor" as rightPanelName,
+      "5": "synthesisOutlineRealEditor" as rightPanelName
     };
     if (e.altKey && Object.keys(altAndKeyToCmd).includes(e.key)) {
       this.props.setRightPanel(altAndKeyToCmd[e.key]);
@@ -170,40 +217,108 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
 
+    // adding key listener before the autograb task (which is time-consuming and may block key listening)
+    window.addEventListener("keyup", this.keyback);
+
     if (featureToggles.showAutoGrab) {
       // show autograb and GROBID extracted metadata
       console.log("Making participant info nodes and GROBID metadata nodes! ");
-
       {
         // This 1st block: making participant info nodes
-        const { newNodes, newLinks } = await processAutoGrabs(
-          // Destructuring assignment
-          this.props.pdfRootDir,
-          nodesBeforePubs,
-          newPubs
-        );
+        // const { newNodes, newLinks } = await processAutoGrabs(
+        //   // Destructuring assignment
+        //   this.props.pdfRootDir,
+        //   nodesBeforePubs,
+        //   newPubs
+        // );
 
-        if (newNodes.length > 0) {
-          this.props.addBatch({ nodes: newNodes, links: newLinks });
+        // if (newNodes.length > 0) {
+        //   this.props.addBatch({ nodes: newNodes, links: newLinks });
+        //   this.props.updateBatch({ nodes: newNodes, links: newLinks });
+        // }
+        // processAutoGrabs(this.props.pdfRootDir,
+        //   nodesBeforePubs,
+        //   newPubs
+        // );
+
+        let pdfDirs = await listDirs(this.props.pdfRootDir);
+        pdfDirs = pdfDirs.sort((dirA, dirB) => (dirA.toString() < dirB.toString() ? 1 : 0))
+        // console.log("pdfDirs " + pdfDirs)
+        const allNodeIds = Object.keys(nodesBeforePubs);
+        // let excessiveNodes:any[]
+        // let excessiveLinks=any[]
+        for (let dir of pdfDirs) {
+          {
+            var success = await createAutograbJSON(dir)().then(result => {
+              return result;
+            });
+
+            var { newNodes, newLinks } = await createAutoGrabNodesAndLinkToPublicationNodesSingle(
+              dir,
+              allNodeIds,
+              newPubs
+            );
+            // excessiveNodes+=[newNodes]
+            // excessiveLinks+=[newLinks]
+
+            if (newNodes.length > 0) {
+              this.props.addBatch({ nodes: newNodes, links: newLinks });
+              this.props.updateBatch({ nodes: newNodes, links: newLinks });
+              // this.props.addBatch({ nodes: excessiveNodes, links: excessiveLinks });
+              // this.props.updateBatch({ nodes: excessiveNodes, links: excessiveLinks });
+            }
+          }
+          {
+
+            var success = await createGROBIDJSON(dir)().then(result => {
+              return result;
+            });
+
+            var { newNodes, newLinks } = await createGROBIDNodesAndLinkToPublicationNodesSingle(
+              dir,
+              allNodeIds,
+              newPubs
+            );
+
+            if (newNodes.length > 0) {
+              this.props.addBatch({ nodes: newNodes, links: newLinks });
+              this.props.updateBatch({ nodes: newNodes, links: newLinks });
+            }
+          }
+
+          // console.log((this.rightPanel.current as any).forFun())
+          //   this.props.setRightPanel(("graphContainer" as any))
+          // this.props.setRightPanel(("listview" as any))
+          var random = Math.floor(Math.random() * (5 - 0));
+          console.log("random" + random)
+          if (random == 3) {
+            await this.props.setRightPanel(("graphContainer" as any))
+            await this.props.setRightPanel(("listview" as any))
+          } 
         }
+
+        await this.props.setRightPanel(("graphContainer" as any))
+        await this.props.setRightPanel(("listview" as any))
+
       }
+
       {
         // This 2nd block: Making GROBID extracted metadata nodes
 
-        const { newNodes, newLinks } = await processGROBIDs(
-          // Destructuring assignment
-          this.props.pdfRootDir,
-          nodesBeforePubs,
-          newPubs
-        );
-        if (newNodes.length > 0) {
-          this.props.addBatch({ nodes: newNodes, links: newLinks });
-        }
+        // const { newNodes, newLinks } = await processGROBIDs(
+        //   // Destructuring assignment
+        //   this.props.pdfRootDir,
+        //   nodesBeforePubs,
+        //   newPubs
+        // );
+        // if (newNodes.length > 0) {
+        //   this.props.addBatch({ nodes: newNodes, links: newLinks });
+        //   this.props.updateBatch({ nodes: newNodes, links: newLinks });
+        // }
+
         // console.log(resultMessage)
       }
     }
-
-    window.addEventListener("keyup", this.keyback);
   }
 
   componentWillUnmount() {
@@ -251,22 +366,44 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     this.props.setMainPdfReader({ width: mouseData.clientX - 15 });
   };
 
+  rightPanel = React.createRef<HTMLDivElement>();
+
   renderRightPanel = (panelName: rightPanelName) => {
+    console.log("render right panel")
     switch (panelName) {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
+<<<<<<< HEAD
         return <GoogleScholar />;
+=======
+        // return <GoogleScholar />  
+        return <ListView ref={this.rightPanel} />
+>>>>>>> 79a09378ad25585514ebcb1d08da6b4c8d889a61
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
           return <DocList />;
         } else {
           return null;
-          break;
+        }
+      case "synthesisOutlineWOZEditor":
+        if (featureToggles.showDocList) {
+          return <WOZEditor />;
+          // return <DocEditor />;
+        } else {
+          return null;
+        }
+
+      case "synthesisOutlineRealEditor":
+        if (featureToggles.showDocList) {
+          return <RealisticEditor />;
+          // return <DocEditor />;
+        } else {
+          return null;
         }
       default:
-        return <div>alt-1 | alt-2 | alt-3</div>;
+        return <div>alt-1 | alt-2 | alt-3 | alt-4 | alt-5 (for mac users, ctrl+alt+[1/2/3/4])</div>;
     }
   };
 

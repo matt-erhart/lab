@@ -18,7 +18,8 @@ export type NodeDataTypes =
   | "venue"
   | "query" // queries have style overrides, combine subqueries to reuse, ooo
   | "projection/map/affinity/dimension/coordinates matter"
-  | "autograb";
+  | "autograb"
+  | "GROBIDMetadata"
 
 type corners = "nw" | "ne" | "sw" | "se"; // north, south, west, east
 type modes = "min" | "max";
@@ -173,7 +174,7 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
 const AutoGrabDefaults = {
   id: "",
   data: {
-    type: "autograb" as NodeDataTypes
+    type: "autograb" as NodeDataTypes,
   },
   style: {
     id: "",
@@ -198,7 +199,6 @@ export const makeAutograbNode = (
   nodeSuffix: string, //"-autograb"
   style = {}
 ) => {
-  // console.log("inside makeAutoGrabNode " + fulldirName);
   const metadataToHighlight = JSON.parse(
     fs.readFileSync(fulldirName + dataPath).toString()
   );
@@ -211,7 +211,7 @@ export const makeAutograbNode = (
   return {
     ...AutoGrabDefaults,
     id: pdfDir + nodeSuffix,
-    data: { ...AutoGrabDefaults.data, ...metadataToHighlight }, // deserialize metadataToHighlight data
+    data: { type: nodeSuffix.substring(1), ...metadataToHighlight }, // deserialize metadataToHighlight data
     style: clampLeftTop({
       ...AutoGrabDefaults.style,
       ...style,

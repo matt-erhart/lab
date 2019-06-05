@@ -21,7 +21,7 @@ from allennlp.predictors import SentenceTaggerPredictor
 from tqdm import tqdm
 import pandas as pd
 from reproducibility_classifier_train import LSTMClassifier, ReproducibilityClaimDatasetReader
-
+import os
 
 def get_document_sents_wo_pdfMiner(contents, until_references=False):
     '''
@@ -124,7 +124,7 @@ def raw_pdf_to_csv(pdf_in_path, csv_tmp_path):
                                 })
     df = pd.DataFrame(sents_csv_entry)
     df.to_csv(csv_tmp_path, columns=['sent_id', 'text', 'label'])
-    return
+    return csv_tmp_path
 
 def inference(in_path):
     print("Inside inference")
@@ -147,7 +147,7 @@ def inference(in_path):
 
     csv_tmp_path = in_path.replace(".json", ".csv")
     csv_out_path = in_path.replace(".json", ".scored.csv")
-    raw_pdf_to_csv(in_path,csv_tmp_path)
+    raw_pdf_to_csv_path=raw_pdf_to_csv(in_path,csv_tmp_path)
 
     print("raw_pdf_to_csv finished!")
 
@@ -193,7 +193,7 @@ def inference(in_path):
     mask = (df['text'].str.len() > 10)
     df = df.loc[mask]
 
-    df.to_csv(csv_out_path)
+    # df.to_csv(csv_out_path)
     print(df.head(10))
     '''
     
@@ -262,6 +262,7 @@ def inference(in_path):
         # json.dump(metadataToHighlight, fout, indent=4)
 
     print("top_10_text are", top_10_text)
+    os.remove(raw_pdf_to_csv_path)
     return metadataToHighlight
 
 

@@ -11,6 +11,7 @@ import {
 } from "../store/creators";
 
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
+import console = require("console");
 
 const PlaygroundDefaults = {
   props: {},
@@ -39,11 +40,16 @@ export const createGROBIDMetadata = async (
   pdfPath: string,
   overwrite = false
 ) => {
+  // console.log("Inside createGROBIDMetadata")
   let GROBIDMetadata = {};
-  const fileExists = fs.pathExists(path);
+  const fileExists = await fs.pathExists(path);
+  if (fileExists && !overwrite) {
+    return true;
+  }
+  //TODO; fileExists check branch 
   // const filePath = 'python-service/tmp/paper276.pdf';
-  const pdfData = fs.readFileSync(pdfPath);
-
+  const pdfData = await fs.readFileSync(pdfPath);
+  console.log("Calling GROBID API")
   await axios.post('http://52.10.103.106/autograb/grobidmetadata', pdfData, {
     // axios.post('http://localhost:5000/autograb/grobidmetadata', pdfData, {
     headers: { 'Content-Type': 'application/pdf' },
@@ -52,17 +58,17 @@ export const createGROBIDMetadata = async (
   }).catch(err => {
     console.log(err + " Bypass, use fake data instead");
     //Fake data if service request failed ...
-    GROBIDMetadata = { "author": "bla", "venue": "bla" }
+    GROBIDMetadata = { "author": "bla", "venue": "bla", "title": "bla" }
   });
 
-  if (!fileExists || overwrite) {
-    console.log("GROBIDMetadata!")
-    console.log(GROBIDMetadata);
-    await jsonfile.writeFile(path, GROBIDMetadata);
-    return true
-  } else {
-    return false;
-  }
+  // if (!fileExists || overwrite) {
+  console.log("GROBIDMetadata!")
+  console.log(GROBIDMetadata);
+  await jsonfile.writeFile(path, GROBIDMetadata);
+  return true
+  // } else {
+  //   return false;
+  // }
 }
 
 export const createAutoGrabInfo = async (
@@ -78,7 +84,11 @@ export const createAutoGrabInfo = async (
   // Auto-grab from local python Flask service, code in ../../python-service/hello.py
   let autoGrabDetails = {};
 
-  const fileExists = fs.pathExists(path);
+  const fileExists = await fs.pathExists(path);
+  if (fileExists && !overwrite) {
+    return true;
+  }
+  // console.log("calling API")
   await axios
     .post("http://52.10.103.106/autograb/pdfdata", {
       // .post("http://localhost/autograb/pdfdata", {
@@ -116,26 +126,31 @@ export const createAutoGrabInfo = async (
 
   // Test visiting an arbitrary existing web service ... tried https://jsonplaceholder.typicode.com/users
 
-  if (!fileExists || overwrite) {
-    console.log("autoGrabDetails")
-    console.log(autoGrabDetails);
-    await jsonfile.writeFile(path, autoGrabDetails);
-    return true
-  } else {
-    return false;
-  }
+  // if (!fileExists || overwrite) {
+  console.log("autoGrabDetails")
+  console.log(autoGrabDetails);
+  await jsonfile.writeFile(path, autoGrabDetails);
+  return true
+  // } else {
+  //   return false;
+  // }
 }
 
 export const createAutoGrabNodesAndLinkToPublicationNodes = (pdfDirs: string[], allNodeIds: string[], newPubs: any[]) => {
 
-  const autograbNodes = pdfDirs.map((dir, ix) => {
-    return makeAutograbNode(
-      dir,
-      "metadataToHighlight.json",
-      "-autograb",
-      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-    );
-  });
+  const autograbNodes = pdfDirs
+    .filter((dir, ix) => {
+      const fileExists = fs.pathExistsSync(dir + "metadataToHighlight.json")
+      return fileExists;
+    })
+    .map((dir, ix) => {
+      return makeAutograbNode(
+        dir,
+        "metadataToHighlight.json",
+        "-autograb",
+        { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+      );
+    });
 
   const newAutograbs = autograbNodes.filter(
     autograbNode => !allNodeIds.includes(autograbNode.id)
@@ -162,16 +177,92 @@ export const createAutoGrabNodesAndLinkToPublicationNodes = (pdfDirs: string[], 
 
 }
 
-export const createGROBIDNodesAndLinkToPublicationNodes = (pdfDirs: string[], allNodeIds: string[], newPubs: any[]) => {
 
-  const autograbNodes = pdfDirs.map((dir, ix) => {
-    return makeAutograbNode(
+
+export const createAutoGrabNodesAndLinkToPublicationNodesSingle = (dir: string, allNodeIds: string[], newPubs: any[]) => {
+  const fileExists = fs.pathExistsSync(dir + "metadataToHighlight.json")
+  let autograbNodes: any[]
+  if (fileExists) {
+    autograbNodes = [makeAutograbNode(
+      dir,
+      "metadataToHighlight.json",
+      "-autograb",
+      { x: 0, y: 0 }
+    )]
+  } else {
+    autograbNodes = []
+  }
+
+  // const newAutograbs = autograbNodes.filter(
+  //   autograbNode => !allNodeIds.includes(autograbNode.id)
+  // ); //filter out nodes that exists
+
+  // add links from nodes of type auto-grab to nodes of pdf.publication
+  let newLinks = [];
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes = [] as aNode[];
+  // const nodesArray = newPubs.concat(autograbNodes);
+  const nodesArray = [].concat(autograbNodes);
+  for (let i = 0; i < nodesArray.length; i++) {
+    newNodes.push(nodesArray[i]);
+  }
+  // return new nodes and links batch to be added in Redux
+  return { newNodes: newNodes, newLinks: newLinks };
+
+}
+
+
+export const createGROBIDNodesAndLinkToPublicationNodesSingle = (dir: string, allNodeIds: string[], newPubs: any[]) => {
+
+  const fileExists = fs.pathExistsSync(dir + "metadataFromGROBID.json")
+  let autograbNodes: any[]
+  if (fileExists) {
+    autograbNodes = [makeAutograbNode(
       dir,
       "metadataFromGROBID.json",
       "-GROBIDMetadata",
-      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-    );
-  });
+      { x: 0, y: 0 }
+    )]
+  } else {
+    autograbNodes = []
+  }
+
+  // const newAutograbs = autograbNodes.filter(
+  //   autograbNode => !allNodeIds.includes(autograbNode.id)
+  // ); //filter out nodes that exists
+
+  // add links from nodes of type auto-grab to nodes of pdf.publication
+  let newLinks = [];
+
+  // concatenate nodes of type auto-grab and nodes of pdf.publication
+  let newNodes = [] as aNode[];
+  // const nodesArray = newPubs.concat(autograbNodes);
+  const nodesArray = [].concat(autograbNodes);
+  for (let i = 0; i < nodesArray.length; i++) {
+    newNodes.push(nodesArray[i]);
+  }
+  // return new nodes and links batch to be added in Redux
+  return { newNodes: newNodes, newLinks: newLinks };
+
+}
+
+
+export const createGROBIDNodesAndLinkToPublicationNodes = (pdfDirs: string[], allNodeIds: string[], newPubs: any[]) => {
+
+  const autograbNodes = pdfDirs
+    .filter((dir, ix) => {
+      // console.log("inside makeAutoGrabNode " + fulldirName);
+      const fileExists = fs.pathExistsSync(dir + "metadataFromGROBID.json")
+      return fileExists;
+    })
+    .map((dir, ix) => {
+      return makeAutograbNode(
+        dir,
+        "metadataFromGROBID.json",
+        "-GROBIDMetadata",
+        { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+      );
+    });
 
   const newAutograbs = autograbNodes.filter(
     autograbNode => !allNodeIds.includes(autograbNode.id)

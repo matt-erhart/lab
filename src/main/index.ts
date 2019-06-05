@@ -1,7 +1,9 @@
 import { app, BrowserWindow, BrowserView, Menu, MenuItem } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
-import { existsElseMake } from "../renderer/io";
+import { existsElseMake, listDirs, ls } from "../renderer/io";
+import fs = require("fs-extra");
+import console = require("console");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -55,6 +57,26 @@ function createMainWindow() {
           async click() {
             await setPdfRootDir();
             window.reload();
+          }
+        },
+        {
+          label: "Reload - mac users",
+          async click() {
+            window.reload();
+          }
+        },
+        {
+          label: "Clean up cache",
+          async click() {
+            await cleanUpAutograb();
+            console.log("Cleaning up and reloading")
+            window.reload();
+          }
+        },
+        {
+          label: "Open devTool",
+          async click() {
+            mainWindow.openDevTools();
           }
         }
       ]
@@ -178,3 +200,18 @@ const setPdfRootDir = async () => {
   const stateJsonPath = path.join(pdfRootDir, "./state.json");
   const madeEmptyJson = await existsElseMake(stateJsonPath, {});
 };
+
+const cleanUpAutograb = async () => {
+
+  const pdfDirs = await listDirs(settings.get("pdfRootDir"));
+  for (let dir of pdfDirs) {
+
+    const files = await ls(dir + "/*");
+    for (let file of files) {
+      if (file.includes("metadataToHighlight") || file.includes("metadataFromGROBID")) {
+        await fs.removeSync(file)
+      }
+    }
+  }
+  // TODO clean up autograb node in state.json
+}
