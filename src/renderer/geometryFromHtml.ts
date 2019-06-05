@@ -24,14 +24,13 @@ export const getPointInElement = (
 export const getBrowserZoom = () =>
   Math.round((window.outerWidth / window.innerWidth) * 100) / 100;
 
-const getNearestSide = (el: HTMLElement) => (e: MouseEvent) => {
+type sides = "top" | "bottom" | "left" | "right";
+const getNearestSide = (el: HTMLElement, sides: sides[]) => (e: MouseEvent) => {
   const bounding = el.getBoundingClientRect();
-  console.log("bounding: ", bounding);
   const { clientX, clientY } = e;
-  console.log("clientX, clientY: ", clientX, clientY);
   const dists = {
-    up: clientY - bounding.top,
-    down: bounding.top + bounding.height - clientY,
+    top: clientY - bounding.top,
+    bottom: bounding.top + bounding.height - clientY,
     left: clientX - bounding.left,
     right: bounding.right - clientX
   };
@@ -40,7 +39,7 @@ const getNearestSide = (el: HTMLElement) => (e: MouseEvent) => {
   const side = Object.entries(dists).reduce(
     (all, dist) => {
       const [key, val] = dist;
-      if (Math.abs(val) < Math.abs(all.val)) {
+      if (Math.abs(val) < Math.abs(all.val) && sides.includes(key as any)) {
         return { key, val };
       } else {
         return all;
@@ -49,7 +48,8 @@ const getNearestSide = (el: HTMLElement) => (e: MouseEvent) => {
     { key: "", val: Infinity }
   );
 
-  return side;
+  // may want to do sides and corners
+  return { side: side.key as keyof typeof dists };
 };
 
 // react
@@ -63,13 +63,19 @@ import {
 } from "react";
 import memoize from "fast-memoize";
 
-export const useNearestSide = (ref: React.MutableRefObject<HTMLElement>) => {
+type returnType = { side: "top" | "bottom" | "left" | "right"; top: number };
+export const useNearestSide = (
+  ref: React.MutableRefObject<HTMLElement>
+): returnType => {
   if (!ref) return undefined;
-  const [side, setSide] = useState(undefined);
+  const [side, setSide] = useState(undefined as returnType);
 
   const setHoveredSide = (e: MouseEvent) => {
-    const newSide = getNearestSide(ref.current)(e);
-    setSide(newSide);
+    // if you want left/right, add it to ["top", "bottom"]
+    const newSide = getNearestSide(ref.current, ["top", "bottom"])(e);
+    const height = ref.current.getBoundingClientRect().height || 0;
+    const top = newSide.side === "top" ? -30 : height - 2;
+    setSide({ side: newSide.side, top });
   };
 
   useEffect(() => {

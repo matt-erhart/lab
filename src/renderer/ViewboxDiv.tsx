@@ -24,6 +24,7 @@ const _AdjustableBox = styled.div`
   div {
     opacity: 0;
     cursor: pointer;
+    pointer-events: none;
 
     #delete:hover {
       transform: scale(1.2);
@@ -36,8 +37,11 @@ const _AdjustableBox = styled.div`
 
   &:hover {
     div {
+      pointer-events: all;
       opacity: 1;
     }
+    background-color: "lightblue";
+    opacity: 1;
   }
 
   &:active {
@@ -72,15 +76,14 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
    */
   const divRef = useRef<HTMLDivElement>(null);
   const { type, payload: box } = useMoveResize(divRef, props.initBox);
-
   useEffect(() => {
     const payload = { id: props.id, box };
     if (type === "moved") props.onChange({ type: "moved", payload });
     if (type === "resized") props.onChange({ type: "resized", payload });
   }, [type]);
 
-  const side = useNearestSide(divRef);
-  console.log('side: ', side);
+  const { side, top } = useNearestSide(divRef) || { side: "", top: 0 };
+  console.log("side, top: ", side, top);
 
   const { initBox, ...rest } = props;
   return (
@@ -93,27 +96,31 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
       onMouseDown={e => e.stopPropagation()}
       onDragStart={e => e.preventDefault()}
     >
-      <HoverMenu />
+      <HoverMenu side={side} top={top} />
     </_AdjustableBox>
   );
 }, shouldMemo);
 
-const HoverMenu: React.FC<any> = props => {
+interface RequiredProps {
+  side: "top" | "bottom";
+  top: number;
+}
+
+const HoverMenu: React.FC<RequiredProps> = props => {
   return (
     <div
       id="segmentBoxMenu"
       style={{
-        position: "absolute",
-        left: 70,
-        top: -30,
+        position: "relative",
+        top: props.top,
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "space-around",
         alignContent: "center",
-        background: "lightgrey",
-        height: 30
+        height: 28
       }}
     >
       <MdDeleteForever
+        size={26}
         id="delete"
         onClick={e => {
           e.stopPropagation();
@@ -121,20 +128,13 @@ const HoverMenu: React.FC<any> = props => {
         }}
       />
       <MdComment
+        size={26}
         id="comment"
         onClick={e => {
           e.stopPropagation();
           console.log("comment");
         }}
       />
-      <MdLabel
-        id="comment"
-        onClick={e => {
-          e.stopPropagation();
-          console.log("comment");
-        }}
-      />
-      <input type="text" />
     </div>
   );
 };

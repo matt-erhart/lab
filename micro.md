@@ -1,6 +1,4 @@
-
-put hover menu on nearest edge (top/bottom for now) 11:21
-
+delete in redux
 
 
 
@@ -8,6 +6,7 @@ put hover menu on nearest edge (top/bottom for now) 11:21
 nextnodeloc
 
 --- defer
+left/right hover menu
 chain links in simple interface
 maigc strings
 load pdf pages in sequence
