@@ -283,7 +283,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     // return <DocEditor />;
-    return <Pdf load={{ dir: pdfDir, rootdir: pdfRootDir }} />;
+    return (
+      <Pdf
+        scale={2}
+        load={{ dir: pdfDir, rootDir: pdfRootDir }}
+        loadPageNumbers={[1]}
+      />
+    );
 
     return (
       <ViewPortContainer>

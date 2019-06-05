@@ -300,8 +300,6 @@ export const graph = createModel({
         }
       });
 
-      console.log('state.nodes[payload.nodes[0].id].data', state.nodes[payload.nodes[0].id].data)
-      console.log('newState[payload[0].id]', newState.nodes[payload.nodes[0].id].data)
       return newState
     },
     toggleSelections(

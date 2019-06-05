@@ -1,15 +1,20 @@
-draw preview
 
-draw on page
+create viewbox 
+  - save box
 
+nextnodeloc
 
-
-
-
-
-
-
-
+--- defer
+maigc strings
+load pdf pages in sequence
+improve webpack compile times
+fast zoom
+refactor segment box 
+uninstall unused packages
+link types
+scale in redux node
+useSelector typescript
+drag pan pdf
 
 
 

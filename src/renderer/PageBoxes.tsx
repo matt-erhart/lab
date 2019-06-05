@@ -10,11 +10,11 @@ import {
 } from "react";
 import interact from "interactjs";
 import "@interactjs/types";
-import { ViewboxDiv } from "./ViewboxDiv";
-import { useDispatch } from "react-redux";
-import { iRootState, iDispatch } from "../store/createStore";
-import { useDrag, useDragPoints, useDrawBox } from "./sequenceUtils";
-import { pointsToBox } from "./geometry";
+import { AdjustableBox } from "./ViewboxDiv";
+import { useSelector } from "react-redux";
+import { iRootState } from "../store/createStore";
+import { useDrawBox } from "./sequenceUtils";
+import { Box } from "./geometry";
 
 const OuterMostDiv = styled.div<{ pageWidth: number; pageHeight: number }>`
   position: absolute;
@@ -23,31 +23,61 @@ const OuterMostDiv = styled.div<{ pageWidth: number; pageHeight: number }>`
   z-index: 2;
 `;
 
+type onChangeEvents =
+  | { type: "updated" | "deleted"; payload: { id: string; box: Box } }
+  | { type: "added"; payload: Box };
+``;
 interface Props {
+  id: string;
   pageWidth: number;
   pageHeight: number;
   boxes: any[];
+  onChange: (event: onChangeEvents) => void;
 }
-export const PageBoxes: React.FC<Props> = (props) => {
+/**
+ * draws boxes on pdf pages
+ * calls function on box creation/update
+ */
+export const PageBoxes: React.FC<Props> = props => {
   const outerRef = useRef<HTMLDivElement>(null);
-  const { box, points } = useDrawBox(outerRef);
+  const outerId = "OuterMostDiv";
+  const { box, points } = useDrawBox(outerRef); // snap to in here
+  const startedDrawing = points.first.id === outerId;
   useEffect(() => {
-    if (points.second.type === "mouseup") {
-      console.log("create viewbox");
+    if (points.second.type === "mouseup" && startedDrawing) {
+      props.onChange({ type: "added", payload: box });
     }
   }, [points]);
+
+  type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
+  const onChange = useCallback<onChange>(
+    action => {
+      props.onChange({
+        type: "updated",
+        payload: { id: action.payload.id, box: action.payload.box }
+      });
+      console.log('action.payload.box : ', action.payload.box );
+
+    },
+    [props.onChange]
+  );
 
   return (
     <>
       <OuterMostDiv
+        id={outerId}
         ref={outerRef}
         draggable={false}
         pageWidth={props.pageWidth}
         pageHeight={props.pageHeight}
       >
-        {!!box && (
+        {!!box && startedDrawing && (
           <div
-            style={{ ...box, border: "1px solid blue", position: "absolute" }}
+            style={{
+              ...box,
+              border: "1px solid blue",
+              position: "absolute"
+            }}
           />
         )}
         {props.boxes.length > 0 &&
@@ -55,16 +85,16 @@ export const PageBoxes: React.FC<Props> = (props) => {
             const { top, left, width, height } = box.data;
 
             return (
-              <ViewboxDiv
-                draggable={false}
+              <AdjustableBox
                 key={box.id}
                 id={box.id}
-                style={{
+                initBox={{
                   top: top,
                   left: left - 5,
                   width: width + 5,
                   height: height
                 }}
+                onChange={onChange}
               />
             );
           })}

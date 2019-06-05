@@ -15,7 +15,11 @@ import {
   BoxEdges,
   Point2d
 } from "./geometry";
-import { getBrowserZoom, getPointInElement } from "./geometryFromHtml";
+import {
+  getBrowserZoom,
+  getPointInElement,
+  getElementScale
+} from "./geometryFromHtml";
 
 /**
  * movementX, movementY, type are particularly useful for dragging
@@ -94,7 +98,7 @@ export function useDragPoints(
           type,
           id: (target as HTMLElement).id
         };
-        console.log('point: ', point);
+        console.log("point: ", point);
 
         setPoints({
           ...points,
@@ -144,9 +148,68 @@ export function useDragPoints(
   return points;
 }
 
+export const useDrawBox = ref => {
+  // where to add snapto logic
+  const drag = useDrag(ref);
+  const points = useDragPoints(drag, ref);
+  return { box: pointsToBox(points), points }; // could make pointsToLine/Triangle/circle
+};
 
-export const useDrawBox = (ref) => {
-  const drag = useDrag(ref)
-  const points = useDragPoints(drag, ref)
-  return {box: pointsToBox(points), points}
-}
+import interact from "interactjs";
+export const useMoveResize = (ref, initBox) => {
+  if (!ref) return undefined;
+  const [box, setBox] = useState(undefined as Box);
+  const [eventType, setEventType] = useState(undefined as
+    | "moved"
+    | "resized"
+    | "moving"
+    | "resizing");
+
+  useEffect(() => {
+    const { left, top, width, height } = initBox;
+    setBox({ left, top, width, height });
+  }, [initBox]);
+
+  useEffect(() => {
+    interact(ref.current)
+      .draggable(true)
+      .resizable({
+        edges: { left: true, right: true, bottom: true, top: true }
+      })
+      .on("dragmove", (e: Interact.DragEvent) => {
+        setEventType("moving");
+
+        e.stopPropagation();
+        const { scaleX, scaleY } = getElementScale(e.target as HTMLElement);
+        const { dx, dy } = e;
+        setBox(box => ({
+          ...box,
+          left: box.left + dx / scaleX,
+          top: box.top + dy / scaleY
+        }));
+      })
+      .on("dragend", () => {
+        setEventType("moved");
+        // props.onChange({ type: "moved", payload: { id: props.id, box } });/
+      })
+      .on("resizemove" as Interact.OnEventName, (e: Interact.ResizeEvent) => {
+        setEventType("resizing");
+
+        const { scaleX, scaleY } = getElementScale(e.target as HTMLElement);
+        e.stopPropagation();
+
+        setBox(box => ({
+          width: box.width + e.deltaRect.width / scaleX,
+          height: box.height + e.deltaRect.height / scaleY,
+          left: box.left + e.deltaRect.left / scaleX,
+          top: box.top + e.deltaRect.top / scaleY
+        }));
+      })
+      .on("resizeend" as Interact.OnEventName, () => {
+        setEventType("resized");
+        // props.onChange({ type: "resized", payload: { id: props.id, box } });
+      });
+    return () => interact(ref.current).unset();
+  }, []);
+  return { type: eventType, payload: box };
+};

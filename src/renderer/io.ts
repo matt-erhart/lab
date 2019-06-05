@@ -9,25 +9,16 @@ if (typeof window !== "undefined" && "Worker" in window) {
 }
 // console.log('+++++++++++++++++++++++++++++++++++++++')
 
-import {
-  PDFJSStatic,
-
-} from "pdfjs-dist";
+import { PDFJSStatic } from "pdfjs-dist";
 const pdfjs: PDFJSStatic = _pdfjs as any;
 
-import {
-  flatten,
-  zeroPad,
-  sortBy
-} from "./utils";
+import { flatten, zeroPad, sortBy } from "./utils";
 
 import { histogram, mean, median, deviation } from "d3-array";
 import { createAutoGrabInfo, createGROBIDMetadata } from "./AutoGrab";
 import { featureToggles } from "../store/featureToggle";
 // const FormData = require('form-data');
 import FormData, { getHeaders } from "form-data";
-import console = require("console");
-
 
 interface FileInfo {
   fullFilePath: string;
@@ -263,7 +254,6 @@ export const processAutoGrab = (
   //   const dir = pdfDirs[0];
   const pdfDirs = await listDirs(pdfRootDir);
   for (let dir of pdfDirs) {
-
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
     let pdf;
@@ -291,7 +281,7 @@ export const processAutoGrab = (
       pdf,
       pdfPath,
       true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
-    ).then(result => console.log("createAutoGrabInfo succeed"))
+    ).then(result => console.log("createAutoGrabInfo succeed"));
   }
   // }
   return pdfDirs;
@@ -308,14 +298,13 @@ export const processGROBID = (
   //   const dir = pdfDirs[0];
   const pdfDirs = await listDirs(pdfRootDir);
   for (let dir of pdfDirs) {
-
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
     await createGROBIDMetadata(
       path.join(dir, "metadataFromGROBID.json"),
       pdfPath,
       true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
-    ).then(result => console.log("createGROBIDMetadata succeed"))
+    ).then(result => console.log("createGROBIDMetadata succeed"));
   }
   // }
   return pdfDirs;
@@ -392,7 +381,7 @@ export const loadPageJson = async (
     ); //todo PageToDisplay type
     pages.push(page);
   }
-  return pages  // sorted by page number
+  return pages; // sorted by page number
 };
 
 export const getLines = (
@@ -550,6 +539,8 @@ export const loadPdfPages = async (
   pageNumbersToLoad: number[] = [],
   scale = 1
 ) => {
+  console.log("pageNumbersToLoad: ", pageNumbersToLoad);
+
   // note this way doesn't work with osx+pdfjs+electron
   //          const pdf = await pdfjs.getDocument(path);
   var data = new Uint8Array(fs.readFileSync(path));
@@ -558,6 +549,7 @@ export const loadPdfPages = async (
   const pageNumbers = checkGetPageNumsToLoad(pdf.numPages, pageNumbersToLoad);
   let pages = [] as _pdfjs.PDFPageProxy[];
   for (const pageNumber of pageNumbers) {
+    console.log('pageNumber: ', pageNumber);
     const page = await pdf.getPage(pageNumber);
     pages.push(page);
   }

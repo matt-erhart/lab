@@ -78,6 +78,7 @@ export default class PageCanvas extends React.Component<
   };
 
   render() {
+    console.log('render canvas');
     return (
       <>
         {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}
