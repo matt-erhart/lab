@@ -21,12 +21,8 @@ import ListView from "./ListView";
 import {
   makePdfPublication,
   NodeBase,
-<<<<<<< HEAD
-  PdfPublication
-=======
   PdfPublication,
   makeLink
->>>>>>> 79a09378ad25585514ebcb1d08da6b4c8d889a61
 } from "../store/creators";
 import {
   createAutoGrabNodesAndLinkToPublicationNodes,
@@ -374,12 +370,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-<<<<<<< HEAD
-        return <GoogleScholar />;
-=======
         // return <GoogleScholar />  
         return <ListView ref={this.rightPanel} />
->>>>>>> 79a09378ad25585514ebcb1d08da6b4c8d889a61
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
