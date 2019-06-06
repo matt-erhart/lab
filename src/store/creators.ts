@@ -66,7 +66,8 @@ const ViewboxDataDefault = {
   pdfDir: "",
   pageNumber: 0,
   type: "pdf.segment.viewbox" as NodeDataTypes,
-  scale: 1
+  scale: 1, // scale of left/top/height/width, will be 1. replaced by scaleAtCapture,
+  scalePreview: 1 // scale at capture, then updated in list view etc
 };
 export type ViewboxData = typeof ViewboxDataDefault;
 export interface PdfSegmentViewbox {

@@ -1,9 +1,8 @@
 import * as React from "react";
 import * as pdfjs from "pdfjs-dist";
-export const isCancelException = error => (
-  error.name === 'RenderingCancelledException'
-  || error.name === 'PromiseCancelledException'
-);
+export const isCancelException = error =>
+  error.name === "RenderingCancelledException" ||
+  error.name === "PromiseCancelledException";
 
 const PageCanvasDefaults = {
   props: {
@@ -43,12 +42,12 @@ export default class PageCanvas extends React.Component<
 
     this.renderTask = page.render({ canvasContext, viewport });
     this.renderTask
-      .then(() => this.renderTask = null)
+      .then(() => (this.renderTask = null))
       .catch(err => {
         if (isCancelException(err)) {
-          return null
+          return null;
         } else {
-          throw(err)
+          throw err;
         }
       });
   };
@@ -76,17 +75,13 @@ export default class PageCanvas extends React.Component<
     const fullQuality = this.canvasCrop.current.toDataURL("image/jpeg", 1.0);
     this.setState({ image: fullQuality });
   };
-
+  style: React.CSSProperties = { position: "absolute" };
   render() {
-    console.log('render canvas');
+    console.log("render canvas");
     return (
       <>
         {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}
-        <canvas
-          draggable={false}
-          style={{ position: "absolute" }}
-          ref={this.canvasLayer}
-        />
+        <canvas draggable={false} style={this.style} ref={this.canvasLayer} />
         {/* <canvas
           draggable={false}
           style={{ position: "absolute", display: "none" }}

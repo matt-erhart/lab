@@ -52,7 +52,16 @@ interface RequiredProps {
 }
 
 export const Pdf = (_props: OptionalProps & RequiredProps) => {
-  console.log("render pdf");
+  const [scale, setScale] = useState(_props.scale);
+  const [pages, setPages] = useState([]);
+
+  useEffect(() => {
+    setPages(pages => {
+      return pages.map(page => {
+        return { ...page, viewport: page.page.getViewport(scale) };
+      });
+    });
+  }, [scale]);
 
   const props = { ...defaultProps, ..._props };
   const boxes: PdfSegmentViewbox[] = useSelector((state: iRootState) => {
@@ -65,11 +74,10 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     });
   });
 
-  const [pages, setPages] = useState([]);
   const loadPdf = async () => {
     const { dir, rootDir } = props.load;
     const pages = await loadFiles({
-      pageNumbersToLoad: [1],
+      pageNumbersToLoad: props.loadPageNumbers,
       pdfDir: dir,
       pdfRootDir: rootDir,
       scale: props.scale
@@ -81,8 +89,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     loadPdf();
   }, []);
 
-  // usecallback add/update/remove redux <----------------------------------
-
+  console.log("pages: ", pages);
   const renderPages = pages => {
     if (pages.length < 1) return null;
     const Pages = pages.map(page => {
@@ -91,8 +98,8 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
       return (
         <div
           draggable={false}
-          id="pdf-page"
-          key={page.pageNumber}
+          id={"pdf-page" + page.pageNumber}
+          key={"pdf-page" + page.pageNumber}
           style={{
             width,
             minWidth: width,
@@ -100,18 +107,19 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
             position: "relative",
             borderBottom: "1px solid lightgrey"
           }}
+          onWheel={onWheel(setScale)}
         >
-          // todo BoxLayer
           <PageBoxes
             id="PageBoxes"
-            boxes={scaledBoxesForPage(boxes, page.pageNumber, props.scale)}
-            pageHeight={height}
-            pageWidth={width}
-            onChange={boxToGraph({
+            boxes={scaledBoxesForPage(boxes, page.pageNumber, scale)}
+            pageHeight={height / scale}
+            pageWidth={width / scale}
+            onChange={boxEventsToRedux({
               pdfDir: props.load.dir,
               pageNumber: page.pageNumber,
-              scale: props.scale
+              scale: scale
             })}
+            scale={scale}
           />
           <PageCanvas
             id={"canvas-" + page.pageNumber}
@@ -143,6 +151,7 @@ const scalePages = (pages: any[], scale: number) => {
 };
 
 const scaledBoxesForPage = (boxes, pageNumber, scale) => {
+  // so now we scale with css so scale at capture is 1
   return boxes
     .filter(b => b.data.pageNumber === pageNumber)
     .map(b => {
@@ -152,10 +161,10 @@ const scaledBoxesForPage = (boxes, pageNumber, scale) => {
         data: {
           ...b.data,
           id: b.id,
-          left: (left / scaleAtCapture) * scale,
-          top: (top / scaleAtCapture) * scale,
-          width: (width / scaleAtCapture) * scale,
-          height: (height / scaleAtCapture) * scale,
+          left: left / scaleAtCapture,
+          top: top / scaleAtCapture,
+          width: width / scaleAtCapture,
+          height: height / scaleAtCapture,
           scale: scaleAtCapture
         }
       };
@@ -197,7 +206,8 @@ const loadFiles = async (props: {
 
 type onChange = React.ComponentProps<typeof PageBoxes>["onChange"];
 
-const boxToGraph = (pdfInfo: {
+//
+const boxEventsToRedux = (pdfInfo: {
   scale: number;
   pageNumber: number;
   pdfDir: string;
@@ -211,9 +221,10 @@ const boxToGraph = (pdfInfo: {
       top,
       width,
       height,
-      scale,
+      scale: 1,
       pageNumber,
-      pdfDir
+      pdfDir,
+      scalePreview: scale
     });
     const linkFromPdf = makeLink(pdfDir, boxNode.id, { type: "more" });
     // style, todo place with nextNodeLoc
@@ -228,5 +239,19 @@ const boxToGraph = (pdfInfo: {
     const { id, box } = event.payload;
     console.log("event.payload: ", event.payload);
     dispatch.graph.updateBatch({ nodes: [{ id, data: { ...box } }] });
+  }
+
+  if (event.type === "delete") {
+    dispatch.graph.removeBatch({ nodes: [event.payload.id] });
+  }
+};
+
+const onWheel = (setScale: React.Dispatch<React.SetStateAction<number>>) => (
+  e: React.WheelEvent<HTMLDivElement>
+) => {
+  e.persist();
+  if (e.ctrlKey) {
+    e.preventDefault();
+    setScale(prevScale => prevScale - e.deltaY / 1000);
   }
 };

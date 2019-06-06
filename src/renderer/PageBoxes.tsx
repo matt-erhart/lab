@@ -10,7 +10,7 @@ import {
 } from "react";
 import interact from "interactjs";
 import "@interactjs/types";
-import { AdjustableBox } from "./ViewboxDiv";
+import { AdjustableBox, MenuTypes } from "./ViewboxDiv";
 import { useSelector } from "react-redux";
 import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
@@ -18,14 +18,18 @@ import { Box } from "./geometry";
 
 const OuterMostDiv = styled.div<{ pageWidth: number; pageHeight: number }>`
   position: absolute;
+  top: 0px;
+  left: 0px;
   width: ${p => p.pageWidth}px;
   height: ${p => p.pageHeight}px;
   z-index: 2;
+  transform-origin: left top;
 `;
 
 type onChangeEvents =
   | { type: "updated" | "deleted"; payload: { id: string; box: Box } }
-  | { type: "added"; payload: Box };
+  | { type: "added"; payload: Box }
+  | { type: MenuTypes; payload: { id: string } };
 ``;
 interface Props {
   id: string;
@@ -33,6 +37,7 @@ interface Props {
   pageHeight: number;
   boxes: any[];
   onChange: (event: onChangeEvents) => void;
+  scale: number;
 }
 /**
  * draws boxes on pdf pages
@@ -49,14 +54,21 @@ export const PageBoxes: React.FC<Props> = props => {
     }
   }, [points]);
 
+  //
   type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
   const onChange = useCallback<onChange>(
     action => {
-      props.onChange({
-        type: "updated",
-        payload: { id: action.payload.id, box: action.payload.box }
-      });
-      console.log("action.payload.box : ", action.payload.box);
+      if (action.type === "moved" || action.type === "resized") {
+        props.onChange({
+          type: "updated",
+          payload: { id: action.payload.id, box: action.payload.box }
+        });
+      } else {
+        props.onChange({
+          type: action.type,
+          payload: { id: action.payload.id }
+        });
+      }
     },
     [props.onChange]
   );
@@ -70,6 +82,7 @@ export const PageBoxes: React.FC<Props> = props => {
         ref={outerRef}
         pageWidth={props.pageWidth}
         pageHeight={props.pageHeight}
+        style={{ transform: `scale(${props.scale})` }}
       >
         {!!box && startedDrawing && (
           <div

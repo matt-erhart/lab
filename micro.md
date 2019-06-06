@@ -1,12 +1,22 @@
-delete in redux
+widthScale1, heightScale1
 
+wheel scale -> local state
 
 
 
 nextnodeloc
+-- migration
+!!viewbox.scalePreview
+
 
 --- defer
-left/right hover menu
+
+restrict to original page
+prevent small boxes in pdf
+transition for box hover menu -> fade in on move
+snippet for type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
+  const onChange = useCallback<onChange>(
+left/right hover menu + animation transistion
 chain links in simple interface
 maigc strings
 load pdf pages in sequence

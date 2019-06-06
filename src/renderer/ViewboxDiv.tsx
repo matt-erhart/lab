@@ -18,10 +18,13 @@ import { MdDeleteForever, MdComment, MdLabel } from "react-icons/md";
 import { useNearestSide } from "./geometryFromHtml";
 const _AdjustableBox = styled.div`
   position: absolute;
-  border: 2px solid green;
+  border: 1px solid green;
   background-color: transparent;
+  transition: opacity 0.5s;
 
   div {
+    transition: opacity 0.5s;
+
     opacity: 0;
     cursor: pointer;
     pointer-events: none;
@@ -51,13 +54,19 @@ const _AdjustableBox = styled.div`
   }
 `;
 
+type AdjustTypes = "moved" | "resized";
+interface AdjustAction {
+  type: AdjustTypes;
+  payload: { id: string; box: Box };
+}
+
+export type MenuTypes = "delete" | "comment" | "scrollToInGraph";
+type MenuAction = { type: MenuTypes; payload: { id: string } };
+
 interface RequiredProps {
   id: string;
   initBox: Box;
-  onChange: (props: {
-    type: "moved" | "resized" | "delete";
-    payload: { id: string; box: Box };
-  }) => void;
+  onChange: (props: AdjustAction | MenuAction) => void;
 }
 // ViewboxDiv = React.memo(props => {}, shouldMemo)
 const shouldMemo = (prevProps: RequiredProps, newProps: RequiredProps) => {
@@ -82,8 +91,15 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
     if (type === "resized") props.onChange({ type: "resized", payload });
   }, [type]);
 
-  const { side, top } = useNearestSide(divRef) || { side: "", top: 0 };
-  console.log("side, top: ", side, top);
+  type onMenuChange = React.ComponentProps<typeof HoverMenu>["onChange"];
+
+  const onMenu: onMenuChange = useCallback(type => {
+    props.onChange({ type, payload: { id: props.id } });
+  }, []);
+
+  const menuHeight = 20;
+  const { side, height } = useNearestSide(divRef) || { side: "", height: 0 };
+  const top = side === "top" ? -menuHeight : height - 2;
 
   const { initBox, ...rest } = props;
   return (
@@ -96,17 +112,18 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
       onMouseDown={e => e.stopPropagation()}
       onDragStart={e => e.preventDefault()}
     >
-      <HoverMenu side={side} top={top} />
+      <HoverMenu top={top} height={menuHeight} onChange={onMenu} />
     </_AdjustableBox>
   );
 }, shouldMemo);
 
-interface RequiredProps {
-  side: "top" | "bottom";
+interface HoverMenuProps {
   top: number;
+  height: number;
+  onChange: (props: MenuTypes) => void;
 }
 
-const HoverMenu: React.FC<RequiredProps> = props => {
+const HoverMenu: React.FC<HoverMenuProps> = props => {
   return (
     <div
       id="segmentBoxMenu"
@@ -116,23 +133,23 @@ const HoverMenu: React.FC<RequiredProps> = props => {
         display: "flex",
         justifyContent: "space-around",
         alignContent: "center",
-        height: 28
+        height: props.height
       }}
     >
       <MdDeleteForever
-        size={26}
+        size={props.height - 1}
         id="delete"
         onClick={e => {
           e.stopPropagation();
-          console.log("delete");
+          props.onChange("delete");
         }}
       />
       <MdComment
-        size={26}
+        size={props.height - 1}
         id="comment"
         onClick={e => {
           e.stopPropagation();
-          console.log("comment");
+          props.onChange("comment");
         }}
       />
     </div>

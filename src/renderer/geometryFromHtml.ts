@@ -63,7 +63,7 @@ import {
 } from "react";
 import memoize from "fast-memoize";
 
-type returnType = { side: "top" | "bottom" | "left" | "right"; top: number };
+type returnType = { side: "top" | "bottom" | "left" | "right"; height: number };
 export const useNearestSide = (
   ref: React.MutableRefObject<HTMLElement>
 ): returnType => {
@@ -73,9 +73,8 @@ export const useNearestSide = (
   const setHoveredSide = (e: MouseEvent) => {
     // if you want left/right, add it to ["top", "bottom"]
     const newSide = getNearestSide(ref.current, ["top", "bottom"])(e);
-    const height = ref.current.getBoundingClientRect().height || 0;
-    const top = newSide.side === "top" ? -30 : height - 2;
-    setSide({ side: newSide.side, top });
+    const height = ref.current.offsetHeight || 0;
+    setSide({ side: newSide.side, height });
   };
 
   useEffect(() => {
