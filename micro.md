@@ -1,11 +1,16 @@
+react-intersection-observer
+
+
+
+
 add comment
-scrollTo + view on canvas
+segment and then comment
+view on canvas / isMainreader
+scrollTo on props
+virtual pdf
 
-decide if scale or resize
-  - scale faster but lines will be thick
-smooth scroll 2h
-
-
+scale to redux
+existing viewboxes
 
 widthScale1, heightScale1
 scale with redux
@@ -20,7 +25,7 @@ nextnodeloc
 
 
 --- defer
-
+refactor pagecanvas: 
 restrict to original page
 prevent small boxes in pdf
 transition for box hover menu -> fade in on move

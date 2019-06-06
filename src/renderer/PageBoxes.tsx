@@ -16,13 +16,11 @@ import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
 import { Box } from "./geometry";
 
-const OuterMostDiv = styled.div<{ pageWidth: number; pageHeight: number }>`
+const OuterMostDiv = styled.div`
   position: absolute;
   top: 0px;
   left: 0px;
-  width: ${p => p.pageWidth}px;
-  height: ${p => p.pageHeight}px;
-  z-index: 2;
+  z-index: 3;
   transform-origin: left top;
 `;
 
@@ -80,9 +78,11 @@ export const PageBoxes: React.FC<Props> = props => {
         onDrag={e => e.preventDefault()}
         id={outerId}
         ref={outerRef}
-        pageWidth={props.pageWidth}
-        pageHeight={props.pageHeight}
-        style={{ transform: `scale(${props.scale})` }}
+        style={{
+          transform: `scale(${props.scale})`,
+          width: props.pageWidth,
+          height: props.pageHeight
+        }}
       >
         {!!box && startedDrawing && (
           <div

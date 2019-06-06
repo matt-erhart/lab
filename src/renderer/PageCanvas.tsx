@@ -25,6 +25,7 @@ export default class PageCanvas extends React.Component<
   private renderScale1Task;
   private canvasLayer = React.createRef<HTMLCanvasElement>();
   private canvasScale1 = React.createRef<HTMLCanvasElement>();
+  // todo perf: use a ref callback to set the ref and then hide
   private canvasCrop = React.createRef<HTMLCanvasElement>();
   static defaultProps = PageCanvasDefaults.props;
   private subjectRendering = new Subject();
@@ -71,7 +72,6 @@ export default class PageCanvas extends React.Component<
     };
 
     if (this.renderTask && this.renderTask._internalRenderTask.running) {
-      console.log("cancel");
       this.renderTask.cancel();
     }
 
@@ -92,6 +92,7 @@ export default class PageCanvas extends React.Component<
   };
   subscription;
   async componentDidMount() {
+    // if no render requests for 100ms, then call the func to render = smooth scroll
     this.subscription = this.subjectRendering
       .pipe(
         debounceTime(100),
@@ -104,7 +105,9 @@ export default class PageCanvas extends React.Component<
     this.setState({ isRendering: false });
   }
 
-  component;
+  componentWillUnmount() {
+    this.subscription.unsubscribe();
+  }
 
   rxTest = defer(this.renderCanvas).pipe(debounceTime(2200));
 

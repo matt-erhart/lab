@@ -811,6 +811,11 @@
     redux-persist "^5.10.0"
     rollup-plugin-typescript2 "^0.17.1"
 
+"@rooks/use-did-mount@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@rooks/use-did-mount/-/use-did-mount-3.0.1.tgz#0c7ad72e7a722b38f2a46c447bd75624ca1d74c0"
+  integrity sha512-+k0gGHy/hUbQPlqge6WSV0+LbnWR1+bYOAg1Gw/ewB5vGwNQSRs4AK54eRM3saZPjwvgNZC0iaZQk02m/wsXlg==
+
 "@slate-editor/components@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@slate-editor/components/-/components-5.1.0.tgz#0a50ef2cfb3a6880c00cfad3be5abb0aa9e85ec8"
@@ -7598,6 +7603,14 @@ react-input-autosize@^2.2.1:
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
   dependencies:
     prop-types "^15.5.8"
+
+react-intersection-observer@^8.23.0:
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.23.0.tgz#1533aaf39cc70300ff8ca37e6551d2d68a589cd0"
+  integrity sha512-kHXfxhGKvVDNkrvmh9CKCnAWvJBigyB7oSDzMXL54weFDwwI4WfTr58YauZ0RRPkGzoD/hYEuzfS1wipXn23fA==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    invariant "^2.2.4"
 
 react-is@^16.5.2:
   version "16.8.4"

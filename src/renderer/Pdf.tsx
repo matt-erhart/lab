@@ -40,8 +40,7 @@ const defaultProps = {
   height: undefined as number | string,
   scrollToLeft: 0,
   scrollToTop: 0,
-  scrollToPage: 0,
-  scrollToElement: undefined as HTMLElement,
+  scrollToPageNumber: 0,
   loadPageNumbers: [] as number[]
 };
 
@@ -52,8 +51,23 @@ interface RequiredProps {
 }
 
 export const Pdf = (_props: OptionalProps & RequiredProps) => {
-  const [scale, setScale] = useState(_props.scale);
+  const props = { ...defaultProps, ..._props };
+  const [scale, setScale] = useState(props.scale);
   const [pages, setPages] = useState([]);
+  const [pageNumbersInView, setPageNumbersInView] = useState([]);
+  const scrollRef = useRef(null);
+
+  const scrollRefCallback = useCallback(
+    node => {
+      if (node !== null) {
+        const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
+
+        node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
+        scrollRef.current = node;
+      }
+    },
+    [pages]
+  );
 
   useEffect(() => {
     setPages(pages => {
@@ -63,7 +77,6 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     });
   }, [scale]);
 
-  const props = { ...defaultProps, ..._props };
   const boxes: PdfSegmentViewbox[] = useSelector((state: iRootState) => {
     return Object.values(state.graph.nodes).filter(n => {
       return (
@@ -93,6 +106,9 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     if (pages.length < 1) return null;
     const Pages = pages.map(page => {
       const { width, height } = page.viewport;
+      const shouldRenderPage =
+        pageNumbersInView.includes(page.pageNumber) ||
+        props.loadPageNumbers.length === 1;
 
       return (
         <div
@@ -100,34 +116,38 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
           id={"pdf-page" + page.pageNumber}
           key={"pdf-page" + page.pageNumber}
           style={{
-            width: width*scale,
-            minWidth: width*scale,
-            height: height*scale,
+            width: width,
+            minWidth: width,
+            height: height,
             position: "relative",
             borderBottom: "1px solid lightgrey"
           }}
-          onWheel={onWheel(setScale)}
         >
-          <PageBoxes
-            id="PageBoxes"
-            boxes={scaledBoxesForPage(boxes, page.pageNumber, scale)}
-            pageHeight={height / scale}
-            pageWidth={width / scale}
-            onChange={boxEventsToRedux({
-              pdfDir: props.load.dir,
-              pageNumber: page.pageNumber,
-              scale: scale
-            })}
-            scale={scale}
-          />
-          <PageCanvas
-            id={"canvas-" + page.pageNumber}
-            key={"canvas-" + page.pageNumber}
-            page={page.page}
-            viewport={page.viewport}
-            scale={scale}
-
-          />
+          (
+          {shouldRenderPage && (
+            <PageBoxes
+              id="PageBoxes"
+              boxes={scaledBoxesForPage(boxes, page.pageNumber, scale)}
+              pageHeight={height / scale}
+              pageWidth={width / scale}
+              onChange={boxEventsToRedux({
+                pdfDir: props.load.dir,
+                pageNumber: page.pageNumber,
+                scale: scale
+              })}
+              scale={scale}
+            />
+          )}
+          )
+          {shouldRenderPage && (
+            <PageCanvas
+              id={"canvas-" + page.pageNumber}
+              key={"canvas-" + page.pageNumber}
+              page={page.page}
+              viewport={page.viewport}
+              scale={scale}
+            />
+          )}
         </div>
       );
     });
@@ -135,20 +155,69 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   };
 
   return (
-    <div draggable={false} style={{ overflow: "scroll", height: "100vh" }}>
+    <div
+      ref={scrollRefCallback}
+      draggable={false}
+      style={{ overflow: "scroll", height: "100vh" }}
+      onWheel={onWheel(setScale)}
+      onScroll={onScrollVirtualize(
+        scrollRef,
+        pages,
+        pageNumbersInView,
+        setPageNumbersInView
+      )}
+    >
       {renderPages(pages)}
     </div>
   );
 };
 
-const scalePages = (pages: any[], scale: number) => {
-  // todo css transform scale and then when rendered swap it
-  let scaledPages = [];
-  for (let [ix, page] of pages.entries()) {
-    const viewport = page.page.getViewport(scale);
-    scaledPages.push({ ...page, viewport });
+const onScrollVirtualize = (
+  scrollRef,
+  pages,
+  pageNumbersInView,
+  setPageNumbersInView
+) => e => {
+  if (!scrollRef || !pages || !setPageNumbersInView) return undefined;
+  !!e && e.stopPropagation();
+  const newPageNumbersInView = getPageNumbersInView(scrollRef, pages);
+  console.log("pageNumbersInView: ", pageNumbersInView);
+  if (JSON.stringify(pageNumbersInView) === JSON.stringify(pageNumbersInView)) {
+    setPageNumbersInView(newPageNumbersInView);
   }
-  return scaledPages;
+};
+
+const getPageNumbersInView = (scrollRef, pages) => {
+  const { height } = scrollRef.current.getBoundingClientRect();
+  const scrollTop = scrollRef.current.scrollTop;
+  console.log("scrollTop: ", scrollTop);
+
+  let pageTop = 0;
+  let pageIxsInView = [];
+  for (let pix in pages) {
+    const p = pages[pix];
+    const pageBottom = pageTop + p.viewport.height;
+    const pageIsBellowView = pageTop > scrollTop + height;
+    const pageIsAboveView = pageBottom < scrollTop;
+    const pageNotInView = pageIsBellowView || pageIsAboveView;
+    if (!pageNotInView) pageIxsInView.push(parseInt(pix) + 1);
+    pageTop = pageBottom;
+  }
+  const minPage = Math.min(...pageIxsInView);
+  const maxPage = Math.max(...pageIxsInView);
+  if (minPage > 1) pageIxsInView.push(minPage - 1);
+  if (maxPage < pages.length + 1) pageIxsInView.push(maxPage + 1);
+
+  return pageIxsInView;
+};
+
+const getPageOffset = (pages, pageNumber) => {
+  return pages.reduce((sum, page) => {
+    if (page.pageNumber < pageNumber) {
+      sum += page.viewport.height;
+    }
+    return sum;
+  }, 0);
 };
 
 const scaledBoxesForPage = (boxes, pageNumber, scale) => {
@@ -238,7 +307,7 @@ const boxEventsToRedux = (pdfInfo: {
 
   if (event.type === "updated") {
     const { id, box } = event.payload;
-    console.log("event.payload: ", event.payload);
+
     dispatch.graph.updateBatch({ nodes: [{ id, data: { ...box } }] });
   }
 
@@ -253,6 +322,9 @@ const onWheel = (setScale: React.Dispatch<React.SetStateAction<number>>) => (
   e.persist();
   if (e.ctrlKey) {
     e.preventDefault();
-    setScale(prevScale => prevScale - e.deltaY / 1000);
+    setScale(prevScale => {
+      const newScale = prevScale - e.deltaY / 1000;
+      return newScale >= 0.5 ? newScale : 0.5;
+    });
   }
 };
