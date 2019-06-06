@@ -414,10 +414,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     // return <DocEditor />;
     return (
       <Pdf
-        scale={3}
+        scale={1}
         load={{ dir: pdfDir, rootDir: pdfRootDir }}
         loadPageNumbers={[]}
-        scrollToPageNumber={2}
+        scrollToPageNumber={1}
       />
     );
 

@@ -57,17 +57,14 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
 
-  const scrollRefCallback = useCallback(
-    node => {
-      if (node !== null) {
-        const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
+  const scrollRefCallback = useCallback(node => {
+    if (node !== null) {
+      const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
 
-        node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
-        scrollRef.current = node;
-      }
-    },
-    [pages]
-  );
+      node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
+      scrollRef.current = node;
+    }
+  }, []);
 
   useEffect(() => {
     setPages(pages => {
@@ -82,7 +79,8 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
       return (
         n.data.type === "pdf.segment.viewbox" &&
         n.data.pdfDir === props.load.dir &&
-        props.loadPageNumbers.includes(n.data.pageNumber)
+        (props.loadPageNumbers.includes(n.data.pageNumber) ||
+          props.loadPageNumbers.length === 0)
       );
     });
   });
@@ -96,6 +94,12 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
       scale: props.scale
     }); // todo load in order
     setPages(pages);
+    onScrollVirtualize(
+      scrollRef,
+      pages,
+      pageNumbersInView,
+      setPageNumbersInView
+    )(null);
   };
 
   useEffect(() => {
@@ -181,7 +185,7 @@ const onScrollVirtualize = (
   if (!scrollRef || !pages || !setPageNumbersInView) return undefined;
   !!e && e.stopPropagation();
   const newPageNumbersInView = getPageNumbersInView(scrollRef, pages);
-  console.log("pageNumbersInView: ", pageNumbersInView);
+
   if (JSON.stringify(pageNumbersInView) === JSON.stringify(pageNumbersInView)) {
     setPageNumbersInView(newPageNumbersInView);
   }
@@ -190,7 +194,6 @@ const onScrollVirtualize = (
 const getPageNumbersInView = (scrollRef, pages) => {
   const { height } = scrollRef.current.getBoundingClientRect();
   const scrollTop = scrollRef.current.scrollTop;
-  console.log("scrollTop: ", scrollTop);
 
   let pageTop = 0;
   let pageIxsInView = [];
@@ -283,6 +286,7 @@ const boxEventsToRedux = (pdfInfo: {
   pdfDir: string;
 }): onChange => event => {
   if (event.type === "added") {
+    console.log("event.type: ", event.type);
     const { left, top, width, height } = event.payload;
     const { scale, pageNumber, pdfDir } = pdfInfo;
     // note we save with scale = 1

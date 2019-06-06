@@ -80,7 +80,9 @@ export default class PageCanvas extends React.Component<
     this.renderTask
       .then(() => {
         this.renderTask = null;
-        this.canvasLayer.current.style.opacity = "1";
+        if (!!this.canvasLayer.current)
+          this.canvasLayer.current.style.opacity = "1";
+        this.setState({ isRendering: false });
       })
       .catch(err => {
         if (isCancelException(err)) {
@@ -95,8 +97,11 @@ export default class PageCanvas extends React.Component<
     // if no render requests for 100ms, then call the func to render = smooth scroll
     this.subscription = this.subjectRendering
       .pipe(
-        debounceTime(100),
-        tap(async () => await this.renderCanvas())
+        debounceTime(50),
+        tap(async () => {
+          this.setState({ isRendering: true });
+          await this.renderCanvas();
+        })
       )
       .subscribe();
     this.scale1Canvas();
@@ -114,9 +119,17 @@ export default class PageCanvas extends React.Component<
   async componentDidUpdate(prevProps) {
     const { viewport } = this.props;
     if (prevProps.viewport !== viewport) {
-      this.canvasLayer.current.style.opacity = "0";
+      if (!!this.canvasLayer.current)
+        this.canvasLayer.current.style.opacity = "0";
       this.subjectRendering.next("request render"); // so we can debounce rendering on zoom
     }
+  }
+
+  shouldComponentUpdate(prevProps, prevState) {
+    const scaleChange = prevProps.scale !== this.props.scale;
+    // const renderDone = !this.state.isRendering;
+    // const justFinishedRender = prevState.isRendering;
+    return scaleChange || prevProps.viewport !== this.props.viewport
   }
 
   // getCanvasImage = () => {
@@ -135,6 +148,7 @@ export default class PageCanvas extends React.Component<
     transform: `scale(${props.scale})`
   });
   render() {
+    // todo
     return (
       <>
         {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}

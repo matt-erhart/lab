@@ -639,7 +639,6 @@ export const loadPdfPages = async (
   const pageNumbers = checkGetPageNumsToLoad(pdf.numPages, pageNumbersToLoad);
   let pages = [] as _pdfjs.PDFPageProxy[];
   for (const pageNumber of pageNumbers) {
-    console.log('pageNumber: ', pageNumber);
     const page = await pdf.getPage(pageNumber);
     pages.push(page);
   }

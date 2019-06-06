@@ -1,4 +1,3 @@
-react-intersection-observer
 
 
 
@@ -7,7 +6,6 @@ add comment
 segment and then comment
 view on canvas / isMainreader
 scrollTo on props
-virtual pdf
 
 scale to redux
 existing viewboxes
