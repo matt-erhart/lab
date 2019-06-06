@@ -3,14 +3,18 @@ import * as pdfjs from "pdfjs-dist";
 export const isCancelException = error =>
   error.name === "RenderingCancelledException" ||
   error.name === "PromiseCancelledException";
+import { from, defer } from "rxjs";
+import { take, debounceTime, tap } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 const PageCanvasDefaults = {
   props: {
     id: "",
     page: undefined as pdfjs.PDFPageProxy,
-    viewport: undefined as pdfjs.PDFPageViewport
+    viewport: undefined as pdfjs.PDFPageViewport,
+    scale: 1
   },
-  state: { image: "" as string }
+  state: { image: "" as string, isRendering: true }
 };
 export default class PageCanvas extends React.Component<
   typeof PageCanvasDefaults.props,
@@ -18,9 +22,39 @@ export default class PageCanvas extends React.Component<
 > {
   state = PageCanvasDefaults.state;
   private renderTask;
+  private renderScale1Task;
   private canvasLayer = React.createRef<HTMLCanvasElement>();
+  private canvasScale1 = React.createRef<HTMLCanvasElement>();
   private canvasCrop = React.createRef<HTMLCanvasElement>();
   static defaultProps = PageCanvasDefaults.props;
+  private subjectRendering = new Subject();
+
+  scale1Canvas = async () => {
+    const { page } = this.props;
+    const viewport = page.getViewport(1);
+    this.canvasScale1.current.height = viewport.height;
+    this.canvasScale1.current.width = viewport.width;
+    const canvasContext = this.canvasScale1.current.getContext("2d");
+    if (
+      this.renderScale1Task &&
+      this.renderScale1Task._internalRenderTask.running
+    ) {
+      this.renderScale1Task.cancel();
+    }
+
+    this.renderScale1Task = page.render({ canvasContext, viewport });
+    this.renderScale1Task
+      .then(() => {
+        this.renderScale1Task = null;
+      })
+      .catch(err => {
+        if (isCancelException(err)) {
+          return null;
+        } else {
+          throw err;
+        }
+      });
+  };
 
   renderCanvas = async () => {
     const { page, viewport } = this.props;
@@ -37,12 +71,17 @@ export default class PageCanvas extends React.Component<
     };
 
     if (this.renderTask && this.renderTask._internalRenderTask.running) {
+      console.log("cancel");
       this.renderTask.cancel();
     }
 
     this.renderTask = page.render({ canvasContext, viewport });
+
     this.renderTask
-      .then(() => (this.renderTask = null))
+      .then(() => {
+        this.renderTask = null;
+        this.canvasLayer.current.style.opacity = "1";
+      })
       .catch(err => {
         if (isCancelException(err)) {
           return null;
@@ -51,42 +90,65 @@ export default class PageCanvas extends React.Component<
         }
       });
   };
-
+  subscription;
   async componentDidMount() {
-    await this.renderCanvas();
+    this.subscription = this.subjectRendering
+      .pipe(
+        debounceTime(100),
+        tap(async () => await this.renderCanvas())
+      )
+      .subscribe();
+    this.scale1Canvas();
+    this.renderCanvas();
 
-    // this.getCanvasImage();
+    this.setState({ isRendering: false });
   }
+
+  component;
+
+  rxTest = defer(this.renderCanvas).pipe(debounceTime(2200));
 
   async componentDidUpdate(prevProps) {
     const { viewport } = this.props;
     if (prevProps.viewport !== viewport) {
-      await this.renderCanvas();
+      this.canvasLayer.current.style.opacity = "0";
+      this.subjectRendering.next("request render"); // so we can debounce rendering on zoom
     }
   }
 
-  getCanvasImage = () => {
-    const cropContext = this.canvasCrop.current.getContext("2d");
-    const canvasContext = this.canvasLayer.current.getContext("2d");
-    const imgData = canvasContext.getImageData(100, 100, 200, 200);
-    this.canvasCrop.current.height = imgData.height;
-    this.canvasCrop.current.width = imgData.width;
-    cropContext.putImageData(imgData, 0, 0);
-    const fullQuality = this.canvasCrop.current.toDataURL("image/jpeg", 1.0);
-    this.setState({ image: fullQuality });
-  };
-  style: React.CSSProperties = { position: "absolute" };
+  // getCanvasImage = () => {
+  //   const cropContext = this.canvasCrop.current.getContext("2d");
+  //   const canvasContext = this.canvasLayer.current.getContext("2d");
+  //   const imgData = canvasContext.getImageData(100, 100, 200, 200);
+  //   this.canvasCrop.current.height = imgData.height;
+  //   this.canvasCrop.current.width = imgData.width;
+  //   cropContext.putImageData(imgData, 0, 0);
+  //   const fullQuality = this.canvasCrop.current.toDataURL("image/jpeg", 1.0);
+  //   this.setState({ image: fullQuality });
+  // };
+  style = (props): React.CSSProperties => ({
+    position: "absolute",
+    transformOrigin: "top left",
+    transform: `scale(${props.scale})`
+  });
   render() {
-    console.log("render canvas");
     return (
       <>
         {/* {this.state.image.length > 0 && <img src={this.state.image} alt="" />} */}
-        <canvas draggable={false} style={this.style} ref={this.canvasLayer} />
-        {/* <canvas
+        <canvas
           draggable={false}
-          style={{ position: "absolute", display: "none" }}
-          ref={this.canvasCrop}
-        /> */}
+          style={{
+            position: "absolute",
+            transformOrigin: "top left",
+            zIndex: 2
+          }}
+          ref={this.canvasLayer}
+        />
+        <canvas
+          draggable={false}
+          style={this.style(this.props)}
+          ref={this.canvasScale1}
+        />
       </>
     );
   }

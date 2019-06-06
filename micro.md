@@ -1,4 +1,14 @@
+add comment
+scrollTo + view on canvas
+
+decide if scale or resize
+  - scale faster but lines will be thick
+smooth scroll 2h
+
+
+
 widthScale1, heightScale1
+scale with redux
 
 wheel scale -> local state
 

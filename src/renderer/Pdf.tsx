@@ -89,7 +89,6 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     loadPdf();
   }, []);
 
-  console.log("pages: ", pages);
   const renderPages = pages => {
     if (pages.length < 1) return null;
     const Pages = pages.map(page => {
@@ -101,9 +100,9 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
           id={"pdf-page" + page.pageNumber}
           key={"pdf-page" + page.pageNumber}
           style={{
-            width,
-            minWidth: width,
-            height,
+            width: width*scale,
+            minWidth: width*scale,
+            height: height*scale,
             position: "relative",
             borderBottom: "1px solid lightgrey"
           }}
@@ -126,6 +125,8 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
             key={"canvas-" + page.pageNumber}
             page={page.page}
             viewport={page.viewport}
+            scale={scale}
+
           />
         </div>
       );
