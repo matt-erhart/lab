@@ -117,19 +117,34 @@ export default class PageCanvas extends React.Component<
   rxTest = defer(this.renderCanvas).pipe(debounceTime(2200));
 
   async componentDidUpdate(prevProps) {
-    const { viewport } = this.props;
+    const { viewport, page } = this.props;
+    const figureprint1 = page.transport.pdfDocument.pdfInfo.fingerprint;
+    const figureprint2 =
+      prevProps.page.transport.pdfDocument.pdfInfo.fingerprint;
+
     if (prevProps.viewport !== viewport) {
       if (!!this.canvasLayer.current)
         this.canvasLayer.current.style.opacity = "0";
       this.subjectRendering.next("request render"); // so we can debounce rendering on zoom
     }
+
+    if (figureprint1 !== figureprint2) {
+      this.scale1Canvas();
+      this.subjectRendering.next("request render"); // so we can debounce rendering on zoom
+
+    }
   }
 
   shouldComponentUpdate(prevProps, prevState) {
+    const { viewport, page } = this.props;
     const scaleChange = prevProps.scale !== this.props.scale;
+    const viewportChangeHeight =
+      prevProps.viewport.height !== this.props.viewport.height;
+    const viewportChangeWidth =
+      prevProps.viewport.width !== this.props.viewport.width;
     // const renderDone = !this.state.isRendering;
     // const justFinishedRender = prevState.isRendering;
-    return scaleChange || prevProps.viewport !== this.props.viewport
+    return scaleChange || viewportChangeHeight || viewportChangeWidth;
   }
 
   // getCanvasImage = () => {
@@ -148,6 +163,7 @@ export default class PageCanvas extends React.Component<
     transform: `scale(${props.scale})`
   });
   render() {
+    
     // todo
     return (
       <>

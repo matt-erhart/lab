@@ -1,21 +1,14 @@
 
-
+view on canvas
 
 
 add comment
 segment and then comment
-view on canvas / isMainreader
+ / isMainreader
 scrollTo on props
 
-scale to redux
 existing viewboxes
-
-widthScale1, heightScale1
 scale with redux
-
-wheel scale -> local state
-
-
 
 nextnodeloc
 -- migration
@@ -23,6 +16,8 @@ nextnodeloc
 
 
 --- defer
+scale to redux
+
 refactor pagecanvas: 
 restrict to original page
 prevent small boxes in pdf

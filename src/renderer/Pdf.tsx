@@ -52,6 +52,8 @@ interface RequiredProps {
 
 export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const props = { ...defaultProps, ..._props };
+  
+
   const [scale, setScale] = useState(props.scale);
   const [pages, setPages] = useState([]);
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
@@ -68,6 +70,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
 
   useEffect(() => {
     setPages(pages => {
+      console.log('scale',scale);
       return pages.map(page => {
         return { ...page, viewport: page.page.getViewport(scale) };
       });
@@ -91,7 +94,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
       pageNumbersToLoad: props.loadPageNumbers,
       pdfDir: dir,
       pdfRootDir: rootDir,
-      scale: props.scale
+      scale: scale
     }); // todo load in order
     setPages(pages);
     onScrollVirtualize(
@@ -104,7 +107,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
 
   useEffect(() => {
     loadPdf();
-  }, []);
+  }, [props.load]);
 
   const renderPages = pages => {
     if (pages.length < 1) return null;
@@ -127,7 +130,6 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
             borderBottom: "1px solid lightgrey"
           }}
         >
-          (
           {shouldRenderPage && (
             <PageBoxes
               id="PageBoxes"
@@ -142,7 +144,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
               scale={scale}
             />
           )}
-          )
+
           {shouldRenderPage && (
             <PageCanvas
               id={"canvas-" + page.pageNumber}
@@ -162,7 +164,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     <div
       ref={scrollRefCallback}
       draggable={false}
-      style={{ overflow: "scroll", height: "100vh" }}
+      style={{ overflow: "scroll" }}
       onWheel={onWheel(setScale)}
       onScroll={onScrollVirtualize(
         scrollRef,
@@ -286,7 +288,7 @@ const boxEventsToRedux = (pdfInfo: {
   pdfDir: string;
 }): onChange => event => {
   if (event.type === "added") {
-    console.log("event.type: ", event.type);
+    
     const { left, top, width, height } = event.payload;
     const { scale, pageNumber, pdfDir } = pdfInfo;
     // note we save with scale = 1
