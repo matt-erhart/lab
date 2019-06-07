@@ -30,7 +30,7 @@ import {
   makeLink,
   PdfSegmentViewbox
 } from "../store/creators";
-
+import equal from "fast-deep-equal";
 export type LoadFile = { rootDir: string; dir: string };
 export type LoadUrl = string;
 
@@ -50,7 +50,11 @@ interface RequiredProps {
   load: LoadFile; // todo | LoadUrl;
 }
 
-export const Pdf = (_props: OptionalProps & RequiredProps) => {
+const shouldMemoPdf = (prevProps, nextProps) => {
+  return equal(prevProps, nextProps);
+};
+
+export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const props = { ...defaultProps, ..._props };
 
   const [scale, setScale] = useState(props.scale);
@@ -58,19 +62,20 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
 
-  const scrollRefCallback = useCallback(node => {
-    if (node !== null) {
-      const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
-      node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
-      console.log(node, node.scrollTo, pagesOffset, props);
-
-      scrollRef.current = node;
-    }
-  }, [_props.scrollToTop]);
+  const scrollRefCallback = useCallback(
+    node => {
+      // called when react assigns the ref to the html node which is after pages.length > 0
+      if (node !== null) {
+        const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
+        node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
+        scrollRef.current = node;
+      }
+    },
+    [pages]
+  );
 
   useEffect(() => {
     setPages(pages => {
-      console.log("scale", scale);
       return pages.map(page => {
         return { ...page, viewport: page.page.getViewport(scale) };
       });
@@ -160,6 +165,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
     return Pages;
   };
 
+  if (pages.length < 1) return null; // required for scrollTo on mount to work
   return (
     <div
       id="pdf-scroll"
@@ -181,7 +187,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
       {renderPages(pages)}
     </div>
   );
-};
+}, shouldMemoPdf);
 
 const onScrollVirtualize = (
   scrollRef,

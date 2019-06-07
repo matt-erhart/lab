@@ -286,7 +286,6 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-    console.log("nextNodeLocation: ", nextNodeLocation);
 
     this.setState(state => {
       return { frames: framesInView, links, nextNodeLocation };
@@ -452,7 +451,6 @@ export class GraphContainer extends React.Component<
       if (isUnique) {
         all.push(makeLink(sourceId, targetId));
       } else {
-        console.log("link already exists");
       }
       return all;
     }, []) as aLink[];
@@ -551,8 +549,6 @@ export class GraphContainer extends React.Component<
           scale,
           pageNumber
         } = node.data as ViewboxData;
-        console.log('left: ', left);
-        console.log('top: ', top);
 
         const { modeIx, modes } = node.style as NodeBase["style"];
         const isMin = modes[modeIx] === "min";
@@ -585,8 +581,6 @@ export class GraphContainer extends React.Component<
             scrollToLeft={left}
             scrollToTop={top}
             scrollToPageNumber={pageNumber}
-            width={width}
-            height={height}
             scale={scale}
           />
         );
@@ -599,7 +593,7 @@ export class GraphContainer extends React.Component<
     const wheelDefault = 120;
 
     // const bbox = e.target.getBoundingClientRect()
-    // console.log(e.clientX - bbox.left)
+    //
     // this.scrollRef.current.scrollTop += e.nativeEvent.wheelDelta
 
     e.persist();

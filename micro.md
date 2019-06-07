@@ -1,7 +1,11 @@
-scrollto again
+save new viewbox scale & scroll -> onChange Events to graph container
+browser zoom
+
 
 view on canvas
 
+
+scrollTop
 
 add comment
 segment and then comment
@@ -17,8 +21,12 @@ nextnodeloc
 
 
 --- defer
+refactor graph container
+check all string + objects created in render methods
+fix compile time
+pull out our redux stuff from
+pdf dp zoom
 scale to redux
-
 refactor pagecanvas: 
 restrict to original page
 prevent small boxes in pdf
