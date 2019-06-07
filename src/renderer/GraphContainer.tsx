@@ -35,6 +35,7 @@ import DocEditor from "./DocEditor";
 import { devlog } from "../store/featureToggle";
 import { MdZoomOutMap } from "react-icons/md";
 import { dragData } from "./rx";
+import { Pdf } from "./Pdf";
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100, isSelected: false },
   { id: "2", left: 101, top: 100, height: 100, width: 100, isSelected: false }
@@ -285,7 +286,7 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-    console.log('nextNodeLocation: ', nextNodeLocation);
+    console.log("nextNodeLocation: ", nextNodeLocation);
 
     this.setState(state => {
       return { frames: framesInView, links, nextNodeLocation };
@@ -550,6 +551,8 @@ export class GraphContainer extends React.Component<
           scale,
           pageNumber
         } = node.data as ViewboxData;
+        console.log('left: ', left);
+        console.log('top: ', top);
 
         const { modeIx, modes } = node.style as NodeBase["style"];
         const isMin = modes[modeIx] === "min";
@@ -560,20 +563,31 @@ export class GraphContainer extends React.Component<
         }
 
         return (
-          <PdfViewer
-            id="pdf.segment.viewbox"
+          // <PdfViewer
+          //   id="pdf.segment.viewbox"
+          //   key={node.id}
+          //   pageNumbersToLoad={pagenum}
+          //   scrollAfterClick
+          //   {...{
+          //     pdfRootDir,
+          //     pdfDir,
+          //     left: left - 50,
+          //     top: top - 50,
+          //     width: width + 100,
+          //     height: height + 100,
+          //     scale
+          //   }}
+          // />
+          <Pdf
             key={node.id}
-            pageNumbersToLoad={pagenum}
-            scrollAfterClick
-            {...{
-              pdfRootDir,
-              pdfDir,
-              left: left - 50,
-              top: top - 50,
-              width: width + 100,
-              height: height + 100,
-              scale
-            }}
+            loadPageNumbers={pagenum}
+            load={{ rootDir: pdfRootDir, dir: pdfDir }}
+            scrollToLeft={left}
+            scrollToTop={top}
+            scrollToPageNumber={pageNumber}
+            width={width}
+            height={height}
+            scale={scale}
           />
         );
       default:

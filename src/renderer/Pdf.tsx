@@ -52,7 +52,6 @@ interface RequiredProps {
 
 export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const props = { ...defaultProps, ..._props };
-  
 
   const [scale, setScale] = useState(props.scale);
   const [pages, setPages] = useState([]);
@@ -62,15 +61,16 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const scrollRefCallback = useCallback(node => {
     if (node !== null) {
       const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
-
       node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
+      console.log(node, node.scrollTo, pagesOffset, props);
+
       scrollRef.current = node;
     }
-  }, []);
+  }, [_props.scrollToTop]);
 
   useEffect(() => {
     setPages(pages => {
-      console.log('scale',scale);
+      console.log("scale", scale);
       return pages.map(page => {
         return { ...page, viewport: page.page.getViewport(scale) };
       });
@@ -112,7 +112,7 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
   const renderPages = pages => {
     if (pages.length < 1) return null;
     const Pages = pages.map(page => {
-      const { width, height } = page.viewport;
+      let { width, height } = page.viewport;
       const shouldRenderPage =
         pageNumbersInView.includes(page.pageNumber) ||
         props.loadPageNumbers.length === 1;
@@ -162,9 +162,14 @@ export const Pdf = (_props: OptionalProps & RequiredProps) => {
 
   return (
     <div
+      id="pdf-scroll"
       ref={scrollRefCallback}
       draggable={false}
-      style={{ overflow: "scroll" }}
+      style={{
+        overflow: "scroll",
+        height: props.height ? props.height : "auto",
+        width: props.width ? props.width : "auto"
+      }}
       onWheel={onWheel(setScale)}
       onScroll={onScrollVirtualize(
         scrollRef,
@@ -288,7 +293,6 @@ const boxEventsToRedux = (pdfInfo: {
   pdfDir: string;
 }): onChange => event => {
   if (event.type === "added") {
-    
     const { left, top, width, height } = event.payload;
     const { scale, pageNumber, pdfDir } = pdfInfo;
     // note we save with scale = 1
