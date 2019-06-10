@@ -13,7 +13,20 @@
 - explore feature toggle
 - post-hoc resize
 - ctrl-f
+fuse no dirrection
+  - focus on academic use case
+  - light weight structure?
+    - auto clusting into topics
+    - grouping of clips by papers
 
+prototype how would drag n drag pdf from fuse?
+editor outline
+
+no being able to process n papers
+turn back on outline view
+
+
+if i add a [c], then it's auto complete
 
 
 -------

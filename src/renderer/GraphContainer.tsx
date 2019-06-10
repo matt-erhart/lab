@@ -583,7 +583,7 @@ export class GraphContainer extends React.Component<
           //   }}
           // />
           <Pdf
-            key={'1'+ node.id}
+            key={"1" + node.id}
             loadPageNumbers={pagenum}
             load={{ rootDir: pdfRootDir, dir: pdfDir }}
             scrollToLeft={scrollToLeft * scalePreview}
@@ -592,13 +592,12 @@ export class GraphContainer extends React.Component<
             scale={scalePreview}
             displayMode="box"
             onChange={event => {
-              let update = {};
+              // let update = {};
               if (event.type === "scrolled") {
                 const {
                   scrollToLeft: nextScrollToLeft,
                   scrollToTop: nextScrollToTop
                 } = event.payload;
-                console.log("event.payload: ", event.payload);
                 const leftChanged = scrollToLeft !== nextScrollToLeft;
                 const topChanged = scrollToTop !== nextScrollToTop;
                 if (leftChanged || topChanged) {
@@ -607,9 +606,9 @@ export class GraphContainer extends React.Component<
                       {
                         id: node.id,
                         style: {
-                          ...node.style,
+                          ...this.props.nodes[node.id].style,
                           max: {
-                            ...node.style.max,
+                            ...this.props.nodes[node.id].style.max,
                             scrollToTop: nextScrollToTop,
                             scrollToLeft: nextScrollToLeft
                           }
@@ -634,6 +633,41 @@ export class GraphContainer extends React.Component<
         );
       default:
         return null;
+    }
+  };
+
+  onPdfChange = event => {
+    let update = {};
+    if (event.type === "scrolled") {
+      const {
+        scrollToLeft: nextScrollToLeft,
+        scrollToTop: nextScrollToTop
+      } = event.payload;
+      console.log("event.payload: ", event.payload);
+      const leftChanged = scrollToLeft !== nextScrollToLeft;
+      const topChanged = scrollToTop !== nextScrollToTop;
+      if (leftChanged || topChanged) {
+        this.props.updateBatch({
+          nodes: [
+            {
+              id: node.id,
+              style: {
+                ...node.style,
+                max: {
+                  ...node.style.max,
+                  scrollToTop: nextScrollToTop,
+                  scrollToLeft: nextScrollToLeft
+                }
+              }
+            }
+          ]
+        });
+      }
+    }
+    if (event.type === "zoomed" && scalePreview !== event.payload.scale) {
+      this.props.updateBatch({
+        nodes: [{ id: node.id, data: { scalePreview: event.payload.scale } }]
+      });
     }
   };
 
@@ -927,6 +961,7 @@ export class GraphContainer extends React.Component<
             const { left, top, width, height } = frame;
             const isSelected = this.isSelected(frame.id);
             const node = this.props.nodes[frame.id] as aNode;
+            const mode = get(node, (n: any) => n.style.modes[n.style.modeIx]);
             const hide =
               this.state.hideViewboxes &&
               oc(node).data.type() === "pdf.segment.viewbox";
@@ -935,14 +970,19 @@ export class GraphContainer extends React.Component<
               <ResizableFrame
                 key={frame.id}
                 id={frame.id}
-                {...{ left, top, width, height }}
+                {...{
+                  left,
+                  top,
+                  width,
+                  height
+                }}
                 onTransformStart={this.onTransformStart}
                 onTransforming={this.onTransforming}
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
                 zoom={this.state.zoom}
                 hide={hide}
-                mode={get(node, (n: any) => n.style.modes[n.style.modeIx])}
+                mode={mode}
                 dragHandle={
                   <DragHandle
                     id="drag-handle"

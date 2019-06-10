@@ -18,7 +18,7 @@ import {
   useEffect,
   useCallback
 } from "react";
-import { Observable } from "rxjs";
+import { Observable, combineLatest } from "rxjs";
 import { useEventCallback } from "rxjs-hooks";
 import { map, debounceTime, tap } from "rxjs/operators";
 // custom
@@ -77,29 +77,38 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
 
+  const scrollChange = (scale, scrollRef) => {
+    if (!scrollRef.current) return undefined;
+    const { scrollTop, scrollLeft } = scrollRef.current;
+    console.log("scrollTop, scrollLeft: ", scrollTop, scrollLeft, scale);
+    props.onChange({
+      type: "scrolled",
+      payload: {
+        scrollToTop: scrollTop / scale,
+        scrollToLeft: scrollLeft / scale
+      }
+    });
+  };
+
   const [onDebouncedScroll, scrollEvent] = useEventCallback(
-    (event$: Observable<React.SyntheticEvent<HTMLDivElement>>) =>
-      event$.pipe(
+    (
+      event$: Observable<React.SyntheticEvent<HTMLDivElement>>,
+      input: Observable<any>
+    ) =>
+      combineLatest(event$, input).pipe(
         debounceTime(1000),
         // wait 500ms after last scroll to
-        tap(event => {
+        tap(([event, input]) => {
           if (scrollRef) {
             if (!!props.onChange && props.displayMode === "box") {
               // to make this work for 'full' add pagenumber
-              const { scrollTop, scrollLeft } = scrollRef.current;
-              props.onChange({
-                type: "scrolled",
-                payload: {
-                  scrollToTop: scrollTop / scale,
-                  scrollToLeft: scrollLeft / scale
-                }
-              });
+              scrollChange(input[0], scrollRef);
             }
           }
         })
       ),
     null,
-    [props.onChange, scrollRef, scale]
+    [scale]
   );
 
   const [onDebouncedScale] = useEventCallback(
@@ -113,11 +122,12 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
               type: "zoomed",
               payload: { scale: input[0] }
             });
+            scrollChange(input[0], scrollRef);
           }
         })
       ),
-    [scale, props.onChange],
-    [scale, props.onChange]
+    [scale, props.onChange, scrollRef],
+    [scale, props.onChange, scrollRef]
   );
 
   const scrollRefCallback = useCallback(
@@ -129,7 +139,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
         scrollRef.current = node;
       }
     },
-    [pages]
+    [pages, scale]
   );
 
   useEffect(() => {
@@ -374,6 +384,8 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
+  console.log('-----------------event.type: ', event.type);
+
   if (event.type === "added") {
     const { left, top, width, height } = event.payload.box;
     const { scale, pageNumber, pdfDir } = context;

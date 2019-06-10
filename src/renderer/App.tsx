@@ -453,8 +453,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 scale={1}
                 load={{ dir: pdfDir, rootDir: pdfRootDir }}
                 loadPageNumbers={[1, 2]}
-                scrollToPageNumber={2}
-                scrollToTop={100}
+                scrollToPageNumber={1}
+                scrollToTop={0}
               />
             </div>
           )}

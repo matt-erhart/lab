@@ -100,8 +100,8 @@ export const makePdfSegmentViewbox = (
       max: clampLeftTop({
         ..._style,
         ...style,
-        width: width + 100,
-        height: height + 100,
+        width: (width + 100)*viewbox.scalePreview,
+        height: (height + 100)*viewbox.scalePreview,
         scrollToLeft: viewbox.left - 33,
         scrollToTop: viewbox.top - 33
       }),

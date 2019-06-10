@@ -1,20 +1,10 @@
+if box, scroll menu
+if full, scroll menu
+
+if box, then document icon
+if full, then graph icon
 
 
-
-
-
-
-
-
-
-pdf redux
-new boxes
-if(node.type)
-rerender
-
-
-
-derive position
 on click menu show box
   - pdf -> pageboxes -> box segment -> menu
 
@@ -49,6 +39,7 @@ scale with redux
 
 
 --- defer
+refactor onchange pdf if box/full
 refactor/rename viewboxdiv
 undo/redo
 refactor graph container
