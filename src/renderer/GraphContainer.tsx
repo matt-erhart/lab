@@ -159,7 +159,10 @@ export class GraphContainer extends React.Component<
         const node = this.props.nodes[id] as PdfSegmentViewbox;
         const mode = node.style.modes[node.style.modeIx];
 
-        return { id, style: { ...node.style, [mode]: style } };
+        return {
+          id,
+          style: { ...node.style, [mode]: { ...node.style[mode], ...style } }
+        };
       });
     const { scrollLeft, scrollTop } = this.state;
     const nextNodeLocation = this.nextNodeLocation({
@@ -547,10 +550,15 @@ export class GraphContainer extends React.Component<
           width,
           height,
           scale,
-          pageNumber
+          pageNumber,
+          scalePreview
         } = node.data as ViewboxData;
 
-        const { modeIx, modes } = node.style as NodeBase["style"];
+        const {
+          modeIx,
+          modes,
+          max: { scrollToLeft, scrollToTop }
+        } = node.style as NodeBase["style"];
         const isMin = modes[modeIx] === "min";
 
         const pagenum = [pageNumber];
@@ -575,13 +583,53 @@ export class GraphContainer extends React.Component<
           //   }}
           // />
           <Pdf
-            key={node.id}
+            key={'1'+ node.id}
             loadPageNumbers={pagenum}
             load={{ rootDir: pdfRootDir, dir: pdfDir }}
-            scrollToLeft={left}
-            scrollToTop={top}
+            scrollToLeft={scrollToLeft * scalePreview}
+            scrollToTop={scrollToTop * scalePreview}
             scrollToPageNumber={pageNumber}
-            scale={scale}
+            scale={scalePreview}
+            displayMode="box"
+            onChange={event => {
+              let update = {};
+              if (event.type === "scrolled") {
+                const {
+                  scrollToLeft: nextScrollToLeft,
+                  scrollToTop: nextScrollToTop
+                } = event.payload;
+                console.log("event.payload: ", event.payload);
+                const leftChanged = scrollToLeft !== nextScrollToLeft;
+                const topChanged = scrollToTop !== nextScrollToTop;
+                if (leftChanged || topChanged) {
+                  this.props.updateBatch({
+                    nodes: [
+                      {
+                        id: node.id,
+                        style: {
+                          ...node.style,
+                          max: {
+                            ...node.style.max,
+                            scrollToTop: nextScrollToTop,
+                            scrollToLeft: nextScrollToLeft
+                          }
+                        }
+                      }
+                    ]
+                  });
+                }
+              }
+              if (
+                event.type === "zoomed" &&
+                scalePreview !== event.payload.scale
+              ) {
+                this.props.updateBatch({
+                  nodes: [
+                    { id: node.id, data: { scalePreview: event.payload.scale } }
+                  ]
+                });
+              }
+            }}
           />
         );
       default:

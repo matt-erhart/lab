@@ -10,7 +10,7 @@ import {
 } from "react";
 import interact from "interactjs";
 import "@interactjs/types";
-import { AdjustableBox, MenuTypes } from "./ViewboxDiv";
+import { AdjustableBox, MenuActions } from "./ViewboxDiv";
 import { useSelector } from "react-redux";
 import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
@@ -27,7 +27,7 @@ const OuterMostDiv = styled.div`
 type onChangeEvents =
   | { type: "updated" | "deleted"; payload: { id: string; box: Box } }
   | { type: "added"; payload: Box }
-  | { type: MenuTypes; payload: { id: string } };
+  | MenuActions;
 ``;
 interface Props {
   id: string;
@@ -47,7 +47,8 @@ export const PageBoxes: React.FC<Props> = props => {
   const { box, points } = useDrawBox(outerRef); // snap to in here
   const startedDrawing = points.first.id === outerId;
   useEffect(() => {
-    if (points.second.type === "mouseup" && startedDrawing) {
+    const notJustClick = box.width > 3 && box.height > 3;
+    if (points.second.type === "mouseup" && startedDrawing && notJustClick) {
       props.onChange({ type: "added", payload: box });
     }
   }, [points]);
@@ -62,10 +63,7 @@ export const PageBoxes: React.FC<Props> = props => {
           payload: { id: action.payload.id, box: action.payload.box }
         });
       } else {
-        props.onChange({
-          type: action.type,
-          payload: { id: action.payload.id }
-        });
+        props.onChange(action);
       }
     },
     [props.onChange]
@@ -97,7 +95,8 @@ export const PageBoxes: React.FC<Props> = props => {
         )}
         {props.boxes.length > 0 &&
           props.boxes.map(box => {
-            const { top, left, width, height } = box.data;
+            const { top, left, width, height, type } = box.data;
+            console.log("type: ", type);
 
             return (
               <AdjustableBox
@@ -117,5 +116,27 @@ export const PageBoxes: React.FC<Props> = props => {
           })}
       </OuterMostDiv>
     </>
+  );
+};
+
+// {showComment && <BoxComment id="boxComment" box={commentBox} />}
+interface BoxCommentProps {
+  id: "boxComment";
+  box: Box;
+}
+
+const BoxComment: React.FC<BoxCommentProps> = props => {
+  const { box, ...rest } = props;
+  return (
+    <div
+      style={{
+        ...props.box,
+        border: "1px solid black",
+        position: "absolute",
+        backgroundColor: "white",
+        opacity: 0.95
+      }}
+      {...rest}
+    />
   );
 };

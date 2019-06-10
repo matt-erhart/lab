@@ -1,26 +1,57 @@
-save new viewbox scale & scroll -> onChange Events to graph container
+
+
+
+
+
+
+
+
+
+
+pdf redux
+new boxes
+if(node.type)
+rerender
+
+
+
+derive position
+on click menu show box
+  - pdf -> pageboxes -> box segment -> menu
+
+                    \-> box comment -> menu
+
+
+
+
+comment events 
+  - create+link from key+draw
+  - update from typing
+  - delete from button
+  - move resize relative to segment
+  - minimize/maximize
+
+
+
+
+
+
+disable comment in box mode
+pan
 browser zoom
+nextnodeloc + isPlaced
 
-
-view on canvas
-
-
-scrollTop
-
-add comment
-segment and then comment
- / isMainreader
-scrollTo on props
-
+scrollTo in  canvas on props
 existing viewboxes
-scale with redux
 
-nextnodeloc
+scale with redux
 -- migration
 !!viewbox.scalePreview
 
 
 --- defer
+refactor/rename viewboxdiv
+undo/redo
 refactor graph container
 check all string + objects created in render methods
 fix compile time
@@ -29,7 +60,6 @@ pdf dp zoom
 scale to redux
 refactor pagecanvas: 
 restrict to original page
-prevent small boxes in pdf
 transition for box hover menu -> fade in on move
 snippet for type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
   const onChange = useCallback<onChange>(
@@ -38,8 +68,6 @@ chain links in simple interface
 maigc strings
 load pdf pages in sequence
 improve webpack compile times
-fast zoom
-refactor segment box 
 uninstall unused packages
 link types
 scale in redux node

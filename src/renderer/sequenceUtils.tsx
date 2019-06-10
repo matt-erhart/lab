@@ -98,7 +98,7 @@ export function useDragPoints(
           type,
           id: (target as HTMLElement).id
         };
-        
+
         setPoints({
           ...points,
           first: point,

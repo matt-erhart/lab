@@ -22,7 +22,7 @@ const _AdjustableBox = styled.div`
   background-color: transparent;
   transition: opacity 0.5s;
 
-  div {
+  #hoverMenu {
     transition: opacity 0.5s;
 
     opacity: 0;
@@ -39,16 +39,14 @@ const _AdjustableBox = styled.div`
   }
 
   &:hover {
-    div {
+    #hoverMenu {
       pointer-events: all;
       opacity: 1;
     }
-    background-color: "lightblue";
-    opacity: 1;
   }
 
   &:active {
-    div {
+    #hoverMenu {
       opacity: 0;
     }
   }
@@ -61,15 +59,26 @@ interface AdjustAction {
 }
 
 export type MenuTypes = "delete" | "comment" | "scrollToInGraph";
-type MenuAction = { type: MenuTypes; payload: { id: string } };
+type MenuAction =
+  | {
+      type: "comment";
+      payload: {
+        id?: string;
+        left?: number;
+        top?: number;
+        side?: "top" | "bottom";
+      };
+    }
+  | { type: "delete"; payload: { id?: string } };
 
 interface RequiredProps {
-  id: string;
+  id: "viewbox";
   initBox: Box;
   onChange: (props: AdjustAction | MenuAction) => void;
 }
 // ViewboxDiv = React.memo(props => {}, shouldMemo)
 const shouldMemo = (prevProps: RequiredProps, newProps: RequiredProps) => {
+  // fast deep equal?
   const keysToCheck = ["left", "top", "width", "height"];
   for (let key of keysToCheck) {
     if (prevProps.initBox[key] !== newProps.initBox[key]) {
@@ -81,7 +90,7 @@ const shouldMemo = (prevProps: RequiredProps, newProps: RequiredProps) => {
 export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
   /**
    * Pass in a box from e.g. redux, this will move/resize with a preview, and then emit
-   * an event on mouseup
+   * an event on mouseup, comment too
    */
   const divRef = useRef<HTMLDivElement>(null);
   const { type, payload: box } = useMoveResize(divRef, props.initBox);
@@ -93,63 +102,104 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
 
   type onMenuChange = React.ComponentProps<typeof HoverMenu>["onChange"];
 
-  const onMenu: onMenuChange = useCallback(type => {
-    props.onChange({ type, payload: { id: props.id } });
-  }, []);
-
   const menuHeight = 20;
   const { side, height } = useNearestSide(divRef) || { side: "", height: 0 };
+  const onMenu: onMenuChange = useCallback(
+    action => {
+      let payload = { id: props.id, ...action.payload };
+      if (action.type === "comment") {
+        props.onChange({
+          type: action.type,
+          payload: {
+            ...payload,
+            side: side as "top" | "bottom"
+          }
+        });
+      } else {
+        props.onChange({
+          type: action.type,
+          payload: {
+            ...payload
+          }
+        });
+      }
+    },
+    [side]
+  );
   const top = side === "top" ? -menuHeight : height - 2;
 
   const { initBox, ...rest } = props;
+  const currentBox = { ...initBox, ...box };
+  const commentTop =
+    side === "top" ? top - currentBox.height / 2 : top + menuHeight;
+
+  const commentBox = {
+    top: commentTop,
+    left: 0,
+    width: currentBox.width,
+    height: currentBox.height / 2
+  };
   return (
     <_AdjustableBox
       draggable={false}
       id="viewbox"
       ref={divRef}
-      style={{ ...initBox, ...box }}
+      style={currentBox}
       {...rest}
       onMouseDown={e => e.stopPropagation()}
       onDragStart={e => e.preventDefault()}
     >
-      <HoverMenu top={top} height={menuHeight} onChange={onMenu} />
+      <HoverMenu
+        id="hoverMenu"
+        top={top}
+        height={menuHeight}
+        onChange={onMenu}
+      />
     </_AdjustableBox>
   );
 }, shouldMemo);
 
 interface HoverMenuProps {
+  id: "hoverMenu";
   top: number;
   height: number;
-  onChange: (props: MenuTypes) => void;
+  onChange: (props: MenuAction) => void;
 }
 
 const HoverMenu: React.FC<HoverMenuProps> = props => {
+  const { top, height, onChange, ...rest } = props;
   return (
     <div
-      id="segmentBoxMenu"
       style={{
         position: "relative",
-        top: props.top,
+        top,
         display: "flex",
         justifyContent: "space-around",
         alignContent: "center",
-        height: props.height
+        height
       }}
+      {...rest}
     >
       <MdDeleteForever
-        size={props.height - 1}
+        size={height - 1}
         id="delete"
         onClick={e => {
           e.stopPropagation();
-          props.onChange("delete");
+          onChange({ type: "delete", payload: {} });
         }}
       />
       <MdComment
-        size={props.height - 1}
+        size={height - 1}
         id="comment"
         onClick={e => {
           e.stopPropagation();
-          props.onChange("comment");
+          onChange({
+            type: "comment",
+            payload: {
+              left: e.clientX,
+              top: e.clientY
+            }
+          });
         }}
       />
     </div>

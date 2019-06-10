@@ -19,7 +19,7 @@ export type NodeDataTypes =
   | "query" // queries have style overrides, combine subqueries to reuse, ooo
   | "projection/map/affinity/dimension/coordinates matter"
   | "autograb"
-  | "GROBIDMetadata"
+  | "GROBIDMetadata";
 
 type corners = "nw" | "ne" | "sw" | "se"; // north, south, west, east
 type modes = "min" | "max";
@@ -53,8 +53,8 @@ interface StyleBase {
   modes: modes[];
   modeIx: number;
   lockedCorner: corners;
-  min: lt_hw & any
-  max: lt_hw & any
+  min: lt_hw & any;
+  max: lt_hw & any;
 }
 
 const ViewboxDataDefault = {
@@ -101,7 +101,9 @@ export const makePdfSegmentViewbox = (
         ..._style,
         ...style,
         width: width + 100,
-        height: height + 100
+        height: height + 100,
+        scrollToLeft: viewbox.left - 33,
+        scrollToTop: viewbox.top - 33
       }),
       modes: ["min", "max"],
       modeIx: 0,
@@ -175,7 +177,7 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
 const AutoGrabDefaults = {
   id: "",
   data: {
-    type: "autograb" as NodeDataTypes,
+    type: "autograb" as NodeDataTypes
   },
   style: {
     id: "",

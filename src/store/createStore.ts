@@ -264,7 +264,6 @@ export const graph = createModel({
       // 400 items = 9ms, 300 items = 7ms
       //@ts-ignore
       const newState = produce(state, draft => {
-        
         draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
@@ -302,7 +301,7 @@ export const graph = createModel({
         }
       });
 
-      return newState
+      return newState;
     },
     toggleSelections(
       state,
@@ -378,14 +377,19 @@ const models = {
 const logit = {
   middleware: store => next => action => {
     if (!["app/updatePortals"].includes(action.type))
-      console.log("REDUX: ", action.type, Object.keys(action.payload));
+      console.log("REDUX: ", action.type, action.payload);
     return next(action);
   }
 };
 
 const saveToJson = {
   middleware: store => next => action => {
-    const saveIf = ["graph/addBatch", "graph/updateBatch", "graph/removeBatch"];
+    const saveIf = [
+      "graph/addBatch",
+      "graph/updateBatch",
+      "graph/removeBatch",
+      "graph/toggleStyleMode"
+    ];
     const result = next(action);
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
@@ -419,7 +423,7 @@ const saveToJson = {
 
 const store = init({
   models,
-  plugins: [saveToJson]
+  plugins: [saveToJson, logit]
 });
 
 export default store;

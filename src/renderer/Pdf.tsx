@@ -18,7 +18,11 @@ import {
   useEffect,
   useCallback
 } from "react";
+import { Observable } from "rxjs";
+import { useEventCallback } from "rxjs-hooks";
+import { map, debounceTime, tap } from "rxjs/operators";
 // custom
+import { getNeighborhood } from "./graphUtils";
 import { PageBoxes } from "./PageBoxes";
 import { loadPdfPages, checkGetPageNumsToLoad } from "./io";
 import PageCanvas from "./PageCanvas";
@@ -41,10 +45,21 @@ const defaultProps = {
   scrollToLeft: 0,
   scrollToTop: 0,
   scrollToPageNumber: 0,
-  loadPageNumbers: [] as number[]
+  loadPageNumbers: [] as number[],
+  displayMode: "full" as "full" | "box"
 };
 
-type OptionalProps = Partial<typeof defaultProps>;
+type PdfZoomEvent = { type: "zoomed"; payload: { scale: number } };
+type PdfScrollEvent = {
+  type: "scrolled";
+  payload: { scrollToLeft: number; scrollToTop: number };
+};
+
+type OptionalProps = Partial<
+  typeof defaultProps & {
+    onChange: (props: PdfZoomEvent | PdfScrollEvent) => void;
+  }
+>;
 
 interface RequiredProps {
   load: LoadFile; // todo | LoadUrl;
@@ -62,10 +77,55 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
 
+  const [onDebouncedScroll, scrollEvent] = useEventCallback(
+    (event$: Observable<React.SyntheticEvent<HTMLDivElement>>) =>
+      event$.pipe(
+        debounceTime(1000),
+        // wait 500ms after last scroll to
+        tap(event => {
+          if (scrollRef) {
+            if (!!props.onChange && props.displayMode === "box") {
+              // to make this work for 'full' add pagenumber
+              const { scrollTop, scrollLeft } = scrollRef.current;
+              props.onChange({
+                type: "scrolled",
+                payload: {
+                  scrollToTop: scrollTop / scale,
+                  scrollToLeft: scrollLeft / scale
+                }
+              });
+            }
+          }
+        })
+      ),
+    null,
+    [props.onChange, scrollRef, scale]
+  );
+
+  const [onDebouncedScale] = useEventCallback(
+    (e, input) =>
+      input.pipe(
+        debounceTime(500),
+        // wait 500ms after last
+        tap(input => {
+          if (!!props.onChange && props.displayMode === "box") {
+            props.onChange({
+              type: "zoomed",
+              payload: { scale: input[0] }
+            });
+          }
+        })
+      ),
+    [scale, props.onChange],
+    [scale, props.onChange]
+  );
+
   const scrollRefCallback = useCallback(
     node => {
       // called when react assigns the ref to the html node which is after pages.length > 0
-      if (node !== null) {
+      if (node !== null && !scrollRef.current) {
+        console.log("mount scroll");
+
         const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
         node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
         scrollRef.current = node;
@@ -82,8 +142,8 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
     });
   }, [scale]);
 
-  const boxes: PdfSegmentViewbox[] = useSelector((state: iRootState) => {
-    return Object.values(state.graph.nodes).filter(n => {
+  const { boxes } = useSelector((state: iRootState) => {
+    const segments = Object.values(state.graph.nodes).filter(n => {
       return (
         n.data.type === "pdf.segment.viewbox" &&
         n.data.pdfDir === props.load.dir &&
@@ -91,6 +151,19 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
           props.loadPageNumbers.length === 0)
       );
     });
+    // const { nodes: neighborNodes, links: neighborLinks } = getNeighborhood(
+    //   segments.map(x => x.id),
+    //   state.graph.nodes,
+    //   state.graph.links
+    // );
+
+    // let linkedUserDocs = neighborNodes.filter(
+    //   node => node.data.type === "userDoc"
+    // );
+
+    return {
+      boxes: [...segments] as PdfSegmentViewbox[]
+    };
   });
 
   const loadPdf = async () => {
@@ -111,8 +184,9 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   };
 
   useEffect(() => {
+    console.log("loadPdf: ");
     loadPdf();
-  }, [props.load]);
+  }, [props.load.dir]);
 
   const renderPages = pages => {
     if (pages.length < 1) return null;
@@ -142,9 +216,9 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
               pageHeight={height / scale}
               pageWidth={width / scale}
               onChange={boxEventsToRedux({
-                pdfDir: props.load.dir,
+                scale,
                 pageNumber: page.pageNumber,
-                scale: scale
+                pdfDir: props.load.dir
               })}
               scale={scale}
             />
@@ -177,12 +251,15 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
         width: props.width ? props.width : "auto"
       }}
       onWheel={onWheel(setScale)}
-      onScroll={onScrollVirtualize(
-        scrollRef,
-        pages,
-        pageNumbersInView,
-        setPageNumbersInView
-      )}
+      onScroll={e => {
+        onScrollVirtualize(
+          scrollRef,
+          pages,
+          pageNumbersInView,
+          setPageNumbersInView
+        )(e);
+        onDebouncedScroll(e);
+      }}
     >
       {renderPages(pages)}
     </div>
@@ -293,14 +370,16 @@ const loadFiles = async (props: {
 type onChange = React.ComponentProps<typeof PageBoxes>["onChange"];
 
 //
-const boxEventsToRedux = (pdfInfo: {
+import { Nodes, Links, makeUserDoc } from "../store/creators";
+import { getState } from "../store/createStore";
+const boxEventsToRedux = (context: {
   scale: number;
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
   if (event.type === "added") {
     const { left, top, width, height } = event.payload;
-    const { scale, pageNumber, pdfDir } = pdfInfo;
+    const { scale, pageNumber, pdfDir } = context;
     // note we save with scale = 1
     const boxNode = makePdfSegmentViewbox({
       left,
@@ -323,12 +402,80 @@ const boxEventsToRedux = (pdfInfo: {
 
   if (event.type === "updated") {
     const { id, box } = event.payload;
-
     dispatch.graph.updateBatch({ nodes: [{ id, data: { ...box } }] });
   }
 
   if (event.type === "delete") {
     dispatch.graph.removeBatch({ nodes: [event.payload.id] });
+  }
+
+  if (event.type === "comment") {
+    const { nodes, links } = getState().graph;
+    const { id: segmentId } = event.payload;
+
+    const { nodes: neighborNodes, links: neighborLinks } = getNeighborhood(
+      [segmentId],
+      nodes,
+      links
+    );
+
+    let linkedUserDocs = neighborNodes.filter(
+      node => node.data.type === "userDoc"
+    );
+
+    if (linkedUserDocs.length > 0) {
+      const _height = 100;
+      dispatch.app.setPortals([
+        {
+          id: linkedUserDocs[0].id,
+          left: event.payload.left,
+          top:
+            event.payload.side === "top"
+              ? event.payload.top - _height
+              : event.payload.top,
+          width: 300,
+          height: _height
+        }
+      ]);
+    }
+
+    if (linkedUserDocs.length === 0) {
+      const segStyle = (nodes[segmentId] as PdfSegmentViewbox).style.min;
+
+      const _height = 120;
+      const newTextStyleForCanvas = {
+        left: segStyle.left,
+        top: segStyle.top - _height,
+        height: _height,
+        width: segStyle.width
+      };
+
+      const newDoc = makeUserDoc({
+        data: {},
+        style: {
+          min: newTextStyleForCanvas,
+          max: newTextStyleForCanvas
+        }
+      });
+
+      const newLink = makeLink(segmentId, newDoc.id, {
+        text: "compress",
+        html: "<p>compress</p>"
+      });
+
+      dispatch.graph.addBatch({ nodes: [newDoc], links: [newLink] });
+      setTimeout(() => {
+        dispatch.app.addPortals([
+          {
+            id: newDoc.id,
+            left: 400,
+            top: 400,
+            width: 300,
+            height: 100
+          }
+        ]);
+      }, 100);
+    }
   }
 };
 

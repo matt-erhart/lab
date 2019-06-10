@@ -270,7 +270,7 @@ export class ResizableFrame extends React.Component<
           width,
           height,
           ...this.props.style,
-          zIndex: isSelected ? 2 : 1
+          zIndex: isSelected ? 6 : 5
         }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
