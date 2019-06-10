@@ -124,8 +124,6 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
     node => {
       // called when react assigns the ref to the html node which is after pages.length > 0
       if (node !== null && !scrollRef.current) {
-        
-
         const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
         node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
         scrollRef.current = node;
@@ -184,7 +182,6 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   };
 
   useEffect(() => {
-    
     loadPdf();
   }, [props.load.dir]);
 
@@ -377,21 +374,27 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
-  
   if (event.type === "added") {
     const { left, top, width, height } = event.payload.box;
     const { scale, pageNumber, pdfDir } = context;
     // note we save with scale = 1
-    const boxNode = makePdfSegmentViewbox({
-      left,
-      top,
-      width,
-      height,
-      scale: 1,
-      pageNumber,
-      pdfDir,
-      scalePreview: scale
-    });
+    const nextNodeLoc = getState().app.nextNodeLocation;
+    const boxNode = makePdfSegmentViewbox(
+      {
+        left,
+        top,
+        width,
+        height,
+        scale: 1,
+        pageNumber,
+        pdfDir,
+        scalePreview: scale
+      },
+      {
+        left: nextNodeLoc.left,
+        top: nextNodeLoc.top + nextNodeLoc.height - 100
+      }
+    );
     const linkFromPdf = makeLink(pdfDir, boxNode.id, { type: "more" });
     // style, todo place with nextNodeLoc
     dispatch.graph.addBatch({ nodes: [boxNode], links: [linkFromPdf] });
@@ -400,7 +403,6 @@ const boxEventsToRedux = (context: {
       clearFirst: true
     });
 
-    
     if (event.payload.ctrlKey) {
       comment({
         type: "comment",
@@ -430,7 +432,6 @@ const boxEventsToRedux = (context: {
 
 import { CommentAction } from "./ViewboxDiv";
 const comment = (event: CommentAction) => {
-  
   const { nodes, links } = getState().graph;
   const { id: segmentId } = event.payload;
 
@@ -446,7 +447,7 @@ const comment = (event: CommentAction) => {
 
   if (linkedUserDocs.length > 0) {
     const _height = 100;
-    
+
     dispatch.app.setPortals([
       {
         id: linkedUserDocs[0].id,

@@ -59,6 +59,8 @@ export const PageBoxes: React.FC<Props> = props => {
       notJustClick &&
       (drag.target as HTMLElement).id === outerId
     ) {
+      console.log('points.second.type: ', points.second.type);
+      console.log('drag: ', drag.type);
       props.onChange({
         type: "added",
         payload: {
@@ -69,7 +71,7 @@ export const PageBoxes: React.FC<Props> = props => {
         }
       } as BoxEvents);
     }
-  }, [points, drag]);
+  }, [points]);
 
   //
   type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
