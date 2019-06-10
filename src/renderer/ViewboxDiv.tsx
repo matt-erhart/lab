@@ -59,17 +59,16 @@ interface AdjustAction {
 }
 
 export type MenuTypes = "delete" | "comment" | "scrollToInGraph";
-type MenuAction =
-  | {
-      type: "comment";
-      payload: {
-        id?: string;
-        left?: number;
-        top?: number;
-        side?: "top" | "bottom";
-      };
-    }
-  | { type: "delete"; payload: { id?: string } };
+export type CommentAction = {
+  type: "comment";
+  payload: {
+    id?: string;
+    left?: number;
+    top?: number;
+    side?: "top" | "bottom";
+  };
+};
+export type MenuAction = CommentAction | { type: "delete"; payload: { id?: string } };
 
 interface RequiredProps {
   id: "viewbox";
@@ -96,8 +95,8 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
   const { type, payload: box } = useMoveResize(divRef, props.initBox);
   useEffect(() => {
     const payload = { id: props.id, box };
-    if (type === "moved") props.onChange({ type: "moved", payload });
-    if (type === "resized") props.onChange({ type: "resized", payload });
+    if (type === "moved") props.onChange({ type: "moved", payload } as AdjustAction);
+    if (type === "resized") props.onChange({ type: "resized", payload } as AdjustAction);
   }, [type]);
 
   type onMenuChange = React.ComponentProps<typeof HoverMenu>["onChange"];
@@ -114,7 +113,7 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
             ...payload,
             side: side as "top" | "bottom"
           }
-        });
+        } as CommentAction);
       } else {
         props.onChange({
           type: action.type,
@@ -153,6 +152,7 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
         id="hoverMenu"
         top={top}
         height={menuHeight}
+
         onChange={onMenu}
       />
     </_AdjustableBox>
@@ -178,6 +178,8 @@ const HoverMenu: React.FC<HoverMenuProps> = props => {
         alignContent: "center",
         height
       }}
+      onMouseDown={e => e.stopPropagation()}
+      onDragStart={e => e.preventDefault()}
       {...rest}
     >
       <MdDeleteForever

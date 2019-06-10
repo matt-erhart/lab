@@ -151,7 +151,7 @@ export const useDrawBox = ref => {
   // where to add snapto logic
   const drag = useDrag(ref);
   const points = useDragPoints(drag, ref);
-  return { box: pointsToBox(points), points }; // could make pointsToLine/Triangle/circle
+  return { box: pointsToBox(points), points, drag }; // could make pointsToLine/Triangle/circle
 };
 
 import interact from "interactjs";

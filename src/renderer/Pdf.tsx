@@ -124,7 +124,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
     node => {
       // called when react assigns the ref to the html node which is after pages.length > 0
       if (node !== null && !scrollRef.current) {
-        console.log("mount scroll");
+        
 
         const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
         node.scrollTo(props.scrollToLeft, props.scrollToTop + pagesOffset);
@@ -184,7 +184,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   };
 
   useEffect(() => {
-    console.log("loadPdf: ");
+    
     loadPdf();
   }, [props.load.dir]);
 
@@ -377,8 +377,9 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
+  
   if (event.type === "added") {
-    const { left, top, width, height } = event.payload;
+    const { left, top, width, height } = event.payload.box;
     const { scale, pageNumber, pdfDir } = context;
     // note we save with scale = 1
     const boxNode = makePdfSegmentViewbox({
@@ -398,6 +399,19 @@ const boxEventsToRedux = (context: {
       selectedNodes: [boxNode.id],
       clearFirst: true
     });
+
+    
+    if (event.payload.ctrlKey) {
+      comment({
+        type: "comment",
+        payload: {
+          id: boxNode.id,
+          left: event.payload.clientX,
+          top: event.payload.clientY,
+          side: "bottom"
+        }
+      });
+    }
   }
 
   if (event.type === "updated") {
@@ -410,72 +424,79 @@ const boxEventsToRedux = (context: {
   }
 
   if (event.type === "comment") {
-    const { nodes, links } = getState().graph;
-    const { id: segmentId } = event.payload;
+    comment(event);
+  }
+};
 
-    const { nodes: neighborNodes, links: neighborLinks } = getNeighborhood(
-      [segmentId],
-      nodes,
-      links
-    );
+import { CommentAction } from "./ViewboxDiv";
+const comment = (event: CommentAction) => {
+  
+  const { nodes, links } = getState().graph;
+  const { id: segmentId } = event.payload;
 
-    let linkedUserDocs = neighborNodes.filter(
-      node => node.data.type === "userDoc"
-    );
+  const { nodes: neighborNodes, links: neighborLinks } = getNeighborhood(
+    [segmentId],
+    nodes,
+    links
+  );
 
-    if (linkedUserDocs.length > 0) {
-      const _height = 100;
+  let linkedUserDocs = neighborNodes.filter(
+    node => node.data.type === "userDoc"
+  );
+
+  if (linkedUserDocs.length > 0) {
+    const _height = 100;
+    
+    dispatch.app.setPortals([
+      {
+        id: linkedUserDocs[0].id,
+        left: event.payload.left,
+        top:
+          event.payload.side === "top"
+            ? event.payload.top - _height
+            : event.payload.top,
+        width: 300,
+        height: _height
+      }
+    ]);
+  }
+
+  if (linkedUserDocs.length === 0) {
+    const segStyle = (nodes[segmentId] as PdfSegmentViewbox).style.min;
+
+    const _height = 120;
+    const newTextStyleForCanvas = {
+      left: segStyle.left,
+      top: segStyle.top - _height,
+      height: _height,
+      width: segStyle.width
+    };
+
+    const newDoc = makeUserDoc({
+      data: {},
+      style: {
+        min: newTextStyleForCanvas,
+        max: newTextStyleForCanvas
+      }
+    });
+
+    const newLink = makeLink(segmentId, newDoc.id, {
+      text: "compress",
+      html: "<p>compress</p>"
+    });
+
+    dispatch.graph.addBatch({ nodes: [newDoc], links: [newLink] });
+    setTimeout(() => {
       dispatch.app.setPortals([
         {
-          id: linkedUserDocs[0].id,
+          id: newDoc.id,
           left: event.payload.left,
-          top:
-            event.payload.side === "top"
-              ? event.payload.top - _height
-              : event.payload.top,
+          top: event.payload.top,
           width: 300,
-          height: _height
+          height: 100
         }
       ]);
-    }
-
-    if (linkedUserDocs.length === 0) {
-      const segStyle = (nodes[segmentId] as PdfSegmentViewbox).style.min;
-
-      const _height = 120;
-      const newTextStyleForCanvas = {
-        left: segStyle.left,
-        top: segStyle.top - _height,
-        height: _height,
-        width: segStyle.width
-      };
-
-      const newDoc = makeUserDoc({
-        data: {},
-        style: {
-          min: newTextStyleForCanvas,
-          max: newTextStyleForCanvas
-        }
-      });
-
-      const newLink = makeLink(segmentId, newDoc.id, {
-        text: "compress",
-        html: "<p>compress</p>"
-      });
-
-      dispatch.graph.addBatch({ nodes: [newDoc], links: [newLink] });
-      setTimeout(() => {
-        dispatch.app.addPortals([
-          {
-            id: newDoc.id,
-            left: 400,
-            top: 400,
-            width: 300,
-            height: 100
-          }
-        ]);
-      }, 100);
-    }
+    }, 100);
   }
 };
 

@@ -10,7 +10,7 @@ import {
 } from "react";
 import interact from "interactjs";
 import "@interactjs/types";
-import { AdjustableBox, MenuActions } from "./ViewboxDiv";
+import { AdjustableBox, MenuAction } from "./ViewboxDiv";
 import { useSelector } from "react-redux";
 import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
@@ -23,12 +23,17 @@ const OuterMostDiv = styled.div`
   z-index: 3;
   transform-origin: left top;
 `;
-
-type onChangeEvents =
-  | { type: "updated" | "deleted"; payload: { id: string; box: Box } }
-  | { type: "added"; payload: Box }
-  | MenuActions;
-``;
+type BoxEvents = {
+  type: "updated" | "deleted" | "added";
+  payload: {
+    id?: string;
+    box: Box;
+    ctrlKey?: boolean;
+    clientX?: number;
+    clientY?: number;
+  };
+};
+type onChangeEvents = BoxEvents | MenuAction;
 interface Props {
   id: string;
   pageWidth: number;
@@ -44,14 +49,27 @@ interface Props {
 export const PageBoxes: React.FC<Props> = props => {
   const outerRef = useRef<HTMLDivElement>(null);
   const outerId = "OuterMostDiv";
-  const { box, points } = useDrawBox(outerRef); // snap to in here
+  const { box, points, drag } = useDrawBox(outerRef); // snap to in here
   const startedDrawing = points.first.id === outerId;
   useEffect(() => {
     const notJustClick = box.width > 3 && box.height > 3;
-    if (points.second.type === "mouseup" && startedDrawing && notJustClick) {
-      props.onChange({ type: "added", payload: box });
+    if (
+      points.second.type === "mouseup" &&
+      startedDrawing &&
+      notJustClick &&
+      (drag.target as HTMLElement).id === outerId
+    ) {
+      props.onChange({
+        type: "added",
+        payload: {
+          box,
+          ctrlKey: drag.ctrlKey,
+          clientX: drag.clientX,
+          clientY: drag.clientY
+        }
+      } as BoxEvents);
     }
-  }, [points]);
+  }, [points, drag]);
 
   //
   type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
@@ -61,9 +79,9 @@ export const PageBoxes: React.FC<Props> = props => {
         props.onChange({
           type: "updated",
           payload: { id: action.payload.id, box: action.payload.box }
-        });
+        } as BoxEvents);
       } else {
-        props.onChange(action);
+        props.onChange(action as MenuAction);
       }
     },
     [props.onChange]
@@ -96,11 +114,11 @@ export const PageBoxes: React.FC<Props> = props => {
         {props.boxes.length > 0 &&
           props.boxes.map(box => {
             const { top, left, width, height, type } = box.data;
-            console.log("type: ", type);
 
             return (
               <AdjustableBox
                 draggable={false}
+                onMouseUp={e => e.stopPropagation()}
                 onDragStart={e => e.preventDefault()}
                 key={box.id}
                 id={box.id}
