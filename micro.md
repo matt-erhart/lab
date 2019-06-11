@@ -5,6 +5,7 @@ if box, then document icon
 if full, then graph icon
 
 
+lock until click
 on click menu show box
   - pdf -> pageboxes -> box segment -> menu
 

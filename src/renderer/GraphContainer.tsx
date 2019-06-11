@@ -636,40 +636,40 @@ export class GraphContainer extends React.Component<
     }
   };
 
-  onPdfChange = event => {
-    let update = {};
-    if (event.type === "scrolled") {
-      const {
-        scrollToLeft: nextScrollToLeft,
-        scrollToTop: nextScrollToTop
-      } = event.payload;
-      console.log("event.payload: ", event.payload);
-      const leftChanged = scrollToLeft !== nextScrollToLeft;
-      const topChanged = scrollToTop !== nextScrollToTop;
-      if (leftChanged || topChanged) {
-        this.props.updateBatch({
-          nodes: [
-            {
-              id: node.id,
-              style: {
-                ...node.style,
-                max: {
-                  ...node.style.max,
-                  scrollToTop: nextScrollToTop,
-                  scrollToLeft: nextScrollToLeft
-                }
-              }
-            }
-          ]
-        });
-      }
-    }
-    if (event.type === "zoomed" && scalePreview !== event.payload.scale) {
-      this.props.updateBatch({
-        nodes: [{ id: node.id, data: { scalePreview: event.payload.scale } }]
-      });
-    }
-  };
+  // onPdfChange = event => {
+  //   let update = {};
+  //   if (event.type === "scrolled") {
+  //     const {
+  //       scrollToLeft: nextScrollToLeft,
+  //       scrollToTop: nextScrollToTop
+  //     } = event.payload;
+  //     console.log("event.payload: ", event.payload);
+  //     const leftChanged = scrollToLeft !== nextScrollToLeft;
+  //     const topChanged = scrollToTop !== nextScrollToTop;
+  //     if (leftChanged || topChanged) {
+  //       this.props.updateBatch({
+  //         nodes: [
+  //           {
+  //             id: node.id,
+  //             style: {
+  //               ...node.style,
+  //               max: {
+  //                 ...node.style.max,
+  //                 scrollToTop: nextScrollToTop,
+  //                 scrollToLeft: nextScrollToLeft
+  //               }
+  //             }
+  //           }
+  //         ]
+  //       });
+  //     }
+  //   }
+  //   if (event.type === "zoomed" && scalePreview !== event.payload.scale) {
+  //     this.props.updateBatch({
+  //       nodes: [{ id: node.id, data: { scalePreview: event.payload.scale } }]
+  //     });
+  //   }
+  // };
 
   onWheel = e => {
     const wheelDefault = 120;

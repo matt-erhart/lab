@@ -39,7 +39,6 @@ import WOZEditor from "./WOZEditor";
 import RealisticEditor from "./RealisticEditor";
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
-import console = require("console");
 import { List } from "grommet-icons";
 
 const NavBar = styled.div`
@@ -196,6 +195,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
+
     const { newPubs } = await processNewPdfs(
       // Destructuring assignment
       this.props.pdfRootDir,
@@ -348,10 +348,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
+    console.log('opt.label: ', opt.label);
     this.props.setMainPdfReader({
       pdfDir: opt.label,
       scrollToPageNumber: 0,
-      left: 0
+      left: 0,
+      top: 0
     });
   };
 
@@ -453,8 +455,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                 scale={1}
                 load={{ dir: pdfDir, rootDir: pdfRootDir }}
                 loadPageNumbers={[1, 2]}
-                scrollToPageNumber={1}
-                scrollToTop={0}
+                scrollToPageNumber={this.props.mainPdfReader.scrollToPageNumber}
+                scrollToTop={this.props.mainPdfReader.top}
+                scrollToLeft={this.props.mainPdfReader.left}
               />
             </div>
           )}

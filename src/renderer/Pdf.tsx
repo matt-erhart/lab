@@ -76,6 +76,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const [pages, setPages] = useState([]);
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
+  const track = useRef({ scale, pages }); // need in hooks, but don't want to rerun effect
 
   const scrollChange = (scale, scrollRef) => {
     if (!scrollRef.current) return undefined;
@@ -141,6 +142,21 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
     },
     [pages, scale]
   );
+
+  // useEffect(() => {
+  //   // if we pass in new scroll
+  //   if (!scrollRef.current || !track.current) return undefined;
+  //   const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
+  //   scrollRef.current.scrollTo(
+  //     props.scrollToLeft * track.current.scale,
+  //     (props.scrollToTop + pagesOffset) * track.current.scale
+  //   );
+  // }, [
+  //   track,
+  //   props.scrollToLeft,
+  //   props.scrollToTop,
+  //   props.loadPageNumbers
+  // ]);
 
   useEffect(() => {
     setPages(pages => {
@@ -282,6 +298,7 @@ const onScrollVirtualize = (
   if (!scrollRef || !pages || !setPageNumbersInView) return undefined;
   !!e && e.stopPropagation();
   const newPageNumbersInView = getPageNumbersInView(scrollRef, pages);
+  console.log('newPageNumbersInView: ', newPageNumbersInView);
 
   if (JSON.stringify(pageNumbersInView) === JSON.stringify(pageNumbersInView)) {
     setPageNumbersInView(newPageNumbersInView);
@@ -384,7 +401,7 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
-  console.log('-----------------event.type: ', event.type);
+  console.log("-----------------event.type: ", event.type);
 
   if (event.type === "added") {
     const { left, top, width, height } = event.payload.box;
@@ -435,6 +452,23 @@ const boxEventsToRedux = (context: {
 
   if (event.type === "delete") {
     dispatch.graph.removeBatch({ nodes: [event.payload.id] });
+  }
+
+  if (event.type === "scrollTo") {
+    const boxNode = getState().graph.nodes[event.payload.id];
+    dispatch.app.setMainPdfReader({
+      scrollToPageNumber: boxNode.data.pageNumber,
+      left: boxNode.data.left,
+      top: boxNode.data.top + Math.random(), // update everytime
+      pdfDir: boxNode.data.pdfDir
+    });
+
+    // else {
+    //   this.props.setGraphContainer({
+    //     left: vb.style.min.left,
+    //     top: vb.style.min.top
+    //   });
+    // }
   }
 
   if (event.type === "comment") {

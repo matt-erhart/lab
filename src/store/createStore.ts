@@ -388,7 +388,8 @@ const saveToJson = {
       "graph/addBatch",
       "graph/updateBatch",
       "graph/removeBatch",
-      "graph/toggleStyleMode"
+      "graph/toggleStyleMode",
+      "app/setMainPdfReader"
     ];
     const result = next(action);
     if (saveIf.includes(action.type)) {

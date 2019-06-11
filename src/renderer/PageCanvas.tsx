@@ -103,7 +103,9 @@ export default class PageCanvas extends React.Component<
           await this.renderCanvas();
         })
       )
-      .subscribe();
+      .subscribe(()=> {
+        console.log('sub render');
+      });
     this.scale1Canvas();
     this.renderCanvas();
 
@@ -142,9 +144,14 @@ export default class PageCanvas extends React.Component<
       prevProps.viewport.height !== this.props.viewport.height;
     const viewportChangeWidth =
       prevProps.viewport.width !== this.props.viewport.width;
+      const figureprint1 = this.props.page.transport.pdfDocument.pdfInfo.fingerprint;
+    const figureprint2 =
+      prevProps.page.transport.pdfDocument.pdfInfo.fingerprint;
+      const newPdf = figureprint1 !== figureprint2
+
     // const renderDone = !this.state.isRendering;
     // const justFinishedRender = prevState.isRendering;
-    return scaleChange || viewportChangeHeight || viewportChangeWidth;
+    return scaleChange || viewportChangeHeight || viewportChangeWidth || newPdf
   }
 
   // getCanvasImage = () => {

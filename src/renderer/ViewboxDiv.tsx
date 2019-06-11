@@ -14,7 +14,12 @@ import { useDispatch } from "react-redux";
 import { iRootState, iDispatch } from "../store/createStore";
 import { Box } from "./geometry";
 import { useMoveResize } from "./sequenceUtils";
-import { MdDeleteForever, MdComment, MdLabel } from "react-icons/md";
+import {
+  MdDeleteForever,
+  MdComment,
+  MdLabel,
+  MdRemoveRedEye
+} from "react-icons/md";
 import { useNearestSide } from "./geometryFromHtml";
 const _AdjustableBox = styled.div`
   position: absolute;
@@ -58,7 +63,7 @@ interface AdjustAction {
   payload: { id: string; box: Box };
 }
 
-export type MenuTypes = "delete" | "comment" | "scrollToInGraph";
+export type MenuTypes = "delete" | "comment" | "scrollTo";
 export type CommentAction = {
   type: "comment";
   payload: {
@@ -68,7 +73,9 @@ export type CommentAction = {
     side?: "top" | "bottom";
   };
 };
-export type MenuAction = CommentAction | { type: "delete"; payload: { id?: string } };
+export type MenuAction =
+  | CommentAction
+  | { type: "delete" | "scrollTo"; payload: { id?: string } };
 
 interface RequiredProps {
   id: "viewbox";
@@ -95,8 +102,10 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
   const { type, payload: box } = useMoveResize(divRef, props.initBox);
   useEffect(() => {
     const payload = { id: props.id, box };
-    if (type === "moved") props.onChange({ type: "moved", payload } as AdjustAction);
-    if (type === "resized") props.onChange({ type: "resized", payload } as AdjustAction);
+    if (type === "moved")
+      props.onChange({ type: "moved", payload } as AdjustAction);
+    if (type === "resized")
+      props.onChange({ type: "resized", payload } as AdjustAction);
   }, [type]);
 
   type onMenuChange = React.ComponentProps<typeof HoverMenu>["onChange"];
@@ -152,7 +161,6 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
         id="hoverMenu"
         top={top}
         height={menuHeight}
-
         onChange={onMenu}
       />
     </_AdjustableBox>
@@ -188,6 +196,17 @@ const HoverMenu: React.FC<HoverMenuProps> = props => {
         onClick={e => {
           e.stopPropagation();
           onChange({ type: "delete", payload: {} });
+        }}
+      />
+      <MdRemoveRedEye
+        size={height - 1}
+        id="comment"
+        onClick={e => {
+          e.stopPropagation();
+          onChange({
+            type: "scrollTo",
+            payload: {}
+          });
         }}
       />
       <MdComment

@@ -53,7 +53,6 @@ export const PageBoxes: React.FC<Props> = props => {
   const startedDrawing = points.first.id === outerId;
   useEffect(() => {
     const notJustClick = box.width > 3 && box.height > 3;
-    console.log('--------------------------------------points: ', points.second.id);
     if (
       points.second.type === "mouseup" &&
       startedDrawing &&
