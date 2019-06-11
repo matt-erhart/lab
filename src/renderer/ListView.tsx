@@ -1,7 +1,6 @@
 import * as React from "react";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import PdfViewer from "./PdfViewer";
 import { ScrollContainer } from "./GraphContainer";
 import styled from "styled-components";
 import {

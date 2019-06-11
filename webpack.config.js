@@ -15,18 +15,6 @@ module.exports = {
         use: {
           loader: "html-loader"
         }
-      },
-      {
-        test: /\.tsx?$/,
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              transpileOnly: true,
-              experimentalWatchApi: true
-            }
-          }
-        ]
       }
     ]
   }

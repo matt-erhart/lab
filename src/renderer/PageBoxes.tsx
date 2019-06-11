@@ -117,9 +117,7 @@ export const PageBoxes: React.FC<Props> = props => {
 
             return (
               <AdjustableBox
-                draggable={false}
-                onMouseUp={e => e.stopPropagation()}
-                onDragStart={e => e.preventDefault()}
+
                 key={box.id}
                 id={box.id}
                 initBox={{

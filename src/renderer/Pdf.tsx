@@ -77,11 +77,16 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
   const track = useRef({ scale, pages }); // need in hooks, but don't want to rerun effect
+  useEffect(()=> {
+    track.current = {pages, scale}
+  }, [pages, scale])
+  
+
 
   const scrollChange = (scale, scrollRef) => {
     if (!scrollRef.current) return undefined;
     const { scrollTop, scrollLeft } = scrollRef.current;
-    console.log("scrollTop, scrollLeft: ", scrollTop, scrollLeft, scale);
+    
     props.onChange({
       type: "scrolled",
       payload: {
@@ -143,20 +148,15 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
     [pages, scale]
   );
 
-  // useEffect(() => {
-  //   // if we pass in new scroll
-  //   if (!scrollRef.current || !track.current) return undefined;
-  //   const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
-  //   scrollRef.current.scrollTo(
-  //     props.scrollToLeft * track.current.scale,
-  //     (props.scrollToTop + pagesOffset) * track.current.scale
-  //   );
-  // }, [
-  //   track,
-  //   props.scrollToLeft,
-  //   props.scrollToTop,
-  //   props.loadPageNumbers
-  // ]);
+  useEffect(() => {
+    // if we pass in new scroll
+    if (!scrollRef.current || !track.current || props.displayMode === 'box') return undefined;
+    const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
+    scrollRef.current.scrollTo(
+      props.scrollToLeft * track.current.scale,
+      (props.scrollToTop * track.current.scale) + pagesOffset
+    );
+  }, [track, props.scrollToLeft, props.scrollToTop, props.loadPageNumbers]);
 
   useEffect(() => {
     setPages(pages => {
@@ -298,7 +298,7 @@ const onScrollVirtualize = (
   if (!scrollRef || !pages || !setPageNumbersInView) return undefined;
   !!e && e.stopPropagation();
   const newPageNumbersInView = getPageNumbersInView(scrollRef, pages);
-  console.log('newPageNumbersInView: ', newPageNumbersInView);
+  
 
   if (JSON.stringify(pageNumbersInView) === JSON.stringify(pageNumbersInView)) {
     setPageNumbersInView(newPageNumbersInView);
@@ -401,7 +401,7 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
-  console.log("-----------------event.type: ", event.type);
+  
 
   if (event.type === "added") {
     const { left, top, width, height } = event.payload.box;
@@ -460,7 +460,8 @@ const boxEventsToRedux = (context: {
       scrollToPageNumber: boxNode.data.pageNumber,
       left: boxNode.data.left,
       top: boxNode.data.top + Math.random(), // update everytime
-      pdfDir: boxNode.data.pdfDir
+      pdfDir: boxNode.data.pdfDir,
+      scale: boxNode.data.scalePreview
     });
 
     // else {

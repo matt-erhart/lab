@@ -14,7 +14,6 @@ import {
 } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import PdfViewer from "./PdfViewer";
 import {
   ViewboxData,
   NodeDataTypes,

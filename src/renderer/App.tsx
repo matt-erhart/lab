@@ -13,7 +13,6 @@ import GoogleScholar from "./codeExperiments/GoogleScholar";
 import { Pdf } from "./Pdf";
 // custom
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
-import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import { createAutograbJSON, createGROBIDJSON, listDirs } from "./io";
 // import fs = require("fs-extra");
@@ -96,7 +95,7 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const processNewPdfs = async (pdfRootDir, nodes) => {
   const pdfDirs = await setupDirFromPdfs(pdfRootDir);
-  // console.log("setupDir succeed!")
+  // 
 
   const pdfNodes = pdfDirs.map((dir, ix) => {
     const normDir = path.normalize(dir);
@@ -181,7 +180,7 @@ type rightPanelName = typeof defaultApp.panels.rightPanel;
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
   keyback = (e: KeyboardEvent) => {
-    console.log(e);
+    
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
@@ -204,7 +203,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const nodesBeforePubs = this.props.nodes;
     if (newPubs.length > 0) {
       this.props.addBatch({ nodes: newPubs });
-      console.log("nodes added")!;
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
@@ -214,7 +212,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     if (featureToggles.showAutoGrab) {
       // show autograb and GROBID extracted metadata
-      console.log("Making participant info nodes and GROBID metadata nodes! ");
+      
       {
         // This 1st block: making participant info nodes
         // const { newNodes, newLinks } = await processAutoGrabs(
@@ -237,7 +235,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         pdfDirs = pdfDirs.sort((dirA, dirB) =>
           dirA.toString() < dirB.toString() ? 1 : 0
         );
-        // console.log("pdfDirs " + pdfDirs)
+        // 
         const allNodeIds = Object.keys(nodesBeforePubs);
         // let excessiveNodes:any[]
         // let excessiveLinks=any[]
@@ -285,11 +283,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             }
           }
 
-          // console.log((this.rightPanel.current as any).forFun())
+          // 
           //   this.props.setRightPanel(("graphContainer" as any))
           // this.props.setRightPanel(("listview" as any))
           var random = Math.floor(Math.random() * (5 - 0));
-          console.log("random" + random);
+          
           if (random == 3) {
             await this.props.setRightPanel("graphContainer" as any);
             await this.props.setRightPanel("listview" as any);
@@ -312,7 +310,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         //   this.props.addBatch({ nodes: newNodes, links: newLinks });
         //   this.props.updateBatch({ nodes: newNodes, links: newLinks });
         // }
-        // console.log(resultMessage)
+        // 
       }
     }
   }
@@ -348,7 +346,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    console.log('opt.label: ', opt.label);
+    
     this.props.setMainPdfReader({
       pdfDir: opt.label,
       scrollToPageNumber: 0,
@@ -367,13 +365,13 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   rightPanel = React.createRef<HTMLDivElement>();
 
   renderRightPanel = (panelName: rightPanelName) => {
-    console.log("render right panel");
+    
     switch (panelName) {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
         // return <GoogleScholar />
-        return <ListView ref={this.rightPanel} />;
+        // return <ListView ref={this.rightPanel} />;
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
@@ -452,9 +450,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               /> */}
 
               <Pdf
-                scale={1}
+                scale={this.props.mainPdfReader.scale}
                 load={{ dir: pdfDir, rootDir: pdfRootDir }}
-                loadPageNumbers={[1, 2]}
+                loadPageNumbers={[]}
                 scrollToPageNumber={this.props.mainPdfReader.scrollToPageNumber}
                 scrollToTop={this.props.mainPdfReader.top}
                 scrollToLeft={this.props.mainPdfReader.left}

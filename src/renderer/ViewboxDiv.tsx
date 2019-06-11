@@ -21,6 +21,17 @@ import {
   MdRemoveRedEye
 } from "react-icons/md";
 import { useNearestSide } from "./geometryFromHtml";
+// const QuiteDiv = props => {
+//   return (
+//     <div
+//       draggable={false}
+//       onMouseUp={e => e.stopPropagation()}
+//       onDragStart={e => e.preventDefault()}
+//       {...props}
+//     />
+//   );
+// };
+
 const _AdjustableBox = styled.div`
   position: absolute;
   border: 1px solid green;
@@ -148,14 +159,15 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
     height: currentBox.height / 2
   };
   return (
+    //@ts-ignore
     <_AdjustableBox
-      draggable={false}
       id="viewbox"
       ref={divRef}
       style={currentBox}
-      {...rest}
-      onMouseDown={e => e.stopPropagation()}
+      draggable={false}
+      onMouseUp={e => e.stopPropagation()}
       onDragStart={e => e.preventDefault()}
+      {...rest}
     >
       <HoverMenu
         id="hoverMenu"
