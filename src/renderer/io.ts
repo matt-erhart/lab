@@ -25,7 +25,7 @@ interface FileInfo {
   fileNameWithExt: string;
 }
 // todo no spaces for pdfdirs
-
+const dupDir = "_duplicates"
 export const listPdfs = (fullPath: string): Promise<FileInfo[]> =>
   new Promise(resolve => {
     glob(fullPath + "/*.pdf", { nodir: true }, (err, files) => {
@@ -42,7 +42,7 @@ export const listPdfs = (fullPath: string): Promise<FileInfo[]> =>
 export const listDirs = (fullpath: string): Promise<string[]> => {
   return new Promise(resolve => {
     glob(fullpath + "/*/", {}, (err, files) => {
-      resolve(files);
+      resolve(files.filter(file => !file.includes(dupDir)));
     });
   });
 };
@@ -67,27 +67,55 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
   const pdfPathInfo = await listPdfs(pdfRootDir);
 
   for (let info of pdfPathInfo) {
-    let neededDir = info.fileNameWithExt
-      .replace(/\.pdf/, "")
-      .replace(/\s/g, "-")
-      .replace(/%/g, "-");
-    let dirNameExists;
-    let count = 0;
-    let dataDir;
+    const filePath = path.join(pdfRootDir, info.fileNameWithExt);
+    var data = new Uint8Array(fs.readFileSync(filePath));
+    const pdf = await pdfjs.getDocument({ data });
+    const neededDir = pdf.pdfInfo.fingerprint;
+    const dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
+    if (dirNameExists) {
+      console.log(info.fileNameWithExt + "is duplicate. ");
+      const dupPath = path.join(pdfRootDir, dupDir)
+      try {
+        await fs.ensureDir(dupPath);
+        await fs.move(info.fullFilePath, path.join(dupPath, info.fileNameWithExt));
+      } catch {
+        console.log(info.fileNameWithExt + " already in duplicate dir. ");
+      }
+      
+      continue;
+    }
 
-    do {
-      count++;
-      dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
-      const postFix = dirNameExists ? "_" + count : "";
-      neededDir = dirNameExists ? neededDir + postFix : neededDir;
+    // let neededFileName =
 
-      if (count > 100) debugger;
-    } while (dirNameExists);
+    // info.fileNameWithExt
+    //   .replace(/\.pdf/, "")
+    //   .replace(/\s/g, "-")
+    //   .replace(/%/g, "-");
+    // let count = 0;
+    // let dataDir;
+    // do {
+    //   count++;
+    //
+    //   const postFix = dirNameExists ? "_" + count : "";
+    //   neededDir = dirNameExists ? neededDir + postFix : neededDir;
+
+    //   if (count > 100) debugger;
+    // } while (dirNameExists);
 
     await fs.ensureDir(path.join(pdfRootDir, neededDir));
     await fs.move(
       info.fullFilePath,
       path.join(pdfRootDir, neededDir, neededDir + ".pdf")
+    );
+
+    await jsonfile.writeFile(path.join(pdfRootDir, neededDir, "pdfInfo.json"), {
+      ...pdf.pdfInfo,
+      originalFileName: info.fileNameWithExt
+    });
+
+    await jsonfile.writeFile(
+      path.join(pdfRootDir, neededDir, info.fileNameWithExt + ".json"),
+      { useThisToSearchByFileName: true }
     );
   }
 
@@ -125,8 +153,8 @@ export const preprocessPdfs = (
   for (let dir of pdfDirs) {
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
-    if (!pdfPath){
-      continue
+    if (!pdfPath) {
+      continue;
     }
     let pdf;
     try {
@@ -134,16 +162,24 @@ export const preprocessPdfs = (
       pdf = await pdfjs.getDocument({ data });
       // pdf = await pdfjs.getDocument(pdfPath);
     } catch (err) {
-      console.log(err+pdfPath);
+      console.log(err + pdfPath);
       debugger;
     }
     const allPageNumbers = [...Array(pdf.numPages).keys()].map(x => x + 1);
 
-    await existsElseMake(
-      path.join(dir, "meta.json"),
-      pdf.getMetadata(), // API defined in https://github.com/mozilla/pdf.js/blob/2a9d195a4350d75e01fafb2c19194b7d02d0a0a5/src/display/api.js#L737
-      overwrite
-    );
+    try {
+      await existsElseMake(
+        path.join(dir, "meta.json"),
+        pdf.getMetadata(), // API defined in https://github.com/mozilla/pdf.js/blob/2a9d195a4350d75e01fafb2c19194b7d02d0a0a5/src/display/api.js#L737
+        overwrite
+      );
+    } catch (err) {
+      await existsElseMake(
+        path.join(dir, "meta.json"),
+        {}, // API defined in https://github.com/mozilla/pdf.js/blob/2a9d195a4350d75e01fafb2c19194b7d02d0a0a5/src/display/api.js#L737
+        overwrite
+      );
+    }
 
     await existsElseMake(
       path.join(dir, "outline.json"),
@@ -277,9 +313,11 @@ export const processAutoGrab = (
     // and 2) write to "metadataToHighlight.json"
     // if (featureToggles.showAutoGrab) {
 
-    const fileExists = await fs.pathExists(path.join(dir, "metadataToHighlight.json"));
+    const fileExists = await fs.pathExists(
+      path.join(dir, "metadataToHighlight.json")
+    );
     if (fileExists && !overwrite) {
-      break
+      break;
     }
 
     // TODO: change to Promise.all
@@ -299,11 +337,11 @@ export const createAutograbJSON = (
   dir: string,
   overwrite = false
 ) => async () => {
-  console.log("inside createAutograbJSON")
+  console.log("inside createAutograbJSON");
   const files = await ls(dir + "/*");
   const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
-  if (!pdfPath){
-    return false
+  if (!pdfPath) {
+    return false;
   }
   let pdf;
   try {
@@ -317,9 +355,11 @@ export const createAutograbJSON = (
 
   let pagesOfText = await loadPageJson(dir, "textToDisplay");
 
-  const fileExists = await fs.pathExists(path.join(dir, "metadataToHighlight.json"));
+  const fileExists = await fs.pathExists(
+    path.join(dir, "metadataToHighlight.json")
+  );
   if (fileExists && !overwrite) {
-    return false
+    return false;
   }
 
   // TODO: change to Promise.all
@@ -329,20 +369,20 @@ export const createAutograbJSON = (
     pdf,
     pdfPath,
     true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
-  ).then(result => console.log("createAutoGrabInfo succeed for " + dir))
+  ).then(result => console.log("createAutoGrabInfo succeed for " + dir));
 
-  return true
+  return true;
 };
 
 export const createGROBIDJSON = (
   dir: string,
   overwrite = false
 ) => async () => {
-  console.log("inside createAutograbJSON")
+  console.log("inside createAutograbJSON");
   const files = await ls(dir + "/*");
   const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
-  if (!pdfPath){
-    return false
+  if (!pdfPath) {
+    return false;
   }
   let pdf;
   try {
@@ -356,9 +396,11 @@ export const createGROBIDJSON = (
 
   let pagesOfText = await loadPageJson(dir, "textToDisplay");
 
-  const fileExists = await fs.pathExists(path.join(dir, "metadataFromGROBID.json"));
+  const fileExists = await fs.pathExists(
+    path.join(dir, "metadataFromGROBID.json")
+  );
   if (fileExists && !overwrite) {
-    return false
+    return false;
   }
 
   // TODO: change to Promise.all
@@ -366,9 +408,9 @@ export const createGROBIDJSON = (
     path.join(dir, "metadataFromGROBID.json"),
     pdfPath,
     true // Now it always overwrites. TODO (Xin) later, change to variable overwrite
-  ).then(result => console.log("metadataFromGROBID succeed for " + dir))
+  ).then(result => console.log("metadataFromGROBID succeed for " + dir));
 
-  return true
+  return true;
 };
 
 export const processGROBID = (
@@ -385,9 +427,11 @@ export const processGROBID = (
     const files = await ls(dir + "/*");
     const [pdfPath] = files.filter(x => x.endsWith(".pdf"));
 
-    const fileExists = await fs.pathExists(path.join(dir, "metadataFromGROBID.json"));
+    const fileExists = await fs.pathExists(
+      path.join(dir, "metadataFromGROBID.json")
+    );
     if (fileExists && !overwrite) {
-      break
+      break;
     }
 
     await createGROBIDMetadata(
@@ -453,10 +497,14 @@ export const loadPageJson = async (
   pageNumbersToLoad: number[] = []
 ) => {
   // todo: make sure filePrefix + ".json" gets made when all pages are done
-  await existsElseMake(
-    path.join(dir, filePrefix + ".json"),
-    preprocessPdfs([dir])
-  );
+  try {
+    await existsElseMake(
+      path.join(dir, filePrefix + ".json"),
+      preprocessPdfs([dir])
+    );
+  } catch {
+    debugger;
+  }
   const finalFile = await jsonfile.readFile(
     path.join(dir, filePrefix + ".json")
   );

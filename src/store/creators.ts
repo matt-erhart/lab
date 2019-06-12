@@ -143,7 +143,9 @@ const PdfPublicationDefaults = {
     doi: "",
     isbn: "",
     issn: "",
-    published: true
+    published: true,
+    originalFileName: "",
+    numPages: 1
   },
   style: {
     id: "",
@@ -162,6 +164,7 @@ const PdfPublicationDefaults = {
 export type PdfPublication = typeof PdfPublicationDefaults;
 
 export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
+  console.log('data: ', data);
   return {
     ...PdfPublicationDefaults,
     id: dirName,

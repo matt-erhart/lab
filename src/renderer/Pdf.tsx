@@ -306,6 +306,7 @@ const onScrollVirtualize = (
 };
 
 const getPageNumbersInView = (scrollRef, pages) => {
+  // todo all refs can be undefined
   const { height } = scrollRef.current.getBoundingClientRect();
   const scrollTop = scrollRef.current.scrollTop;
 

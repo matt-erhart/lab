@@ -1,26 +1,21 @@
-if box, scroll menu
-if full, scroll menu
+add fileName
+add originalFileName/figureprint/numPages to ts
 
-if box, then document icon
-if full, then graph icon
+file systen
+  rename folder
+  rename file
 
+publication obj 
+  move pdfDir to originalFileName
+  -> rename id, pdfDir, style.id
 
-lock until click
-on click menu show box
-  - pdf -> pageboxes -> box segment -> menu
+pdf segment
+    move pdfDir to originalFileName
+    update pdfDir
 
-                    \-> box comment -> menu
-
-
-
-
-comment events 
-  - create+link from key+draw
-  - update from typing
-  - delete from button
-  - move resize relative to segment
-  - minimize/maximize
-
+links:
+  replace if target match
+  replace if source match
 
 
 
@@ -28,8 +23,6 @@ comment events
 
 disable comment in box mode
 pan
-browser zoom
-nextnodeloc + isPlaced
 
 scrollTo in  canvas on props
 existing viewboxes
