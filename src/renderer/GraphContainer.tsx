@@ -679,7 +679,7 @@ export class GraphContainer extends React.Component<
     // this.scrollRef.current.scrollTop += e.nativeEvent.wheelDelta
 
     e.persist();
-    if (e.ctrlKey && ["SvgLayer"].includes(e.target.id)) {
+    if (e.ctrlKey) {
       e.preventDefault();
       this.setState(state => {
         const newZoom =

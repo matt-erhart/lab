@@ -12,7 +12,7 @@ export type frame = Partial<{
   top: number;
   width: number;
   height: number;
-  type: "move" | "resize"
+  type: "move" | "resize";
 }>;
 export const updateOneFrame = (frames: frame[]) => (
   newDims = {
@@ -74,10 +74,12 @@ const ResizableFrameDefaults = {
     scale: 1, // todo sometimes we want one node to scale up/down
     style: {} as React.CSSProperties,
     hide: false,
-    mode: "max"
+    mode: "max",
+    clickToActivate: true
   },
   state: {
-    resizeInfo: { location: "default", cursor: "default" } as hoverInfo
+    resizeInfo: { location: "default", cursor: "default" } as hoverInfo,
+    activateScroll: false
   }
 };
 export class ResizableFrame extends React.Component<
@@ -85,7 +87,8 @@ export class ResizableFrame extends React.Component<
   typeof ResizableFrameDefaults.state
 > {
   static defaultProps = ResizableFrameDefaults.props;
-  state = ResizableFrameDefaults.state;
+  state = {...ResizableFrameDefaults.state,
+    activateScroll: !this.props.clickToActivate};
   isMouseDown = false;
   cache = { left: 0, top: 0, width: 0, height: 0 };
 
@@ -104,6 +107,7 @@ export class ResizableFrame extends React.Component<
       }
     }
     if (state.resizeInfo !== this.state.resizeInfo) return true;
+    if (state.activateScroll !== this.state.activateScroll) return true;
     return false;
   }
 
@@ -259,7 +263,7 @@ export class ResizableFrame extends React.Component<
 
   render() {
     const { left, top, width, height, isSelected } = this.props;
-
+    console.log(this.state.activateScroll);
     return (
       <OuterContainer
         id={"frame"}
@@ -275,9 +279,18 @@ export class ResizableFrame extends React.Component<
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         onScroll={e => {
+          if (this.state.activateScroll)
           e.stopPropagation();
         }}
-        onWheel={e => {}}
+        onWheel={e => {
+          if (this.state.activateScroll)
+          e.stopPropagation();
+        }}
+        onMouseLeave={() => {
+          if (this.props.clickToActivate) {
+            this.setState({ activateScroll: false });
+          }
+        }}
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
@@ -298,6 +311,28 @@ export class ResizableFrame extends React.Component<
             display: "flex"
           }}
         >
+          {!this.state.activateScroll && (
+            <div
+              draggable={false}
+              style={{
+                background: "blue",
+                position: "absolute",
+                zIndex: 222,
+                width,
+                height,
+                opacity: 0,
+                cursor: "pointer",
+                overflow: "hidden"
+              }}
+              onClick={e => {
+                if (this.props.clickToActivate && !this.state.activateScroll) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                this.setState({ activateScroll: true });
+              }}
+            />
+          )}
           {this.props.children}
         </div>
       </OuterContainer>

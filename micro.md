@@ -1,4 +1,3 @@
-click cover div to prevent scroll over node
 
 'a' things
 [c]
