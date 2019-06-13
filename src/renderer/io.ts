@@ -70,6 +70,7 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
     const filePath = path.join(pdfRootDir, info.fileNameWithExt);
     var data = new Uint8Array(fs.readFileSync(filePath));
     const pdf = await pdfjs.getDocument({ data });
+    //@ts-ignore
     const neededDir = pdf.pdfInfo.fingerprint;
     const dirNameExists = await fs.pathExists(path.join(pdfRootDir, neededDir));
     if (dirNameExists) {
@@ -108,7 +109,9 @@ export const setupDirFromPdfs = async (pdfRootDir = "") => {
       path.join(pdfRootDir, neededDir, neededDir + ".pdf")
     );
 
+    
     await jsonfile.writeFile(path.join(pdfRootDir, neededDir, "pdfInfo.json"), {
+     //@ts-ignore
       ...pdf.pdfInfo,
       originalFileName: info.fileNameWithExt
     });

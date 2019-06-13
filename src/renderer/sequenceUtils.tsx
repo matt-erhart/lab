@@ -70,8 +70,8 @@ export function useDragPoints(
   el: React.RefObject<HTMLElement> //todo infer from linage
 ) {
   const [points, setPoints] = useState({
-    first: { x: 0, y: 0, type: "", id: "" },
-    second: { x: 0, y: 0, type: "", id: "" },
+    first: { x: 0, y: 0, type: "", id: "", button: -1 },
+    second: { x: 0, y: 0, type: "", id: "", button: -1 },
     movement: { x: 0, y: 0 },
     isDragging: false
   });
@@ -82,7 +82,7 @@ export function useDragPoints(
     const browserZoom = getBrowserZoom();
 
     // x,y could be scaled differently, need
-    const { type, movementX, movementY, clientX, clientY, target } = drag;
+    const { type, movementX, movementY, clientX, clientY, target, button } = drag;
     const { second } = points;
     const { x, y, scaleX, scaleY } = getPointInElement(el.current, {
       clientX,
@@ -96,7 +96,8 @@ export function useDragPoints(
           x,
           y,
           type,
-          id: (target as HTMLElement).id
+          id: (target as HTMLElement).id,
+          button
         };
 
         setPoints({
@@ -115,7 +116,8 @@ export function useDragPoints(
             x,
             y,
             type,
-            id: (target as HTMLElement).id
+            id: (target as HTMLElement).id,
+            button
           },
           movement: {
             x: movementX / scaleX / browserZoom,
@@ -131,7 +133,8 @@ export function useDragPoints(
             x,
             y,
             type,
-            id: (target as HTMLElement).id
+            id: (target as HTMLElement).id,
+            button
           },
           movement: {
             x: 0,
@@ -147,14 +150,14 @@ export function useDragPoints(
   return points;
 }
 
-export const useDrawBox = ref => {
+export const useDrawBox = (ref, button = 0) => {
   // where to add snapto logic
   const drag = useDrag(ref);
   const points = useDragPoints(drag, ref);
   const [data, setData] = useState({ points, drag });
   useEffect(() => {
     // so we return on point change, not drag change
-    setData({ points, drag });
+    if (points.first.button === button) setData({ points, drag });
   }, [points]);
 
   return {

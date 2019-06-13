@@ -1,24 +1,10 @@
-add fileName
-add originalFileName/figureprint/numPages to ts
+zIndex of autocomplete
+- restrict viewbox to leftclick
 
-file systen
-  rename folder
-  rename file
-
-publication obj 
-  move pdfDir to originalFileName
-  -> rename id, pdfDir, style.id
-
-pdf segment
-    move pdfDir to originalFileName
-    update pdfDir
-
-links:
-  replace if target match
-  replace if source match
-
-
-
+'a' things
+[c]
+link types
+multiple canvases 
 
 
 disable comment in box mode

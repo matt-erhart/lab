@@ -23,10 +23,13 @@ import * as path from "path";
 import { PDFJSStatic } from "pdfjs-dist";
 import * as _pdfjs from "pdfjs-dist";
 const pdfjs: PDFJSStatic = _pdfjs as any;
+const inDir =
+  "C:\\Users\\mattj\\Desktop\\Problem Formulation in Data Science Competitions";
+  const outDir = "C:\\Users\\mattj\\Desktop\\problemFormulation"
 const convertStateJson = async () => {
   let deleteIds = [];
   let segmentedPdfIds = [];
-  let state = await jsonfile.readFile("C:\\Users\\mattj\\Desktop\\state.json");
+  let state = await jsonfile.readFile(path.join(inDir, "state.json"));
   (Object.values(state.graph.nodes) as any[]).forEach(
     async (node: PdfSegmentViewbox | PdfPublication) => {
       if (node.data.type === "pdf.segment.viewbox") {
@@ -67,7 +70,7 @@ const convertStateJson = async () => {
       }
 
       const pdfPathInfo = await listPdfs(
-        path.join("C:\\Users\\mattj\\Desktop\\joel", node.id)
+        path.join(inDir, node.id)
       );
       if (!pdfPathInfo.length) {
         deleteIds.push(node.data.pdfDir);
@@ -75,7 +78,7 @@ const convertStateJson = async () => {
       }
 
       const pdfPath = path.join(
-        "C:\\Users\\mattj\\Desktop\\joel",
+        inDir,
         node.id,
         pdfPathInfo[0].fileNameWithExt
       );
@@ -109,30 +112,30 @@ const convertStateJson = async () => {
       }
 
       const dirNameExists = await fs.pathExists(
-        path.join("C:\\Users\\mattj\\Desktop\\retest", fingerprint)
+        path.join(outDir, fingerprint)
       );
 
       if (!dirNameExists) {
         await fs.copy(
-          path.join("C:\\Users\\mattj\\Desktop\\joel", originalId),
-          path.join("C:\\Users\\mattj\\Desktop\\retest", fingerprint)
+          path.join(inDir, originalId),
+          path.join(outDir, fingerprint)
         );
 
         await fs.move(
           path.join(
-            "C:\\Users\\mattj\\Desktop\\retest",
+            outDir,
             fingerprint,
             pdfPathInfo[0].fileNameWithExt
           ),
           path.join(
-            "C:\\Users\\mattj\\Desktop\\retest",
+            outDir,
             fingerprint,
             fingerprint + ".pdf"
           )
         );
         await jsonfile.writeFile(
           path.join(
-            "C:\\Users\\mattj\\Desktop\\retest",
+            outDir,
             fingerprint,
             "pdfInfo.json"
           ),
@@ -144,7 +147,7 @@ const convertStateJson = async () => {
 
         await jsonfile.writeFile(
           path.join(
-            "C:\\Users\\mattj\\Desktop\\retest",
+            outDir,
             fingerprint,
             pdfPathInfo[0].fileNameWithExt + ".name"
           ),
@@ -163,7 +166,7 @@ const convertStateJson = async () => {
     }
   }
   await jsonfile.writeFile(
-    "C:\\Users\\mattj\\Desktop\\retest\\state.json",
+    path.join(outDir, "state.json"),
     state
   );
 };

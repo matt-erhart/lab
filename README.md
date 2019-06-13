@@ -9,27 +9,27 @@
   <!--te-->
 
 # Roadmap
+- autocomplete options
+- DnD from fuse
 - explore logs
+   - custom window events
 - explore feature toggle
-- post-hoc resize
 - ctrl-f
-fuse no dirrection
-  - focus on academic use case
-  - light weight structure?
-    - auto clusting into topics
-    - grouping of clips by papers
-
-prototype how would drag n drag pdf from fuse?
-editor outline
-
-no being able to process n papers
-turn back on outline view
-
-
-if i add a [c], then it's auto complete
+- outline editor + xin fixes
 
 
 -------
+
+- transitions
+   - text:    anything
+   - table:   object attributes
+   - network: relationships encoded with proximity, angle, containment, lines
+   - map:     has named sequential axis
+
+
+- clustering
+   - initialize canvas coords with tsne
+
 - chrome extension + firebase
    - select text, right click send to firebase list of {url, time, query}
    - firebase onlist add, knn search, list view 
@@ -79,7 +79,6 @@ if i add a [c], then it's auto complete
    - manually fix autograb
    - good ole' fashion text highlighting
    - text highlighting from auto-grab
-   - delete segment in pdf viewer
    - autocomplete for phrases in selected area
    - perf
       - zoom
