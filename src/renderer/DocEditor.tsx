@@ -361,14 +361,20 @@ export class DocEditor extends React.Component<
     return { base64, text };
   };
 
-  getDocFeatures = (editor): { nChars; hasList } => {
-    return editor.value.document.getBlocks().reduce(
-      (all, b) => {
+  getDocFeatures = (editor): { nChars; hasList; tag } => {
+    const blocks = editor.value.document.getBlocks();
+    return blocks.reduce(
+      (all, b, ix) => {
+        const text = b.text;
+        if (ix === 0) {
+          const tag = text.match(/^\[.*\]/) || [""];
+          all.tag = tag[0];
+        }
         all.nChars += b.text.trim().length;
         if (!all.hasList) all.hasList = b.type === "list-item-child";
         return all;
       },
-      { nChars: 0, hasList: false }
+      { nChars: 0, hasList: false, tag: "" }
     );
   };
 
@@ -394,7 +400,7 @@ export class DocEditor extends React.Component<
       ? selectionEdges.maxY
       : selectionEdges.minY - portalHeight - 3;
 
-    return { left: Math.round(left*10)/10, top:Math.round(top*10)/10 };
+    return { left: Math.round(left * 10) / 10, top: Math.round(top * 10) / 10 };
   };
 
   setAutoCompPosition = () => {
@@ -437,18 +443,16 @@ export class DocEditor extends React.Component<
   };
 
   onChange = change => {
-    const docFeatures = this.getDocFeatures(change);
-    const useTextForAutocomplete =
-      docFeatures.nChars > 0 &&
-      docFeatures.nChars <= this.props.autoCompThresh &&
-      !docFeatures.hasList;
+    // const docFeatures = this.getDocFeatures(change);
+    // const useTextForAutocomplete = docFeatures.tag === "[c]";
+    // docFeatures.nChars > 0 &&
+    // docFeatures.nChars <= this.props.autoCompThresh &&
+    // !docFeatures.hasList;
 
     const { text, isAfterSpace, isEndOfWord } = this.getCurrentWord(change);
 
     this.setState(state => ({
       editorValue: change.value,
-      useTextForAutocomplete,
-      docFeatures,
       wordAtCursor: isEndOfWord && state.isActive ? text : ""
     }));
   };
@@ -643,25 +647,44 @@ export class DocEditor extends React.Component<
 
   AutocompleteButton = () => {
     // not a button but maybe it should be?
-    const { useTextForAutocomplete, docFeatures } = this.state;
-    const thresh = this.props.autoCompThresh;
-    const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
-    const list = docFeatures.hasList ? "Has list." : "";
-
-    const title = `${
-      useTextForAutocomplete
-        ? `Under ${thresh} chars. No lists. Will`
-        : "Will not"
-    } be used for autocomplete. ${chars} ${list}`;
+    // const { useTextForAutocomplete, docFeatures } = this.state;
+    // const thresh = this.props.autoCompThresh;
+    // const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
+    // const list = docFeatures.hasList ? "Has list." : "";
+    const useTextForAutoComp = this.props.nodes[this.props.id].data
+      .useTextForAutocomplete;
+    const title = `Is ${
+      !useTextForAutoComp ? "NOT" : ""
+    } being used for autocomplete`;
 
     return (
-      <Button key={"Will Auto"} title={title} isActive={useTextForAutocomplete}>
+      <Button
+        onClick={e => this.toggleUseAutoComp()}
+        key={"Will Auto"}
+        title={title}
+        isActive={useTextForAutoComp}
+      >
         <MdArrowUpward
           size={"25px"}
           style={{ verticalAlign: "middle", cursor: "help" }}
         />
       </Button>
     );
+  };
+
+  toggleUseAutoComp = () => {
+    this.props.updateBatch({
+      nodes: [
+        {
+          id: this.props.id,
+          data: {
+            //@ts-ignore
+            useTextForAutocomplete: !this.props.nodes[this.props.id].data
+              .useTextForAutocomplete
+          }
+        }
+      ]
+    });
   };
 
   MakeButtons = () => {
@@ -895,7 +918,7 @@ export class DocEditor extends React.Component<
                       <PortalDiv
                         id="autocomplete-div"
                         ref={this.portalDiv}
-                        style={{ ...this.state.portalStyle, zIndex: 2 }}
+                        style={{ ...this.state.portalStyle, zIndex: 5 }}
                       >
                         {this.state.autoCompDocs.map((doc, index) => {
                           return (
@@ -914,7 +937,8 @@ export class DocEditor extends React.Component<
                                   fontWeight:
                                     downshift.selectedItem === doc
                                       ? "bold"
-                                      : "normal"
+                                      : "normal",
+                                  zIndex: 5
                                 }
                               })}
                             >

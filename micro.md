@@ -1,5 +1,4 @@
-zIndex of autocomplete
-- restrict viewbox to leftclick
+click cover div to prevent scroll over node
 
 'a' things
 [c]
@@ -11,11 +10,6 @@ disable comment in box mode
 pan
 
 scrollTo in  canvas on props
-existing viewboxes
-
-scale with redux
--- migration
-!!viewbox.scalePreview
 
 
 --- defer
