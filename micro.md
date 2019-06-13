@@ -12,6 +12,7 @@ scrollTo in  canvas on props
 
 
 --- defer
+debounce slate onchange -> save
 refactor onchange pdf if box/full
 refactor/rename viewboxdiv
 undo/redo

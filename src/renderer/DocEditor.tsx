@@ -673,6 +673,7 @@ export class DocEditor extends React.Component<
   };
 
   toggleUseAutoComp = () => {
+    this.save()
     this.props.updateBatch({
       nodes: [
         {
@@ -792,10 +793,9 @@ export class DocEditor extends React.Component<
       nodes: [
         {
           id: this.props.id,
+          //@ts-ignore
           data: {
             ...serialized,
-            //@ts-ignore
-            useTextForAutocomplete: this.state.useTextForAutocomplete
           }
         }
       ]

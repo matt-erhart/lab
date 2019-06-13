@@ -522,7 +522,7 @@ const comment = (event: CommentAction) => {
     };
 
     const newDoc = makeUserDoc({
-      data: {},
+      data: {useTextForAutocomplete: false},
       style: {
         min: newTextStyleForCanvas,
         max: newTextStyleForCanvas

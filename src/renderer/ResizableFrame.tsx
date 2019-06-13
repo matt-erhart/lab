@@ -75,7 +75,7 @@ const ResizableFrameDefaults = {
     style: {} as React.CSSProperties,
     hide: false,
     mode: "max",
-    clickToActivate: true
+    clickToActivate: false
   },
   state: {
     resizeInfo: { location: "default", cursor: "default" } as hoverInfo,
@@ -87,9 +87,13 @@ export class ResizableFrame extends React.Component<
   typeof ResizableFrameDefaults.state
 > {
   static defaultProps = ResizableFrameDefaults.props;
-  state = {...ResizableFrameDefaults.state,
-    activateScroll: !this.props.clickToActivate};
+  state = {
+    ...ResizableFrameDefaults.state,
+    activateScroll: !this.props.clickToActivate
+  };
   isMouseDown = false;
+  isMouseOver = false;
+
   cache = { left: 0, top: 0, width: 0, height: 0 };
 
   shouldComponentUpdate(props, state) {
@@ -279,16 +283,20 @@ export class ResizableFrame extends React.Component<
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         onScroll={e => {
-          if (this.state.activateScroll)
-          e.stopPropagation();
+          if (this.state.activateScroll) e.stopPropagation();
         }}
         onWheel={e => {
-          if (this.state.activateScroll)
-          e.stopPropagation();
+          if (this.state.activateScroll) e.stopPropagation();
+        }}
+        onMouseEnter={e => {
+          this.isMouseOver = true;
         }}
         onMouseLeave={() => {
+          this.isMouseOver = false;
           if (this.props.clickToActivate) {
-            this.setState({ activateScroll: false });
+            setTimeout(() => {
+              if (!this.isMouseOver) this.setState({ activateScroll: false });
+            }, 10000);
           }
         }}
       >
@@ -318,9 +326,9 @@ export class ResizableFrame extends React.Component<
                 background: "blue",
                 position: "absolute",
                 zIndex: 222,
+                opacity: 0,
                 width,
                 height,
-                opacity: 0,
                 cursor: "pointer",
                 overflow: "hidden"
               }}

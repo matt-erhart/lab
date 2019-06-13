@@ -680,7 +680,6 @@ export const loadPdfPages = async (
   pageNumbersToLoad: number[] = [],
   scale = 1
 ) => {
-  console.log("pageNumbersToLoad: ", pageNumbersToLoad);
 
   // note this way doesn't work with osx+pdfjs+electron
   //          const pdf = await pdfjs.getDocument(path);

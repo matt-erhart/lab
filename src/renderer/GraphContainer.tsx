@@ -552,7 +552,7 @@ export class GraphContainer extends React.Component<
           pageNumber,
           scalePreview
         } = node.data as ViewboxData;
-        const {originalFileName} = this.props.nodes[pdfDir].data
+        const { originalFileName } = this.props.nodes[pdfDir].data;
 
         const {
           modeIx,
@@ -563,7 +563,11 @@ export class GraphContainer extends React.Component<
 
         const pagenum = [pageNumber];
         if (isMin) {
-          return <div style={{ color: "green", fontSize: 16 }}>{originalFileName}</div>;
+          return (
+            <div style={{ color: "green", fontSize: 16 }}>
+              {originalFileName}
+            </div>
+          );
         }
 
         return (
@@ -968,6 +972,7 @@ export class GraphContainer extends React.Component<
 
             return (
               <ResizableFrame
+                clickToActivate={true}
                 key={frame.id}
                 id={frame.id}
                 {...{

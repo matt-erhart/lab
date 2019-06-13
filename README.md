@@ -9,7 +9,6 @@
   <!--te-->
 
 # Roadmap
-- autocomplete options
 - DnD from fuse
 - explore logs
    - custom window events

@@ -264,7 +264,7 @@ const UserDocDefaults = {
     type: "userDoc" as NodeDataTypes,
     base64: convertBase64.serialize(initKeySafeSlate()),
     text: "",
-    useTextForAutocomplete: true
+    useTextForAutocomplete: false
   },
   meta: makeNodeMeta(),
   style: {
@@ -285,7 +285,7 @@ export const makeUserDoc = (
   return {
     ...UserDocDefaults,
     id,
-    data: { ...UserDocDefaults.data, ...data },
+    data: { ...UserDocDefaults.data, ...data, useTextForAutocomplete: false },
     style: {
       ...UserDocDefaults.style,
       min: clampLeftTop({ ...UserDocDefaults.style.min, ...props.style.min }),
