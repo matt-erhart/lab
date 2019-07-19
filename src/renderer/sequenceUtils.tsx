@@ -70,10 +70,25 @@ export function useDragPoints(
   el: React.RefObject<HTMLElement> //todo infer from linage
 ) {
   const [points, setPoints] = useState({
-    first: { x: 0, y: 0, type: "", id: "", button: -1 },
-    second: { x: 0, y: 0, type: "", id: "", button: -1 },
+    first: {
+      x: 0,
+      y: 0,
+      type: "",
+      id: "",
+      button: -1,
+      timeStamp: -1
+    },
+    second: {
+      x: 0,
+      y: 0,
+      type: "",
+      id: "",
+      button: -1,
+      timeStamp: -1
+    },
     movement: { x: 0, y: 0 },
-    isDragging: false
+    isDragging: false,
+    duration: -1
   });
 
   useEffect(() => {
@@ -82,7 +97,15 @@ export function useDragPoints(
     const browserZoom = getBrowserZoom();
 
     // x,y could be scaled differently, need
-    const { type, movementX, movementY, clientX, clientY, target, button } = drag;
+    const {
+      type,
+      movementX,
+      movementY,
+      clientX,
+      clientY,
+      target,
+      button
+    } = drag;
     const { second } = points;
     const { x, y, scaleX, scaleY } = getPointInElement(el.current, {
       clientX,
@@ -97,7 +120,8 @@ export function useDragPoints(
           y,
           type,
           id: (target as HTMLElement).id,
-          button
+          button,
+          timeStamp: performance.now() + performance.timing.navigationStart
         };
 
         setPoints({
@@ -117,7 +141,8 @@ export function useDragPoints(
             y,
             type,
             id: (target as HTMLElement).id,
-            button
+            button,
+            timeStamp: performance.now() + performance.timing.navigationStart
           },
           movement: {
             x: movementX / scaleX / browserZoom,
@@ -127,6 +152,7 @@ export function useDragPoints(
         });
         break;
       case "mouseup":
+        const finalTime = performance.now() + performance.timing.navigationStart
         setPoints({
           ...points,
           second: {
@@ -134,13 +160,15 @@ export function useDragPoints(
             y,
             type,
             id: (target as HTMLElement).id,
-            button
+            button,
+            timeStamp: finalTime
           },
           movement: {
             x: 0,
             y: 0
           },
-          isDragging: false
+          isDragging: false,
+          duration: finalTime-points.first.timeStamp
         });
         break;
       default:

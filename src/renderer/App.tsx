@@ -472,7 +472,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               <Pdf
                 scale={this.props.mainPdfReader.scale}
                 load={{ dir: pdfDir, rootDir: pdfRootDir }}
-                loadPageNumbers={[]}
+                loadPageNumbers={[1]}
                 scrollToPageNumber={this.props.mainPdfReader.scrollToPageNumber}
                 scrollToTop={this.props.mainPdfReader.top}
                 scrollToLeft={this.props.mainPdfReader.left}
@@ -507,3 +507,4 @@ export const render = (Component: typeof App) =>
   ReactDOM.render(<Component />, rootEl);
 
 hot(render(App));
+

@@ -38,6 +38,16 @@ import equal from "fast-deep-equal";
 export type LoadFile = { rootDir: string; dir: string };
 export type LoadUrl = string;
 
+export const logPdfEvent = (pdfEvent: { type: string; payload: any }) => {
+  const timeStamp = performance.now();
+  console.log(
+    "pdfEvent: ",
+    pdfEvent.payload,
+    timeStamp / 1000 / 60,
+    performance.timing.navigationStart
+  );
+};
+
 const defaultProps = {
   scale: 1,
   width: undefined as number | string,
@@ -77,23 +87,21 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   const [pageNumbersInView, setPageNumbersInView] = useState([]);
   const scrollRef = useRef(null);
   const track = useRef({ scale, pages }); // need in hooks, but don't want to rerun effect
-  useEffect(()=> {
-    track.current = {pages, scale}
-  }, [pages, scale])
-  
-
+  useEffect(() => {
+    track.current = { pages, scale };
+  }, [pages, scale]);
 
   const scrollChange = (scale, scrollRef) => {
     if (!scrollRef.current) return undefined;
     const { scrollTop, scrollLeft } = scrollRef.current;
-    
-    props.onChange({
+    const newEvent = {
       type: "scrolled",
       payload: {
         scrollToTop: scrollTop / scale,
         scrollToLeft: scrollLeft / scale
       }
-    });
+    };
+    props.onChange(newEvent);
   };
 
   const [onDebouncedScroll, scrollEvent] = useEventCallback(
@@ -150,11 +158,12 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
 
   useEffect(() => {
     // if we pass in new scroll
-    if (!scrollRef.current || !track.current || props.displayMode === 'box') return undefined;
+    if (!scrollRef.current || !track.current || props.displayMode === "box")
+      return undefined;
     const pagesOffset = getPageOffset(pages, props.scrollToPageNumber);
     scrollRef.current.scrollTo(
       props.scrollToLeft * track.current.scale,
-      (props.scrollToTop * track.current.scale) + pagesOffset
+      props.scrollToTop * track.current.scale + pagesOffset
     );
   }, [track, props.scrollToLeft, props.scrollToTop, props.loadPageNumbers]);
 
@@ -297,8 +306,8 @@ const onScrollVirtualize = (
 ) => e => {
   if (!scrollRef || !pages || !setPageNumbersInView) return undefined;
   !!e && e.stopPropagation();
+
   const newPageNumbersInView = getPageNumbersInView(scrollRef, pages);
-  
 
   if (JSON.stringify(pageNumbersInView) === JSON.stringify(pageNumbersInView)) {
     setPageNumbersInView(newPageNumbersInView);
@@ -307,8 +316,9 @@ const onScrollVirtualize = (
 
 const getPageNumbersInView = (scrollRef, pages) => {
   // todo all refs can be undefined
-  const { height } = scrollRef.current.getBoundingClientRect();
+  const { height, width } = scrollRef.current.getBoundingClientRect();
   const scrollTop = scrollRef.current.scrollTop;
+  const scrollLeft = scrollRef.current.scrollLeft;
 
   let pageTop = 0;
   let pageIxsInView = [];
@@ -325,7 +335,19 @@ const getPageNumbersInView = (scrollRef, pages) => {
   const maxPage = Math.max(...pageIxsInView);
   if (minPage > 1) pageIxsInView.push(minPage - 1);
   if (maxPage < pages.length + 1) pageIxsInView.push(maxPage + 1);
-
+  logPdfEvent({
+    type: "scrolled",
+    payload: {
+      scrollTop,
+      scrollLeft,
+      scrollHeight: height,
+      scrollWidth: width,
+      visablePageRange: [minPage, maxPage],
+      nPages: pages.length,
+      page0Width: pages[0].viewport.width,
+      page0Height: pages[0].viewport.height
+    }
+  });
   return pageIxsInView;
 };
 
@@ -402,8 +424,6 @@ const boxEventsToRedux = (context: {
   pageNumber: number;
   pdfDir: string;
 }): onChange => event => {
-  
-
   if (event.type === "added") {
     const { left, top, width, height } = event.payload.box;
     const { scale, pageNumber, pdfDir } = context;
@@ -522,7 +542,7 @@ const comment = (event: CommentAction) => {
     };
 
     const newDoc = makeUserDoc({
-      data: {useTextForAutocomplete: false},
+      data: { useTextForAutocomplete: false },
       style: {
         min: newTextStyleForCanvas,
         max: newTextStyleForCanvas
@@ -557,7 +577,12 @@ const onWheel = (setScale: React.Dispatch<React.SetStateAction<number>>) => (
     e.preventDefault();
     setScale(prevScale => {
       const newScale = prevScale - e.deltaY / 1000;
-      return newScale >= 0.5 ? newScale : 0.5;
+      const res = newScale >= 0.5 ? newScale : 0.5;
+      logPdfEvent({
+        type: "ScaleChanged",
+        payload: { from: prevScale, to: res }
+      });
+      return res;
     });
   }
 };

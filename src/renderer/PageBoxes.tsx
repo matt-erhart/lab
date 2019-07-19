@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
 import { Box } from "./geometry";
+import {logPdfEvent} from './Pdf'
 
 const OuterMostDiv = styled.div`
   position: absolute;
@@ -68,6 +69,7 @@ export const PageBoxes: React.FC<Props> = props => {
           clientY: drag.clientY
         }
       } as BoxEvents);
+      logPdfEvent({type: 'drewBox', payload: points})
     }
   }, [points]);
 

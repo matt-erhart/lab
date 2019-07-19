@@ -9,16 +9,16 @@
   <!--te-->
 
 # Roadmap
-- DnD from fuse
-- explore logs
-   - custom window events
-- explore feature toggle
-- ctrl-f
-- outline editor + xin fixes
+Study 1: Do grounded claims improve sensemaking?
+   - Subjects: ~40. undergrads? class credit? 
+   - Task Constraints: under 1.5 hours. topics subjects can handle.
+   - Task: Given our design and the default
+
+
 
 
 -------
-
+- ctrl-f
 - transitions
    - text:    anything
    - table:   object attributes

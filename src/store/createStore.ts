@@ -361,19 +361,6 @@ const models = {
   graph
 };
 
-// const actionChains = {
-//   middleware: (store: iStore) => next => action => {
-//     switch (action.type) {
-//       case "graph/removeBatch":
-//         console.log("graph/removeBatch -> close portals");
-//         store.dispatch.app.setPortals();
-//         break;
-//       default:
-//     }
-//     return next(action);
-//   }
-// };
-
 const logit = {
   middleware: store => next => action => {
     if (!["app/updatePortals"].includes(action.type))

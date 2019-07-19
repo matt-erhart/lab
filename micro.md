@@ -1,17 +1,42 @@
+# analysises
+- Vizualise viewing with scroll + zoom + sensor overlay
+  - total area
+    - pages container size changes if
+      - switched pdf
+      - zoomed
+  - visable area
+    - scroll container size changes if
+      - resized panel
+      - scrolled
+      - zoomed
+  - page visability
+    - same as visable area
+  - live slice visability
+    - same as visable area plus
+    - transformed live segments
 
-'a' things
-[c]
-link types
-multiple canvases 
+- Vizualise drawing + transforming a box + sensor overlay
+  - box coordinates
+  - screen position
+  - container position
+  
+- Visualize mouse on window
+  - screen size
+  - screen coordinates
+  - down, up, wheel, button, move
+
+- Visualize keyboard on window
+  - keydown, keyup
 
 
-disable comment in box mode
-pan
-
-scrollTo in  canvas on props
 
 
 --- defer
+event refactor: pass down one onChange/sendUp
+'a' things
+link types
+multiple canvases 
+scrollTo in  canvas on props
 debounce slate onchange -> save
 refactor onchange pdf if box/full
 refactor/rename viewboxdiv

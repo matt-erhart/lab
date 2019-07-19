@@ -204,7 +204,7 @@ export const preprocessPdfs = (
       if (!fileExists || overwrite) {
         const page = await pdf.getPage(pageNumber);
         const viewport = page.getViewport(scale);
-        const text = await page.getTextContent();
+        const text = await page.getTextContent({ normalizeWhitespace: true });
 
         const [xMin, yMin, xMax, yMax] = (viewport as any).viewBox;
         const { width, height } = viewport;
