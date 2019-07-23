@@ -68,7 +68,8 @@ const mapState = (state: iRootState) => ({
   patches: state.graph.patches,
   pdfRootDir: state.app.current.pdfRootDir,
   pdfDir: state.app.panels.mainPdfReader.pdfDir,
-  graphPanel: state.app.panels.graphContainer
+  graphPanel: state.app.panels.graphContainer,
+  featureToggles: state.featureToggles
 });
 
 const mapDispatch = ({
@@ -172,7 +173,6 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-
     this.props.updateBatch({
       nodes: selected
     });
@@ -498,7 +498,7 @@ export class GraphContainer extends React.Component<
         return (
           <DocEditor
             key={node.id}
-            id={node.id} 
+            id={node.id}
             // readOnly={this.state.editingId !== node.id}
           />
         );
@@ -998,22 +998,24 @@ export class GraphContainer extends React.Component<
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                     color="white"
                   >
-                    <DragHandleButton
-                      id={domIds.sizeToggler}
-                      onClick={e => {
-                        e.stopPropagation();
-                        //@ts-ignore
-                        if (e.target.id === domIds.sizeToggler) {
-                          this.props.toggleSelections({
-                            selectedNodes: [frame.id],
-                            clearFirst: true
-                          });
-                          this.props.toggleStyleMode({ id: frame.id });
-                        }
-                      }}
-                    >
-                      min/max
-                    </DragHandleButton>
+                    {this.props.featureToggles.canExpandPdfSegmentInGraph && (
+                      <DragHandleButton
+                        id={domIds.sizeToggler}
+                        onClick={e => {
+                          e.stopPropagation();
+                          //@ts-ignore
+                          if (e.target.id === domIds.sizeToggler) {
+                            this.props.toggleSelections({
+                              selectedNodes: [frame.id],
+                              clearFirst: true
+                            });
+                            this.props.toggleStyleMode({ id: frame.id });
+                          }
+                        }}
+                      >
+                        min/max
+                      </DragHandleButton>
+                    )}
                   </DragHandle>
                 }
               >

@@ -8,7 +8,8 @@
 
 // todo add coords in element
 
-// how to know if prefix or not?
+// pan, zoom, multicanvas
+
 
 export const domIds = {
   app: "app",
@@ -18,6 +19,8 @@ export const domIds = {
   scroll: "scroll",
   menu: "menu",
   menuItem: "menuItem",
+
+  // middle
   panelResizer: "panelResizer",
 
   // top
@@ -43,7 +46,7 @@ export const domIds = {
   resizableEdge: "resizableEdge",
   svgLayer: "svgLayer",
   frame: "frame",
-  
+
   // portals
   textEditorMenu: "textEditorMenu",
   textEditorAutoComplete: "textEditorAutoComplete",
@@ -136,12 +139,6 @@ interface ScrollEvent extends InstantEvent {
 }
 
 /**
- 
- *
-
- *
-
- *
  * switched to a new full pdf
  * showed new panel
  * opened a comment on box in a pdf
@@ -220,6 +217,12 @@ var keyboardLogger = fs.createWriteStream(
   outDir + `${year}${monthIndex}${day}_keyLog.csv`,
   { flags: "a" }
 );
+
+export const reduxLogger = fs.createWriteStream(
+  outDir + `${year}${monthIndex}${day}_reduxLog.jsonl`,
+  { flags: "a" }
+);
+
 let prevPath = "";
 let path = "";
 
@@ -277,4 +280,5 @@ window.onbeforeunload = function() {
   domEvents.forEach(eventName => window.removeEventListener(eventName, log));
   keyboardLogger.end(); // close string
   mouseLogger.end();
+  reduxLogger.end()
 };

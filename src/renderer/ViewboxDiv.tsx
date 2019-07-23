@@ -10,7 +10,7 @@ import {
 } from "react";
 import interact from "interactjs";
 import "@interactjs/types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { iRootState, iDispatch } from "../store/createStore";
 import { Box } from "./geometry";
 import { useMoveResize } from "./sequenceUtils";
@@ -109,15 +109,22 @@ export const AdjustableBox: React.FC<RequiredProps> = React.memo(props => {
    * Pass in a box from e.g. redux, this will move/resize with a preview, and then emit
    * an event on mouseup, comment too
    */
+  const canAdjustPdfSegment = useSelector(
+    state => state.featureToggles.canAdjustPdfSegment
+  );
   const divRef = useRef<HTMLDivElement>(null);
-  const { type, payload: box } = useMoveResize(divRef, props.initBox);
+  const { type, payload: box } = useMoveResize(
+    divRef,
+    props.initBox,
+    !canAdjustPdfSegment
+  );
   useEffect(() => {
     const payload = { id: props.id, box };
     if (type === "moved")
       props.onChange({ type: "moved", payload } as AdjustAction);
     if (type === "resized")
       props.onChange({ type: "resized", payload } as AdjustAction);
-  }, [type]);
+  }, [type, canAdjustPdfSegment]);
 
   type onMenuChange = React.ComponentProps<typeof HoverMenu>["onChange"];
 
@@ -188,6 +195,9 @@ interface HoverMenuProps {
 
 const HoverMenu: React.FC<HoverMenuProps> = props => {
   const { top, height, onChange, ...rest } = props;
+  const canJumpBackToPdf = useSelector(
+    state => state.featureToggles.canJumpBackToPdf
+  );
   return (
     <div
       style={{
@@ -210,17 +220,19 @@ const HoverMenu: React.FC<HoverMenuProps> = props => {
           onChange({ type: "delete", payload: {} });
         }}
       />
-      <MdRemoveRedEye
-        size={height - 1}
-        id="comment"
-        onClick={e => {
-          e.stopPropagation();
-          onChange({
-            type: "scrollTo",
-            payload: {}
-          });
-        }}
-      />
+      {canJumpBackToPdf && (
+        <MdRemoveRedEye
+          size={height - 1}
+          id="comment"
+          onClick={e => {
+            e.stopPropagation();
+            onChange({
+              type: "scrollTo",
+              payload: {}
+            });
+          }}
+        />
+      )}
       <MdComment
         size={height - 1}
         id="comment"

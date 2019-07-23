@@ -15,6 +15,7 @@ import { frame } from "../renderer/ResizableFrame";
 import { get } from "../renderer/utils";
 const settings = require("electron-settings");
 const { clientWidth } = { clientWidth: -1 };
+import { reduxLogger } from "../renderer/events";
 // get(document, d => d.documentElement, {
 //   clientWidth: -1
 // });
@@ -27,6 +28,11 @@ try {
 }
 
 export let defaultApp = {
+  featureToggles: {
+    canAdjustPdfSegment: true,
+    canExpandPdfSegmentInGraph: true,
+    canJumpBackToPdf: true
+  },
   current: {
     userId: "",
     pdfRootDir: pdfRootDir
@@ -85,6 +91,17 @@ try {
   savedModelsJson = {};
 }
 let current = { ...savedModelsJson.current, pdfRootDir };
+export const featureToggles = createModel({
+  state: {
+    ...savedModelsJson.featureToggles
+  } as typeof defaultApp.featureToggles,
+  reducers: {
+    setFeatureToggles(state, payload: typeof defaultApp.featureToggles) {
+      return { ...state, ...payload };
+    }
+  }
+});
+
 export const app = createModel({
   state: {
     ...defaultApp,
@@ -358,7 +375,17 @@ export const graph = createModel({
 
 const models = {
   app,
-  graph
+  graph,
+  featureToggles
+};
+
+const doNotLog = ["app/setNextNodeLocation"];
+const logToFile = {
+  middleware: store => next => action => {
+    if (!doNotLog.includes(action.type))
+      reduxLogger.write(JSON.stringify(action) + "\n");
+    return next(action);
+  }
 };
 
 const logit = {
@@ -411,7 +438,7 @@ const saveToJson = {
 
 const store = init({
   models,
-  plugins: [saveToJson, logit]
+  plugins: [saveToJson, logToFile]
 });
 
 export default store;

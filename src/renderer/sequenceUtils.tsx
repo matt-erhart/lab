@@ -152,7 +152,8 @@ export function useDragPoints(
         });
         break;
       case "mouseup":
-        const finalTime = performance.now() + performance.timing.navigationStart
+        const finalTime =
+          performance.now() + performance.timing.navigationStart;
         setPoints({
           ...points,
           second: {
@@ -168,7 +169,7 @@ export function useDragPoints(
             y: 0
           },
           isDragging: false,
-          duration: finalTime-points.first.timeStamp
+          duration: finalTime - points.first.timeStamp
         });
         break;
       default:
@@ -196,7 +197,7 @@ export const useDrawBox = (ref, button = 0) => {
 };
 
 import interact from "interactjs";
-export const useMoveResize = (ref, initBox) => {
+export const useMoveResize = (ref, initBox, disable = true) => {
   if (!ref) return undefined;
   const [box, setBox] = useState(undefined as Box);
   const [eventType, setEventType] = useState(undefined as
@@ -204,6 +205,8 @@ export const useMoveResize = (ref, initBox) => {
     | "resized"
     | "moving"
     | "resizing");
+
+  if (disable) return { type: eventType, payload: box };
 
   useEffect(() => {
     const { left, top, width, height } = initBox;

@@ -88,8 +88,15 @@ const mapState = (state: iRootState) => ({
 // set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
   graph: { addBatch, updateBatch },
-  app: { setMainPdfReader, setRightPanel }
-}: iDispatch) => ({ addBatch, updateBatch, setMainPdfReader, setRightPanel });
+  app: { setMainPdfReader, setRightPanel },
+  featureToggles: { setFeatureToggles }
+}: iDispatch) => ({
+  addBatch,
+  updateBatch,
+  setMainPdfReader,
+  setRightPanel,
+  setFeatureToggles
+});
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -216,6 +223,11 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
+    this.props.setFeatureToggles({
+      canAdjustPdfSegment: false,
+      canExpandPdfSegmentInGraph: false,
+      canJumpBackToPdf: false
+    });
     const { newPubs } = await processNewPdfs(
       // Destructuring assignment
       this.props.pdfRootDir,
@@ -437,9 +449,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     return (
       <ViewPortContainer id={domIds.viewPort}>
-        <div
-          style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}
-        >
+        <div style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}>
           <Select
             id={domIds.pdfSelector}
             // style={this.styleFn}
@@ -481,7 +491,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               />
             </div>
           )}
-          <ResizeDivider id={domIds.panelResizer} onTransforming={this.onResizeDivider} />
+          <ResizeDivider
+            id={domIds.panelResizer}
+            onTransforming={this.onResizeDivider}
+          />
           {this.renderRightPanel(this.props.rightPanel)}
         </MainContainer>
         <PortalContainer />
