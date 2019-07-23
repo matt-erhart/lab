@@ -10,7 +10,6 @@
 
 // pan, zoom, multicanvas
 
-
 export const domIds = {
   app: "app",
   viewPort: "viewPort",
@@ -206,20 +205,28 @@ const today = new Date();
 var day = zeroPad(today.getDate(), 2);
 var monthIndex = zeroPad(today.getMonth(), 2);
 var year = today.getFullYear();
-console.log(year, monthIndex, day);
-const outDir = "C:\\Users\\mattj\\dev\\lab\\src\\store\\";
+const settings = require("electron-settings");
+let pdfRootDir;
+try {
+  pdfRootDir = settings.get("pdfRootDir");
+} catch {
+  // for node dev
+  pdfRootDir = "F:\\GoogleSync\\megaCogLab\\ElectronTesting\\matt";
+}
+
+const outDir = pdfRootDir;
 var mouseLogger = fs.createWriteStream(
-  outDir + `${year}${monthIndex}${day}_mouseLog.csv`,
+  outDir + `\\${year}${monthIndex}${day}_mouseLog.csv`,
   { flags: "a" }
 );
 
 var keyboardLogger = fs.createWriteStream(
-  outDir + `${year}${monthIndex}${day}_keyLog.csv`,
+  outDir + `\\${year}${monthIndex}${day}_keyLog.csv`,
   { flags: "a" }
 );
 
 export const reduxLogger = fs.createWriteStream(
-  outDir + `${year}${monthIndex}${day}_reduxLog.jsonl`,
+  outDir + `\\${year}${monthIndex}${day}_reduxLog.jsonl`,
   { flags: "a" }
 );
 
@@ -275,10 +282,16 @@ const domEvents = [
   "keyup"
 ];
 
-domEvents.forEach(eventName => window.addEventListener(eventName, log));
-window.onbeforeunload = function() {
+export const addWindowListeners = () => {
+  domEvents.forEach(eventName => window.addEventListener(eventName, log));
+};
+
+export const removeWindowListeners = () => {
   domEvents.forEach(eventName => window.removeEventListener(eventName, log));
+}
+
+export const removeWriteStreams = () => {
   keyboardLogger.end(); // close string
   mouseLogger.end();
-  reduxLogger.end()
-};
+  reduxLogger.end();
+}

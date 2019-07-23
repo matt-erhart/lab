@@ -11,7 +11,12 @@ import { hot } from "react-hot-loader/root";
 import Select from "react-select";
 import { Pdf } from "./Pdf";
 // custom
-import { domIds } from "./events";
+import {
+  domIds,
+  addWindowListeners,
+  removeWindowListeners,
+  removeWriteStreams
+} from "./events";
 
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
@@ -223,6 +228,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
+    addWindowListeners();
     this.props.setFeatureToggles({
       canAdjustPdfSegment: false,
       canExpandPdfSegmentInGraph: false,
@@ -349,6 +355,8 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   componentWillUnmount() {
+    removeWindowListeners();
+    removeWriteStreams();
     window.removeEventListener("keyup", this.keyback);
   }
 
