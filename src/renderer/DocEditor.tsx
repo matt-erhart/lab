@@ -30,6 +30,7 @@ import Downshift from "downshift";
 import { connect } from "react-redux";
 
 // custom
+import { domIds, domIdWithUid } from "./events";
 import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
 import {
   getSelectionRange,
@@ -673,7 +674,7 @@ export class DocEditor extends React.Component<
   };
 
   toggleUseAutoComp = () => {
-    this.save()
+    this.save();
     this.props.updateBatch({
       nodes: [
         {
@@ -795,7 +796,7 @@ export class DocEditor extends React.Component<
           id: this.props.id,
           //@ts-ignore
           data: {
-            ...serialized,
+            ...serialized
           }
         }
       ]
@@ -847,7 +848,7 @@ export class DocEditor extends React.Component<
 
     return (
       <OuterContainer
-        id="outer-doc"
+        id={domIds.textEditor}
         ref={this.outerContainer}
         onMouseLeave={this.save}
         onMouseDown={this.onFocus}
@@ -885,9 +886,9 @@ export class DocEditor extends React.Component<
         >
           {downshift => {
             return (
-              <div id="downshift-div" style={{ display: "flex", flex: 1 }}>
+              <div style={{ display: "flex", flex: 1 }}>
                 <EditorContainer
-                  id="EditorContainer"
+                  id={domIds.textEditorScroll}
                   fontSize={this.getFontSize()} //todo save
                   // onKeyUp={this.onKeyUp}
                   // onMouseUp={this.onMouseUp}
@@ -914,15 +915,16 @@ export class DocEditor extends React.Component<
                     // onBlur={this.save}
                   />
                   {showAutoComplete && (
-                    <Portal id="portal-outer">
+                    <Portal>
                       <PortalDiv
-                        id="autocomplete-div"
+                        id={domIds.textEditorAutoComplete}
                         ref={this.portalDiv}
                         style={{ ...this.state.portalStyle, zIndex: 5 }}
                       >
                         {this.state.autoCompDocs.map((doc, index) => {
                           return (
                             <AutoCompItem
+                              id={domIdWithUid(domIds.autoCompleteItem, doc.id)}
                               key={doc.id}
                               style={{ fontSize: 20 }}
                               {...downshift.getItemProps({
@@ -950,7 +952,7 @@ export class DocEditor extends React.Component<
                     </Portal>
                   )}
                   {this.state.showMenu && (
-                    <Portal id="portal-menu">
+                    <Portal id={domIds.textEditorMenu}>
                       <Toolbar
                         style={this.state.menuStyle}
                         ref={this.menu}

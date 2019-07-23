@@ -6,28 +6,22 @@ var PdfjsWorker = require("pdfjs-dist/lib/pdf.worker.js");
 if (typeof window !== "undefined" && "Worker" in window) {
   (_pdfjs as any).GlobalWorkerOptions.workerPort = new PdfjsWorker();
 }
-import { PDFJSStatic } from "pdfjs-dist";
 
 import jsonfile = require("jsonfile");
 import path = require("path");
-import styled from "styled-components";
-import {
-  useState,
-  useRef,
-  useLayoutEffect,
-  useEffect,
-  useCallback
-} from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+
 import { Observable, combineLatest } from "rxjs";
 import { useEventCallback } from "rxjs-hooks";
-import { map, debounceTime, tap } from "rxjs/operators";
+import { debounceTime, tap } from "rxjs/operators";
+
 // custom
+import { domIds, domIdWithUid } from "./events";
 import { getNeighborhood } from "./graphUtils";
 import { PageBoxes } from "./PageBoxes";
 import { loadPdfPages, checkGetPageNumsToLoad } from "./io";
 import PageCanvas from "./PageCanvas";
 import { iRootState, dispatch } from "../store/createStore";
-import { Box } from "./geometry";
 import { useSelector } from "react-redux";
 import {
   makePdfSegmentViewbox,
@@ -37,16 +31,6 @@ import {
 import equal from "fast-deep-equal";
 export type LoadFile = { rootDir: string; dir: string };
 export type LoadUrl = string;
-
-export const logPdfEvent = (pdfEvent: { type: string; payload: any }) => {
-  const timeStamp = performance.now();
-  console.log(
-    "pdfEvent: ",
-    pdfEvent.payload,
-    timeStamp / 1000 / 60,
-    performance.timing.navigationStart
-  );
-};
 
 const defaultProps = {
   scale: 1,
@@ -231,8 +215,8 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
       return (
         <div
           draggable={false}
-          id={"pdf-page" + page.pageNumber}
-          key={"pdf-page" + page.pageNumber}
+          id={domIdWithUid(domIds.page, page.pageNumber)}
+          key={domIdWithUid(domIds.page, page.pageNumber)}
           style={{
             width: width,
             minWidth: width,
@@ -243,7 +227,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
         >
           {shouldRenderPage && (
             <PageBoxes
-              id="PageBoxes"
+              id={domIdWithUid(domIds.boxSegments, page.pageNumber)}
               boxes={scaledBoxesForPage(boxes, page.pageNumber, scale)}
               pageHeight={height / scale}
               pageWidth={width / scale}
@@ -258,8 +242,8 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
 
           {shouldRenderPage && (
             <PageCanvas
-              id={"canvas-" + page.pageNumber}
-              key={"canvas-" + page.pageNumber}
+              id={domIdWithUid(domIds.pdfCanvas, page.pageNumber)}
+              key={domIdWithUid(domIds.pdfCanvas, page.pageNumber)}
               page={page.page}
               viewport={page.viewport}
               scale={scale}
@@ -274,7 +258,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
   if (pages.length < 1) return null; // required for scrollTo on mount to work
   return (
     <div
-      id="pdf-scroll"
+      id={domIdWithUid(domIds.pdfScroll, props.load.dir)}
       ref={scrollRefCallback}
       draggable={false}
       style={{
@@ -335,19 +319,6 @@ const getPageNumbersInView = (scrollRef, pages) => {
   const maxPage = Math.max(...pageIxsInView);
   if (minPage > 1) pageIxsInView.push(minPage - 1);
   if (maxPage < pages.length + 1) pageIxsInView.push(maxPage + 1);
-  logPdfEvent({
-    type: "scrolled",
-    payload: {
-      scrollTop,
-      scrollLeft,
-      scrollHeight: height,
-      scrollWidth: width,
-      visablePageRange: [minPage, maxPage],
-      nPages: pages.length,
-      page0Width: pages[0].viewport.width,
-      page0Height: pages[0].viewport.height
-    }
-  });
   return pageIxsInView;
 };
 
@@ -578,10 +549,6 @@ const onWheel = (setScale: React.Dispatch<React.SetStateAction<number>>) => (
     setScale(prevScale => {
       const newScale = prevScale - e.deltaY / 1000;
       const res = newScale >= 0.5 ? newScale : 0.5;
-      logPdfEvent({
-        type: "ScaleChanged",
-        payload: { from: prevScale, to: res }
-      });
       return res;
     });
   }

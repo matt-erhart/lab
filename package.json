@@ -9,7 +9,9 @@
     "dist": "yarn compile && electron-builder",
     "dist:dir": "yarn dist --dir",
     "dist:mac": "yarn dist:dir --mac zip",
-    "dist:win": "yarn dist:dir --win --mac zip"
+    "dist:win": "yarn dist:dir --win --mac zip",
+    "compile:dll": "electron-webpack dll",
+    "postinstall": "electron-webpack dll"
   },
   "author": "Matt",
   "license": "MIT",
@@ -86,6 +88,7 @@
     "konva": "^2.6.0",
     "lodash": "^4.17.11",
     "lodash-id": "^0.14.0",
+    "logrocket": "^1.0.2",
     "lowdb": "^1.0.0",
     "memoize-one": "^5.0.0",
     "pdfjs-dist": "file:./modules/pdfjs-dist",
@@ -127,6 +130,15 @@
   },
   "electronWebpack": {
     "renderer": {
+      "dll": [
+        "pdfjs-dist",
+        "styled-components",
+        "slate",
+        "slate-react",
+        "react",
+        "react-dom",
+        "rxjs"
+      ],
       "webpackConfig": "webpack.config.js"
     },
     "main": {

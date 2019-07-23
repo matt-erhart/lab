@@ -15,7 +15,8 @@ import { useSelector } from "react-redux";
 import { iRootState } from "../store/createStore";
 import { useDrawBox } from "./sequenceUtils";
 import { Box } from "./geometry";
-import {logPdfEvent} from './Pdf'
+import {domIds} from './events'
+// import {logPdfEvent} from './Pdf'
 
 const OuterMostDiv = styled.div`
   position: absolute;
@@ -43,13 +44,14 @@ interface Props {
   onChange: (event: onChangeEvents) => void;
   scale: number;
 }
+
 /**
  * draws boxes on pdf pages
  * calls function on box creation/update
  */
 export const PageBoxes: React.FC<Props> = props => {
   const outerRef = useRef<HTMLDivElement>(null);
-  const outerId = "OuterMostDiv";
+  const outerId = domIds.boxSegments;
   const { box, points, drag } = useDrawBox(outerRef); // snap to in here
   const startedDrawing = points.first.id === outerId;
   useEffect(() => {
@@ -69,7 +71,7 @@ export const PageBoxes: React.FC<Props> = props => {
           clientY: drag.clientY
         }
       } as BoxEvents);
-      logPdfEvent({type: 'drewBox', payload: points})
+      // logPdfEvent({type: 'drewBox', payload: points})
     }
   }, [points]);
 

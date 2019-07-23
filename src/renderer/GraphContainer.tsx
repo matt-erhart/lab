@@ -35,6 +35,8 @@ import { devlog } from "../store/featureToggle";
 import { MdZoomOutMap } from "react-icons/md";
 import { dragData } from "./rx";
 import { Pdf } from "./Pdf";
+import { domIds, domIdWithUid } from "./events";
+
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100, isSelected: false },
   { id: "2", left: 101, top: 100, height: 100, width: 100, isSelected: false }
@@ -314,7 +316,7 @@ export class GraphContainer extends React.Component<
 
   onKey = e => {
     //key shortcut trick
-    if (e.target.id !== "GraphScrollContainer") return null;
+    if (e.target.id !== domIds.graphScroll) return null;
     //Wrapper around div. Inside is a Slate component?
     //Huge pain: event bubbling?? ID trick to prevent
     switch (e.key) {
@@ -375,7 +377,7 @@ export class GraphContainer extends React.Component<
   deselectAll = e => {
     if (
       !e.shiftKey &&
-      e.target.id === "SvgLayer" &&
+      e.target.id === domIds.svgLayer &&
       !!this.dragCoordsToRect(this.state.dragCoords, this.state.zoom)
     )
       this.props.toggleSelections({
@@ -388,7 +390,7 @@ export class GraphContainer extends React.Component<
   makeNodeAndLinkIt = e => {
     if (
       !e.shiftKey &&
-      e.target.id === "SvgLayer" &&
+      e.target.id === domIds.svgLayer &&
       this.props.selectedNodes.length > 0
     ) {
       const targetId = this.makeUserHtmlNode(e); //!todo
@@ -465,7 +467,7 @@ export class GraphContainer extends React.Component<
       case "pdf.publication":
         return (
           <div
-            id="pub-node"
+            id={domIdWithUid(domIds.graphNode, node.id)}
             key={node.id}
             style={{
               backgroundColor: "white",
@@ -496,7 +498,7 @@ export class GraphContainer extends React.Component<
         return (
           <DocEditor
             key={node.id}
-            id={node.id}
+            id={node.id} 
             // readOnly={this.state.editingId !== node.id}
           />
         );
@@ -695,7 +697,7 @@ export class GraphContainer extends React.Component<
   };
 
   startSelect = e => {
-    if (e.target.id !== "SvgLayer" || e.button !== 0) return null;
+    if (e.target.id !== domIds.svgLayer || e.button !== 0) return null;
     const {
       left: bbLeft,
       top: bbTop
@@ -880,7 +882,7 @@ export class GraphContainer extends React.Component<
 
     return (
       <ScrollContainer
-        id="GraphScrollContainer"
+        id={domIds.graphScroll}
         ref={this.scrollRef}
         onScroll={this.onScroll}
         onKeyUp={this.onKey}
@@ -891,7 +893,7 @@ export class GraphContainer extends React.Component<
         onMouseLeave={this.setNextLoc}
       >
         <MapContainer
-          id="GraphMapContainer"
+          id={domIds.graphMap}
           ref={this.mapRef}
           zoom={this.state.zoom}
           height={8000}
@@ -900,7 +902,7 @@ export class GraphContainer extends React.Component<
         >
           {width && height && (
             <svg
-              id="SvgLayer"
+              id={domIds.svgLayer}
               viewBox={`0 0 ${8000} ${8000}`}
               width={8000}
               height={8000}
@@ -937,6 +939,7 @@ export class GraphContainer extends React.Component<
                   );
                   return (
                     <LinkLine
+                      id={domIdWithUid(domIds.graphLink, link.id)}
                       isSelected={this.isSelected(link.id)}
                       key={link.source + link.target}
                       targetFrame={targetFrame}
@@ -990,17 +993,17 @@ export class GraphContainer extends React.Component<
                 mode={mode}
                 dragHandle={
                   <DragHandle
-                    id="drag-handle"
+                    id={domIds.dragHandle}
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                     color="white"
                   >
                     <DragHandleButton
-                      id="drag-handle-button"
+                      id={domIds.sizeToggler}
                       onClick={e => {
                         e.stopPropagation();
                         //@ts-ignore
-                        if (e.target.id === "drag-handle-button") {
+                        if (e.target.id === domIds.sizeToggler) {
                           this.props.toggleSelections({
                             selectedNodes: [frame.id],
                             clearFirst: true

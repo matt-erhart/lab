@@ -5,7 +5,7 @@ var equal = require("fast-deep-equal");
 import { dragData } from "./rx";
 import { Subscription } from "rxjs";
 import { get } from "./utils";
-
+import {domIds} from './events'
 export type frame = Partial<{
   id: string;
   left: number;
@@ -201,9 +201,9 @@ export class ResizableFrame extends React.Component<
   };
 
   // todo this actually would make a good hook
-  sub: Subscription;
+  sub: Subscription;c
   onMouseDownResize = e => {
-    if (e.target.id !== "frame") return null;
+    if (e.target.id !== domIds.frame) return null;
     this.props.onTransformStart({
       event: e,
       id: this.props.id,
@@ -227,7 +227,7 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
-    if (e.target.id !== "drag-handle") return null;
+    if (e.target.id !== domIds.dragHandle) return null;
     this.props.onTransformStart({ event: e, id: this.props.id, type: "move" });
     e.stopPropagation();
     this.isMouseDown = true;
@@ -398,7 +398,7 @@ const getResizeInfo = (
   e: React.MouseEvent<HTMLDivElement, MouseEvent>
 ): hoverInfo => {
   //@ts-ignore
-  if (get(e, e => e.target.id) !== "frame")
+  if (get(e, e => e.target.id) !== domIds.frame)
     return { location: "default", cursor: "default" };
 
   // edge or corner locations with matching cursors

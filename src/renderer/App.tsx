@@ -9,9 +9,10 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
-import GoogleScholar from "./codeExperiments/GoogleScholar";
 import { Pdf } from "./Pdf";
 // custom
+import { domIds } from "./events";
+
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
 import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
 import { createAutograbJSON, createGROBIDJSON, listDirs } from "./io";
@@ -102,9 +103,9 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
     return fileName === "" ? pathParts[pathParts.length - 2] : fileName;
   });
 
-  const currentIds = Object.keys(nodes)
+  const currentIds = Object.keys(nodes);
   const newIds = pdfDirs.filter(dir => !currentIds.includes(dir));
-  
+
   // const pdfNodes = pdfDirs.map((dir, ix) => {
   //   const normDir = path.normalize(dir);
   //   const pathParts = normDir.split(path.sep);
@@ -124,9 +125,7 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
       numPages: number;
       fingerprint: string;
       originalFileName: string;
-    } = jsonfile.readFileSync(
-      path.join(pdfRootDir, id, "pdfInfo.json")
-    );
+    } = jsonfile.readFileSync(path.join(pdfRootDir, id, "pdfInfo.json"));
     return makePdfPublication(
       id,
       {
@@ -137,7 +136,7 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
       { x: 50 + Math.random() * 100, y: 50 * Math.random() * 100 }
     );
   });
-  console.log('newPubs: ', newPubs);
+  console.log("newPubs: ", newPubs);
   return { newPubs };
 };
 
@@ -437,15 +436,18 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
 
     return (
-      <ViewPortContainer>
-        <div style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}>
+      <ViewPortContainer id={domIds.viewPort}>
+        <div
+          style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}
+        >
           <Select
+            id={domIds.pdfSelector}
             // style={this.styleFn}
             options={fileOptions}
             onChange={this.setPathInfo}
           />
         </div>
-        <MainContainer>
+        <MainContainer id={domIds.panels}>
           {pdfDir.length > 0 && (
             <div
               style={{
@@ -479,7 +481,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               />
             </div>
           )}
-          <ResizeDivider onTransforming={this.onResizeDivider} />
+          <ResizeDivider id={domIds.panelResizer} onTransforming={this.onResizeDivider} />
           {this.renderRightPanel(this.props.rightPanel)}
         </MainContainer>
         <PortalContainer />
@@ -492,6 +494,8 @@ const ConnectedApp = connect(
   mapDispatch
 )(_App);
 
+import { Div1 } from "./TestComp";
+import "./events";
 class App extends React.Component {
   render() {
     return (
@@ -507,4 +511,3 @@ export const render = (Component: typeof App) =>
   ReactDOM.render(<Component />, rootEl);
 
 hot(render(App));
-

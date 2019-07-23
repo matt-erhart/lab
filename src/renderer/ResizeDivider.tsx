@@ -19,6 +19,7 @@ const Divider = styled.div`
 
 const ResizeDividerDefaults = {
   props: {
+    id: '',
     vertical: true,
     containerRef: undefined as React.RefObject<any>,
     onTransforming: (mouseData: mData) => {}
