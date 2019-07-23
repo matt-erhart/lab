@@ -267,7 +267,6 @@ export class ResizableFrame extends React.Component<
 
   render() {
     const { left, top, width, height, isSelected } = this.props;
-    console.log(this.state.activateScroll);
     return (
       <OuterContainer
         id={"frame"}

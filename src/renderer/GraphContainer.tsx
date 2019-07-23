@@ -409,7 +409,7 @@ export class GraphContainer extends React.Component<
   makeUserHtmlNode = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
     const { clientX, clientY } = e;
     const { left, top } = e.currentTarget.getBoundingClientRect();
-    const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
+    const allowId = oc(e).currentTarget.id("") === domIds.svgLayer; //todo unmagic string
     if (allowId) {
       const xy = {
         left: (clientX - left) / this.state.zoom,

@@ -230,9 +230,9 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   async componentDidMount() {
     addWindowListeners();
     this.props.setFeatureToggles({
-      canAdjustPdfSegment: false,
-      canExpandPdfSegmentInGraph: false,
-      canJumpBackToPdf: false
+      canAdjustPdfSegment: true,
+      canExpandPdfSegmentInGraph: true,
+      canJumpBackToPdf: true
     });
     const { newPubs } = await processNewPdfs(
       // Destructuring assignment
@@ -492,7 +492,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               <Pdf
                 scale={this.props.mainPdfReader.scale}
                 load={{ dir: pdfDir, rootDir: pdfRootDir }}
-                loadPageNumbers={[1]}
+                loadPageNumbers={[]}
                 scrollToPageNumber={this.props.mainPdfReader.scrollToPageNumber}
                 scrollToTop={this.props.mainPdfReader.top}
                 scrollToLeft={this.props.mainPdfReader.left}

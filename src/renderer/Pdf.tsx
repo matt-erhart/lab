@@ -85,6 +85,7 @@ export const Pdf = React.memo((_props: OptionalProps & RequiredProps) => {
         scrollToLeft: scrollLeft / scale
       }
     };
+    //@ts-ignore
     props.onChange(newEvent);
   };
 

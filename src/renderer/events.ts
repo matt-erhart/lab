@@ -246,30 +246,30 @@ const log = e => {
   prevPath = newPath;
   switch (e.type) {
     case "mousemove":
-      mouseLogger.write(
+      !!mouseLogger && mouseLogger.write(
         `move,${e.clientX},${e.clientY},-1,${timeStamp()},${path}\n`
       );
       break;
     case "mousedown":
-      mouseLogger.write(
+      !!mouseLogger && mouseLogger.write(
         `down,${e.clientX},${e.clientY},${e.button},${timeStamp()},${path}\n`
       );
       break;
     case "mouseup":
-      mouseLogger.write(
+      !!mouseLogger && mouseLogger.write(
         `up,${e.clientX},${e.clientY},${e.button},${timeStamp()},${path}\n`
       );
       break;
     case "mousewheel":
-      mouseLogger.write(
+      !!mouseLogger && mouseLogger.write(
         `wheel,${e.deltaX},${e.deltaY},-1,${timeStamp()},${path}\n`
       );
       break;
     case "keydown":
-      keyboardLogger.write(`down,${e.key},${timeStamp()},${path}\n`);
+      !!keyboardLogger && keyboardLogger.write(`down,${e.key},${timeStamp()},${path}\n`);
       break;
     case "keyup":
-      keyboardLogger.write(`up,${e.key},${timeStamp()},${path}\n`);
+      !!keyboardLogger && keyboardLogger.write(`up,${e.key},${timeStamp()},${path}\n`);
   }
 };
 
@@ -291,7 +291,9 @@ export const removeWindowListeners = () => {
 }
 
 export const removeWriteStreams = () => {
-  keyboardLogger.end(); // close string
-  mouseLogger.end();
-  reduxLogger.end();
+  keyboardLogger && keyboardLogger.end(); // close string
+  mouseLogger && mouseLogger.end();
+  reduxLogger && reduxLogger.end();
 }
+
+window.onunload = () => removeWriteStreams()
