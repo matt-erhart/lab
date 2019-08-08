@@ -24,8 +24,9 @@ import {
   MdNoteAdd,
   MdDeleteForever,
   MdSettings,
-  MdArrowUpward
+  MdArrowUpward,
 } from "react-icons/md";
+import {FaShareSquare} from "react-icons/fa"
 import Downshift from "downshift";
 import { connect } from "react-redux";
 
@@ -724,12 +725,25 @@ export class DocEditor extends React.Component<
         onDoubleClick={this.deleteNode}
       >
         <MdDeleteForever {...this.iconProps} />
+      </Button>,
+      <Button
+      key={"Toggle Entry Point"}
+        title={"Toggle Entry Point"}
+        isActive={this.props.nodes[this.props.id].data.isEntryPoint}
+        onClick={this.toggleIsEntryPoint}
+      >
+        <FaShareSquare {...this.iconProps} />
       </Button>
     ];
   };
 
   deleteNode = () => {
     this.props.removeBatch({ nodes: [this.props.id] });
+  };
+
+  toggleIsEntryPoint = () => {
+    const isEntryPoint = this.props.nodes[this.props.id].data.isEntryPoint
+    this.props.updateBatch({ nodes: [{id: this.props.id, data: {isEntryPoint: !isEntryPoint}}] });
   };
 
   // changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {

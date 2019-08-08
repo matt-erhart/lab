@@ -102,13 +102,14 @@ type Sensors =
   | "eyetracker"
   | "accelerometer"
   | "compass"
-  | "gps";
+  | "gps"
+  | "controller"
 
 interface InstantEvent {
   timeStamp: number;
   event: EventTypes;
   progress: SequenceProgressTypes;
-  domPath: string;
+  path: string;
   sensors: Sensors[];
 }
 
