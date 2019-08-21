@@ -240,8 +240,8 @@ export class GraphContainer extends React.Component<
     const { width, height } = containerBounds;
     const zoomedIn = this.state.zoom > 1 ? this.state.zoom : 1;
     const view = getBoxEdges({
-      left: (this.state.scrollLeft - pad) / this.state.zoom,
-      top: (this.state.scrollTop - pad) / this.state.zoom,
+      left: (this.scrollRef.current.scrollLeft - pad) / this.state.zoom,
+      top: (this.scrollRef.current.scrollTop - pad) / this.state.zoom,
       width: (width + pad * 2) / this.state.zoom,
       height: (height + pad * 2) / this.state.zoom
     });
