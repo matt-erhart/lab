@@ -1,5 +1,9 @@
 {
-  "exclude": ["src/renderer/archive", "src/renderer/codeExperiments"],
+  "exclude": [
+    "src/renderer/archive",
+    "src/renderer/codeExperiments",
+    "src/store/convertJson"
+  ],
   "compilerOptions": {
     "inlineSources": true,
     "sourceMap": true,

@@ -1,5 +1,5 @@
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   output: {
     globalObject: "this"
   },
@@ -13,7 +13,7 @@ module.exports = {
       {
         test: /\.(html)$/,
         use: {
-          loader: 'html-loader'
+          loader: "html-loader"
         }
       }
     ]

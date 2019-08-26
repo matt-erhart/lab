@@ -18,6 +18,9 @@ function createMainWindow() {
   });
 
   if (isDevelopment) {
+    const ext =
+      "C:\\Users\\mattj\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\3.6.0_0";
+    // BrowserWindow.addDevToolsExtension(ext);
     window.webContents.openDevTools();
   }
 

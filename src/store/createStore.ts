@@ -15,6 +15,7 @@ import { frame } from "../renderer/ResizableFrame";
 import { get } from "../renderer/utils";
 const settings = require("electron-settings");
 const { clientWidth } = { clientWidth: -1 };
+import { reduxLogger } from "../renderer/events";
 // get(document, d => d.documentElement, {
 //   clientWidth: -1
 // });
@@ -27,6 +28,11 @@ try {
 }
 
 export let defaultApp = {
+  featureToggles: {
+    canAdjustPdfSegment: true,
+    canExpandPdfSegmentInGraph: true,
+    canJumpBackToPdf: true
+  },
   current: {
     userId: "",
     pdfRootDir: pdfRootDir
@@ -85,6 +91,17 @@ try {
   savedModelsJson = {};
 }
 let current = { ...savedModelsJson.current, pdfRootDir };
+export const featureToggles = createModel({
+  state: {
+    ...savedModelsJson.featureToggles
+  } as typeof defaultApp.featureToggles,
+  reducers: {
+    setFeatureToggles(state, payload: typeof defaultApp.featureToggles) {
+      return { ...state, ...payload };
+    }
+  }
+});
+
 export const app = createModel({
   state: {
     ...defaultApp,
@@ -263,7 +280,7 @@ export const graph = createModel({
       // todo updatetime
       // 400 items = 9ms, 300 items = 7ms
       //@ts-ignore
-      return produce(state, draft => {
+      const newState = produce(state, draft => {
         draft.patches = [];
         for (let payloadKey of Object.keys(payload)) {
           for (let nodeOrLink of payload[payloadKey]) {
@@ -300,6 +317,8 @@ export const graph = createModel({
           }
         }
       });
+
+      return newState;
     },
     toggleSelections(
       state,
@@ -356,33 +375,36 @@ export const graph = createModel({
 
 const models = {
   app,
-  graph
+  graph,
+  featureToggles
 };
 
-// const actionChains = {
-//   middleware: (store: iStore) => next => action => {
-//     switch (action.type) {
-//       case "graph/removeBatch":
-//         console.log("graph/removeBatch -> close portals");
-//         store.dispatch.app.setPortals();
-//         break;
-//       default:
-//     }
-//     return next(action);
-//   }
-// };
+const doNotLog = ["app/setNextNodeLocation"];
+const logToFile = {
+  middleware: store => next => action => {
+    if (!doNotLog.includes(action.type))
+      reduxLogger.write(JSON.stringify(action) + "\n");
+    return next(action);
+  }
+};
 
 const logit = {
   middleware: store => next => action => {
     if (!["app/updatePortals"].includes(action.type))
-      console.log("REDUX: ", action.type, Object.keys(action.payload));
+      console.log("REDUX: ", action.type, action.payload);
     return next(action);
   }
 };
 
 const saveToJson = {
   middleware: store => next => action => {
-    const saveIf = ["graph/addBatch", "graph/updateBatch", "graph/removeBatch"];
+    const saveIf = [
+      "graph/addBatch",
+      "graph/updateBatch",
+      "graph/removeBatch",
+      "graph/toggleStyleMode",
+      "app/setMainPdfReader"
+    ];
     const result = next(action);
     if (saveIf.includes(action.type)) {
       // if need perf: requestidealcallback if window
@@ -416,7 +438,7 @@ const saveToJson = {
 
 const store = init({
   models,
-  plugins: [saveToJson]
+  plugins: [saveToJson, logToFile]
 });
 
 export default store;

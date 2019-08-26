@@ -26,6 +26,7 @@ import { MdDeleteForever } from "react-icons/md";
 // todo consistant CAPS
 import { getNeighborhood } from "./graphUtils";
 import styled from "styled-components";
+import { ViewboxDiv } from "./ViewboxDiv";
 /**
  * @class **PageSvg**
  *
@@ -70,7 +71,7 @@ const mapState = (state: iRootState, props) => {
 };
 
 const mapDispatch = ({
-  graph: { addBatch, removeBatch, toggleSelections },
+  graph: { addBatch, removeBatch, toggleSelections, updateBatch },
   app: {
     addPortals,
     removePortals,
@@ -82,6 +83,7 @@ const mapDispatch = ({
 }: iDispatch) => ({
   addBatch,
   removeBatch,
+  updateBatch,
   addPortals,
   removePortals,
   updatePortals,
@@ -739,8 +741,10 @@ class PageSvg extends React.Component<
 
               return (
                 <ViewboxDiv
+                  updateBatch={this.props.updateBatch}
                   draggable={false}
                   key={vb.id}
+                  id={vb.id}
                   style={{
                     position: "absolute",
                     top: top,
@@ -774,8 +778,9 @@ class PageSvg extends React.Component<
                     id="delete-icon"
                     style={{ position: "absolute", top: -30 }}
                     onClick={e => {
-                      e.stopPropagation()
-                      this.deleteViewbox(vb.id)}}
+                      e.stopPropagation();
+                      this.deleteViewbox(vb.id);
+                    }}
                   >
                     <MdDeleteForever />
                   </div>
@@ -835,18 +840,23 @@ export default connect(
   mapDispatch
 )(PageSvg);
 
-const ViewboxDiv = styled.div`
-  div {
-    opacity: 0;
-    cursor: pointer;
-    :hover {
-      color: red;
-    }
-  }
+// const ViewboxDiv = styled.div`
+//   div {
+//     opacity: 0;
+//     cursor: pointer;
+//     :hover {
+//       color: red;
+//     }
+//   }
 
-  &:hover {
-    div {
-      opacity: 1;
-    }
-  }
-`;
+//   &:hover {
+//     div {
+//       opacity: 1;
+//     }
+//   }
+// `;
+
+// import reactable from "reactablejs";
+// const ViewboxDiv = reactable(props => {
+//   return <_ViewboxDiv ref={props.getRef as any} />;
+// });

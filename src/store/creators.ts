@@ -19,7 +19,7 @@ export type NodeDataTypes =
   | "query" // queries have style overrides, combine subqueries to reuse, ooo
   | "projection/map/affinity/dimension/coordinates matter"
   | "autograb"
-  | "GROBIDMetadata"
+  | "GROBIDMetadata";
 
 type corners = "nw" | "ne" | "sw" | "se"; // north, south, west, east
 type modes = "min" | "max";
@@ -53,8 +53,8 @@ interface StyleBase {
   modes: modes[];
   modeIx: number;
   lockedCorner: corners;
-  min: lt_hw & any
-  max: lt_hw & any
+  min: lt_hw & any;
+  max: lt_hw & any;
 }
 
 const ViewboxDataDefault = {
@@ -66,7 +66,8 @@ const ViewboxDataDefault = {
   pdfDir: "",
   pageNumber: 0,
   type: "pdf.segment.viewbox" as NodeDataTypes,
-  scale: 1
+  scale: 1, // scale of left/top/height/width, will be 1. replaced by scaleAtCapture,
+  scalePreview: 1 // scale at capture, then updated in list view etc
 };
 export type ViewboxData = typeof ViewboxDataDefault;
 export interface PdfSegmentViewbox {
@@ -99,8 +100,10 @@ export const makePdfSegmentViewbox = (
       max: clampLeftTop({
         ..._style,
         ...style,
-        width: width + 100,
-        height: height + 100
+        width: (width + 100)*viewbox.scalePreview,
+        height: (height + 100)*viewbox.scalePreview,
+        scrollToLeft: viewbox.left - 33,
+        scrollToTop: viewbox.top - 33
       }),
       modes: ["min", "max"],
       modeIx: 0,
@@ -140,7 +143,9 @@ const PdfPublicationDefaults = {
     doi: "",
     isbn: "",
     issn: "",
-    published: true
+    published: true,
+    originalFileName: "",
+    numPages: 1
   },
   style: {
     id: "",
@@ -159,6 +164,7 @@ const PdfPublicationDefaults = {
 export type PdfPublication = typeof PdfPublicationDefaults;
 
 export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
+  console.log('data: ', data);
   return {
     ...PdfPublicationDefaults,
     id: dirName,
@@ -174,7 +180,7 @@ export const makePdfPublication = (dirName: string, data = {}, style = {}) => {
 const AutoGrabDefaults = {
   id: "",
   data: {
-    type: "autograb" as NodeDataTypes,
+    type: "autograb" as NodeDataTypes
   },
   style: {
     id: "",
@@ -258,7 +264,9 @@ const UserDocDefaults = {
     type: "userDoc" as NodeDataTypes,
     base64: convertBase64.serialize(initKeySafeSlate()),
     text: "",
-    useTextForAutocomplete: true
+    useTextForAutocomplete: false,
+    isEntryPoint: false,
+    isKeyword: false
   },
   meta: makeNodeMeta(),
   style: {
@@ -279,7 +287,7 @@ export const makeUserDoc = (
   return {
     ...UserDocDefaults,
     id,
-    data: { ...UserDocDefaults.data, ...data },
+    data: { ...UserDocDefaults.data, ...data, useTextForAutocomplete: false },
     style: {
       ...UserDocDefaults.style,
       min: clampLeftTop({ ...UserDocDefaults.style.min, ...props.style.min }),

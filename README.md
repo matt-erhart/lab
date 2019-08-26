@@ -9,13 +9,26 @@
   <!--te-->
 
 # Roadmap
-- FIX AUTOCOMP COORDS
-- ELECTRON LEVEL ZOOM
-- ctrl-f
+Study 1: Do grounded claims improve sensemaking?
+   - Subjects: ~40. undergrads? class credit? 
+   - Task Constraints: under 1.5 hours. topics subjects can handle.
+   - Task: Given our design and the default
+
 
 
 
 -------
+- ctrl-f
+- transitions
+   - text:    anything
+   - table:   object attributes
+   - network: relationships encoded with proximity, angle, containment, lines
+   - map:     has named sequential axis
+
+
+- clustering
+   - initialize canvas coords with tsne
+
 - chrome extension + firebase
    - select text, right click send to firebase list of {url, time, query}
    - firebase onlist add, knn search, list view 
@@ -65,7 +78,6 @@
    - manually fix autograb
    - good ole' fashion text highlighting
    - text highlighting from auto-grab
-   - delete segment in pdf viewer
    - autocomplete for phrases in selected area
    - perf
       - zoom
@@ -86,9 +98,8 @@
 
 # Slate-TroubleShooting
 ** Can't focus multiple instances of slate editors, e.g. in a list: **
-Cause: conflicting keys uses to find editor in the dom
-Solution: 
-editorUtils/initKeySafeSlate()
+Cause: conflicting keys used to find editor in the dom
+Solution: editorUtils.tsx/initKeySafeSlate()
 
 
 # Dictionary
@@ -133,7 +144,6 @@ http://js.cytoscape.org/
 # graph layouts
 
 https://ialab.it.monash.edu/webcola/index.html
-http://sigmajs.org/ dedicated to graph drawing.
 https://github.com/d3/d3-force
 
 # electron perf notes

@@ -9,13 +9,18 @@ import styled from "styled-components";
 import path = require("path");
 import { hot } from "react-hot-loader/root";
 import Select from "react-select";
-import GoogleScholar from './codeExperiments/GoogleScholar'
-
+import { Pdf } from "./Pdf";
 // custom
+import {
+  domIds,
+  addWindowListeners,
+  removeWindowListeners,
+  removeWriteStreams
+} from "./events";
+
 import store, { iRootState, iDispatch, defaultApp } from "../store/createStore";
-import PdfViewer from "./PdfViewer";
 import { setupDirFromPdfs, processAutoGrab, processGROBID } from "./io";
-import { createAutograbJSON, createGROBIDJSON, listDirs } from './io'
+import { createAutograbJSON, createGROBIDJSON, listDirs } from "./io";
 // import fs = require("fs-extra");
 import ListView from "./ListView";
 import {
@@ -28,7 +33,7 @@ import {
   createAutoGrabNodesAndLinkToPublicationNodes,
   createGROBIDNodesAndLinkToPublicationNodes,
   createAutoGrabNodesAndLinkToPublicationNodesSingle,
-  createGROBIDNodesAndLinkToPublicationNodesSingle,
+  createGROBIDNodesAndLinkToPublicationNodesSingle
 } from "./AutoGrab";
 import GraphContainer from "./GraphContainer";
 import { ResizeDivider } from "./ResizeDivider";
@@ -36,12 +41,11 @@ import PortalContainer from "./PortalContainer";
 import { mData } from "./rx";
 import DocEditor from "./DocEditor";
 import WOZEditor from "./WOZEditor";
-import RealisticEditor from './RealisticEditor';
+import RealisticEditor from "./RealisticEditor";
 import DocList from "./DocList";
 import { featureToggles } from "../store/featureToggle";
-import console = require("console");
 import { List } from "grommet-icons";
-
+import jsonfile = require("jsonfile");
 const NavBar = styled.div`
   font-size: 30px;
   display: flex;
@@ -50,6 +54,7 @@ const NavBar = styled.div`
   flex-flow: row;
   flex: 0;
   margin: 1px;
+  z-index: 4;
 `;
 
 const ViewPortContainer = styled.div`
@@ -88,34 +93,63 @@ const mapState = (state: iRootState) => ({
 // set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
   graph: { addBatch, updateBatch },
-  app: { setMainPdfReader, setRightPanel }
-}: iDispatch) => ({ addBatch, updateBatch, setMainPdfReader, setRightPanel });
+  app: { setMainPdfReader, setRightPanel },
+  featureToggles: { setFeatureToggles }
+}: iDispatch) => ({
+  addBatch,
+  updateBatch,
+  setMainPdfReader,
+  setRightPanel,
+  setFeatureToggles
+});
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 const processNewPdfs = async (pdfRootDir, nodes) => {
-  const pdfDirs = await setupDirFromPdfs(pdfRootDir);
-  // console.log("setupDir succeed!")
-
-  const pdfNodes = pdfDirs.map((dir, ix) => {
-    const normDir = path.normalize(dir);
+  const pdfDirPaths = await setupDirFromPdfs(pdfRootDir);
+  const pdfDirs = pdfDirPaths.map(dirPath => {
+    const normDir = path.normalize(dirPath);
     const pathParts = normDir.split(path.sep);
     const fileName = pathParts[pathParts.length - 1];
-    const pdfDir = fileName === "" ? pathParts[pathParts.length - 2] : fileName;
-
-    return makePdfPublication(
-      pdfDir,
-      { pdfDir },
-      { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
-    );
+    return fileName === "" ? pathParts[pathParts.length - 2] : fileName;
   });
 
-  const allNodeIds = Object.keys(nodes);
+  const currentIds = Object.keys(nodes);
+  const newIds = pdfDirs.filter(dir => !currentIds.includes(dir));
 
-  const newPubs = pdfNodes.filter(pdfNode => !allNodeIds.includes(pdfNode.id)); //filter out nodes that exists
+  // const pdfNodes = pdfDirs.map((dir, ix) => {
+  //   const normDir = path.normalize(dir);
+  //   const pathParts = normDir.split(path.sep);
+  //   const fileName = pathParts[pathParts.length - 1];
+  //   const pdfDir = fileName === "" ? pathParts[pathParts.length - 2] : fileName;
 
-  return { newPubs: newPubs };
+  //   return makePdfPublication(
+  //     pdfDir,
+  //     { pdfDir },
+  //     { x: 50 + ix + Math.random() * 100, y: 50 + ix * Math.random() * 100 }
+  //   );
+  // });
+
+  // const allNodeIds = Object.keys(nodes);
+  const newPubs = newIds.map(id => {
+    const pdfInfo: {
+      numPages: number;
+      fingerprint: string;
+      originalFileName: string;
+    } = jsonfile.readFileSync(path.join(pdfRootDir, id, "pdfInfo.json"));
+    return makePdfPublication(
+      id,
+      {
+        pdfDir: id,
+        numPages: pdfInfo.numPages,
+        originalFileName: pdfInfo.originalFileName
+      },
+      { x: 50 + Math.random() * 100, y: 50 * Math.random() * 100 }
+    );
+  });
+  console.log("newPubs: ", newPubs);
+  return { newPubs };
 };
 
 // const processAutoGrabs = async (pdfRootDir, nodes, newPubs) => {
@@ -144,17 +178,12 @@ const processNewPdfs = async (pdfRootDir, nodes) => {
 //       newPubs
 //     );
 
-
-
 //     if (newNodes.length > 0) {
 //       this.props.addBatch({ nodes: newNodes, links: newLinks });
 //       this.props.updateBatch({ nodes: newNodes, links: newLinks });
 //     }
 
 //   }
-
-
-
 
 //   // Move AutoGrab info from metaToHighlight.json file to state.json
 //   // return createAutoGrabNodesAndLinkToPublicationNodes(
@@ -186,7 +215,6 @@ type rightPanelName = typeof defaultApp.panels.rightPanel;
 class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   state = AppDefaults.state;
   keyback = (e: KeyboardEvent) => {
-    console.log(e)
     const altAndKeyToCmd = {
       "1": "graphContainer" as rightPanelName,
       "2": "listview" as rightPanelName,
@@ -200,6 +228,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
   async componentDidMount() {
+    addWindowListeners();
+    this.props.setFeatureToggles({
+      canAdjustPdfSegment: true,
+      canExpandPdfSegmentInGraph: true,
+      canJumpBackToPdf: true
+    });
     const { newPubs } = await processNewPdfs(
       // Destructuring assignment
       this.props.pdfRootDir,
@@ -208,7 +242,6 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const nodesBeforePubs = this.props.nodes;
     if (newPubs.length > 0) {
       this.props.addBatch({ nodes: newPubs });
-      console.log("nodes added")!;
       if (this.props.pdfDir === "")
         this.props.setMainPdfReader({ pdfDir: newPubs[0].id });
     }
@@ -218,7 +251,7 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
     if (featureToggles.showAutoGrab) {
       // show autograb and GROBID extracted metadata
-      console.log("Making participant info nodes and GROBID metadata nodes! ");
+
       {
         // This 1st block: making participant info nodes
         // const { newNodes, newLinks } = await processAutoGrabs(
@@ -238,8 +271,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         // );
 
         let pdfDirs = await listDirs(this.props.pdfRootDir);
-        pdfDirs = pdfDirs.sort((dirA, dirB) => (dirA.toString() < dirB.toString() ? 1 : 0))
-        // console.log("pdfDirs " + pdfDirs)
+        pdfDirs = pdfDirs.sort((dirA, dirB) =>
+          dirA.toString() < dirB.toString() ? 1 : 0
+        );
+        //
         const allNodeIds = Object.keys(nodesBeforePubs);
         // let excessiveNodes:any[]
         // let excessiveLinks=any[]
@@ -249,7 +284,10 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
               return result;
             });
 
-            var { newNodes, newLinks } = await createAutoGrabNodesAndLinkToPublicationNodesSingle(
+            var {
+              newNodes,
+              newLinks
+            } = await createAutoGrabNodesAndLinkToPublicationNodesSingle(
               dir,
               allNodeIds,
               newPubs
@@ -265,12 +303,14 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             }
           }
           {
-
             var success = await createGROBIDJSON(dir)().then(result => {
               return result;
             });
 
-            var { newNodes, newLinks } = await createGROBIDNodesAndLinkToPublicationNodesSingle(
+            var {
+              newNodes,
+              newLinks
+            } = await createGROBIDNodesAndLinkToPublicationNodesSingle(
               dir,
               allNodeIds,
               newPubs
@@ -282,25 +322,23 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
             }
           }
 
-          // console.log((this.rightPanel.current as any).forFun())
+          //
           //   this.props.setRightPanel(("graphContainer" as any))
           // this.props.setRightPanel(("listview" as any))
           var random = Math.floor(Math.random() * (5 - 0));
-          console.log("random" + random)
+
           if (random == 3) {
-            await this.props.setRightPanel(("graphContainer" as any))
-            await this.props.setRightPanel(("listview" as any))
-          } 
+            await this.props.setRightPanel("graphContainer" as any);
+            await this.props.setRightPanel("listview" as any);
+          }
         }
 
-        await this.props.setRightPanel(("graphContainer" as any))
-        await this.props.setRightPanel(("listview" as any))
-
+        await this.props.setRightPanel("graphContainer" as any);
+        await this.props.setRightPanel("listview" as any);
       }
 
       {
         // This 2nd block: Making GROBID extracted metadata nodes
-
         // const { newNodes, newLinks } = await processGROBIDs(
         //   // Destructuring assignment
         //   this.props.pdfRootDir,
@@ -311,13 +349,14 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
         //   this.props.addBatch({ nodes: newNodes, links: newLinks });
         //   this.props.updateBatch({ nodes: newNodes, links: newLinks });
         // }
-
-        // console.log(resultMessage)
+        //
       }
     }
   }
 
   componentWillUnmount() {
+    removeWindowListeners();
+    removeWriteStreams();
     window.removeEventListener("keyup", this.keyback);
   }
 
@@ -348,7 +387,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   }
 
   setPathInfo = opt => {
-    this.props.setMainPdfReader({ pdfDir: opt.label, scrollToPageNumber: 0, left: 0, });
+    this.props.setMainPdfReader({
+      pdfDir: opt.value.id,
+      scrollToPageNumber: 0,
+      left: 0,
+      top: 0
+    });
   };
 
   //todo mdata
@@ -361,13 +405,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
   rightPanel = React.createRef<HTMLDivElement>();
 
   renderRightPanel = (panelName: rightPanelName) => {
-    console.log("render right panel")
     switch (panelName) {
       case "graphContainer":
         return <GraphContainer />;
       case "listview":
-        // return <GoogleScholar />  
-        return <ListView ref={this.rightPanel} />
+      // return <GoogleScholar />
+      // return <ListView ref={this.rightPanel} />;
 
       case "synthesisOutlineEditor":
         if (featureToggles.showDocList) {
@@ -391,7 +434,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
           return null;
         }
       default:
-        return <div>alt-1 | alt-2 | alt-3 | alt-4 | alt-5 (for mac users, ctrl+alt+[1/2/3/4])</div>;
+        return (
+          <div>
+            alt-1 | alt-2 | alt-3 | alt-4 | alt-5 (for mac users,
+            ctrl+alt+[1/2/3/4])
+          </div>
+        );
     }
   };
 
@@ -400,35 +448,35 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     const { pdfNodes } = this.state;
     const fileOptions = pdfNodes.map(node => ({
       value: node,
-      label: node.data.pdfDir
+      label: node.data.originalFileName
     }));
 
     if (pdfNodes.length === 0) {
       return <h2>Add some pdfs to your selected folder and view->reload</h2>;
     }
 
-    // return <DocEditor />;
-
     return (
-      <ViewPortContainer>
-        <div style={{ flex: 1, padding: 5, height: 50, margin: 15 }}>
+      <ViewPortContainer id={domIds.viewPort}>
+        <div style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}>
           <Select
+            id={domIds.pdfSelector}
             // style={this.styleFn}
             options={fileOptions}
             onChange={this.setPathInfo}
           />
         </div>
-        <MainContainer>
+        <MainContainer id={domIds.panels}>
           {pdfDir.length > 0 && (
             <div
               style={{
                 border: "4px solid grey",
                 borderRadius: 5,
                 // padding: 3,
-                minWidth: this.props.mainPdfReader.width + 3
+                minWidth: this.props.mainPdfReader.width + 3,
+                display: "flex"
               }}
             >
-              <PdfViewer
+              {/* <PdfViewer
                 tabIndex={0}
                 isMainReader={true}
                 key={pdfDir}
@@ -439,10 +487,22 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
                   ...this.props.mainPdfReader,
                   height: "100%"
                 }}
+              /> */}
+
+              <Pdf
+                scale={this.props.mainPdfReader.scale}
+                load={{ dir: pdfDir, rootDir: pdfRootDir }}
+                loadPageNumbers={[]}
+                scrollToPageNumber={this.props.mainPdfReader.scrollToPageNumber}
+                scrollToTop={this.props.mainPdfReader.top}
+                scrollToLeft={this.props.mainPdfReader.left}
               />
             </div>
           )}
-          <ResizeDivider onTransforming={this.onResizeDivider} />
+          <ResizeDivider
+            id={domIds.panelResizer}
+            onTransforming={this.onResizeDivider}
+          />
           {this.renderRightPanel(this.props.rightPanel)}
         </MainContainer>
         <PortalContainer />
@@ -455,6 +515,8 @@ const ConnectedApp = connect(
   mapDispatch
 )(_App);
 
+import { Div1 } from "./TestComp";
+import "./events";
 class App extends React.Component {
   render() {
     return (

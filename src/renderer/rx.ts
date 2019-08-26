@@ -9,7 +9,8 @@ import {
   tap,
   scan,
   last,
-  takeWhile
+  takeWhile,
+  filter
 } from "rxjs/operators";
 import { start } from "repl";
 
@@ -20,7 +21,8 @@ const mouseMap = (e: MouseEvent) => {
     y: e.clientY,
     ctrlKey: e.ctrlKey,
     shiftKey: e.shiftKey,
-    button: e.button
+    button: e.button,
+    id: (e.target as HTMLElement).id
   };
 };
 type mouseData = ReturnType<typeof mouseMap>;
@@ -40,6 +42,7 @@ export const dndContainer = (containerRef: React.RefObject<any>) => {
   }, {}) as { [eventName: string]: Observable<mouseData> };
 
   return mousedown.pipe(
+    filter(down => down.id === containerRef.current.id),
     mapIgnoreOuterUntilInnerDone((down: mouseData) => {
       return mousemove.pipe(
         startWith(down),

@@ -6,4 +6,4 @@ Main process is responsible for creating and managing BrowserWindow
 Render process is responsible for running the web page, which is an instance of webContents. 
 */
 
-import  "./App";
+import "./App";

@@ -14,7 +14,6 @@ import {
 } from "./utils";
 import { iRootState, iDispatch } from "../store/createStore";
 import { connect } from "react-redux";
-import PdfViewer from "./PdfViewer";
 import {
   ViewboxData,
   NodeDataTypes,
@@ -35,6 +34,9 @@ import DocEditor from "./DocEditor";
 import { devlog } from "../store/featureToggle";
 import { MdZoomOutMap } from "react-icons/md";
 import { dragData } from "./rx";
+import { Pdf } from "./Pdf";
+import { domIds, domIdWithUid } from "./events";
+
 const frames = [
   { id: "1", left: 100, top: 300, height: 100, width: 100, isSelected: false },
   { id: "2", left: 101, top: 100, height: 100, width: 100, isSelected: false }
@@ -66,7 +68,8 @@ const mapState = (state: iRootState) => ({
   patches: state.graph.patches,
   pdfRootDir: state.app.current.pdfRootDir,
   pdfDir: state.app.panels.mainPdfReader.pdfDir,
-  graphPanel: state.app.panels.graphContainer
+  graphPanel: state.app.panels.graphContainer,
+  featureToggles: state.featureToggles
 });
 
 const mapDispatch = ({
@@ -158,7 +161,10 @@ export class GraphContainer extends React.Component<
         const node = this.props.nodes[id] as PdfSegmentViewbox;
         const mode = node.style.modes[node.style.modeIx];
 
-        return { id, style: { ...node.style, [mode]: style } };
+        return {
+          id,
+          style: { ...node.style, [mode]: { ...node.style[mode], ...style } }
+        };
       });
     const { scrollLeft, scrollTop } = this.state;
     const nextNodeLocation = this.nextNodeLocation({
@@ -167,7 +173,6 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-
     this.props.updateBatch({
       nodes: selected
     });
@@ -235,8 +240,8 @@ export class GraphContainer extends React.Component<
     const { width, height } = containerBounds;
     const zoomedIn = this.state.zoom > 1 ? this.state.zoom : 1;
     const view = getBoxEdges({
-      left: (this.state.scrollLeft - pad) / this.state.zoom,
-      top: (this.state.scrollTop - pad) / this.state.zoom,
+      left: (this.scrollRef.current.scrollLeft - pad) / this.state.zoom,
+      top: (this.scrollRef.current.scrollTop - pad) / this.state.zoom,
       width: (width + pad * 2) / this.state.zoom,
       height: (height + pad * 2) / this.state.zoom
     });
@@ -285,7 +290,6 @@ export class GraphContainer extends React.Component<
       scrollLeft,
       scrollTop
     });
-    console.log('nextNodeLocation: ', nextNodeLocation);
 
     this.setState(state => {
       return { frames: framesInView, links, nextNodeLocation };
@@ -312,7 +316,7 @@ export class GraphContainer extends React.Component<
 
   onKey = e => {
     //key shortcut trick
-    if (e.target.id !== "GraphScrollContainer") return null;
+    if (e.target.id !== domIds.graphScroll) return null;
     //Wrapper around div. Inside is a Slate component?
     //Huge pain: event bubbling?? ID trick to prevent
     switch (e.key) {
@@ -331,6 +335,7 @@ export class GraphContainer extends React.Component<
             clearFirst: true
           });
         }
+        break;
       case "h":
         if (e.ctrlKey)
           this.setState(state => {
@@ -373,7 +378,7 @@ export class GraphContainer extends React.Component<
   deselectAll = e => {
     if (
       !e.shiftKey &&
-      e.target.id === "SvgLayer" &&
+      e.target.id === domIds.svgLayer &&
       !!this.dragCoordsToRect(this.state.dragCoords, this.state.zoom)
     )
       this.props.toggleSelections({
@@ -386,7 +391,7 @@ export class GraphContainer extends React.Component<
   makeNodeAndLinkIt = e => {
     if (
       !e.shiftKey &&
-      e.target.id === "SvgLayer" &&
+      e.target.id === domIds.svgLayer &&
       this.props.selectedNodes.length > 0
     ) {
       const targetId = this.makeUserHtmlNode(e); //!todo
@@ -405,7 +410,7 @@ export class GraphContainer extends React.Component<
   makeUserHtmlNode = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
     const { clientX, clientY } = e;
     const { left, top } = e.currentTarget.getBoundingClientRect();
-    const allowId = oc(e).currentTarget.id("") === "SvgLayer"; //todo unmagic string
+    const allowId = oc(e).currentTarget.id("") === domIds.svgLayer; //todo unmagic string
     if (allowId) {
       const xy = {
         left: (clientX - left) / this.state.zoom,
@@ -451,7 +456,6 @@ export class GraphContainer extends React.Component<
       if (isUnique) {
         all.push(makeLink(sourceId, targetId));
       } else {
-        console.log("link already exists");
       }
       return all;
     }, []) as aLink[];
@@ -464,7 +468,7 @@ export class GraphContainer extends React.Component<
       case "pdf.publication":
         return (
           <div
-            id="pub-node"
+            id={domIdWithUid(domIds.graphNode, node.id)}
             key={node.id}
             style={{
               backgroundColor: "white",
@@ -548,31 +552,89 @@ export class GraphContainer extends React.Component<
           width,
           height,
           scale,
-          pageNumber
+          pageNumber,
+          scalePreview
         } = node.data as ViewboxData;
+        const { originalFileName } = this.props.nodes[pdfDir].data;
 
-        const { modeIx, modes } = node.style as NodeBase["style"];
+        const {
+          modeIx,
+          modes,
+          max: { scrollToLeft, scrollToTop }
+        } = node.style as NodeBase["style"];
         const isMin = modes[modeIx] === "min";
 
         const pagenum = [pageNumber];
         if (isMin) {
-          return <div style={{ color: "green", fontSize: 16 }}>{pdfDir}</div>;
+          return (
+            <div style={{ color: "green", fontSize: 16 }}>
+              {originalFileName}
+            </div>
+          );
         }
 
         return (
-          <PdfViewer
-            id="pdf.segment.viewbox"
-            key={node.id}
-            pageNumbersToLoad={pagenum}
-            scrollAfterClick
-            {...{
-              pdfRootDir,
-              pdfDir,
-              left: left - 50,
-              top: top - 50,
-              width: width + 100,
-              height: height + 100,
-              scale
+          // <PdfViewer
+          //   id="pdf.segment.viewbox"
+          //   key={node.id}
+          //   pageNumbersToLoad={pagenum}
+          //   scrollAfterClick
+          //   {...{
+          //     pdfRootDir,
+          //     pdfDir,
+          //     left: left - 50,
+          //     top: top - 50,
+          //     width: width + 100,
+          //     height: height + 100,
+          //     scale
+          //   }}
+          // />
+          <Pdf
+            key={"1" + node.id}
+            loadPageNumbers={pagenum}
+            load={{ rootDir: pdfRootDir, dir: pdfDir }}
+            scrollToLeft={scrollToLeft * scalePreview}
+            scrollToTop={scrollToTop * scalePreview}
+            scrollToPageNumber={pageNumber}
+            scale={scalePreview}
+            displayMode="box"
+            onChange={event => {
+              // let update = {};
+              if (event.type === "scrolled") {
+                const {
+                  scrollToLeft: nextScrollToLeft,
+                  scrollToTop: nextScrollToTop
+                } = event.payload;
+                const leftChanged = scrollToLeft !== nextScrollToLeft;
+                const topChanged = scrollToTop !== nextScrollToTop;
+                if (leftChanged || topChanged) {
+                  this.props.updateBatch({
+                    nodes: [
+                      {
+                        id: node.id,
+                        style: {
+                          ...this.props.nodes[node.id].style,
+                          max: {
+                            ...this.props.nodes[node.id].style.max,
+                            scrollToTop: nextScrollToTop,
+                            scrollToLeft: nextScrollToLeft
+                          }
+                        }
+                      }
+                    ]
+                  });
+                }
+              }
+              if (
+                event.type === "zoomed" &&
+                scalePreview !== event.payload.scale
+              ) {
+                this.props.updateBatch({
+                  nodes: [
+                    { id: node.id, data: { scalePreview: event.payload.scale } }
+                  ]
+                });
+              }
             }}
           />
         );
@@ -581,15 +643,50 @@ export class GraphContainer extends React.Component<
     }
   };
 
+  // onPdfChange = event => {
+  //   let update = {};
+  //   if (event.type === "scrolled") {
+  //     const {
+  //       scrollToLeft: nextScrollToLeft,
+  //       scrollToTop: nextScrollToTop
+  //     } = event.payload;
+  //     console.log("event.payload: ", event.payload);
+  //     const leftChanged = scrollToLeft !== nextScrollToLeft;
+  //     const topChanged = scrollToTop !== nextScrollToTop;
+  //     if (leftChanged || topChanged) {
+  //       this.props.updateBatch({
+  //         nodes: [
+  //           {
+  //             id: node.id,
+  //             style: {
+  //               ...node.style,
+  //               max: {
+  //                 ...node.style.max,
+  //                 scrollToTop: nextScrollToTop,
+  //                 scrollToLeft: nextScrollToLeft
+  //               }
+  //             }
+  //           }
+  //         ]
+  //       });
+  //     }
+  //   }
+  //   if (event.type === "zoomed" && scalePreview !== event.payload.scale) {
+  //     this.props.updateBatch({
+  //       nodes: [{ id: node.id, data: { scalePreview: event.payload.scale } }]
+  //     });
+  //   }
+  // };
+
   onWheel = e => {
     const wheelDefault = 120;
 
     // const bbox = e.target.getBoundingClientRect()
-    // console.log(e.clientX - bbox.left)
+    //
     // this.scrollRef.current.scrollTop += e.nativeEvent.wheelDelta
 
     e.persist();
-    if (e.ctrlKey && ["SvgLayer"].includes(e.target.id)) {
+    if (e.ctrlKey) {
       e.preventDefault();
       this.setState(state => {
         const newZoom =
@@ -601,7 +698,7 @@ export class GraphContainer extends React.Component<
   };
 
   startSelect = e => {
-    if (e.target.id !== "SvgLayer" || e.button !== 0) return null;
+    if (e.target.id !== domIds.svgLayer || e.button !== 0) return null;
     const {
       left: bbLeft,
       top: bbTop
@@ -786,7 +883,7 @@ export class GraphContainer extends React.Component<
 
     return (
       <ScrollContainer
-        id="GraphScrollContainer"
+        id={domIds.graphScroll}
         ref={this.scrollRef}
         onScroll={this.onScroll}
         onKeyUp={this.onKey}
@@ -797,7 +894,7 @@ export class GraphContainer extends React.Component<
         onMouseLeave={this.setNextLoc}
       >
         <MapContainer
-          id="GraphMapContainer"
+          id={domIds.graphMap}
           ref={this.mapRef}
           zoom={this.state.zoom}
           height={8000}
@@ -806,7 +903,7 @@ export class GraphContainer extends React.Component<
         >
           {width && height && (
             <svg
-              id="SvgLayer"
+              id={domIds.svgLayer}
               viewBox={`0 0 ${8000} ${8000}`}
               width={8000}
               height={8000}
@@ -843,6 +940,7 @@ export class GraphContainer extends React.Component<
                   );
                   return (
                     <LinkLine
+                      id={domIdWithUid(domIds.graphLink, link.id)}
                       isSelected={this.isSelected(link.id)}
                       key={link.source + link.target}
                       targetFrame={targetFrame}
@@ -871,45 +969,54 @@ export class GraphContainer extends React.Component<
             const { left, top, width, height } = frame;
             const isSelected = this.isSelected(frame.id);
             const node = this.props.nodes[frame.id] as aNode;
+            const mode = get(node, (n: any) => n.style.modes[n.style.modeIx]);
             const hide =
               this.state.hideViewboxes &&
               oc(node).data.type() === "pdf.segment.viewbox";
 
             return (
               <ResizableFrame
+                clickToActivate={true}
                 key={frame.id}
                 id={frame.id}
-                {...{ left, top, width, height }}
+                {...{
+                  left,
+                  top,
+                  width,
+                  height
+                }}
                 onTransformStart={this.onTransformStart}
                 onTransforming={this.onTransforming}
                 onTransformEnd={this.onTransformEnd}
                 isSelected={isSelected}
                 zoom={this.state.zoom}
                 hide={hide}
-                mode={get(node, (n: any) => n.style.modes[n.style.modeIx])}
+                mode={mode}
                 dragHandle={
                   <DragHandle
-                    id="drag-handle"
+                    id={domIds.dragHandle}
                     isSelected={isSelected}
                     onContextMenu={this.rightClickNodeToLink(frame.id)}
                     color="white"
                   >
-                    <DragHandleButton
-                      id="drag-handle-button"
-                      onClick={e => {
-                        e.stopPropagation();
-                        //@ts-ignore
-                        if (e.target.id === "drag-handle-button") {
-                          this.props.toggleSelections({
-                            selectedNodes: [frame.id],
-                            clearFirst: true
-                          });
-                          this.props.toggleStyleMode({ id: frame.id });
-                        }
-                      }}
-                    >
-                      min/max
-                    </DragHandleButton>
+                    {this.props.featureToggles.canExpandPdfSegmentInGraph && (
+                      <DragHandleButton
+                        id={domIds.sizeToggler}
+                        onClick={e => {
+                          e.stopPropagation();
+                          //@ts-ignore
+                          if (e.target.id === domIds.sizeToggler) {
+                            this.props.toggleSelections({
+                              selectedNodes: [frame.id],
+                              clearFirst: true
+                            });
+                            this.props.toggleStyleMode({ id: frame.id });
+                          }
+                        }}
+                      >
+                        min/max
+                      </DragHandleButton>
+                    )}
                   </DragHandle>
                 }
               >

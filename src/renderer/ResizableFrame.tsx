@@ -5,14 +5,14 @@ var equal = require("fast-deep-equal");
 import { dragData } from "./rx";
 import { Subscription } from "rxjs";
 import { get } from "./utils";
-
+import {domIds} from './events'
 export type frame = Partial<{
   id: string;
   left: number;
   top: number;
   width: number;
   height: number;
-  type: "move" | "resize"
+  type: "move" | "resize";
 }>;
 export const updateOneFrame = (frames: frame[]) => (
   newDims = {
@@ -74,10 +74,12 @@ const ResizableFrameDefaults = {
     scale: 1, // todo sometimes we want one node to scale up/down
     style: {} as React.CSSProperties,
     hide: false,
-    mode: "max"
+    mode: "max",
+    clickToActivate: false
   },
   state: {
-    resizeInfo: { location: "default", cursor: "default" } as hoverInfo
+    resizeInfo: { location: "default", cursor: "default" } as hoverInfo,
+    activateScroll: false
   }
 };
 export class ResizableFrame extends React.Component<
@@ -85,8 +87,13 @@ export class ResizableFrame extends React.Component<
   typeof ResizableFrameDefaults.state
 > {
   static defaultProps = ResizableFrameDefaults.props;
-  state = ResizableFrameDefaults.state;
+  state = {
+    ...ResizableFrameDefaults.state,
+    activateScroll: !this.props.clickToActivate
+  };
   isMouseDown = false;
+  isMouseOver = false;
+
   cache = { left: 0, top: 0, width: 0, height: 0 };
 
   shouldComponentUpdate(props, state) {
@@ -104,6 +111,7 @@ export class ResizableFrame extends React.Component<
       }
     }
     if (state.resizeInfo !== this.state.resizeInfo) return true;
+    if (state.activateScroll !== this.state.activateScroll) return true;
     return false;
   }
 
@@ -193,9 +201,9 @@ export class ResizableFrame extends React.Component<
   };
 
   // todo this actually would make a good hook
-  sub: Subscription;
+  sub: Subscription;c
   onMouseDownResize = e => {
-    if (e.target.id !== "frame") return null;
+    if (e.target.id !== domIds.frame) return null;
     this.props.onTransformStart({
       event: e,
       id: this.props.id,
@@ -219,7 +227,7 @@ export class ResizableFrame extends React.Component<
   };
 
   onMouseDownMove = e => {
-    if (e.target.id !== "drag-handle") return null;
+    if (e.target.id !== domIds.dragHandle) return null;
     this.props.onTransformStart({ event: e, id: this.props.id, type: "move" });
     e.stopPropagation();
     this.isMouseDown = true;
@@ -259,7 +267,6 @@ export class ResizableFrame extends React.Component<
 
   render() {
     const { left, top, width, height, isSelected } = this.props;
-
     return (
       <OuterContainer
         id={"frame"}
@@ -270,14 +277,28 @@ export class ResizableFrame extends React.Component<
           width,
           height,
           ...this.props.style,
-          zIndex: isSelected ? 2 : 1
+          zIndex: isSelected ? 6 : 5,
+          border: this.state.activateScroll ? '1px solid black' : 'none'
         }}
         onMouseDown={this.onMouseDownResize}
         onMouseMove={this.onHover}
         onScroll={e => {
-          e.stopPropagation();
+          if (this.state.activateScroll) e.stopPropagation();
         }}
-        onWheel={e => {}}
+        onWheel={e => {
+          if (this.state.activateScroll) e.stopPropagation();
+        }}
+        onMouseEnter={e => {
+          this.isMouseOver = true;
+        }}
+        onMouseLeave={() => {
+          this.isMouseOver = false;
+          if (this.props.clickToActivate) {
+            setTimeout(() => {
+              if (!this.isMouseOver) this.setState({ activateScroll: false });
+            }, 10000);
+          }
+        }}
       >
         {/* <DragHandle draggable={false} onMouseDown={this.onMouseDownMove} /> */}
         {React.cloneElement(this.props.dragHandle, {
@@ -298,6 +319,28 @@ export class ResizableFrame extends React.Component<
             display: "flex"
           }}
         >
+          {!this.state.activateScroll && (
+            <div
+              draggable={false}
+              style={{
+                background: "blue",
+                position: "absolute",
+                zIndex: 222,
+                opacity: 0,
+                width,
+                height,
+                cursor: "pointer",
+                overflow: "hidden"
+              }}
+              onClick={e => {
+                if (this.props.clickToActivate && !this.state.activateScroll) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                this.setState({ activateScroll: true });
+              }}
+            />
+          )}
           {this.props.children}
         </div>
       </OuterContainer>
@@ -354,7 +397,7 @@ const getResizeInfo = (
   e: React.MouseEvent<HTMLDivElement, MouseEvent>
 ): hoverInfo => {
   //@ts-ignore
-  if (get(e, e => e.target.id) !== "frame")
+  if (get(e, e => e.target.id) !== domIds.frame)
     return { location: "default", cursor: "default" };
 
   // edge or corner locations with matching cursors

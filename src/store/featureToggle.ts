@@ -1,5 +1,5 @@
 export const featureToggles = {
-  showAutoGrab: true,
+  showAutoGrab: false,
   showDocList: true,
   devlog: true
 };

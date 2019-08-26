@@ -24,12 +24,14 @@ import {
   MdNoteAdd,
   MdDeleteForever,
   MdSettings,
-  MdArrowUpward
+  MdArrowUpward,
 } from "react-icons/md";
+import {FaShareSquare} from "react-icons/fa"
 import Downshift from "downshift";
 import { connect } from "react-redux";
 
 // custom
+import { domIds, domIdWithUid } from "./events";
 import { getWordAtCursor, initKeySafeSlate } from "./EditorUtils";
 import {
   getSelectionRange,
@@ -361,14 +363,20 @@ export class DocEditor extends React.Component<
     return { base64, text };
   };
 
-  getDocFeatures = (editor): { nChars; hasList } => {
-    return editor.value.document.getBlocks().reduce(
-      (all, b) => {
+  getDocFeatures = (editor): { nChars; hasList; tag } => {
+    const blocks = editor.value.document.getBlocks();
+    return blocks.reduce(
+      (all, b, ix) => {
+        const text = b.text;
+        if (ix === 0) {
+          const tag = text.match(/^\[.*\]/) || [""];
+          all.tag = tag[0];
+        }
         all.nChars += b.text.trim().length;
         if (!all.hasList) all.hasList = b.type === "list-item-child";
         return all;
       },
-      { nChars: 0, hasList: false }
+      { nChars: 0, hasList: false, tag: "" }
     );
   };
 
@@ -394,7 +402,7 @@ export class DocEditor extends React.Component<
       ? selectionEdges.maxY
       : selectionEdges.minY - portalHeight - 3;
 
-    return { left: Math.round(left*10)/10, top:Math.round(top*10)/10 };
+    return { left: Math.round(left * 10) / 10, top: Math.round(top * 10) / 10 };
   };
 
   setAutoCompPosition = () => {
@@ -437,18 +445,16 @@ export class DocEditor extends React.Component<
   };
 
   onChange = change => {
-    const docFeatures = this.getDocFeatures(change);
-    const useTextForAutocomplete =
-      docFeatures.nChars > 0 &&
-      docFeatures.nChars <= this.props.autoCompThresh &&
-      !docFeatures.hasList;
+    // const docFeatures = this.getDocFeatures(change);
+    // const useTextForAutocomplete = docFeatures.tag === "[c]";
+    // docFeatures.nChars > 0 &&
+    // docFeatures.nChars <= this.props.autoCompThresh &&
+    // !docFeatures.hasList;
 
     const { text, isAfterSpace, isEndOfWord } = this.getCurrentWord(change);
 
     this.setState(state => ({
       editorValue: change.value,
-      useTextForAutocomplete,
-      docFeatures,
       wordAtCursor: isEndOfWord && state.isActive ? text : ""
     }));
   };
@@ -643,25 +649,45 @@ export class DocEditor extends React.Component<
 
   AutocompleteButton = () => {
     // not a button but maybe it should be?
-    const { useTextForAutocomplete, docFeatures } = this.state;
-    const thresh = this.props.autoCompThresh;
-    const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
-    const list = docFeatures.hasList ? "Has list." : "";
-
-    const title = `${
-      useTextForAutocomplete
-        ? `Under ${thresh} chars. No lists. Will`
-        : "Will not"
-    } be used for autocomplete. ${chars} ${list}`;
+    // const { useTextForAutocomplete, docFeatures } = this.state;
+    // const thresh = this.props.autoCompThresh;
+    // const chars = docFeatures.nChars > thresh ? `> ${thresh} characters.` : "";
+    // const list = docFeatures.hasList ? "Has list." : "";
+    const useTextForAutoComp = this.props.nodes[this.props.id].data
+      .useTextForAutocomplete;
+    const title = `Is ${
+      !useTextForAutoComp ? "NOT" : ""
+    } being used for autocomplete`;
 
     return (
-      <Button key={"Will Auto"} title={title} isActive={useTextForAutocomplete}>
+      <Button
+        onClick={e => this.toggleUseAutoComp()}
+        key={"Will Auto"}
+        title={title}
+        isActive={useTextForAutoComp}
+      >
         <MdArrowUpward
           size={"25px"}
           style={{ verticalAlign: "middle", cursor: "help" }}
         />
       </Button>
     );
+  };
+
+  toggleUseAutoComp = () => {
+    this.save();
+    this.props.updateBatch({
+      nodes: [
+        {
+          id: this.props.id,
+          data: {
+            //@ts-ignore
+            useTextForAutocomplete: !this.props.nodes[this.props.id].data
+              .useTextForAutocomplete
+          }
+        }
+      ]
+    });
   };
 
   MakeButtons = () => {
@@ -699,12 +725,26 @@ export class DocEditor extends React.Component<
         onDoubleClick={this.deleteNode}
       >
         <MdDeleteForever {...this.iconProps} />
+      </Button>,
+      <Button
+      key={"Toggle Entry Point"}
+        title={"Toggle Entry Point"}
+        isActive={this.props.nodes[this.props.id].data.isEntryPoint}
+        onClick={this.toggleIsEntryPoint}
+      >
+        <FaShareSquare {...this.iconProps} />
       </Button>
     ];
   };
 
   deleteNode = () => {
     this.props.removeBatch({ nodes: [this.props.id] });
+  };
+
+  toggleIsEntryPoint = () => {
+    const isEntryPoint = this.props.nodes[this.props.id].data.isEntryPoint
+    //@ts-ignore
+    this.props.updateBatch({ nodes: [{id: this.props.id, data: {isEntryPoint: !isEntryPoint}}] });
   };
 
   // changeFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -769,10 +809,9 @@ export class DocEditor extends React.Component<
       nodes: [
         {
           id: this.props.id,
+          //@ts-ignore
           data: {
-            ...serialized,
-            //@ts-ignore
-            useTextForAutocomplete: this.state.useTextForAutocomplete
+            ...serialized
           }
         }
       ]
@@ -824,7 +863,7 @@ export class DocEditor extends React.Component<
 
     return (
       <OuterContainer
-        id="outer-doc"
+        id={domIds.textEditor}
         ref={this.outerContainer}
         onMouseLeave={this.save}
         onMouseDown={this.onFocus}
@@ -862,9 +901,9 @@ export class DocEditor extends React.Component<
         >
           {downshift => {
             return (
-              <div id="downshift-div" style={{ display: "flex", flex: 1 }}>
+              <div style={{ display: "flex", flex: 1 }}>
                 <EditorContainer
-                  id="EditorContainer"
+                  id={domIds.textEditorScroll}
                   fontSize={this.getFontSize()} //todo save
                   // onKeyUp={this.onKeyUp}
                   // onMouseUp={this.onMouseUp}
@@ -891,15 +930,16 @@ export class DocEditor extends React.Component<
                     // onBlur={this.save}
                   />
                   {showAutoComplete && (
-                    <Portal id="portal-outer">
+                    <Portal>
                       <PortalDiv
-                        id="autocomplete-div"
+                        id={domIds.textEditorAutoComplete}
                         ref={this.portalDiv}
-                        style={{ ...this.state.portalStyle, zIndex: 2 }}
+                        style={{ ...this.state.portalStyle, zIndex: 5 }}
                       >
                         {this.state.autoCompDocs.map((doc, index) => {
                           return (
                             <AutoCompItem
+                              id={domIdWithUid(domIds.autoCompleteItem, doc.id)}
                               key={doc.id}
                               style={{ fontSize: 20 }}
                               {...downshift.getItemProps({
@@ -914,7 +954,8 @@ export class DocEditor extends React.Component<
                                   fontWeight:
                                     downshift.selectedItem === doc
                                       ? "bold"
-                                      : "normal"
+                                      : "normal",
+                                  zIndex: 5
                                 }
                               })}
                             >
@@ -926,7 +967,7 @@ export class DocEditor extends React.Component<
                     </Portal>
                   )}
                   {this.state.showMenu && (
-                    <Portal id="portal-menu">
+                    <Portal id={domIds.textEditorMenu}>
                       <Toolbar
                         style={this.state.menuStyle}
                         ref={this.menu}

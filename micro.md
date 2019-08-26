@@ -1,6 +1,80 @@
-- should update on zoom out
-- xy stay the same on wheel
+# analysises
+- Vizualise viewing with scroll + zoom + sensor overlay
+  - total area
+    - pages container size changes if
+      - switched pdf
+      - zoomed
+  - visable area
+    - scroll container size changes if
+      - resized panel
+      - scrolled
+      - zoomed
+  - page visability
+    - same as visable area
+  - live slice visability
+    - same as visable area plus
+    - transformed live segments
 
+- Vizualise drawing + transforming a box + sensor overlay
+  - box coordinates
+  - screen position
+  - container position
+  
+- Visualize mouse on window
+  - screen size
+  - screen coordinates
+  - down, up, wheel, button, move
+
+- Visualize keyboard on window
+  - keydown, keyup
+
+
+
+
+--- defer
+event refactor: pass down one onChange/sendUp
+'a' things
+link types
+multiple canvases 
+scrollTo in  canvas on props
+debounce slate onchange -> save
+refactor onchange pdf if box/full
+refactor/rename viewboxdiv
+undo/redo
+refactor graph container
+check all string + objects created in render methods
+fix compile time
+pull out our redux stuff from
+pdf dp zoom
+scale to redux
+refactor pagecanvas: 
+restrict to original page
+transition for box hover menu -> fade in on move
+snippet for type onChange = React.ComponentProps<typeof AdjustableBox>["onChange"];
+  const onChange = useCallback<onChange>(
+left/right hover menu + animation transistion
+chain links in simple interface
+maigc strings
+load pdf pages in sequence
+improve webpack compile times
+uninstall unused packages
+link types
+scale in redux node
+useSelector typescript
+drag pan pdf
+
+
+
+
+- ctrl-f
+  - search all
+    - giant string with id+offsets
+    - load all text for pdf
+
+
+
+  - pagetext toggle with cursor
+  - cc selected text
 
 
 
