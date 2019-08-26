@@ -335,6 +335,7 @@ export class GraphContainer extends React.Component<
             clearFirst: true
           });
         }
+        break;
       case "h":
         if (e.ctrlKey)
           this.setState(state => {

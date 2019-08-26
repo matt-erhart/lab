@@ -743,6 +743,7 @@ export class DocEditor extends React.Component<
 
   toggleIsEntryPoint = () => {
     const isEntryPoint = this.props.nodes[this.props.id].data.isEntryPoint
+    //@ts-ignore
     this.props.updateBatch({ nodes: [{id: this.props.id, data: {isEntryPoint: !isEntryPoint}}] });
   };
 
