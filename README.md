@@ -41,6 +41,12 @@ For mac users, `ctrl+alt+[view_ID]` is the shortcut to switch between different 
 
 - **Auto-grab**: the feature that automatically grabs detailed information from the text content of the pdf.
 
+# Build the application
+
+To build the project into a standalone deskop application, run `yarn dist:mac`. 
+
+By default, it will take 3-5 mins and once finished, will save a .zip file in the path `dist/compressor-0.0.1-mac.zip`. 
+
 
 # Roadmap
 Study 1: Do grounded claims improve sensemaking?
