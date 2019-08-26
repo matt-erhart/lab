@@ -1,12 +1,46 @@
 <!--ts-->
 
-- [Roadmap](#Roadmap)
-- [Dictionary](#dictionary)
+
+
 - [Installation](#installation)
-  - [Using Yarn](#using-yarn)
+  - [Using Yarn to install](#using-yarn-to-install)
+- [Usage](#usage)
+- [Dictionary](#dictionary)
+- [Roadmap](#Roadmap)
 - [Dev-Reference](#dev-reference)
 - [Slate-TroubleShooting](#Slate-TroubleShooting)
   <!--te-->
+
+# Installation
+
+## Using Yarn to install
+
+There are three steps:
+1. `git clone [HTTP-project-url]`
+2. Run `yarn`. It will install necessary packages
+3. Run `yarn dev`. will compile the project and when it succeed, pop up the app
+
+
+# Usage
+
+On the canvas layout, the shortcut pattern is different for different platforms. 
+- For Mac users, `fn+ctrl+[key]` is the shortcut pattern. For example, to connect a source node (claim/pdf, etc.) with one or some arbitrary target nodes, please select the source nodes, and `fn+ctrl+[right click]` on the target nodes. 
+- For Windows users, `fn+ctrl+[key]` is the shortcut pattern. 
+
+# Views
+
+The right panel of the app has 3 views. Each view has different roles. 
+
+- Canvas layout allows you to write and organize grounded claims
+- Autograb list view shows a list of relevant sentences throughout the paper that fit your interest. The name "autograb" means these sentences are automatically grabbed by the text classification model. 
+- DocEditor view is an wizard-of-oz interface to synthesis claims. As you writing, the interface will pops up a similar grounded claim that you have wrote before. 
+
+For mac users, `ctrl+alt+[view_ID]` is the shortcut to switch between different views. 
+
+# Dictionary
+
+- **Auto-grab**: the feature that automatically grabs detailed information from the text content of the pdf.
+
 
 # Roadmap
 Study 1: Do grounded claims improve sensemaking?
@@ -100,18 +134,6 @@ Study 1: Do grounded claims improve sensemaking?
 ** Can't focus multiple instances of slate editors, e.g. in a list: **
 Cause: conflicting keys used to find editor in the dom
 Solution: editorUtils.tsx/initKeySafeSlate()
-
-
-# Dictionary
-
-- **Auto-grab**: the feature that automatically grabs detailed information from the text content of the pdf.
-
-# Installation
-
-## Using Yarn
-
-`git clone [HTTP-project-url]`
-`yarn` then `yarn dev`
 
 # Dev-Reference
 
