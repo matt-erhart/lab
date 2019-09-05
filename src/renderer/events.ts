@@ -201,6 +201,7 @@ type PdfEventTypes =
 type AppEventTypes = PdfEventTypes;
 
 import { zeroPad } from "./utils";
+import console = require("console");
 var fs = require("fs");
 const today = new Date();
 var day = zeroPad(today.getDate(), 2);
@@ -210,24 +211,30 @@ const settings = require("electron-settings");
 let pdfRootDir;
 try {
   pdfRootDir = settings.get("pdfRootDir");
+  console.log("pdfRootDir is" + pdfRootDir + " process.platform" + process.platform)
+  // console.log("outDir " + outDir)
 } catch {
   // for node dev
   pdfRootDir = "F:\\GoogleSync\\megaCogLab\\ElectronTesting\\matt";
 }
 
 const outDir = pdfRootDir;
+const mouseLoggerFileName = outDir + (process.platform === "darwin" ? `/` : `\\`) + `${year}${monthIndex}${day}_mouseLog.csv`
+console.log(mouseLoggerFileName)
 var mouseLogger = fs.createWriteStream(
-  outDir + `\\${year}${monthIndex}${day}_mouseLog.csv`,
+  mouseLoggerFileName,
   { flags: "a" }
 );
 
+const keyboardLoggerFileName = outDir + (process.platform === "darwin" ? `/` : `\\`) + `${year}${monthIndex}${day}_keyLog.csv`
 var keyboardLogger = fs.createWriteStream(
-  outDir + `\\${year}${monthIndex}${day}_keyLog.csv`,
+  keyboardLoggerFileName,
   { flags: "a" }
 );
 
+const reduxLoggerFileName = outDir + (process.platform === "darwin" ? `/` : `\\`) + `${year}${monthIndex}${day}_reduxLog.jsonl`
 export const reduxLogger = fs.createWriteStream(
-  outDir + `\\${year}${monthIndex}${day}_reduxLog.jsonl`,
+  reduxLoggerFileName,
   { flags: "a" }
 );
 
