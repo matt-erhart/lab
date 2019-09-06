@@ -126,7 +126,8 @@ function createMainWindow() {
     }
   ];
 
-  if (process.platform === "darwin") {
+  console.log("process.platform "+process.platform)
+  if (process.platform === "darwin" || process.platform != "win32") {
     template.unshift({
       label: app.getName(),
       submenu: [
