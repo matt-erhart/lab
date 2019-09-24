@@ -93,14 +93,15 @@ const mapState = (state: iRootState) => ({
 // set component event/function as shortcut alias, affiliated to this.props
 const mapDispatch = ({
   graph: { addBatch, updateBatch },
-  app: { setMainPdfReader, setRightPanel },
+  app: { setMainPdfReader, setRightPanel, setGraphContainer },
   featureToggles: { setFeatureToggles }
 }: iDispatch) => ({
   addBatch,
   updateBatch,
   setMainPdfReader,
   setRightPanel,
-  setFeatureToggles
+  setFeatureToggles,
+  setGraphContainer
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -443,8 +444,33 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     }
   };
 
+  textOptions = nodes => {
+    return Object.values(nodes).reduce((res, node, ix) => {
+      if (node.data.type !== "userDoc") {
+        return res;
+      } else {
+        res.push({ value: node, label: node.data.text });
+        return res;
+      }
+    }, []);
+  };
+
+  onClickTextOptions = opt => {
+    const modeIx = opt.value.style.modeIx;
+    console.log('modeIx: ', modeIx);
+    const mode = opt.value.style.modes[modeIx]
+    console.log('mode: ', mode);
+    const scrollTo = {
+      left: opt.value.style[mode].left,
+      top: opt.value.style[mode].top
+    }
+    console.log('scrollTo: ', scrollTo);
+    this.props.setGraphContainer(scrollTo);
+  };
+
   render() {
-    const { pdfRootDir, pdfDir } = this.props;
+    const { pdfRootDir, pdfDir, nodes } = this.props;
+    console.log("nodes: ", this.textOptions(nodes));
     const { pdfNodes } = this.state;
     const fileOptions = pdfNodes.map(node => ({
       value: node,
@@ -458,12 +484,26 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
     return (
       <ViewPortContainer id={domIds.viewPort}>
         <div style={{ flex: 1, padding: 5, height: 50, margin: 15, zIndex: 4 }}>
-          <Select
-            id={domIds.pdfSelector}
-            // style={this.styleFn}
-            options={fileOptions}
-            onChange={this.setPathInfo}
-          />
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ flex: 1, marginRight: 10 }}>
+              <Select
+                placeholder="Search File Names"
+                id={domIds.pdfSelector}
+                // style={this.styleFn}
+                options={fileOptions}
+                onChange={this.setPathInfo}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <Select
+                placeholder="Search Canvas Text"
+                id={domIds.pdfSelector}
+                // style={this.styleFn}
+                options={this.textOptions(nodes)}
+                onChange={this.onClickTextOptions}
+              />
+            </div>
+          </div>
         </div>
         <MainContainer id={domIds.panels}>
           {pdfDir.length > 0 && (

@@ -215,6 +215,7 @@ export class GraphContainer extends React.Component<
 
     if (prevProps.graphPanel !== this.props.graphPanel) {
       const { left, top } = this.props.graphPanel;
+      console.log('left, top: ', left, top);
       this.scrollRef.current.scrollTo(
         left * this.state.zoom,
         top * this.state.zoom
