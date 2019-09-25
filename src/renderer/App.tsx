@@ -446,9 +446,12 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   textOptions = nodes => {
     return Object.values(nodes).reduce((res, node, ix) => {
+      //@ts-ignore
       if (node.data.type !== "userDoc") {
         return res;
       } else {
+        //@ts-ignore
+
         res.push({ value: node, label: node.data.text });
         return res;
       }
@@ -457,14 +460,14 @@ class _App extends React.Component<connectedProps, typeof AppDefaults.state> {
 
   onClickTextOptions = opt => {
     const modeIx = opt.value.style.modeIx;
-    console.log('modeIx: ', modeIx);
-    const mode = opt.value.style.modes[modeIx]
-    console.log('mode: ', mode);
+    console.log("modeIx: ", modeIx);
+    const mode = opt.value.style.modes[modeIx];
+    console.log("mode: ", mode);
     const scrollTo = {
       left: opt.value.style[mode].left,
       top: opt.value.style[mode].top
-    }
-    console.log('scrollTo: ', scrollTo);
+    };
+    console.log("scrollTo: ", scrollTo);
     this.props.setGraphContainer(scrollTo);
   };
 
