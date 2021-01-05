@@ -57,7 +57,7 @@
     "@rooks/use-did-mount": "^3.0.1",
     "@slate-editor/link-plugin": "^5.1.0",
     "app-root-path": "^2.1.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "benchmark": "^2.1.4",
     "d3": "^5.9.1",
     "d3-array": "^2.0.3",
