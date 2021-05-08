@@ -86,7 +86,7 @@
     "jsonfile": "^5.0.0",
     "kdbush": "^3.0.0",
     "konva": "^2.6.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "lodash-id": "^0.14.0",
     "logrocket": "^1.0.2",
     "lowdb": "^1.0.0",
